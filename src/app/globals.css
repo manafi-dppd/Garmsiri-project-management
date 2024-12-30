@@ -14,8 +14,17 @@
   }
 }
 
+@font-face {
+  font-family: 'iranyekanwebbold'; /* نام فونت */
+  src: url('/fonts/font-file.woff2') format('woff2'),
+       url('/fonts/font-file.woff') format('woff');
+  font-weight: normal; /* یا bold */
+  font-style: normal; /* یا italic */
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+

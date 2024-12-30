@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.sqlite"
+}
+
+model Menu {
+  id          Int           @id @default(autoincrement())
+  title       String
+  title_fa    String
+  active      Boolean
+  general     Boolean
+  slug        String         @unique
+  parentId    Int?           // برای منوهای اصلی مقدار null است
+  parent      Menu?          @relation("ParentChild", fields: [parentId], references: [id])
+  children    Menu[]         @relation("ParentChild") // نیازی به fields و references نیست
+  AccessLevel AccessLevel[]
+}
+
+
+
+model Position {
+  id           Int           @id @default(autoincrement())
+  title        String
+  title_fa     String
+  req_license  Boolean  @default(false)
+  accessLevels AccessLevel[]
+}
+
+model AccessLevel {
+  id         Int      @id @default(autoincrement())
+  positionId Int
+  menuId     Int
+  hasAccess  Boolean  @default(false) // مقدار true یا false
+  position   Position @relation(fields: [positionId], references: [id])
+  menu       Menu     @relation(fields: [menuId], references: [id])
+}
+
+// model User {
+//   id                         Int          @id @default(autoincrement())
+//   first_name                 String
+//   last_name                  String
+//   mobile_phone               String       @unique
+//   email                      String?      @unique
+//   gender                     String
+//   position                   String
+//   inviterId                  Int?
+//   invitation_time            DateTime
+//   registration_time          DateTime
+//   membership_expiration_date DateTime?
+//   active                     Boolean
+//   letter_file                Bytes?
+//   letter_issuer              String?
+//   letter_number              String?
+//   letter_date                String?
+//   letter_approver            String?
+//   password                   String
+//   accessLevel                AccessLevel?
+//   Inviter                    User?        @relation("UserInvitations", fields: [inviterId], references: [id])
+//   Inviters                   User[]       @relation("UserInvitations")
+// }
+
+// model AccessLevel {
+//   id                        Int     @id @default(autoincrement())
+//   memberId                  Int     @unique
+//   current_affairs           Boolean
+//   operating_records         Boolean
+//   performance_records       Boolean
+//   study_records             Boolean
+//   water_request             Boolean
+//   irrigation_calendar       Boolean
+//   request_dam               Boolean
+//   request_channel           Boolean
+//   request_pumping           Boolean
+//   service                   Boolean
+//   repair                    Boolean
+//   facility_service          Boolean
+//   channel_service           Boolean
+//   minor_repairs             Boolean
+//   dam_channel_repaBooleanir Boolean
+//   security                  Boolean
+//   guard_shift_schedule      Boolean
+//   water_level_report        Boolean
+//   report_theft              Boolean
+//   pumping_operator_shift    Boolean
+//   browser_management        Boolean
+//   water_accounting          Boolean
+//   repairs                   Boolean
+//   service_maintenance       Boolean
+//   member                    User    @relation(fields: [memberId], references: [id])
+// }

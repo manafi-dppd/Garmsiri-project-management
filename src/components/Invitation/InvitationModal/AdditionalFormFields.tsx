@@ -74,7 +74,9 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
       </div>
       <div>
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">تاریخ معرفی‌نامه</span>
+          <span className="text-sm font-medium text-gray-700">
+            تاریخ معرفی‌نامه
+          </span>
           <button
             type="button"
             className="px-3 py-1 text-sm text-white bg-blue-500 rounded shadow hover:bg-blue-600"
@@ -83,7 +85,9 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
             انتخاب تاریخ
           </button>
         </div>
-        <span className="block mt-1 text-sm text-gray-600">{formData.letterDate}</span>
+        <span className="block mt-1 text-sm text-gray-600">
+          {formData.letterDate}
+        </span>
       </div>
       <div>
         <label

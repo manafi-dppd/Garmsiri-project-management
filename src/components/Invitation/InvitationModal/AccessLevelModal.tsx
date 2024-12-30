@@ -14,19 +14,24 @@ interface MenuItem {
   id: number;
   title: string;
   title_fa: string;
-  parentId: number | null;
+  parentId: number;
   general: boolean;
   checked?: boolean;
   children?: MenuItem[];
 }
 
-const AccessLevelModal: React.FC<{
-  positionId: number;
-  show: boolean;
-  onClose: () => void;
-  onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
-  updateAccessLevels: any;
-}> = ({positionId, show, onClose}) => {
+interface AccessLevel {
+  menuId: number;
+  hasAccess: boolean;
+}
+
+const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
+  positionId,
+  show,
+  onClose,
+  onAccessLevelSubmit,
+  updateAccessLevels,
+}) => {
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
 
   const handleSave = () => {
@@ -35,21 +40,44 @@ const AccessLevelModal: React.FC<{
     }
     onAccessLevelSubmit(menuTree); // ارسال داده‌ها به پروپ دیگر
   };
+
   useEffect(() => {
     if (show && menuTree.length === 0) {
-      axios
-        .get<MenuItem[]>('/api/menus')
-        .then((response) => {
-          const menuData = response.data.filter(
+      const fetchData = async () => {
+        try {
+          const [menuResponse, accessLevelResponse] = await Promise.all([
+            axios.get<MenuItem[]>('/api/menus'),
+            axios.get<AccessLevel[]>(
+              `/api/access-levels?positionId=${positionId}`,
+            ),
+          ]);
+
+          console.log('Menu Data:', menuResponse.data);
+          console.log('Access Levels:', accessLevelResponse.data);
+          console.log('positionId:', positionId);
+
+          const menuData = menuResponse.data.filter(
             (menu) =>
               !menu.general &&
               !['home', 'Browser Management'].includes(menu.title),
           );
-          setMenuTree(buildMenuHierarchy(menuData));
-        })
-        .catch((error) => console.error('Failed to fetch menus:', error));
+
+          const accessLevels = accessLevelResponse.data;
+
+          const updatedMenuTree = applyAccessLevels(
+            buildMenuHierarchy(menuData),
+            accessLevels,
+          );
+          console.log('Updated Menu Tree:', updatedMenuTree);
+          setMenuTree(updatedMenuTree);
+        } catch (error) {
+          console.error('Failed to fetch data:', error);
+        }
+      };
+
+      fetchData();
     }
-  }, [show, menuTree.length]);
+  }, [show, menuTree.length, positionId]);
 
   const buildMenuHierarchy = (menuData: MenuItem[]): MenuItem[] => {
     const menuMap = new Map<number | null, MenuItem[]>();
@@ -67,6 +95,27 @@ const AccessLevelModal: React.FC<{
       }));
 
     return buildHierarchy(null);
+  };
+
+  const applyAccessLevels = (
+    menuTree: MenuItem[],
+    accessLevels: AccessLevel[],
+  ): MenuItem[] => {
+    const accessMap = new Map<number, boolean>();
+    accessLevels.forEach(({menuId, hasAccess}) =>
+      accessMap.set(menuId, hasAccess),
+    );
+
+    const applyChecked = (menu: MenuItem): MenuItem => {
+      const hasAccess = accessMap.get(menu.id) || false;
+      return {
+        ...menu,
+        checked: hasAccess,
+        children: menu.children?.map(applyChecked),
+      };
+    };
+
+    return menuTree.map(applyChecked);
   };
 
   const handleCheckboxChange = (

@@ -63,6 +63,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
           const response = await fetch('/api/positions');
           if (!response.ok) throw new Error('Fetch failed');
           const data = await response.json();
+          console.log('Fetched Positions:', data);
           setPositions(data);
         } catch (error) {
           console.error('Error fetching positions:', error);
@@ -80,11 +81,13 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   }, [selectedPositions, positions]);
 
   const handlePositionChange = (selectedIds: number[]) => {
-    const updatedPositions = selectedIds
-      .map((id) => positions.find((p) => p.id === id))
-      .filter(Boolean) as Position[];
+    const updatedPositions = selectedIds.map(
+      (id) => positions.find((position) => position.id === id) as Position,
+    );
     setSelectedPositions(updatedPositions);
-    console.log('Change selection');
+    if (updatedPositions.length > 0) {
+      setSelectedPosition(String(updatedPositions[0].id)); // مقدار اولین آیتم انتخاب‌شده
+    }
   };
 
   const handleChange = (
@@ -143,6 +146,14 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   const hasLicenseRequirement = selectedPositions.some(
     (pos) => pos.req_license,
   );
+
+  useEffect(() => {
+    console.log('Updated Positions:', positions);
+  }, [positions]);
+
+  useEffect(() => {
+    console.log('Selected Positions:', selectedPositions);
+  }, [selectedPositions]);
   return (
     <div>
       {showModal && (
@@ -169,14 +180,27 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               handleSubmit={handleSubmit}
               toPersianDate={toPersianDate as ToPersianDate}
               today={today}
-              selectedPositions={selectedPositions.map((pos) => pos.id)}
+              selectedPositions={selectedPositions.map(
+                (position) => position.id,
+              )} // ارسال فقط id‌ها
               positions={positions}
-              handlePositionChange={handlePositionChange}
+              handlePositionChange={(newSelectedPositions) => {
+                const updatedPositions = newSelectedPositions.map(
+                  (id) =>
+                    positions.find(
+                      (position) => position.id === id,
+                    ) as Position,
+                );
+                setSelectedPositions(updatedPositions);
+                if (updatedPositions.length > 0) {
+                  setSelectedPosition(String(updatedPositions[0].id)); // مقدار اولین آیتم انتخاب‌شده
+                }
+              }}
               requiresLicense={requiresLicense}
               hasLicenseRequirement={hasLicenseRequirement}
-              openAccessLevelModal={openAccessLevelModal}
-              // isAccessLevelButtonDisabled={isAccessLevelButtonDisabled}
+              openAccessLevelModal={() => setShowAccessLevelModal(true)}
             />
+
             <div className="modal-footer flex justify-between mt-4">
               <button
                 type="button"

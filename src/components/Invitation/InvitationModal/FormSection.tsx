@@ -180,13 +180,13 @@ const FormSection: React.FC<FormSectionProps> = ({
                       id="position"
                       multiple
                       value={selectedPositions.map(String)}
-                      onChange={(e) =>
-                        handlePositionChange(
-                          Array.from(e.target.selectedOptions, (option) =>
-                            Number(option.value),
-                          ),
-                        )
-                      }
+                      onChange={(e) => {
+                        const selected = Array.from(
+                          e.target.selectedOptions,
+                          (option) => Number(option.value),
+                        );
+                        handlePositionChange(selected);
+                      }}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     >
                       {positions.length > 0 ? (

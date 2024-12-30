@@ -179,7 +179,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                     <select
                       id="position"
                       multiple
-                      value={selectedPositions}
+                      value={selectedPositions.map(String)}
                       onChange={(e) =>
                         handlePositionChange(
                           Array.from(e.target.selectedOptions, (option) =>

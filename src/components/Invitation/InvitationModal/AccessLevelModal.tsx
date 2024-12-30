@@ -1,6 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import openAccessLevelModal from './index';
+// import openAccessLevelModal from './index';
 import axios from 'axios';
+
+interface AccessLevelModalProps {
+  positionId: number;
+  show: boolean;
+  onClose: () => void;
+  onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
+  updateAccessLevels?: (checkedState: MenuItem[]) => void; // اضافه کردن این خط
+}
 
 interface MenuItem {
   id: number;
@@ -16,10 +24,17 @@ const AccessLevelModal: React.FC<{
   positionId: number;
   show: boolean;
   onClose: () => void;
+  onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
+  updateAccessLevels: any;
 }> = ({positionId, show, onClose}) => {
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
 
-  
+  const handleSave = () => {
+    if (updateAccessLevels) {
+      updateAccessLevels(menuTree); // ارسال داده‌ها به پروپ
+    }
+    onAccessLevelSubmit(menuTree); // ارسال داده‌ها به پروپ دیگر
+  };
   useEffect(() => {
     if (show && menuTree.length === 0) {
       axios
@@ -220,3 +235,10 @@ const AccessLevelModal: React.FC<{
 };
 
 export default AccessLevelModal;
+function updateAccessLevels(menuTree: MenuItem[]) {
+  throw new Error('Function not implemented.');
+}
+
+function onAccessLevelSubmit(menuTree: MenuItem[]) {
+  throw new Error('Function not implemented.');
+}

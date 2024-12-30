@@ -4,6 +4,7 @@ import {toPersianDate} from '@/utils/dateUtils';
 import AdditionalFormFields from './AdditionalFormFields';
 import FormSection from './FormSection';
 
+type ToPersianDate = (date: string | Date | undefined) => string;
 interface Position {
   id: number;
   title_fa: string;
@@ -46,6 +47,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   const [showAdditionalInputs, setShowAdditionalInputs] = useState(false);
   const [showAccessLevelModal, setShowAccessLevelModal] = useState(false);
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [finalAccessLevel, setFinalAccessLevel] = useState<any>(null);
   const [isAccessLevelButtonDisabled, setIsAccessLevelButtonDisabled] =
     useState(false);
   const today = new Date().toISOString().split('T')[0];
@@ -71,29 +73,36 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   }, [positionsFromParent]);
 
   useEffect(() => {
-    const hasLicense = selectedPositions.some((id) =>
-      positions.find((position) => position.id === id && position.req_license),
+    const hasLicense = selectedPositions.some((position) =>
+      positions.find((p) => p.id === position.id && p.req_license),
     );
     setRequiresLicense(hasLicense);
   }, [selectedPositions, positions]);
 
   const handlePositionChange = (selectedIds: number[]) => {
-    setSelectedPositions(selectedIds);
+    const updatedPositions = selectedIds
+      .map((id) => positions.find((p) => p.id === id))
+      .filter(Boolean) as Position[];
+    setSelectedPositions(updatedPositions);
+    console.log('Change selection');
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value, files} = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const {name, value, files} = e.target as HTMLInputElement;
     setFormData({
       ...formData,
       [name]: files ? files[0] : value,
     });
   };
 
-  const handleSizeChange = (e) => {
-    setListSize(e.target.value);
-    const selectedValues = Array.from(e.target.selectedOptions, (option) =>
-      positions.find((p) => p.id === parseInt(option.value, 10)),
-    ).filter(Boolean) as Position[];
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setListSize(parseInt(e.target.value, 10)); // `value` از نوع string است، برای تبدیل به عدد از `parseInt` استفاده کنید
+    const selectedValues = Array.from(e.target.selectedOptions, (option) => {
+      const value = (option as HTMLOptionElement).value; // تبدیل گزینه به `HTMLOptionElement`
+      return positions.find((p) => p.id === parseInt(value, 10));
+    }).filter(Boolean) as Position[];
     setSelectedPositions(selectedValues);
   };
 
@@ -108,15 +117,16 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     setShowDatePickerModal((prev) => !prev);
   };
 
-  const handleDateSelect = (date) => {
-    setFormData((prev) => ({...prev, letterDate: date}));
+  const handleDateSelect = (date: Date) => {
+    const formattedDate = date.toISOString(); // یا استفاده از فرمت دلخواه شما
+    setFormData((prev) => ({...prev, letterDate: formattedDate}));
   };
 
   const openAccessLevelModal = () => {
     setShowAccessLevelModal(true);
   };
 
-  const handleAccessLevelSubmit = (accessLevels) => {
+  const handleAccessLevelSubmit = (accessLevels: any) => {
     console.log('Access Levels:', accessLevels);
     setShowAccessLevelModal(false);
   };
@@ -157,9 +167,9 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               formData={formData}
               handleChange={handleChange}
               handleSubmit={handleSubmit}
-              toPersianDate={toPersianDate}
+              toPersianDate={toPersianDate as ToPersianDate}
               today={today}
-              selectedPositions={selectedPositions}
+              selectedPositions={selectedPositions.map((pos) => pos.id)}
               positions={positions}
               handlePositionChange={handlePositionChange}
               requiresLicense={requiresLicense}
@@ -188,9 +198,13 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               <AccessLevelModal
                 show={showAccessLevelModal}
                 onClose={() => setShowAccessLevelModal(false)}
-                onAccessLevelSubmit={handleAccessLevelSubmit}
-                selectedPosition={selectedPosition}
-                updateAccessLevels={(checkedState) => {
+                positionId={
+                  selectedPosition ? parseInt(selectedPosition, 10) : 0
+                } // positionId مورد نیاز است
+                onAccessLevelSubmit={(accessLevels: any) => {
+                  console.log('Submitted Access Levels:', accessLevels);
+                }}
+                updateAccessLevels={(checkedState: any) => {
                   setFinalAccessLevel(checkedState);
                   console.log('Updated Access Levels:', checkedState);
                 }}

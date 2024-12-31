@@ -232,6 +232,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
                   setFinalAccessLevel(checkedState);
                   console.log('Updated Access Levels:', checkedState);
                 }}
+                mode="accessLevel"
               />
             )}
           </div>

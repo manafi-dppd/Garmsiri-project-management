@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import AccessLevelModal from '../Invitation/InvitationModal/AccessLevelModal';
 
 type Menu = {
   id: number;
@@ -24,6 +25,10 @@ export default function AdminMenuForm() {
   const [isFormChanged, setIsFormChanged] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [showAccessLevelModal, setShowAccessLevelModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'accessLevel' | 'menuManagement'>(
+    'accessLevel',
+  );
 
   useEffect(() => {
     fetch('/api/menus')
@@ -214,7 +219,9 @@ export default function AdminMenuForm() {
   };
 
   const toggleMenuVisibility = () => {
-    setIsMenuVisible((prev) => !prev);
+    // setIsMenuVisible((prev) => !prev);
+    setModalMode('menuManagement'); // تغییر حالت به مدیریت منو
+    setShowAccessLevelModal(true);
   };
 
   return (
@@ -235,11 +242,22 @@ export default function AdminMenuForm() {
           onClick={toggleMenuVisibility}
           className="text-xl font-semibold bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition w-48"
         >
-          مدیریت منو
+          مدیریت صفحات
         </button>
       </div>
-
-      {isMenuVisible && (
+      <AccessLevelModal
+        show={showAccessLevelModal}
+        onClose={() => setShowAccessLevelModal(false)}
+        positionId={0} // مقدار پیش‌فرض
+        onAccessLevelSubmit={(menuTree: any) => {
+          console.log('Menu Management Submitted:', menuTree);
+        }}
+        updateAccessLevels={(checkedState: any) => {
+          console.log('Updated Menu State:', checkedState);
+        }}
+        mode={modalMode} // حالت متغیر
+      />
+      {/* {isMenuVisible && (
         <div className="w-full max-w-4xl mx-auto p-6 bg-green-50 rounded-lg shadow-lg">
           <table className="table-auto border-collapse border border-gray-300 text-sm text-center w-full shadow-md rounded-lg">
             <thead>
@@ -371,7 +389,7 @@ export default function AdminMenuForm() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

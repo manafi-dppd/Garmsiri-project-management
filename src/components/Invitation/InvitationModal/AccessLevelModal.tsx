@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-// import openAccessLevelModal from './index';
 import axios from 'axios';
 
 interface AccessLevelModalProps {
   positionId: number;
   show: boolean;
+  mode: 'accessLevel' | 'menuManagement';
   onClose: () => void;
   onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
   updateAccessLevels?: (checkedState: MenuItem[]) => void; // اضافه کردن این خط
@@ -16,6 +17,7 @@ interface MenuItem {
   title_fa: string;
   parentId: number;
   general: boolean;
+  active?: boolean;
   checked?: boolean;
   children?: MenuItem[];
 }
@@ -28,48 +30,66 @@ interface AccessLevel {
 const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
   positionId,
   show,
+  mode,
   onClose,
   onAccessLevelSubmit,
   updateAccessLevels,
 }) => {
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
 
-  const handleSave = () => {
-    if (updateAccessLevels) {
-      updateAccessLevels(menuTree); // ارسال داده‌ها به پروپ
+  const handleSave = async () => {
+    if (mode === 'menuManagement') {
+      // بروزرسانی جدول Menu
+      try {
+        const updates = menuTree.map((menu) => ({
+          id: menu.id,
+          active: menu.checked,
+        }));
+        await axios.post('/api/menus/update', {updates});
+        console.log('Menu updated successfully');
+      } catch (error) {
+        console.error('Failed to update menus:', error);
+      }
+    } else if (updateAccessLevels) {
+      updateAccessLevels(menuTree);
     }
-    onAccessLevelSubmit(menuTree); // ارسال داده‌ها به پروپ دیگر
+    onAccessLevelSubmit(menuTree);
   };
 
   useEffect(() => {
     if (show && menuTree.length === 0) {
       const fetchData = async () => {
         try {
-          const [menuResponse, accessLevelResponse] = await Promise.all([
-            axios.get<MenuItem[]>('/api/menus'),
-            axios.get<AccessLevel[]>(
+          const menuResponse = await axios.get<MenuItem[]>('/api/menus');
+          let menuData = menuResponse.data;
+
+          if (mode === 'accessLevel') {
+            const accessLevelResponse = await axios.get<AccessLevel[]>(
               `/api/access-levels?positionId=${positionId}`,
-            ),
-          ]);
+            );
 
-          console.log('Menu Data:', menuResponse.data);
-          console.log('Access Levels:', accessLevelResponse.data);
-          console.log('positionId:', positionId);
+            const accessLevels = accessLevelResponse.data;
+            menuData = menuData.filter(
+              (menu) =>
+                !menu.general &&
+                !['home', 'Browser Management'].includes(menu.title),
+            );
 
-          const menuData = menuResponse.data.filter(
-            (menu) =>
-              !menu.general &&
-              !['home', 'Browser Management'].includes(menu.title),
-          );
-
-          const accessLevels = accessLevelResponse.data;
-
-          const updatedMenuTree = applyAccessLevels(
-            buildMenuHierarchy(menuData),
-            accessLevels,
-          );
-          console.log('Updated Menu Tree:', updatedMenuTree);
-          setMenuTree(updatedMenuTree);
+            const updatedMenuTree = updateMenuTreeState(
+              buildMenuHierarchy(menuData),
+              accessLevels,
+            );
+            setMenuTree(updatedMenuTree);
+          } else if (mode === 'menuManagement') {
+            menuData = menuData.filter(
+              (menu) => menu.title !== 'Browser Management',
+            );
+            const updatedMenuTree = updateMenuTreeState(
+              buildMenuHierarchy(menuData),
+              null,
+            );
+            setMenuTree(updatedMenuTree);
+          }
         } catch (error) {
           console.error('Failed to fetch data:', error);
         }
@@ -77,7 +97,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
 
       fetchData();
     }
-  }, [show, menuTree.length, positionId]);
+  }, [show, menuTree.length, mode, positionId]);
 
   const buildMenuHierarchy = (menuData: MenuItem[]): MenuItem[] => {
     const menuMap = new Map<number | null, MenuItem[]>();
@@ -97,20 +117,26 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
     return buildHierarchy(null);
   };
 
-  const applyAccessLevels = (
+  const updateMenuTreeState = (
     menuTree: MenuItem[],
-    accessLevels: AccessLevel[],
+    accessLevels: AccessLevel[] | null,
   ): MenuItem[] => {
     const accessMap = new Map<number, boolean>();
-    accessLevels.forEach(({menuId, hasAccess}) =>
-      accessMap.set(menuId, hasAccess),
-    );
+
+    if (accessLevels) {
+      accessLevels.forEach(({menuId, hasAccess}) =>
+        accessMap.set(menuId, hasAccess),
+      );
+    }
 
     const applyChecked = (menu: MenuItem): MenuItem => {
-      const hasAccess = accessMap.get(menu.id) || false;
+      const isChecked =
+        mode === 'menuManagement'
+          ? menu.active // حالت "مدیریت منو" بر اساس فیلد active
+          : accessMap.get(menu.id) || false; // حالت "سطح دسترسی"
       return {
         ...menu,
-        checked: hasAccess,
+        checked: isChecked,
         children: menu.children?.map(applyChecked),
       };
     };
@@ -164,6 +190,22 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
   };
 
   const handleCheckboxToggle = (menuId: number, checked: boolean) => {
+    const updateTree = (items: MenuItem[]): MenuItem[] =>
+      items.map((item) => {
+        if (item.id === menuId) {
+          item.checked = checked;
+          if (item.children) {
+            item.children = item.children.map((child) => ({
+              ...child,
+              checked,
+            }));
+          }
+        } else if (item.children) {
+          item.children = updateTree(item.children);
+        }
+        return item;
+      });
+
     setMenuTree((prev) => handleCheckboxChange(menuId, checked, [...prev]));
   };
 
@@ -245,7 +287,9 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
     >
       <div className="bg-white rounded-lg shadow-xl w-4/5 max-h-[90vh] overflow-auto">
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
-          <h5 className="text-lg font-semibold">سطح دسترسی</h5>
+          <h5 className="text-lg font-semibold">
+            {mode === 'accessLevel' ? 'سطح دسترسی' : 'مدیریت صفحات'}
+          </h5>
           <button
             type="button"
             className="text-gray-400 hover:text-gray-600 focus:outline-none"

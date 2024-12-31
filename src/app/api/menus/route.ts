@@ -1,37 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import {NextRequest, NextResponse} from 'next/server';
+import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // **GET: دریافت منوها (ساده یا سلسله‌مراتبی بر اساس پارامتر)**
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const {searchParams} = new URL(req.url);
   const hierarchical = searchParams.get('hierarchical') === 'true';
 
   try {
     if (hierarchical) {
       // **دریافت منوها با ساختار سلسله‌مراتبی برای مودال سطح دسترسی**
       const menus = await prisma.menu.findMany({
-        where: { 
-          parentId: null, 
+        where: {
+          parentId: null,
           general: false, // فیلتر منوهای اصلی
         },
         include: {
           children: {
-            where: { general: false }, // فیلتر زیرمنوها
+            where: {general: false}, // فیلتر زیرمنوها
             include: {
               children: {
-                where: { general: false }, // فیلتر زیر زیرمنوها
+                where: {general: false}, // فیلتر زیر زیرمنوها
               },
             },
           },
         },
       });
-      return NextResponse.json(menus, { status: 200 });
+      return NextResponse.json(menus, {status: 200});
     } else {
       // **دریافت منوها به صورت ساده برای عملکرد قبلی**
       const menus = await prisma.menu.findMany({
-        where: { general: false }, // فیلتر منوها
+        where: {general: false}, // فیلتر منوها
         select: {
           id: true,
           title: true,
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
           : null,
       }));
 
-      return NextResponse.json(menusWithSlug, { status: 200 });
+      return NextResponse.json(menusWithSlug, {status: 200});
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
     } else {
       console.error('Unknown error:', error);
     }
-    return NextResponse.json({ error: 'Failed to fetch menus' }, { status: 500 });
+    return NextResponse.json({error: 'Failed to fetch menus'}, {status: 500});
   }
 }
 
@@ -69,11 +69,11 @@ export async function GET(req: NextRequest) {
 // **POST: اضافه کردن یک منو جدید**
 export async function POST(req: NextRequest) {
   try {
-    const { title, title_fa, active, parentSlug } = await req.json();
+    const {title, title_fa, active, parentSlug} = await req.json();
 
     const parent = parentSlug
       ? await prisma.menu.findUnique({
-          where: { slug: parentSlug },
+          where: {slug: parentSlug},
         })
       : null;
 
@@ -88,69 +88,54 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(newMenu, { status: 201 });
+    return NextResponse.json(newMenu, {status: 201});
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error creating menu:', error.message);
     } else {
       console.error('Unknown error:', error);
     }
-    return NextResponse.json({ error: 'Failed to create menu' }, { status: 500 });
+    return NextResponse.json({error: 'Failed to create menu'}, {status: 500});
   }
 }
 
 // **PUT: ویرایش یک منوی موجود**
-export async function PUT(req: NextRequest) {
+export async function PUT(request: Request) {
   try {
-    const { slug, title, title_fa, active, parentSlug } = await req.json();
+    const body = await request.json();
+    const {menuUpdates} = body; // انتظار می‌رود آرایه‌ای از { id, active } ارسال شود
 
-    if (!slug) {
-      return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
+    // بروزرسانی مقادیر active در جدول Menu
+    for (const update of menuUpdates) {
+      await prisma.menu.update({
+        where: {id: update.id},
+        data: {active: update.active},
+      });
     }
 
-    const parent = parentSlug
-      ? await prisma.menu.findUnique({
-          where: { slug: parentSlug },
-        })
-      : null;
-
-    const updatedMenu = await prisma.menu.update({
-      where: { slug },
-      data: {
-        title,
-        title_fa,
-        active,
-        parentId: parent?.id || null,
-      },
-    });
-
-    return NextResponse.json(updatedMenu, { status: 200 });
+    return NextResponse.json({message: 'Menu updated successfully.'});
   } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error updating menu:', error.message);
-    } else {
-      console.error('Unknown error:', error);
-    }
-    return NextResponse.json({ error: 'Failed to update menu' }, { status: 500 });
+    console.error('Error updating menu:', error);
+    return NextResponse.json({error: 'Failed to update menu.'}, {status: 500});
   }
 }
 
 // **DELETE: حذف یک منو**
 export async function DELETE(req: NextRequest) {
   try {
-    const { id } = await req.json();
+    const {id} = await req.json();
 
     const deletedMenu = await prisma.menu.delete({
-      where: { id },
+      where: {id},
     });
 
-    return NextResponse.json(deletedMenu, { status: 200 });
+    return NextResponse.json(deletedMenu, {status: 200});
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error deleting menu:', error.message);
     } else {
       console.error('Unknown error:', error);
     }
-    return NextResponse.json({ error: 'Failed to delete menu' }, { status: 500 });
+    return NextResponse.json({error: 'Failed to delete menu'}, {status: 500});
   }
 }

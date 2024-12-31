@@ -1465,6 +1465,7 @@ async function main() {
         for (const menu of menus) {
           const isRestricted =
             menu.parentId === omorJariMenu?.id ||
+            menu.id === omorJariMenu.id ||
             omorJariChildren.some((child) => menu.parentId === child.id);
           await prisma.accessLevel.create({
             data: {

@@ -50,7 +50,9 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
   };
 
   const handleSubMenuClick = (submenu: Menu, e: React.MouseEvent) => {
-    const subChildMenus = menus.filter((m) => m.parentId === submenu.id && m.active);
+    const subChildMenus = menus.filter(
+      (m) => m.parentId === submenu.id && m.active,
+    );
     if (subChildMenus.length > 0) {
       e.preventDefault();
       setOpenSubMenu(submenu.id === openSubMenu ? null : submenu.id);
@@ -69,7 +71,9 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
     router.push(buildPath(subSubMenu));
   };
 
-  const parentMenus = menus.filter((menu) => menu.parentId === null && menu.active);
+  const parentMenus = menus.filter(
+    (menu) => menu.parentId === null && menu.active,
+  );
 
   return (
     <nav className="bg-gray-700 text-white relative z-10">
@@ -123,14 +127,17 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
                   <ul className="absolute flex flex-col bg-gray-600 text-sm right-0 mt-2 p-2 rounded shadow-lg z-20 min-w-[200px]">
                     {childMenus.map((submenu) => {
                       const subChildMenus = menus.filter(
-                        (subSubMenu) => subSubMenu.parentId === submenu.id && subSubMenu.active,
+                        (subSubMenu) =>
+                          subSubMenu.parentId === submenu.id &&
+                          subSubMenu.active,
                       );
                       return (
                         <li
                           key={submenu.id}
                           className="relative hover:bg-gray-500 px-2 py-1 cursor-pointer"
                           onMouseEnter={() => {
-                            if (window.innerWidth >= 768) setOpenSubMenu(submenu.id);
+                            if (window.innerWidth >= 768)
+                              setOpenSubMenu(submenu.id);
                           }}
                         >
                           <Link
@@ -140,28 +147,33 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
                           >
                             <span>{submenu.title_fa}</span>
                             {subChildMenus.length > 0 && (
-                              <span className="ml-2 text-sm text-gray-400">{'>'}</span>
+                              <span className="ml-2 text-sm text-gray-400">
+                                {'>'}
+                              </span>
                             )}
                           </Link>
 
-                          {subChildMenus.length > 0 && openSubMenu === submenu.id && (
-                            <ul className="absolute right-full top-0 bg-gray-600 text-sm mt-0 p-2 rounded shadow-lg min-w-[200px]">
-                              {subChildMenus.map((subSubMenu) => (
-                                <li
-                                  key={subSubMenu.id}
-                                  className="hover:bg-gray-500 px-2 py-1 cursor-pointer"
-                                >
-                                  <Link
-                                    href={buildPath(subSubMenu)}
-                                    onClick={() => handleSubSubMenuClick(subSubMenu)}
-                                    className="hover:text-gray-300 cursor-pointer"
+                          {subChildMenus.length > 0 &&
+                            openSubMenu === submenu.id && (
+                              <ul className="absolute right-full top-0 bg-gray-600 text-sm mt-0 p-2 rounded shadow-lg min-w-[200px]">
+                                {subChildMenus.map((subSubMenu) => (
+                                  <li
+                                    key={subSubMenu.id}
+                                    className="hover:bg-gray-500 px-2 py-1 cursor-pointer"
                                   >
-                                    {subSubMenu.title_fa}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                                    <Link
+                                      href={buildPath(subSubMenu)}
+                                      onClick={() =>
+                                        handleSubSubMenuClick(subSubMenu)
+                                      }
+                                      className="hover:text-gray-300 cursor-pointer"
+                                    >
+                                      {subSubMenu.title_fa}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                         </li>
                       );
                     })}
@@ -175,6 +187,5 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
     </nav>
   );
 };
-
 
 export default NavMenu;

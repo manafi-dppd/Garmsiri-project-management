@@ -16,6 +16,7 @@ interface FormSectionProps {
   requiresLicense: boolean;
   hasLicenseRequirement: boolean;
   openAccessLevelModal: () => void;
+  resetEditedAccessLevel: () => void;
   // isAccessLevelButtonDisabled: boolean;
 }
 
@@ -33,6 +34,7 @@ const FormSection: React.FC<FormSectionProps> = ({
   openAccessLevelModal,
   toPersianDate,
   today,
+  resetEditedAccessLevel,
 }) => {
   // Check if at least one non-"ادمین وبسایت" position is selected
   const isAccessLevelButtonDisabled = !selectedPositions.some((positionId) => {
@@ -163,11 +165,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   </div>
                 </div>
               </div>
-              <div
-                className={`p-2 bg-white rounded-lg shadow-lg ${
-                  hasLicenseRequirement ? 'md:w-[200%]' : 'md:w-full'
-                }`}
-              >
+              <div className={`p-2 bg-white rounded-lg shadow-lg`}>
                 <div className="space-y-1">
                   <div className="invitation-modal">
                     <label
@@ -186,6 +184,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                           (option) => Number(option.value),
                         );
                         handlePositionChange(selected);
+                        resetEditedAccessLevel();
                       }}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     >

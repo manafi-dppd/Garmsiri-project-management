@@ -47,10 +47,14 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   const [showAdditionalInputs, setShowAdditionalInputs] = useState(false);
   const [showAccessLevelModal, setShowAccessLevelModal] = useState(false);
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
-  const [finalAccessLevel, setFinalAccessLevel] = useState<any>(null);
+  const [editedAccessLevel, setEditedAccessLevel] = useState<any>(null);
   const [isAccessLevelButtonDisabled, setIsAccessLevelButtonDisabled] =
     useState(false);
   const today = new Date().toISOString().split('T')[0];
+  const existingAccessLevels =
+    Array.isArray(editedAccessLevel) && editedAccessLevel.length > 0
+      ? editedAccessLevel
+      : [];
 
   useEffect(() => {
     if (positionsFromParent?.length) {
@@ -80,6 +84,10 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     setRequiresLicense(hasLicense);
   }, [selectedPositions, positions]);
 
+  const resetEditedAccessLevel = () => {
+    setEditedAccessLevel(null);
+  };
+
   const handlePositionChange = (selectedIds: number[]) => {
     const updatedPositions = selectedIds.map(
       (id) => positions.find((position) => position.id === id) as Position,
@@ -88,6 +96,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     if (updatedPositions.length > 0) {
       setSelectedPosition(String(updatedPositions[0].id)); // مقدار اولین آیتم انتخاب‌شده
     }
+    setEditedAccessLevel(null);
   };
 
   const handleChange = (
@@ -199,6 +208,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               requiresLicense={requiresLicense}
               hasLicenseRequirement={hasLicenseRequirement}
               openAccessLevelModal={() => setShowAccessLevelModal(true)}
+              resetEditedAccessLevel={resetEditedAccessLevel}
             />
 
             <div className="modal-footer flex justify-between mt-4">
@@ -229,10 +239,12 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
                   console.log('Submitted Access Levels:', accessLevels);
                 }}
                 updateAccessLevels={(checkedState: any) => {
-                  setFinalAccessLevel(checkedState);
+                  setEditedAccessLevel(checkedState);
                   console.log('Updated Access Levels:', checkedState);
                 }}
+                checkedState={editedAccessLevel} // ارسال آرایه ذخیره‌شده به فرزند
                 mode="accessLevel"
+                initialAccessLevels={existingAccessLevels} // ارسال مقدار اولیه
               />
             )}
           </div>

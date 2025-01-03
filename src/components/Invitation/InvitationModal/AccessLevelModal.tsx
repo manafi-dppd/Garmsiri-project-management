@@ -8,10 +8,15 @@ interface AccessLevelModalProps {
   mode: 'accessLevel' | 'menuManagement';
   onClose: () => void;
   onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
-  updateAccessLevels?: (checkedState: MenuItem[]) => void; // اضافه کردن این خط
+  updateAccessLevels?: (
+    editedAccessLevels: {id: number; checked: boolean}[],
+  ) => void;
+  checkedState?: {id: number; checked: boolean}[];
+  initialAccessLevels?: {id: number; checked: boolean}[]; // تعریف مقدار اولیه
 }
-
+type CheckedState = {id: number; checked: boolean};
 interface MenuItem {
+  disabled: boolean;
   id: number;
   title: string;
   title_fa: string;
@@ -27,6 +32,11 @@ interface AccessLevel {
   hasAccess: boolean;
 }
 
+interface Menu {
+  id: number;
+  active: boolean;
+}
+
 const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
   positionId,
   show,
@@ -34,30 +44,101 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
   onClose,
   onAccessLevelSubmit,
   updateAccessLevels,
+  initialAccessLevels,
+  checkedState,
 }) => {
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
+  const [editedAccessLevels, setEditedAccessLevels] = useState<
+    {id: number; checked: boolean}[]
+  >(initialAccessLevels || []);
+  const [showAlert, setShowAlert] = useState(false); // برای نمایش هشدار
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+  // const [isCloseDisabled, setIsCloseDisabled] = useState(false);
 
   const handleSave = async () => {
-    if (mode === 'menuManagement') {
-      // بروزرسانی جدول Menu
+    setIsSaveDisabled(true);
+    // setIsCloseDisabled(true);
+
+    // تبدیل سلسله‌مراتب منو به لیست مسطح شامل همه گره‌ها
+    const flattenMenuTree = (menus: MenuItem[]): Menu[] => {
+      const result: Menu[] = [];
+      menus.forEach((menu) => {
+        result.push({id: menu.id, active: menu.checked || false});
+        if (menu.children) {
+          result.push(...flattenMenuTree(menu.children));
+        }
+      });
+      return result;
+    };
+
+    const updatedMenus = flattenMenuTree(menuTree);
+
+    console.log('Updated menus:', updatedMenus);
+
+    if (
+      !Array.isArray(updatedMenus) ||
+      updatedMenus.some(
+        (m) => typeof m.id !== 'number' || typeof m.active !== 'boolean',
+      )
+    ) {
+      console.error('Invalid menu data:', updatedMenus);
+      return;
+    }
+
+    if (mode === 'accessLevel') {
+      // ذخیره اطلاعات در آرایه
+      const editedAccessLevels = updatedMenus.map((menu) => ({
+        id: menu.id,
+        checked: menu.active,
+      }));
+
+      // آرایه جدید با اضافه کردن positionId به ابتدای آن
+      const updatedAccessLevels = [
+        {id: positionId, checked: true},
+        ...editedAccessLevels,
+      ];
+
+      setEditedAccessLevels(updatedAccessLevels); // به‌روزرسانی state برای اطمینان
+      // ارسال آرایه به کامپوننت والد
+      if (updateAccessLevels) {
+        updateAccessLevels(updatedAccessLevels);
+      } else {
+        console.warn('updateAccessLevels is not defined.');
+      }
+
+      console.log('Updated Access Levels:', updatedAccessLevels);
+
+      // فعال‌سازی دکمه‌ها پس از ذخیره
+      // setIsSaveDisabled(false);
+      // setIsCloseDisabled(false);
+
+      // نمایش هشدار
+      // setShowAlert(true);
+      // setTimeout(() => {
+      //   setShowAlert(false);
+      // }, 3000);
+    } else if (mode === 'menuManagement') {
       try {
-        const updates = menuTree.map((menu) => ({
-          id: menu.id,
-          active: menu.checked,
-        }));
-        await axios.post('/api/menus/update', {updates});
-        console.log('Menu updated successfully');
+        const response = await axios.put('/api/menus/update', {
+          menu: updatedMenus,
+        });
+        console.log('Menus updated successfully:', response.data);
+
+        // نمایش هشدار
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          // setIsCloseDisabled(false); // فعال کردن دکمه "بستن" پس از بسته شدن هشدار
+        }, 3000);
       } catch (error) {
         console.error('Failed to update menus:', error);
+        // setIsCloseDisabled(false); // فعال کردن دکمه "بستن" در صورت خطا
       }
-    } else if (updateAccessLevels) {
-      updateAccessLevels(menuTree);
     }
-    onAccessLevelSubmit(menuTree);
   };
 
   useEffect(() => {
-    if (show && menuTree.length === 0) {
+    if (show) {
       const fetchData = async () => {
         try {
           const menuResponse = await axios.get<MenuItem[]>('/api/menus');
@@ -75,18 +156,55 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
                 !['home', 'Browser Management'].includes(menu.title),
             );
 
-            const updatedMenuTree = updateMenuTreeState(
+            let updatedMenuTree = updateMenuTreeState(
               buildMenuHierarchy(menuData),
               accessLevels,
             );
+
+            const applyCheckedState = (
+              menuTree: MenuItem[],
+              state: CheckedState[],
+            ): MenuItem[] => {
+              return menuTree.map((menu) => {
+                const matchingState = state.find((s) => s.id === menu.id);
+                return {
+                  ...menu,
+                  checked: matchingState ? matchingState.checked : menu.checked,
+                  children: menu.children
+                    ? applyCheckedState(menu.children, state)
+                    : [],
+                };
+              });
+            };
+            // اعمال checkedState به menuTree
+            if (checkedState && checkedState.length > 0) {
+              const positionItem = checkedState.find(
+                (state) => state.id === positionId,
+              );
+
+              if (positionItem) {
+                updatedMenuTree = applyCheckedState(
+                  updatedMenuTree,
+                  checkedState,
+                );
+              }
+            }
+            console.log('checkedState: ', checkedState);
+            console.log('updatedMenuTree: ', updatedMenuTree);
+
             setMenuTree(updatedMenuTree);
           } else if (mode === 'menuManagement') {
             menuData = menuData.filter(
-              (menu) => menu.title !== 'Browser Management',
+              (menu) =>
+                menu.title !== 'Browser Management' && menu.title !== 'home',
             );
             const updatedMenuTree = updateMenuTreeState(
               buildMenuHierarchy(menuData),
               null,
+            ).map((menu) =>
+              menu.title === 'Current Affairs'
+                ? {...menu, disabled: true}
+                : menu,
             );
             setMenuTree(updatedMenuTree);
           }
@@ -97,7 +215,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
 
       fetchData();
     }
-  }, [show, menuTree.length, mode, positionId]);
+  }, [show, mode, positionId]);
 
   const buildMenuHierarchy = (menuData: MenuItem[]): MenuItem[] => {
     const menuMap = new Map<number | null, MenuItem[]>();
@@ -162,10 +280,12 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
       const updateParentStatus = (item: MenuItem): MenuItem => {
         if (item.children && item.children.length > 0) {
           item.children = item.children.map(updateParentStatus);
-          const allChildrenUnchecked = item.children.every(
-            (child) => !child.checked,
-          );
-          item.checked = !allChildrenUnchecked;
+          if (item.title !== 'Current Affairs') {
+            const allChildrenUnchecked = item.children.every(
+              (child) => !child.checked,
+            );
+            item.checked = !allChildrenUnchecked;
+          }
         }
         return item;
       };
@@ -207,6 +327,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
       });
 
     setMenuTree((prev) => handleCheckboxChange(menuId, checked, [...prev]));
+    setIsSaveDisabled(false); // فعال کردن دکمه "ذخیره" بعد از تغییر وضعیت چک‌باکس‌ها
   };
 
   const renderChildCheckboxes = (
@@ -224,7 +345,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
             checked={child.checked || false}
             onChange={(e) => handleCheckboxToggle(child.id, e.target.checked)}
             className={`mr-2 ${
-              level === 1 ? 'accent-blue-500' : 'accent-green-500'
+              level === 1 ? 'accent-blue-500' : 'accent-red-500'
             }`} // چک‌باکس فرزند با رنگ آبی و نوه با رنگ سبز
           />
           <span
@@ -245,8 +366,9 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
           <input
             type="checkbox"
             checked={menu.checked || false}
+            disabled={menu.disabled || false}
             onChange={(e) => handleCheckboxToggle(menu.id, e.target.checked)}
-            className="mr-2 accent-red-500" // چک‌باکس پدر با رنگ قرمز
+            className="mr-2 accent-blue-500" // چک‌باکس پدر با رنگ قرمز
           />
           {menu.title_fa}
         </label>
@@ -285,6 +407,15 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
         show ? 'block' : 'hidden'
       }`}
     >
+      {showAlert && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-100 text-gray-800 px-6 py-4 rounded shadow-md flex items-center w-96 z-50">
+          {/* علامت تیک */}
+          <div className="flex-shrink-0 w-8 h-8 bg-green-500 text-white flex items-center justify-center rounded-full ml-2">
+            ✓
+          </div>
+          <p>منوها با موفقیت به‌روزرسانی شدند</p>
+        </div>
+      )}
       <div className="bg-white rounded-lg shadow-xl w-4/5 max-h-[90vh] overflow-auto">
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h5 className="text-lg font-semibold">
@@ -309,15 +440,19 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
         <div className="flex justify-end p-4 border-t border-gray-200 space-x-2">
           <button
             type="button"
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+            className={`px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400`}
             onClick={onClose}
+            // disabled={isCloseDisabled}
           >
             بستن
           </button>
           <button
             type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={() => console.log(menuTree)}
+            className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${
+              isSaveDisabled ? 'cursor-not-allowed opacity-50' : ''
+            }`}
+            onClick={handleSave}
+            disabled={isSaveDisabled}
           >
             ذخیره
           </button>

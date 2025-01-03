@@ -14,14 +14,14 @@ export async function GET(req: NextRequest) {
       const menus = await prisma.menu.findMany({
         where: {
           parentId: null,
-          general: false, // فیلتر منوهای اصلی
+          // general: false, // فیلتر منوهای اصلی
         },
         include: {
           children: {
-            where: {general: false}, // فیلتر زیرمنوها
+            // where: {general: false}, // فیلتر زیرمنوها
             include: {
               children: {
-                where: {general: false}, // فیلتر زیر زیرمنوها
+                // where: {general: false}, // فیلتر زیر زیرمنوها
               },
             },
           },
@@ -31,12 +31,13 @@ export async function GET(req: NextRequest) {
     } else {
       // **دریافت منوها به صورت ساده برای عملکرد قبلی**
       const menus = await prisma.menu.findMany({
-        where: {general: false}, // فیلتر منوها
+        // where: {general: false}, // فیلتر منوها
         select: {
           id: true,
           title: true,
           title_fa: true,
           active: true,
+          general: true,
           parentId: true,
         },
       });
@@ -67,37 +68,37 @@ export async function GET(req: NextRequest) {
 // سایر متدها (POST، PUT، DELETE) بدون تغییر باقی می‌مانند.
 
 // **POST: اضافه کردن یک منو جدید**
-export async function POST(req: NextRequest) {
-  try {
-    const {title, title_fa, active, parentSlug} = await req.json();
+// export async function POST(req: NextRequest) {
+//   try {
+//     const {title, title_fa, active, parentSlug} = await req.json();
 
-    const parent = parentSlug
-      ? await prisma.menu.findUnique({
-          where: {slug: parentSlug},
-        })
-      : null;
+//     const parent = parentSlug
+//       ? await prisma.menu.findUnique({
+//           where: {slug: parentSlug},
+//         })
+//       : null;
 
-    const newMenu = await prisma.menu.create({
-      data: {
-        title,
-        title_fa,
-        active,
-        slug: title.toLowerCase().replace(/\s+/g, '-'),
-        parentId: parent?.id || null,
-        general: false, // مقداردهی پیش‌فرض به `general`
-      },
-    });
+//     const newMenu = await prisma.menu.create({
+//       data: {
+//         title,
+//         title_fa,
+//         active,
+//         slug: title.toLowerCase().replace(/\s+/g, '-'),
+//         parentId: parent?.id || null,
+//         general: false, // مقداردهی پیش‌فرض به `general`
+//       },
+//     });
 
-    return NextResponse.json(newMenu, {status: 201});
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error creating menu:', error.message);
-    } else {
-      console.error('Unknown error:', error);
-    }
-    return NextResponse.json({error: 'Failed to create menu'}, {status: 500});
-  }
-}
+//     return NextResponse.json(newMenu, {status: 201});
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       console.error('Error creating menu:', error.message);
+//     } else {
+//       console.error('Unknown error:', error);
+//     }
+//     return NextResponse.json({error: 'Failed to create menu'}, {status: 500});
+//   }
+// }
 
 // **PUT: ویرایش یک منوی موجود**
 export async function PUT(request: Request) {

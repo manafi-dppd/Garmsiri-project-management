@@ -39,6 +39,46 @@ model AccessLevel {
   menu       Menu     @relation(fields: [menuId], references: [id])
 }
 
+model Invitation {
+  id                     Int                 @id @default(autoincrement())
+  firstName              String?              // نام دعوت‌شده
+  lastName               String
+  mobile                 String       @unique
+  expirationDate         DateTime?
+  gender                 String?    // رابطه چند-به-چند با Position
+  positions              PositionOnInvitation[]
+  accessLevels           InvitationAccess[]     // ارتباط با جدول سطح دسترسی
+  createdAt              DateTime            @default(now())
+  inviterId              Int?         @relation(fields: [userId], references: [id])
+  introdPathLetter       String?  
+  letterIssuer           String?
+  letterDate             String?
+  isRegistered           Boolean  @default(false)
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model PositionOnInvitation {
+  id            Int       @id @default(autoincrement())
+  invitationId  Int       // شناسه دعوت‌شده
+  positionId    Int       // شناسه نقش
+  Invitation    Invitation @relation(fields: [invitationId], references: [id])
+  Position      Position   @relation(fields: [positionId], references: [id])
+}
+
+model InvitationAccess {
+  id            Int      @id @default(autoincrement())
+  invitationId  Int      // شناسه دعوت‌شده
+  menuId        Int      // شناسه منو
+  hasAccess     Boolean  // سطح دسترسی
+  Invitation    Invitation @relation(fields: [invitationId], references: [id])
+  Menu          Menu       @relation(fields: [menuId], references: [id])
+}
+
+
 // model User {
 //   id                         Int          @id @default(autoincrement())
 //   first_name                 String
@@ -61,34 +101,4 @@ model AccessLevel {
 //   accessLevel                AccessLevel?
 //   Inviter                    User?        @relation("UserInvitations", fields: [inviterId], references: [id])
 //   Inviters                   User[]       @relation("UserInvitations")
-// }
-
-// model AccessLevel {
-//   id                        Int     @id @default(autoincrement())
-//   memberId                  Int     @unique
-//   current_affairs           Boolean
-//   operating_records         Boolean
-//   performance_records       Boolean
-//   study_records             Boolean
-//   water_request             Boolean
-//   irrigation_calendar       Boolean
-//   request_dam               Boolean
-//   request_channel           Boolean
-//   request_pumping           Boolean
-//   service                   Boolean
-//   repair                    Boolean
-//   facility_service          Boolean
-//   channel_service           Boolean
-//   minor_repairs             Boolean
-//   dam_channel_repaBooleanir Boolean
-//   security                  Boolean
-//   guard_shift_schedule      Boolean
-//   water_level_report        Boolean
-//   report_theft              Boolean
-//   pumping_operator_shift    Boolean
-//   browser_management        Boolean
-//   water_accounting          Boolean
-//   repairs                   Boolean
-//   service_maintenance       Boolean
-//   member                    User    @relation(fields: [memberId], references: [id])
 // }

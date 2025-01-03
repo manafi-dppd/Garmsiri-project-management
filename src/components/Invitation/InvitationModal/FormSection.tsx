@@ -99,7 +99,15 @@ const FormSection: React.FC<FormSectionProps> = ({
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
+                  onKeyDown={(event) => {
+                    // فقط اجازه ورود اعداد را بدهید
+                    if (!/[0-9]/.test(event.key) && event.key !== 'Backspace') {
+                      event.preventDefault();
+                    }
+                  }}
                   required
+                  pattern="09[0-9]{9}"
+                  placeholder="09XXXXXXXXX"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                 />
               </div>

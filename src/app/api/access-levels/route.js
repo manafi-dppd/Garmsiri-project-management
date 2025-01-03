@@ -36,7 +36,6 @@ export async function GET(req) {
   }
 }
 
-
 // POST request: Update access levels
 export async function POST(req) {
   const body = await req.json();

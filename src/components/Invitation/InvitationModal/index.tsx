@@ -55,7 +55,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     Array.isArray(editedAccessLevel) && editedAccessLevel.length > 0
       ? editedAccessLevel
       : [];
-
+  const [phoneNumber, setPhoneNumber] = useState('');
   useEffect(() => {
     if (positionsFromParent?.length) {
       // استفاده از داده‌های props اگر موجود باشند
@@ -168,7 +168,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
       {showModal && (
         <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div
-            className={`modal-body invitation-modal bg-gray-50 p-6 rounded-md ${
+            className={`modal-body invitation-modal bg-gray-50 p-1 rounded-md ${
               showAdditionalInputs ? 'w-full md:w-[50%]' : 'w-full md:w-[30%]'
             } ${requiresLicense ? 'overflow-y-auto max-h-full' : ''} mx-auto`}
             style={{
@@ -211,7 +211,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               resetEditedAccessLevel={resetEditedAccessLevel}
             />
 
-            <div className="modal-footer flex justify-between mt-4">
+            <div className="p-3 modal-footer flex justify-between mt-4">
               <button
                 type="button"
                 className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"

@@ -3,6 +3,14 @@
 import React, {useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
+import {
+  FaHome,
+  FaClock,
+  FaCogs,
+  FaWrench,
+  FaCalculator,
+  FaBars,
+} from 'react-icons/fa';
 
 interface Menu {
   id: number;
@@ -77,23 +85,13 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
 
   return (
     <nav className="bg-gray-700 text-white relative z-10">
-      <div className="container flex flex-col items-start">
+      <div className="container flex flex-col items-start px-2">
         <input type="checkbox" id="menu-toggle" className="hidden peer" />
         <label
           htmlFor="menu-toggle"
           className="md:hidden flex items-center justify-end cursor-pointer"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-            className="w-6 h-6 text-white hover:text-gray-300"
-          >
-            <path
-              fillRule="evenodd"
-              d="M1.5 3.75a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 4a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 4a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Z"
-            />
-          </svg>
+          <FaBars className="text-white hover:text-gray-300 text-2xl" />
         </label>
 
         <ul
@@ -119,9 +117,33 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
                 <Link
                   href={buildPath(menu)}
                   onClick={(e) => handleMenuClick(menu, e)}
-                  className="hover:text-gray-300 cursor-pointer"
+                  className="hover:text-gray-300 cursor-pointer flex items-center gap-2"
                 >
-                  {menu.title_fa}
+                  {menu.title === 'home' ? (
+                    <FaHome className="text-3xl text-blue-500" />
+                  ) : menu.title === 'Current Affairs' ? (
+                    <>
+                      <FaClock className="text-xl text-yellow-500" />
+                      {menu.title_fa}
+                    </>
+                  ) : menu.title === 'Operation Records' ? (
+                    <>
+                      <FaCogs className="text-xl text-green-500" />
+                      {menu.title_fa}
+                    </>
+                  ) : menu.title === 'Execution Records' ? (
+                    <>
+                      <FaWrench className="text-xl text-red-500" />
+                      {menu.title_fa}
+                    </>
+                  ) : menu.title === 'Study Records' ? (
+                    <>
+                      <FaCalculator className="text-xl text-purple-500" />
+                      {menu.title_fa}
+                    </>
+                  ) : (
+                    menu.title_fa
+                  )}
                 </Link>
                 {childMenus.length > 0 && openMenu === menu.id && (
                   <ul className="absolute flex flex-col bg-gray-600 text-sm right-0 mt-2 p-2 rounded shadow-lg z-20 min-w-[200px]">

@@ -21,6 +21,11 @@ model Menu {
   AccessLevel      AccessLevel[]      // سطح دسترسی مربوط به منو
   invitationAccess InvitationAccess[] // سطح دسترسی دعوت‌نامه‌ها به منو
   userAccess       UserAccess[]       // سطح دسترسی کاربران به منو
+
+  // ایندکس‌گذاری
+  @@index([id]) // ایندکس روی ستون id
+  @@index([parentId]) // ایندکس روی ستون parentId
+  @@index([slug]) // ایندکس روی ستون slug
 }
 
 // مدل مربوط به نقش‌ها

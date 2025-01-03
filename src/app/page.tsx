@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import {useParams} from 'next/navigation';
 import Home from '@/components/Home'; // ایمپورت کامپوننت
 
 export default function Page() {
@@ -9,7 +9,7 @@ export default function Page() {
   // استخراج مسیرهای پویا
   const menuSlug = params?.menuSlug;
 
-  console.log({ menuSlug }); // برای اشکال‌زدایی
+  // console.log({menuSlug}); // برای اشکال‌زدایی
 
   // بررسی مسیر برای اجرای کامپوننت Home
   const isHomePage = !menuSlug || menuSlug === 'home';

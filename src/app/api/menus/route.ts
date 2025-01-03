@@ -14,13 +14,16 @@ export async function GET(req: NextRequest) {
       const menus = await prisma.menu.findMany({
         where: {
           parentId: null,
+          active: true,
           // general: false, // فیلتر منوهای اصلی
         },
         include: {
           children: {
+            where: {active: true},
             // where: {general: false}, // فیلتر زیرمنوها
             include: {
               children: {
+                where: {active: true},
                 // where: {general: false}, // فیلتر زیر زیرمنوها
               },
             },

@@ -7,98 +7,124 @@ datasource db {
   url      = "file:./dev.sqlite"
 }
 
+// مدل مربوط به منوها
 model Menu {
-  id          Int           @id @default(autoincrement())
-  title       String
-  title_fa    String
-  active      Boolean
-  general     Boolean
-  slug        String         @unique
-  parentId    Int?           // برای منوهای اصلی مقدار null است
-  parent      Menu?          @relation("ParentChild", fields: [parentId], references: [id])
-  children    Menu[]         @relation("ParentChild") // نیازی به fields و references نیست
-  AccessLevel AccessLevel[]
+  id               Int                @id @default(autoincrement()) // شناسه یکتای منو
+  title            String             // عنوان منو به زبان اصلی
+  title_fa         String             // عنوان منو به زبان فارسی
+  active           Boolean            // وضعیت فعال یا غیرفعال بودن منو
+  general          Boolean            // مشخص‌کننده عمومی یا خاص بودن منو
+  slug             String             @unique // مسیر یا شناسه یکتا برای منو
+  parentId         Int?               // شناسه والد در صورت وجود
+  parent           Menu?              @relation("ParentChild", fields: [parentId], references: [id]) // رابطه با منوی والد
+  children         Menu[]             @relation("ParentChild") // رابطه با منوهای فرزند
+  AccessLevel      AccessLevel[]      // سطح دسترسی مربوط به منو
+  invitationAccess InvitationAccess[] // سطح دسترسی دعوت‌نامه‌ها به منو
+  userAccess       UserAccess[]       // سطح دسترسی کاربران به منو
 }
 
-
-
+// مدل مربوط به نقش‌ها
 model Position {
-  id           Int           @id @default(autoincrement())
-  title        String
-  title_fa     String
-  req_license  Boolean  @default(false)
-  accessLevels AccessLevel[]
+  id           Int                    @id @default(autoincrement()) // شناسه یکتای نقش
+  title        String                 // عنوان نقش به زبان اصلی
+  title_fa     String                 // عنوان نقش به زبان فارسی
+  req_license  Boolean                @default(false) // مشخص‌کننده نیاز به مجوز برای این نقش
+  accessLevels AccessLevel[]          // ارتباط با سطح دسترسی‌ها
+  invitations  PositionOnInvitation[] // ارتباط با دعوت‌نامه‌های این نقش
+  users        PositionOnUser[]       // ارتباط با کاربران این نقش
 }
 
+// مدل مربوط به سطح دسترسی
 model AccessLevel {
-  id         Int      @id @default(autoincrement())
-  positionId Int
-  menuId     Int
-  hasAccess  Boolean  @default(false) // مقدار true یا false
-  position   Position @relation(fields: [positionId], references: [id])
-  menu       Menu     @relation(fields: [menuId], references: [id])
+  id         Int      @id @default(autoincrement()) // شناسه یکتای سطح دسترسی
+  positionId Int                    // شناسه نقش مرتبط
+  menuId     Int                    // شناسه منوی مرتبط
+  hasAccess  Boolean  @default(false) // مشخص‌کننده وجود دسترسی
+  position   Position @relation(fields: [positionId], references: [id]) // رابطه با نقش
+  menu       Menu     @relation(fields: [menuId], references: [id]) // رابطه با منو
 }
 
+// مدل مربوط به دعوت‌نامه‌ها
 model Invitation {
-  id                     Int                 @id @default(autoincrement())
-  firstName              String?              // نام دعوت‌شده
-  lastName               String
-  mobile                 String       @unique
-  expirationDate         DateTime?
-  gender                 String?    // رابطه چند-به-چند با Position
-  positions              PositionOnInvitation[]
-  accessLevels           InvitationAccess[]     // ارتباط با جدول سطح دسترسی
-  createdAt              DateTime            @default(now())
-  inviterId              Int?         @relation(fields: [userId], references: [id])
-  introdPathLetter       String?  
-  letterIssuer           String?
-  letterDate             String?
-  isRegistered           Boolean  @default(false)
+  id               Int                    @id @default(autoincrement()) // شناسه یکتای دعوت‌نامه
+  firstName        String?                // نام کوچک دعوت‌شده
+  lastName         String                 // نام خانوادگی دعوت‌شده
+  mobile           String                 @unique // شماره موبایل دعوت‌شده
+  expirationDate   DateTime?              // تاریخ انقضای دعوت‌نامه
+  gender           String?                // جنسیت دعوت‌شده
+  positions        PositionOnInvitation[] // نقش‌های مرتبط با دعوت‌نامه
+  accessLevels     InvitationAccess[]     // دسترسی‌های مرتبط با دعوت‌نامه
+  createdAt        DateTime               @default(now()) // تاریخ ایجاد دعوت‌نامه
+  userId           Int?                   // شناسه کاربر مرتبط
+  user             User?                  @relation(fields: [userId], references: [id]) // کاربر مرتبط با دعوت‌نامه
+  introdPathLetter String?                // مسیر نامه معرفی
+  letterIssuer     String?                // صادرکننده نامه
+  letterNumber     String?                // شماره نامه
+  letterDate       String?                // تاریخ نامه
+  letterApprover   String?                // تاییدکننده نامه
+  isRegistered     Boolean                @default(false) // وضعیت ثبت‌نام
 }
 
-enum Gender {
-  MALE
-  FEMALE
-}
-
+// مدل نقش‌های موجود در دعوت‌نامه
 model PositionOnInvitation {
-  id            Int       @id @default(autoincrement())
-  invitationId  Int       // شناسه دعوت‌شده
-  positionId    Int       // شناسه نقش
-  Invitation    Invitation @relation(fields: [invitationId], references: [id])
-  Position      Position   @relation(fields: [positionId], references: [id])
+  id           Int        @id @default(autoincrement()) // شناسه یکتا
+  invitationId Int        // شناسه دعوت‌نامه مرتبط
+  positionId   Int        // شناسه نقش مرتبط
+  Invitation   Invitation @relation(fields: [invitationId], references: [id]) // رابطه با دعوت‌نامه
+  Position     Position   @relation(fields: [positionId], references: [id]) // رابطه با نقش
 }
 
+// مدل دسترسی‌های موجود در دعوت‌نامه
 model InvitationAccess {
-  id            Int      @id @default(autoincrement())
-  invitationId  Int      // شناسه دعوت‌شده
-  menuId        Int      // شناسه منو
-  hasAccess     Boolean  // سطح دسترسی
-  Invitation    Invitation @relation(fields: [invitationId], references: [id])
-  Menu          Menu       @relation(fields: [menuId], references: [id])
+  id           Int        @id @default(autoincrement()) // شناسه یکتا
+  invitationId Int        // شناسه دعوت‌نامه مرتبط
+  menuId       Int        // شناسه منوی مرتبط
+  hasAccess    Boolean    // وضعیت دسترسی
+  Invitation   Invitation @relation(fields: [invitationId], references: [id]) // رابطه با دعوت‌نامه
+  Menu         Menu       @relation(fields: [menuId], references: [id]) // رابطه با منو
 }
 
+// مدل کاربران
+model User {
+  id               Int              @id @default(autoincrement()) // شناسه یکتای کاربر
+  first_name       String           // نام کوچک کاربر
+  last_name        String           // نام خانوادگی کاربر
+  phone            String           @unique // شماره تلفن کاربر
+  email            String?          @unique // ایمیل کاربر
+  gender           String           // جنسیت کاربر
+  position         String           // عنوان نقش کاربر
+  inviterId        Int?             // شناسه کاربر دعوت‌کننده
+  invitations      Invitation[]     // دعوت‌نامه‌های ارسال‌شده توسط کاربر
+  positions        PositionOnUser[] // نقش‌های اختصاص داده‌شده به کاربر
+  invitationTime   DateTime         // زمان دعوت کاربر
+  registrationTime DateTime         @default(now()) // زمان ثبت‌نام کاربر
+  expirationDate   DateTime?        // تاریخ انقضای کاربر
+  accessLevels     UserAccess[]     // سطح دسترسی‌های مرتبط با کاربر
+  active           Boolean          @default(true) // وضعیت فعال بودن کاربر
+  introdPathLetter String?          // مسیر نامه معرفی کاربر
+  letterIssuer     String?          // صادرکننده نامه کاربر
+  letterNumber     String?          // شماره نامه کاربر
+  letterDate       String?          // تاریخ نامه کاربر
+  letterApprover   String?          // تاییدکننده نامه کاربر
+  userName         String           @unique // نام کاربری
+  password         String           // رمز عبور
+}
 
-// model User {
-//   id                         Int          @id @default(autoincrement())
-//   first_name                 String
-//   last_name                  String
-//   mobile_phone               String       @unique
-//   email                      String?      @unique
-//   gender                     String
-//   position                   String
-//   inviterId                  Int?
-//   invitation_time            DateTime
-//   registration_time          DateTime
-//   membership_expiration_date DateTime?
-//   active                     Boolean
-//   letter_file                Bytes?
-//   letter_issuer              String?
-//   letter_number              String?
-//   letter_date                String?
-//   letter_approver            String?
-//   password                   String
-//   accessLevel                AccessLevel?
-//   Inviter                    User?        @relation("UserInvitations", fields: [inviterId], references: [id])
-//   Inviters                   User[]       @relation("UserInvitations")
-// }
+// مدل نقش‌های اختصاص داده‌شده به کاربر
+model PositionOnUser {
+  id         Int      @id @default(autoincrement()) // شناسه یکتا
+  userId     Int      // شناسه کاربر
+  positionId Int      // شناسه نقش
+  Position   Position @relation(fields: [positionId], references: [id]) // رابطه با نقش
+  user       User     @relation(fields: [userId], references: [id]) // رابطه با کاربر
+}
+
+// مدل سطح دسترسی کاربران
+model UserAccess {
+  id        Int     @id @default(autoincrement()) // شناسه یکتا
+  userId    Int     // شناسه کاربر
+  menuId    Int     // شناسه منو
+  hasAccess Boolean // سطح دسترسی
+  user      User    @relation(fields: [userId], references: [id]) // رابطه با کاربر
+  Menu      Menu    @relation(fields: [menuId], references: [id]) // رابطه با منو
+}

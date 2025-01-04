@@ -19,9 +19,9 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
   formData,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
   const [selectedYear, setSelectedYear] = useState(1403); // مقدار پیش‌فرض سال
   const [selectedMonth, setSelectedMonth] = useState(1); // مقدار پیش‌فرض ماه
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const months = [
     'فروردین',
@@ -107,6 +107,12 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           name="issuer"
           value={formData.issuer}
           onChange={onChange}
+          onKeyDown={(event) => {
+            // فقط اجازه ورود اعداد را بدهید
+            if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+              event.preventDefault();
+            }
+          }}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
         <datalist id="issuerOptions">
@@ -125,7 +131,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           type="text"
           id="letterNumber"
           name="letterNumber"
-          value={formData.letterNumber}
+          // value={formData.letterNumber}
           onChange={onChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
@@ -142,11 +148,18 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           >
             انتخاب تاریخ
           </button>
+          <button
+            type="button"
+            onClick={() => setSelectedDate(null)} // مقدار تاریخ را پاک می‌کند
+            className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+          >
+            حذف
+          </button>
         </div>
         {selectedDate && (
-          <span className="block mb-2 text-sm text-gray-600">
-            {selectedDate}
-          </span>
+          <div className="mb-2">
+            <span className="block text-sm text-gray-600">{selectedDate}</span>
+          </div>
         )}
         {isCalendarOpen && (
           <div className="border mt-2 rounded-md shadow-md bg-white p-2">
@@ -205,6 +218,12 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           name="confirmer"
           value={formData.confirmer}
           onChange={onChange}
+          onKeyDown={(event) => {
+            // فقط اجازه ورود اعداد را بدهید
+            if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+              event.preventDefault();
+            }
+          }}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
       </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import AdditionalFormFields from './AdditionalFormFields';
 
 interface FormSectionProps {
@@ -63,6 +62,12 @@ const FormSection: React.FC<FormSectionProps> = ({
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
+                  onKeyDown={(event) => {
+                    // فقط اجازه ورود اعداد را بدهید
+                    if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+                      event.preventDefault();
+                    }
+                  }}
                   required
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                 />
@@ -81,6 +86,12 @@ const FormSection: React.FC<FormSectionProps> = ({
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
+                  onKeyDown={(event) => {
+                    // فقط اجازه ورود اعداد را بدهید
+                    if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+                      event.preventDefault();
+                    }
+                  }}
                   required
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                 />
@@ -107,6 +118,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                   }}
                   required
                   pattern="09[0-9]{9}"
+                  maxLength={11}
                   placeholder="09XXXXXXXXX"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                 />

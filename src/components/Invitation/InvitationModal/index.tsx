@@ -33,7 +33,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     lastName: '',
     phoneNumber: '',
     endDate: '',
-    gender: '',
+    gender: 'مرد', // مقدار پیش‌فرض
     issuer: '',
     letterNumber: '',
     letterDate: '',
@@ -103,6 +103,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const {name, value, files} = e.target as HTMLInputElement;
+
     setFormData({
       ...formData,
       [name]: files ? files[0] : value,

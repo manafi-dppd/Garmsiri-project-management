@@ -47,6 +47,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
   const [showAdditionalInputs, setShowAdditionalInputs] = useState(false);
   const [showAccessLevelModal, setShowAccessLevelModal] = useState(false);
   const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [isFormValidState, setIsFormValidState] = useState(false);
   const [editedAccessLevel, setEditedAccessLevel] = useState<any>(null);
   const [isAccessLevelButtonDisabled, setIsAccessLevelButtonDisabled] =
     useState(false);
@@ -98,7 +99,9 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     }
     setEditedAccessLevel(null);
   };
-
+  const handleFormValidation = (isValid: boolean) => {
+    setIsFormValidState(isValid);
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -121,6 +124,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
 
   const handleSubmit = () => {
     // e.preventDefault();
+    alert('Form submitted successfully!');
     console.log('Form Data:', formData);
     console.log('Selected Positions:', selectedPositions);
     onClose();
@@ -193,6 +197,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               selectedPositions={selectedPositions.map(
                 (position) => position.id,
               )} // ارسال فقط id‌ها
+              onFormValidation={setIsFormValidState}
               positions={positions}
               handlePositionChange={(newSelectedPositions) => {
                 const updatedPositions = newSelectedPositions.map(
@@ -223,7 +228,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
               <button
                 type="submit"
                 className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-                disabled={!isFormValid()}
+                disabled={!isFormValidState}
                 onClick={handleSubmit}
               >
                 ارسال دعوتنامه

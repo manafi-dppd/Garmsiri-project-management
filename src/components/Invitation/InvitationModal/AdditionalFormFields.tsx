@@ -89,6 +89,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           type="file"
           id="introductionLetter"
           name="introductionLetter"
+          accept="image/*,.pdf"
           onChange={onChange}
           className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
         />
@@ -151,7 +152,12 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           <button
             type="button"
             onClick={() => setSelectedDate(null)} // مقدار تاریخ را پاک می‌کند
-            className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+            disabled={!selectedDate}
+            className={`px-3 py-1 text-sm text-white rounded ${
+              selectedDate
+                ? 'bg-red-500 hover:bg-red-600' // حالت فعال
+                : 'bg-gray-400 cursor-not-allowed' // حالت غیرفعال
+            }`}
           >
             حذف
           </button>

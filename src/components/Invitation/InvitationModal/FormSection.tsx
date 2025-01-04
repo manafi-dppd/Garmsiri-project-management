@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import AdditionalFormFields from './AdditionalFormFields';
 
 interface FormSectionProps {
@@ -16,6 +17,7 @@ interface FormSectionProps {
   hasLicenseRequirement: boolean;
   openAccessLevelModal: () => void;
   resetEditedAccessLevel: () => void;
+  onFormValidation: (isValid: boolean) => void;
   // isAccessLevelButtonDisabled: boolean;
 }
 
@@ -34,7 +36,21 @@ const FormSection: React.FC<FormSectionProps> = ({
   toPersianDate,
   today,
   resetEditedAccessLevel,
+  onFormValidation,
 }) => {
+  useEffect(() => {
+    // اعتبارسنجی فرم
+    const isValid =
+      formData.lastName.trim() !== '' &&
+      formData.phoneNumber.trim() !== '' &&
+      selectedPositions.length > 0;
+    onFormValidation(isValid);
+  }, [
+    formData.lastName,
+    formData.phoneNumber,
+    selectedPositions,
+    onFormValidation,
+  ]);
   // Check if at least one non-"ادمین وبسایت" position is selected
   const isAccessLevelButtonDisabled = !selectedPositions.some((positionId) => {
     const position = positions.find((pos) => pos.id === positionId);

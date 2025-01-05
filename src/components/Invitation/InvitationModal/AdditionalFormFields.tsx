@@ -138,16 +138,16 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
         />
       </div>
       <div className="p-4 border rounded shadow-md">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">
-            تاریخ معرفی‌نامه
-          </span>
+        <span className="text-sm font-medium text-gray-700">
+          تاریخ معرفی‌نامه
+        </span>
+        <div className="items-center justify-between mb-2">
           <button
             type="button"
             className="px-3 py-1 text-sm text-white bg-blue-500 rounded shadow hover:bg-blue-600"
             onClick={() => setIsCalendarOpen(!isCalendarOpen)}
           >
-            انتخاب تاریخ
+            انتخاب
           </button>
           <button
             type="button"

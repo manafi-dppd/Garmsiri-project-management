@@ -1,44 +1,108 @@
-// utils/validation.ts
+/**
+ * تابع برای بررسی صحت فایل آپلود شده
+ * @param file - فایل انتخاب شده
+ * @param fieldName - نام فیلد برای پیام خطا
+ * @returns آرایه‌ای از پیام‌های خطا
+ */
+export const validateFileFormat = (
+  file: File | null,
+  fieldName: string,
+): string[] => {
+  const errors: string[] = [];
+
+  if (file) {
+    const allowedFormats = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'application/pdf',
+    ];
+    if (!allowedFormats.includes(file.type)) {
+      errors.push(`${fieldName} باید تصویر (PNG, JPG, JPEG) یا PDF باشد.`);
+    }
+  }
+
+  return errors;
+};
 
 /**
- * تابع برای بررسی صحت نام
- * @param firstName - نام ورودی برای صحت‌سنجی
- * param lastName - نام خانوادگی ورودی برای صحت‌سنجی
- * @returns آرایه‌ای از پیام‌های خطا (در صورت وجود)
+ * تابع برای بررسی صحت فرم دعوتنامه
+ * @param firstName - نام
+ * @param lastName - نام خانوادگی
+ * @param phoneNumber - شماره تلفن همراه
+ * @param endDate - تاریخ پایان عضویت
+ * @param today - تاریخ امروز
+ * @param selectedPositions - آرایه‌ای از مقادیر انتخاب شده برای سمت‌ها
+ * @param introductionLetter - فایل معرفی‌نامه
+ * @returns آرایه‌ای از پیام‌های خطا
  */
 export const validateInvitation = (
   firstName: string,
   lastName: string,
+  phoneNumber: string,
+  endDate: string,
+  today: string,
+  selectedPositions: number[],
+  introductionLetter: File | null,
 ): string[] => {
-  const errorMessages: string[] = [];
+  let errors: string[] = [];
 
-  // بررسی اینکه فقط حروف فارسی، انگلیسی و فاصله مجاز است
-  let regex = /^[\u0600-\u06FFa-zA-Z\s]*$/;
-  if (!regex.test(firstName)) {
-    errorMessages.push('نام فقط باید حروف و فاصله باشد.');
-  }
+  // صحت‌سنجی نام
+  errors = [...errors, ...validateField(firstName, 'نام', false, 20)];
 
-  // بررسی طول ورودی
-  if (firstName.length > 20) {
-    errorMessages.push('نام نباید بیشتر از 20 کاراکتر باشد.');
-  }
+  // صحت‌سنجی نام خانوادگی
+  errors = [...errors, ...validateField(lastName, 'نام خانوادگی', true, 20)];
 
-  // بررسی پر بودن مقدار
-  if (!lastName.trim()) {
-    errorMessages.push('تکمیل نام خانوادگی الزامی است.');
-    return errorMessages; // از بررسی‌های بعدی صرف‌نظر کنید
-  }
+  // صحت‌سنجی شماره تلفن همراه
+  errors = [...errors, ...validatePhoneNumber(phoneNumber)];
 
-  // بررسی اینکه فقط حروف فارسی، انگلیسی و فاصله مجاز است
-  regex = /^[\u0600-\u06FFa-zA-Z\s]*$/;
-  if (!regex.test(lastName)) {
-    errorMessages.push('نام خانوادگی فقط باید شامل حروف و فاصله باشد.');
-  }
+  // صحت‌سنجی تاریخ پایان عضویت
+  errors = [...errors, ...validateEndDate(endDate, today)];
 
-  // بررسی طول ورودی
-  if (lastName.length > 20) {
-    errorMessages.push('نام خانوادگی نباید بیشتر از 20 کاراکتر باشد.');
-  }
+  // صحت‌سنجی انتخاب سمت
+  errors = [...errors, ...validatePositionSelection(selectedPositions)];
 
-  return errorMessages;
+  // صحت‌سنجی فایل معرفی‌نامه
+  errors = [...errors, ...validateFileFormat(introductionLetter, 'معرفی‌نامه')];
+
+  return errors;
 };
+function validateField(
+  value: string,
+  fieldName: string,
+  isRequired: boolean,
+  maxLength: number,
+): string[] {
+  const errors: string[] = [];
+  if (isRequired && !value) {
+    errors.push(`${fieldName} الزامی است.`);
+  } else if (value.length > maxLength) {
+    errors.push(`${fieldName} نباید بیشتر از ${maxLength} کاراکتر باشد.`);
+  }
+  return errors;
+}
+
+function validatePhoneNumber(phoneNumber: string): string[] {
+  const errors: string[] = [];
+  const phoneRegex = /^09\d{9}$/; // مثال برای صحت‌سنجی شماره موبایل ایرانی
+  if (!phoneRegex.test(phoneNumber)) {
+    errors.push('شماره تلفن وارد شده معتبر نیست.');
+  }
+  return errors;
+}
+
+function validateEndDate(endDate: string, today: string): string[] {
+  const errors: string[] = [];
+  if (new Date(endDate) < new Date(today)) {
+    errors.push('تاریخ پایان عضویت نباید قبل از تاریخ امروز باشد.');
+  }
+  return errors;
+}
+
+function validatePositionSelection(selectedPositions: number[]): string[] {
+  const errors: string[] = [];
+  if (selectedPositions.length === 0) {
+    errors.push('انتخاب حداقل یک سمت الزامی است.');
+  }
+  return errors;
+}

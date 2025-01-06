@@ -77,7 +77,7 @@ const FormSection: React.FC<FormSectionProps> = ({
           >
             <form onSubmit={handleSubmit} className="text-right space-y-4">
               <div className="flex flex-col md:flex-row justify-between gap-4 md:space-x-4 overflow-auto md:overflow-visible max-h-screen md:max-h-none">
-                <div className="bg-white rounded-lg shadow-lg p-2 w-full md:w-[80%]">
+                <div className="bg-white rounded-lg shadow-lg p-2 w-full">
                   <div>
                     <label
                       htmlFor="firstName"
@@ -270,7 +270,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                 </div>
 
                 {requiresLicense && (
-                  <div className="w-full md:w-[35%] mt-4 md:mt-0">
+                  <div className="w-full md:w-[80%] mt-4 md:mt-0">
                     <AdditionalFormFields
                       onChange={handleChange}
                       formData={formData}

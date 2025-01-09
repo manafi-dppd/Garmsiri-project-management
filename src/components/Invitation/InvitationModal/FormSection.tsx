@@ -44,15 +44,10 @@ const FormSection: React.FC<FormSectionProps> = ({
     // اعتبارسنجی فرم
     const isValid =
       formData.lastName.trim() !== '' &&
-      formData.phoneNumber.trim() !== '' &&
+      formData.mobile.trim() !== '' &&
       selectedPositions.length > 0;
     onFormValidation(isValid);
-  }, [
-    formData.lastName,
-    formData.phoneNumber,
-    selectedPositions,
-    onFormValidation,
-  ]);
+  }, [formData.lastName, formData.mobile, selectedPositions, onFormValidation]);
   // Check if at least one non-"ادمین وبسایت" position is selected
   const isAccessLevelButtonDisabled = !selectedPositions.some((positionId) => {
     const position = positions.find((pos) => pos.id === positionId);
@@ -128,16 +123,16 @@ const FormSection: React.FC<FormSectionProps> = ({
 
                   <div>
                     <label
-                      htmlFor="phoneNumber"
+                      htmlFor="mobile"
                       className="block text-sm font-medium text-gray-700"
                     >
                       *تلفن همراه
                     </label>
                     <input
                       type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
+                      id="mobile"
+                      name="mobile"
+                      value={formData.mobile}
                       onChange={handleChange}
                       onKeyDown={(event) => {
                         // فقط اجازه ورود اعداد را بدهید

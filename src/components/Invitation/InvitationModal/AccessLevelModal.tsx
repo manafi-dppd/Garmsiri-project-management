@@ -9,12 +9,12 @@ interface AccessLevelModalProps {
   onClose: () => void;
   onAccessLevelSubmit: (menuTree: MenuItem[]) => void;
   updateAccessLevels?: (
-    editedAccessLevels: {id: number; checked: boolean}[],
+    editedAccessLevels: {menuId: number; hasAccess: boolean}[],
   ) => void;
-  checkedState?: {id: number; checked: boolean}[];
-  initialAccessLevels?: {id: number; checked: boolean}[]; // تعریف مقدار اولیه
+  checkedState?: {menuId: number; hasAccess: boolean}[];
+  initialAccessLevels?: {menuId: number; hasAccess: boolean}[]; // تعریف مقدار اولیه
 }
-type CheckedState = {id: number; checked: boolean};
+type CheckedState = {menuId: number; hasAccess: boolean};
 interface MenuItem {
   disabled: boolean;
   id: number;
@@ -49,7 +49,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
 }) => {
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
   const [editedAccessLevels, setEditedAccessLevels] = useState<
-    {id: number; checked: boolean}[]
+    {menuId: number; hasAccess: boolean}[]
   >(initialAccessLevels || []);
   const [showAlert, setShowAlert] = useState(false); // برای نمایش هشدار
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
@@ -88,13 +88,13 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
     if (mode === 'accessLevel') {
       // ذخیره اطلاعات در آرایه
       const editedAccessLevels = updatedMenus.map((menu) => ({
-        id: menu.id,
-        checked: menu.active,
+        menuId: menu.id,
+        hasAccess: menu.active,
       }));
 
       // آرایه جدید با اضافه کردن positionId به ابتدای آن
       const updatedAccessLevels = [
-        {id: positionId, checked: true},
+        {menuId: positionId, hasAccess: true},
         ...editedAccessLevels,
       ];
 
@@ -166,10 +166,12 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
               state: CheckedState[],
             ): MenuItem[] => {
               return menuTree.map((menu) => {
-                const matchingState = state.find((s) => s.id === menu.id);
+                const matchingState = state.find((s) => s.menuId === menu.id);
                 return {
                   ...menu,
-                  checked: matchingState ? matchingState.checked : menu.checked,
+                  checked: matchingState
+                    ? matchingState.hasAccess
+                    : menu.checked,
                   children: menu.children
                     ? applyCheckedState(menu.children, state)
                     : [],
@@ -179,7 +181,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
             // اعمال checkedState به menuTree
             if (checkedState && checkedState.length > 0) {
               const positionItem = checkedState.find(
-                (state) => state.id === positionId,
+                (state) => state.menuId === positionId,
               );
 
               if (positionItem) {

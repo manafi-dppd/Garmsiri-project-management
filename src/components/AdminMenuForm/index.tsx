@@ -257,6 +257,7 @@ export default function AdminMenuForm() {
         }}
         mode={modalMode} // حالت متغیر
       />
+
       {/* {isMenuVisible && (
         <div className="w-full max-w-4xl mx-auto p-6 bg-green-50 rounded-lg shadow-lg">
           <table className="table-auto border-collapse border border-gray-300 text-sm text-center w-full shadow-md rounded-lg">

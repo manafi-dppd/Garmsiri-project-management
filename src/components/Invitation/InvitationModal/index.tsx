@@ -26,15 +26,16 @@ interface FormData {
   file: File | null;
   firstName: string;
   lastName: string;
-  phoneNumber: string;
+  mobile: string;
   endDate: string;
   gender: string;
-  issuer: string;
+  letterIssuer: string;
   letterNumber: string;
   letterDate: string;
-  confirmer: string;
+  letterApprover: string;
   selectedPositions: number[];
   introductionLetter: File | null;
+  editedAccessLevel: {menuId: number; hasAccess: boolean}[];
 }
 
 const InvitationModal: React.FC<InvitationModalProps> = ({
@@ -47,15 +48,16 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     file: null,
     firstName: '',
     lastName: '',
-    phoneNumber: '',
+    mobile: '',
     endDate: '',
     gender: 'مرد', // مقدار پیش‌فرض
-    issuer: '',
+    letterIssuer: '',
     letterNumber: '',
     letterDate: '',
-    confirmer: '',
+    letterApprover: '',
     selectedPositions: [] as number[],
     introductionLetter: null,
+    editedAccessLevel: [],
   });
   const [requiresLicense, setRequiresLicense] = useState(false);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -74,8 +76,14 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     Array.isArray(editedAccessLevel) && editedAccessLevel.length > 0
       ? editedAccessLevel
       : [];
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [mobile, setmobile] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const handleClose = () => {
+    setIsVisible(false); // مخفی کردن div
+    onClose();
+    window.location.reload();
+  };
   useEffect(() => {
     if (positionsFromParent?.length) {
       // استفاده از داده‌های props اگر موجود باشند
@@ -85,7 +93,15 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
       const fetchPositions = async () => {
         try {
           const response = await fetch('/api/positions');
-          if (!response.ok) throw new Error('Fetch failed');
+          if (!response.ok) {
+            const responseData = await response.json().catch(() => null);
+            console.error('Server Error:', responseData || 'Response is empty');
+            alert(
+              responseData?.message ||
+                'An error occurred while submitting the invitation.',
+            );
+            return;
+          }
           const data = await response.json();
           console.log('Fetched Positions:', data);
           setPositions(data);
@@ -144,33 +160,110 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     setSelectedPositions(selectedValues);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // دریافت تاریخ امروز به صورت رشته
+    const {
+      firstName,
+      lastName,
+      mobile,
+      endDate,
+      gender,
+      letterIssuer,
+      letterNumber,
+      letterDate,
+      letterApprover,
+      selectedPositions,
+      // editedAccessLevel,
+    } = formData;
+    // console.log('editedAccessLevel:', editedAccessLevel);
+    // console.log({
+    //   firstName,
+    //   lastName,
+    //   mobile,
+    //   endDate,
+    //   gender,
+    //   letterIssuer,
+    //   letterNumber,
+    //   letterDate,
+    //   letterApprover,
+    //   selectedPositions,
+    //   editedAccessLevel,
+    // });
+
     const today = new Date().toISOString().split('T')[0];
-    console.log('Selected Positions:', formData.selectedPositions);
-    // صحت‌سنجی داده‌های فرم
     const validationErrors = validateInvitation(
-      formData.firstName,
-      formData.lastName,
-      formData.phoneNumber,
-      formData.endDate,
+      firstName,
+      lastName,
+      mobile,
+      endDate,
       today,
-      formData.selectedPositions,
-      formData.introductionLetter,
+      selectedPositions,
+      formData.file,
     );
+    console.log('validationErrors: ', validationErrors);
 
     if (validationErrors.length > 0) {
-      // نمایش خطاها
       setErrors(validationErrors);
     } else {
-      setErrors([]); // پاک کردن خطاها
-      alert('Form submitted successfully!');
-      console.log('Form Data:', formData);
-      console.log('Selected Positions:', selectedPositions);
-      onClose();
+      setErrors([]);
+      try {
+        const response = await fetch('/api/invitation', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            mobile,
+            endDate,
+            gender,
+            letterIssuer,
+            letterNumber,
+            letterDate,
+            letterApprover,
+            selectedPositions,
+            editedAccessLevel,
+          }),
+        });
+
+        const responseData = await response.json();
+
+        if (response.ok) {
+          setIsVisible(true);
+        } else {
+          // console.error('Server Error:', responseData);
+          alert(
+            responseData.message ||
+              'An error occurred while submitting the invitation.',
+          );
+        }
+
+        console.log('Invitation submitted:', responseData);
+      } catch (error) {
+        console.error('Error submitting invitation:', error);
+        alert('An error occurred while submitting the invitation.');
+      }
     }
+  };
+
+  const validateRequiredInvitation = (
+    // firstName: string,
+    lastName: string,
+    mobile: string,
+    endDate: string,
+    today: string,
+    selectedPositions: number[],
+    // file: File | null,
+  ) => {
+    const errors = [];
+    // if (!firstName.trim()) errors.push('First name is required.');
+    if (!lastName.trim()) errors.push('Last name is required.');
+    if (!mobile.trim()) errors.push('Phone number is required.');
+    if (new Date(endDate) < new Date(today))
+      errors.push('End date must be in the future.');
+    if (!selectedPositions.length)
+      errors.push('At least one position must be selected.');
+    return errors;
   };
 
   const toggleDatePickerModal = () => {
@@ -195,7 +288,7 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
     return (
       formData.firstName &&
       formData.lastName &&
-      formData.phoneNumber &&
+      formData.mobile &&
       formData.gender &&
       selectedPositions.length > 0
     );
@@ -308,6 +401,25 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
                   mode="accessLevel"
                   initialAccessLevels={existingAccessLevels} // ارسال مقدار اولیه
                 />
+              )}
+              {isVisible && (
+                <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-100 text-gray-800 px-6 py-4 rounded-lg shadow-lg flex flex-col items-center w-96 z-50 animate-fade-in">
+                  {/* علامت تیک */}
+                  <div className="flex-shrink-0 w-10 h-10 bg-green-500 text-white flex items-center justify-center rounded-full mb-3 shadow-md">
+                    ✓
+                  </div>
+                  {/* پیام */}
+                  <p className="text-center font-medium">
+                    دعوتنامه با موفقیت ارسال شد
+                  </p>
+                  {/* دکمه */}
+                  <button
+                    onClick={handleClose}
+                    className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all"
+                  >
+                    OK
+                  </button>
+                </div>
               )}
             </div>
           </div>

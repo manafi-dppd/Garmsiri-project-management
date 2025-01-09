@@ -4,6 +4,7 @@
  * @param fieldName - نام فیلد برای پیام خطا
  * @returns آرایه‌ای از پیام‌های خطا
  */
+
 export const validateFileFormat = (
   file: File | null,
   fieldName: string,
@@ -29,21 +30,21 @@ export const validateFileFormat = (
  * تابع برای بررسی صحت فرم دعوتنامه
  * @param firstName - نام
  * @param lastName - نام خانوادگی
- * @param phoneNumber - شماره تلفن همراه
+ * @param mobile - شماره تلفن همراه
  * @param endDate - تاریخ پایان عضویت
  * @param today - تاریخ امروز
  * @param selectedPositions - آرایه‌ای از مقادیر انتخاب شده برای سمت‌ها
- * @param introductionLetter - فایل معرفی‌نامه
+ * @param file - فایل معرفی‌نامه
  * @returns آرایه‌ای از پیام‌های خطا
  */
 export const validateInvitation = (
   firstName: string,
   lastName: string,
-  phoneNumber: string,
+  mobile: string,
   endDate: string,
   today: string,
   selectedPositions: number[],
-  introductionLetter: File | null,
+  file: File | null,
 ): string[] => {
   let errors: string[] = [];
 
@@ -54,7 +55,7 @@ export const validateInvitation = (
   errors = [...errors, ...validateField(lastName, 'نام خانوادگی', true, 20)];
 
   // صحت‌سنجی شماره تلفن همراه
-  errors = [...errors, ...validatePhoneNumber(phoneNumber)];
+  errors = [...errors, ...validatemobile(mobile)];
 
   // صحت‌سنجی تاریخ پایان عضویت
   errors = [...errors, ...validateEndDate(endDate, today)];
@@ -63,7 +64,7 @@ export const validateInvitation = (
   errors = [...errors, ...validatePositionSelection(selectedPositions)];
 
   // صحت‌سنجی فایل معرفی‌نامه
-  errors = [...errors, ...validateFileFormat(introductionLetter, 'معرفی‌نامه')];
+  errors = [...errors, ...validateFileFormat(file, 'معرفی‌نامه')];
 
   return errors;
 };
@@ -82,10 +83,10 @@ function validateField(
   return errors;
 }
 
-function validatePhoneNumber(phoneNumber: string): string[] {
+function validatemobile(mobile: string): string[] {
   const errors: string[] = [];
   const phoneRegex = /^09\d{9}$/; // مثال برای صحت‌سنجی شماره موبایل ایرانی
-  if (!phoneRegex.test(phoneNumber)) {
+  if (!phoneRegex.test(mobile)) {
     errors.push('شماره تلفن وارد شده معتبر نیست.');
   }
   return errors;

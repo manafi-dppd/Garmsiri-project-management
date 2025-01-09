@@ -6,10 +6,10 @@ interface AdditionalFormFieldsProps {
   ) => void;
   formData: {
     introductionLetter: string;
-    issuer: string;
+    letterIssuer: string;
     letterNumber: string;
     letterDate: string;
-    confirmer: string;
+    letterApprover: string;
     attachment: File | null;
   };
 }
@@ -96,7 +96,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
       </div>
       <div>
         <label
-          htmlFor="issuer"
+          htmlFor="letterIssuer"
           className="block text-sm font-medium text-gray-700"
         >
           صادرکننده معرفی‌نامه
@@ -104,9 +104,9 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
         <input
           list="issuerOptions"
           type="text"
-          id="issuer"
-          name="issuer"
-          value={formData.issuer}
+          id="letterIssuer"
+          name="letterIssuer"
+          value={formData.letterIssuer}
           onChange={onChange}
           onKeyDown={(event) => {
             // فقط اجازه ورود اعداد را بدهید
@@ -213,16 +213,16 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
       </div>
       <div>
         <label
-          htmlFor="confirmer"
+          htmlFor="letterApprover"
           className="block text-sm font-medium text-gray-700"
         >
           تاییدکننده
         </label>
         <input
           type="text"
-          id="confirmer"
-          name="confirmer"
-          value={formData.confirmer}
+          id="letterApprover"
+          name="letterApprover"
+          value={formData.letterApprover}
           onChange={onChange}
           onKeyDown={(event) => {
             // فقط اجازه ورود اعداد را بدهید

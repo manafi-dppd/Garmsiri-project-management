@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import InvitationModal from './InvitationModal';
+import InvitationsTable from './InvitationModal/table';
 
 const Invitation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +45,7 @@ const Invitation = () => {
           />
         )}
       </div>
+      <InvitationsTable />
     </div>
   );
 };

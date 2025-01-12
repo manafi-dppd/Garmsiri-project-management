@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {format} from 'date-fns';
 import 'tailwindcss/tailwind.css';
+import {toPersianDate} from '@/utils/dateUtils';
 
 interface Invitation {
   id: number;
@@ -74,12 +75,10 @@ export default function InvitationsTable() {
                 <td className="px-6 py-4">{invitation.lastName}</td>
                 <td className="px-6 py-4">{invitation.mobile}</td>
                 <td className="px-6 py-4">
-                  {format(new Date(invitation.createdAt), 'yyyy/MM/dd')}
+                  {toPersianDate(invitation.createdAt)}
                 </td>
                 <td className="px-6 py-4">
-                  {invitation.endDate
-                    ? format(new Date(invitation.endDate), 'yyyy/MM/dd')
-                    : '-'}
+                  {invitation.endDate ? toPersianDate(invitation.endDate) : '-'}
                 </td>
                 <td className="px-6 py-4">
                   {invitation.isRegistered ? 'بله' : 'خیر'}

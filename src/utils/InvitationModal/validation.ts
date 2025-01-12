@@ -75,8 +75,12 @@ function validateField(
   maxLength: number,
 ): string[] {
   const errors: string[] = [];
+  const persianRegex = /^[آ-ی\s]*$/; // حروف فارسی و فضای خالی
+
   if (isRequired && !value) {
     errors.push(`${fieldName} الزامی است.`);
+  } else if (value && !persianRegex.test(value)) {
+    errors.push(`${fieldName} باید فقط شامل حروف فارسی و فاصله باشد.`);
   } else if (value.length > maxLength) {
     errors.push(`${fieldName} نباید بیشتر از ${maxLength} کاراکتر باشد.`);
   }

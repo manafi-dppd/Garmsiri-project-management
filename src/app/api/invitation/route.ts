@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import {v4 as uuidv4} from 'uuid';
+import {nanoid} from 'nanoid';
 
 const prisma = new PrismaClient();
 
@@ -15,12 +16,28 @@ const validateInvitationServer = (data: {
 }): string[] => {
   const errors: string[] = [];
 
-  if (data.firstName.length > 20) {
-    errors.push('نام  نباید بیشتر از 20 کاراکتر باشد.');
+  // Regex to allow only Persian characters and spaces
+  const persianRegex = /^[\u0600-\u06FF\s]{0,20}$/;
+
+  // Validate firstName (optional)
+  if (
+    data.firstName &&
+    (!persianRegex.test(data.firstName) || data.firstName.length > 20)
+  ) {
+    errors.push(
+      'نام باید حداکثر 20 کاراکتر و تنها شامل حروف فارسی یا فاصله باشد.',
+    );
   }
 
-  if (!data.lastName || data.lastName.length > 20) {
-    errors.push('نام خانوادگی الزامی است و نباید بیشتر از 20 کاراکتر باشد.');
+  // Validate lastName (mandatory)
+  if (
+    !data.lastName ||
+    !persianRegex.test(data.lastName) ||
+    data.lastName.length > 20
+  ) {
+    errors.push(
+      'نام خانوادگی الزامی است و باید حداکثر 20 کاراکتر و تنها شامل حروف فارسی یا فاصله باشد.',
+    );
   }
 
   const phoneRegex = /^09\d{9}$/;
@@ -77,11 +94,11 @@ export async function POST(req: Request) {
     }
 
     // تولید username و password
-    const username = uuidv4();
-    const rawPassword = Math.random().toString(36).slice(-8); // تولید رمز عبور تصادفی
+    const username = nanoid(6);
+    const rawPassword = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
-    console.log('Generated username:', username);
-    console.log('Generated password:', rawPassword);
+    console.log('username: ', username);
+    console.log('Password: ', rawPassword);
 
     // ذخیره دعوت‌نامه
     const newInvitation = await prisma.invitation.create({
@@ -132,7 +149,6 @@ export async function POST(req: Request) {
         })),
       ];
 
-      console.log('completedAccessLevel:', completedAccessLevel);
       // ذخیره داده‌ها در جدول InvitationAccess
       if (completedAccessLevel.length > 0) {
         await prisma.invitationAccess.createMany({
@@ -156,7 +172,7 @@ export async function POST(req: Request) {
           hasAccess: true,
         },
       });
-      console.log('relatedAccessLevels:', relatedAccessLevels);
+
       if (relatedAccessLevels.length > 0) {
         await prisma.invitationAccess.createMany({
           data: relatedAccessLevels.map((access) => ({

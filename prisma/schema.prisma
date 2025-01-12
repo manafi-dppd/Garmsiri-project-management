@@ -107,6 +107,7 @@ model User {
   invitations      Invitation[]
   positions        PositionOnUser[]
   accessLevels     UserAccess[]
+  loginHistories   UserLoginHistory[] // رابطه با UserLoginHistory
 }
 
 model PositionOnUser {
@@ -124,4 +125,17 @@ model UserAccess {
   hasAccess Boolean
   Menu      Menu    @relation(fields: [menuId], references: [id])
   user      User    @relation(fields: [userId], references: [id])
+}
+
+model UserLoginHistory {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  loginTime   DateTime @default(now())
+  logoutTime  DateTime?
+  ipAddress   String?
+  deviceInfo  String?
+  userAgent   String?
+  status      String
+
+  User        User     @relation(fields: [userId], references: [id])
 }

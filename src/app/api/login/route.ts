@@ -36,6 +36,7 @@ export async function GET(request: Request) {
       firstName: user.firstName,
       lastName: user.lastName,
       mobile: user.mobile,
+      id: user.id,
     });
   } catch (error) {
     return NextResponse.json({error: 'Server error'}, {status: 500});

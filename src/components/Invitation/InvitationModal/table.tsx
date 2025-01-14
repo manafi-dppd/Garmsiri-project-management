@@ -44,20 +44,20 @@ export default function InvitationsTable() {
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-100 text-gray-800">
-              <th className="px-6 py-3 text-left text-sm font-medium">نام</th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">نام</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 نام خانوادگی
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 تلفن همراه
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 تاریخ دعوت
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 تاریخ انقضا
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium">
+              <th className="px-6 py-3 text-center text-sm font-medium">
                 ثبت‌نام
               </th>
               <th className="px-6 py-3 text-center text-sm font-medium">
@@ -69,18 +69,26 @@ export default function InvitationsTable() {
             {invitations.map((invitation, index) => (
               <tr
                 key={invitation.id}
-                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                className={`${
+                  !invitation.isRegistered
+                    ? 'bg-red-100'
+                    : index % 2 === 0
+                      ? 'bg-gray-50'
+                      : 'bg-white'
+                }`}
               >
-                <td className="px-6 py-4">{invitation.firstName || '-'}</td>
-                <td className="px-6 py-4">{invitation.lastName}</td>
-                <td className="px-6 py-4">{invitation.mobile}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
+                  {invitation.firstName || '-'}
+                </td>
+                <td className="px-6 py-4 text-center">{invitation.lastName}</td>
+                <td className="px-6 py-4 text-center">{invitation.mobile}</td>
+                <td className="px-6 py-4 text-center">
                   {toPersianDate(invitation.createdAt)}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   {invitation.endDate ? toPersianDate(invitation.endDate) : '-'}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   {invitation.isRegistered ? 'بله' : 'خیر'}
                 </td>
                 <td className="px-6 py-4 text-center">

@@ -25,11 +25,12 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
+      console.log('Login Response Data:', data);
 
       router.push(
         `/register?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(
           data.lastName,
-        )}&mobile=${encodeURIComponent(data.mobile)}&enable=true`,
+        )}&mobile=${encodeURIComponent(data.mobile)}&id=${encodeURIComponent(data.id)}&enable=true`,
       ); // اضافه شدن enable=true برای فعال کردن دکمه
     } catch (error) {
       if (error instanceof Error) {

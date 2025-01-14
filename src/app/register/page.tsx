@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [lastName, setLastName] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
+  const [id, setId] = useState('');
   const [error, setError] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
   const searchParams = useSearchParams();
@@ -48,12 +49,13 @@ export default function RegisterPage() {
         lastName: decodeURIComponent(lastName),
         mobile: decodeURIComponent(mobile),
         email: decodeURIComponent(email),
+        id: decodeURIComponent(id),
       }));
 
       // اگر enable=true است، دکمه را فعال کن
       setIsDisabled(enable !== 'true');
     }
-  }, [searchParams]);
+  }, [email, searchParams]);
 
   useEffect(() => {
     // دریافت مقادیر اولیه از query
@@ -61,6 +63,7 @@ export default function RegisterPage() {
     const firstNameParam = params.get('firstName') || '';
     const lastNameParam = params.get('lastName') || '';
     const mobileParam = params.get('mobile') || '';
+    const idParam = params.get('id') || '';
 
     setInitialFirstName(firstNameParam);
     setInitialLastName(lastNameParam);
@@ -69,6 +72,7 @@ export default function RegisterPage() {
     setFirstName(firstNameParam);
     setLastName(lastNameParam);
     setMobile(mobileParam);
+    setId(idParam);
   }, []);
 
   const validateInputs = async () => {
@@ -85,16 +89,14 @@ export default function RegisterPage() {
     }
 
     // اعتبارسنجی نام
-    if (firstName && !/^[\u0600-\u06FF\s]{1,20}$/.test(firstName)) {
-      setError('نام می‌تواند حداکثر 20 کاراکتر و شامل حروف معتبر فارسی باشد.');
+    if (firstName && !/^[\u0600-\u06FFa-zA-Z0-9\s]{1,20}$/.test(firstName)) {
+      setError('نام می‌تواند حداکثر 20 کاراکتر باشد.');
       return false; // خطا در اعتبارسنجی
     }
 
     // اعتبارسنجی نام خانوادگی
-    if (!/^[\u0600-\u06FF\s]{1,20}$/.test(lastName)) {
-      setError(
-        'نام خانوادگی الزامی است و حداکثر می‌تواند 20 کاراکتر حروف معتبر فارسی باشد.',
-      );
+    if (!/^[\u0600-\u06FFa-zA-Z0-9\s]{1,20}$/.test(lastName)) {
+      setError('نام خانوادگی الزامی است و حداکثر می‌تواند 20 کاراکتر باشد.');
       return false;
     }
 
@@ -150,7 +152,7 @@ export default function RegisterPage() {
 
     if (isValid) {
       router.push(
-        `/update-credentials?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}&email=${email}`,
+        `/update-credentials?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}&email=${email}&id=${id}`,
       );
     } else {
       alert('مشکلی در ثبت اطلاعات پیش آمده است.');

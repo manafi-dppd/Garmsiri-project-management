@@ -25,12 +25,16 @@ const UpdateCredentialsPage = () => {
   const [showPasscode, setShowPasscode] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const searchParams = useSearchParams();
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showConfirmTooltip, setShowConfirmTooltip] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     mobile: '',
     email: '',
   });
+  const id = searchParams.get('id');
+  console.log('id: ', id);
   useEffect(() => {
     const firstName = searchParams.get('firstName') || '';
     const lastName = searchParams.get('lastName') || '';
@@ -58,7 +62,7 @@ const UpdateCredentialsPage = () => {
     const validationErrors: Record<string, string> = {};
 
     // نام کاربری: بدون علائم و حداکثر 20 کاراکتر
-    const usernameRegex = /^[a-zA-Z0-9\u0600-\u06FF\s]*$/;
+    const usernameRegex = /^[\u0600-\u06FFa-zA-Z0-9\s]*$/;
 
     if (!usernameRegex.test(username) || username.length > 20) {
       validationErrors.username =
@@ -76,7 +80,8 @@ const UpdateCredentialsPage = () => {
       const nonEnglishRegex = /[^\x00-\x7F]/; // تشخیص حروف غیرانگلیسی
 
       if (nonEnglishRegex.test(passcode)) {
-        validationErrors.passcode = 'صفحه کلید خود را به انگلیسی تغییر دهید.';
+        validationErrors.passcode =
+          'در رمز عبور از حروف غیر انگلیسی نمی‌توان استفاده کرد.';
       } else if (!passcodeRegex.test(passcode)) {
         validationErrors.passcode =
           'رمز عبور باید ترکیبی از حروف و اعداد و حداقل 8 و حداکثر 20 کاراکتر باشد.';
@@ -96,14 +101,18 @@ const UpdateCredentialsPage = () => {
 
     if (handleValidation()) {
       const {firstName, lastName, mobile} = formData;
+      // const id = router.query?.id as string;
 
       const payload = {
+        id,
         firstName,
         lastName,
         mobile,
         username,
         passcode,
       };
+
+      console.log('Payload for API:', payload);
 
       try {
         const response = await fetch('/api/update-invitation', {
@@ -163,8 +172,7 @@ const UpdateCredentialsPage = () => {
               onPaste={(e) => e.preventDefault()} // جلوگیری از Paste
               onCopy={(e) => e.preventDefault()} // جلوگیری از Copy
               onKeyDown={(event) => {
-                // فقط اجازه ورود اعداد را بدهید
-                if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+                if (!/^[\u0600-\u06FFa-zA-Z0-9\s]*$/.test(event.key)) {
                   event.preventDefault();
                 }
               }}
@@ -190,8 +198,7 @@ const UpdateCredentialsPage = () => {
               onPaste={(e) => e.preventDefault()} // جلوگیری از Paste
               onCopy={(e) => e.preventDefault()} // جلوگیری از Copy
               onKeyDown={(event) => {
-                // فقط اجازه ورود اعداد را بدهید
-                if (!/^[\u0600-\u06FFa-zA-Z\s]*$/.test(event.key)) {
+                if (!/^[\u0600-\u06FFa-zA-Z0-9\s]*$/.test(event.key)) {
                   event.preventDefault();
                 }
               }}
@@ -219,7 +226,20 @@ const UpdateCredentialsPage = () => {
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                 onPaste={(e) => e.preventDefault()} // جلوگیری از Paste
                 onCopy={(e) => e.preventDefault()} // جلوگیری از Copy
+                onKeyDown={(event) => {
+                  if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
+                    event.preventDefault();
+                    setShowTooltip(true);
+                    setTimeout(() => setShowTooltip(false), 2000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                  }
+                }}
               />
+              {showTooltip && (
+                <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
+                  صفحه کلید خود را به انگلیسی تغییر داده و کاراکتر فاصله وارد
+                  نکنید
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -249,7 +269,20 @@ const UpdateCredentialsPage = () => {
                 className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                 onPaste={(e) => e.preventDefault()} // جلوگیری از Paste
                 onCopy={(e) => e.preventDefault()} // جلوگیری از Copy
+                onKeyDown={(event) => {
+                  if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
+                    event.preventDefault();
+                    setShowConfirmTooltip(true);
+                    setTimeout(() => setShowConfirmTooltip(false), 2000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                  }
+                }}
               />
+              {showConfirmTooltip && (
+                <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
+                  صفحه کلید خود را به انگلیسی تغییر داده و کاراکتر فاصله وارد
+                  نکنید
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPasscode(!showPasscode)}

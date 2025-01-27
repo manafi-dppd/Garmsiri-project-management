@@ -9,12 +9,12 @@ export async function POST(request: Request) {
   try {
     const existingUser = await prisma.user.findFirst({
       where: {
-        OR: [{phone: mobile}, {email}],
+        OR: [{mobile: mobile}, {email}],
       },
     });
 
     if (existingUser) {
-      if (existingUser.phone === mobile) {
+      if (existingUser.mobile === mobile) {
         return NextResponse.json(
           {error: 'شماره تلفن وارد شده تکراری است.'},
           {status: 400},

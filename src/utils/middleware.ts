@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
     const mobile = request.nextUrl.searchParams.get('mobile');
 
     if (!firstName || !lastName || !mobile) {
+      console.log('/login2');
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

@@ -26,7 +26,7 @@ interface NavMenuProps {
   menus: Menu[];
 }
 
-const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
+const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
   const [openSubSubMenu, setOpenSubSubMenu] = useState<number | null>(null);
@@ -48,6 +48,39 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
   };
 
   const handleMenuClick = (menu: Menu, e: React.MouseEvent) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      const fetchMenus = async () => {
+        try {
+          const response = await fetch('/api/menus', {
+            method: 'GET',
+            credentials: 'include', // ارسال کوکی
+          });
+          console.log('response: ', response);
+          if (!response.ok) {
+            try {
+              const errorData = await response.json();
+              console.error('Error:', errorData.error || 'Unknown error');
+            } catch {
+              console.error('An unknown error occurred.');
+            }
+            return;
+          }
+
+          if (response.status === 401) {
+            console.log('Going to login4');
+            router.push('/login'); // هدایت به صفحه لاگین
+            return;
+          }
+          const data: Menu[] = await response.json();
+          setMenus(data);
+        } catch (error) {
+          // console.error('Error fetching menus:', error);
+        }
+      };
+
+      fetchMenus();
+    }, []);
     const childMenus = menus.filter((m) => m.parentId === menu.id && m.active);
     if (childMenus.length > 0) {
       e.preventDefault();
@@ -79,9 +112,9 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
     router.push(buildPath(subSubMenu));
   };
 
-  const parentMenus = menus.filter(
-    (menu) => menu.parentId === null && menu.active,
-  );
+  const parentMenus = Array.isArray(menus)
+    ? menus.filter((menu) => menu.parentId === null && menu.active)
+    : [];
 
   return (
     <nav className="bg-gray-700 text-white relative z-10">
@@ -211,3 +244,10 @@ const NavMenu: React.FC<NavMenuProps> = ({menus}) => {
 };
 
 export default NavMenu;
+function useEffect(arg0: () => void, arg1: never[]) {
+  throw new Error('Function not implemented.');
+}
+
+function setMenus(data: Menu[]) {
+  throw new Error('Function not implemented.');
+}

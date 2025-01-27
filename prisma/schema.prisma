@@ -55,7 +55,7 @@ model Invitation {
   username         String                 @unique
   password         String
   createdAt        DateTime               @default(now())
-  userId           Int?
+  userId           Int?                   @unique
   introdPathLetter String?
   letterIssuer     String?
   letterNumber     String?
@@ -88,14 +88,13 @@ model User {
   id               Int              @id @default(autoincrement())
   first_name       String
   last_name        String
-  phone            String           @unique
+  mobile           String           @unique
   email            String?          @unique
   gender           String
-  position         String
   inviterId        Int?
   invitationTime   DateTime
   registrationTime DateTime         @default(now())
-  expirationDate   DateTime?
+  endDate          DateTime?
   active           Boolean          @default(true)
   introdPathLetter String?
   letterIssuer     String?
@@ -136,6 +135,5 @@ model UserLoginHistory {
   deviceInfo  String?
   userAgent   String?
   status      String
-
   User        User     @relation(fields: [userId], references: [id])
 }

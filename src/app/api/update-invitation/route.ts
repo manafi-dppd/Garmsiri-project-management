@@ -1,6 +1,10 @@
+require('dotenv').config();
 import {NextRequest, NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import cookie from 'cookie';
+import {serialize} from 'cookie';
 
 const prisma = new PrismaClient();
 
@@ -9,12 +13,15 @@ export async function POST(request: NextRequest) {
     const formData = await request.json();
     const {id, firstName, lastName, mobile, username, passcode, email} =
       formData;
-    console.log('id: ', id);
-    console.log('داده دریافتی:', formData);
     const parsedId = parseInt(id, 10);
-    // دریافت رکورد فعلی بر اساس id
+    if (!parsedId || isNaN(parsedId)) {
+      return NextResponse.json({error: 'شناسه نامعتبر است.'}, {status: 400});
+    }
+
+    // دریافت رکورد فعلی
     const currentInvitation = await prisma.invitation.findUnique({
       where: {id: parsedId},
+      include: {user: true, positions: true, accessLevels: true},
     });
 
     if (!currentInvitation) {
@@ -82,28 +89,23 @@ export async function POST(request: NextRequest) {
         where: {mobile, id: {not: parsedId}},
       });
 
-      if (
-        existingMobile ||
-        (await prisma.user.findFirst({where: {phone: mobile}}))
-      ) {
+      if (existingMobile || (await prisma.user.findFirst({where: {mobile}}))) {
         return NextResponse.json(
           {error: 'شماره تلفن همراه تکراری است.'},
           {status: 409},
         );
       }
 
-      if (
-        username &&
-        (username.length > 20 || !/^[a-zA-Z0-9]{1,20}$/.test(username))
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              'نام کاربری می‌تواند شامل حروف انگلیسی و عدد باشد و حداکثر 20 کاراکتر است.',
-          },
-          {status: 400},
-        );
-      }
+      const validateUsername = (username: string) => {
+        if (
+          !username ||
+          username.length > 20 ||
+          !/^[a-zA-Z0-9]{1,20}$/.test(username)
+        ) {
+          return 'نام کاربری باید ترکیبی از حرف و عدد باشد و حداکثر 20 کاراکتر.';
+        }
+        return null;
+      };
 
       const existingUsername =
         (await prisma.invitation.findFirst({where: {username}})) ||
@@ -149,17 +151,113 @@ export async function POST(request: NextRequest) {
         : currentInvitation.password,
       isRegistered: true,
     };
-
+    // بروزرسانی داده‌ها
     const updatedInvitation = await prisma.invitation.update({
       where: {id: parsedId},
-      data: updatedData,
+      data: {
+        firstName,
+        lastName,
+        mobile,
+        username: username || currentInvitation.username,
+        password: passcode
+          ? await bcrypt.hash(passcode, 10)
+          : currentInvitation.password,
+        isRegistered: true,
+      },
     });
 
-    return NextResponse.json({
-      message: 'اطلاعات با موفقیت بروزرسانی شد.',
-      data: updatedInvitation,
+    // انتقال اطلاعات به جدول User
+    const newUser = await prisma.user.upsert({
+      where: {id: parsedId},
+      update: {
+        first_name: firstName || currentInvitation.firstName,
+        last_name: lastName,
+        email: email || currentInvitation.user?.email,
+        userName: username || currentInvitation.username,
+        password: passcode
+          ? await bcrypt.hash(passcode, 10) // استفاده از رمز عبور جدید در صورت وجود
+          : currentInvitation.password, // استفاده از رمز عبور قبلی در غیر این صورت
+        introdPathLetter: currentInvitation.introdPathLetter,
+        letterIssuer: currentInvitation.letterIssuer,
+      },
+      create: {
+        first_name: firstName || currentInvitation.firstName,
+        last_name: lastName,
+        mobile,
+        email,
+        gender: currentInvitation.gender || '',
+        inviterId: currentInvitation.id,
+        invitationTime: currentInvitation.createdAt,
+        userName: username || currentInvitation.username,
+        password: passcode
+          ? await bcrypt.hash(passcode, 10) // استفاده از رمز عبور جدید در صورت وجود
+          : currentInvitation.password, // استفاده از رمز عبور قبلی در غیر این صورت
+      },
     });
-  } catch (error: any) {
+
+    // انتقال موقعیت‌ها
+    for (const position of currentInvitation.positions) {
+      await prisma.positionOnUser.create({
+        data: {
+          userId: newUser.id,
+          positionId: position.positionId,
+        },
+      });
+    }
+
+    // انتقال سطح دسترسی‌ها
+    for (const accessLevel of currentInvitation.accessLevels) {
+      await prisma.userAccess.create({
+        data: {
+          userId: newUser.id,
+          menuId: accessLevel.menuId,
+          hasAccess: accessLevel.hasAccess,
+        },
+      });
+    }
+
+    // ایجاد تاریخچه ورود
+    await prisma.userLoginHistory.create({
+      data: {
+        userId: newUser.id,
+        ipAddress: request.headers.get('x-forwarded-for') || '',
+        userAgent: request.headers.get('user-agent') || '',
+        status: 'Active',
+      },
+    });
+    const jwt = require('jsonwebtoken');
+    const payload = {
+      userId: newUser.id, // هر دیتایی که نیاز است در توکن ذخیره شود
+      username: newUser.userName,
+      iss: 'garmsiri', // صادرکننده توکن
+    };
+    // تولید توکن
+    const secretKey = process.env.SECRET_KEY || 'default-secret-key';
+    const token = jwt.sign(payload, secretKey, {
+      expiresIn: '7d', // اعتبار توکن
+    });
+    let decodedToken: jwt.JwtPayload;
+    decodedToken = jwt.verify(token, secretKey) as jwt.JwtPayload;
+
+    // ایجاد کوکی
+    const response = NextResponse.json(
+      {
+        message: 'اطلاعات با موفقیت بروزرسانی و منتقل شد.',
+        data: updatedInvitation,
+      },
+      {
+        status: 200,
+      },
+    );
+
+    response.cookies.set('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+    return response;
+  } catch (error) {
     console.error('خطا در بروزرسانی اطلاعات:', error);
     return NextResponse.json(
       {error: 'مشکلی در ثبت اطلاعات پیش آمده است.'},

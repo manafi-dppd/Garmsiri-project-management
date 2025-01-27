@@ -28,9 +28,10 @@ export default function RegisterPage() {
   useEffect(() => {
     // چک کردن وجود پارامتر معتبر (به عنوان مثال، enable)
     const enable = searchParams.get('enable');
-
+    console.log('enable: ', enable);
     // اگر پارامتر enable موجود نیست یا false است، به صفحه login هدایت شود
     if (!enable || enable !== 'true') {
+      console.log('Going to login2');
       router.replace('/login'); // بازگشت به صفحه لاگین
     }
   }, [searchParams, router]);
@@ -42,10 +43,10 @@ export default function RegisterPage() {
     const mobile = searchParams.get('mobile');
     const enable = searchParams.get('enable');
 
-    if (firstName && lastName && mobile) {
+    if (lastName && mobile) {
       setFormData((prev) => ({
         ...prev,
-        firstName: decodeURIComponent(firstName),
+        // firstName: decodeURIComponent(firstName),
         lastName: decodeURIComponent(lastName),
         mobile: decodeURIComponent(mobile),
         email: decodeURIComponent(email),
@@ -55,7 +56,7 @@ export default function RegisterPage() {
       // اگر enable=true است، دکمه را فعال کن
       setIsDisabled(enable !== 'true');
     }
-  }, [email, searchParams]);
+  }, [email, id, searchParams]);
 
   useEffect(() => {
     // دریافت مقادیر اولیه از query
@@ -155,7 +156,7 @@ export default function RegisterPage() {
         `/update-credentials?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}&email=${email}&id=${id}`,
       );
     } else {
-      alert('مشکلی در ثبت اطلاعات پیش آمده است.');
+      alert('مشکلی در ثبت اطلاعات پیش آمده است2.');
     }
   };
 
@@ -169,7 +170,7 @@ export default function RegisterPage() {
         />
 
         <h2 className="mt-10 text-center text-xl font-bold text-gray-900">
-          لطفا اطلاعات خود را اصلاح و تکمیل نمایید
+          اصلاح و تکمیل مشخصات(اختیاری)
         </h2>
       </div>
 

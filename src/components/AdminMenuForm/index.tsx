@@ -31,7 +31,7 @@ export default function AdminMenuForm() {
   );
 
   useEffect(() => {
-    fetch('/api/menus')
+    fetch('/api/menus?hierarchical=true')
       .then((res) => res.json())
       .then((data: Menu[]) => {
         const mainMenus = data.filter((menu) => menu.parentId === null);
@@ -48,7 +48,7 @@ export default function AdminMenuForm() {
     setIsFormChanged(false);
 
     if (selectedId) {
-      fetch('/api/menus')
+      fetch('/api/menus?hierarchical=true')
         .then((res) => res.json())
         .then((data: Menu[]) => {
           const filteredSubMenus = data.filter(
@@ -87,7 +87,7 @@ export default function AdminMenuForm() {
     setIsFormChanged(false);
 
     if (selectedId) {
-      fetch('/api/menus')
+      fetch('/api/menus?hierarchical=true')
         .then((res) => res.json())
         .then((data: Menu[]) => {
           const filteredSubSubMenus = data.filter(
@@ -257,140 +257,6 @@ export default function AdminMenuForm() {
         }}
         mode={modalMode} // حالت متغیر
       />
-
-      {/* {isMenuVisible && (
-        <div className="w-full max-w-4xl mx-auto p-6 bg-green-50 rounded-lg shadow-lg">
-          <table className="table-auto border-collapse border border-gray-300 text-sm text-center w-full shadow-md rounded-lg">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border border-gray-300 px-4 py-2">منو</th>
-                <th className="border border-gray-300 px-4 py-2 w-1/3">
-                  عنوان
-                </th>
-                <th className="border border-gray-300 px-4 py-2 w-1/3">
-                  عنوان انگلیسی
-                </th>
-                <th className="border border-gray-300 px-2 py-2 w-16">فعال</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">منوی اصلی</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <select
-                    value={selectedMainMenu}
-                    onChange={handleMainMenuChange}
-                    className="w-full border border-gray-300 rounded p-1"
-                  >
-                    <option value="">انتخاب کنید</option>
-                    {mainMenuOptions.map((menu) => (
-                      <option key={menu.id} value={menu.id}>
-                        {menu.title_fa}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {selectedMainMenu &&
-                    mainMenuOptions.find(
-                      (menu) => menu.id === Number(selectedMainMenu),
-                    )?.title}
-                </td>
-                <td className="border border-gray-300 px-2 py-2">
-                  <input
-                    type="checkbox"
-                    checked={activeState[0]}
-                    disabled={
-                      !selectedMainMenu ||
-                      !!(
-                        selectedMainMenu &&
-                        mainMenuOptions.find(
-                          (menu) => menu.id === Number(selectedMainMenu),
-                        )?.slug === 'current-affairs'
-                      )
-                    }
-                    onChange={() => handleActiveChange(0)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">زیرمنو</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <select
-                    value={selectedSubMenu}
-                    onChange={handleSubMenuChange}
-                    disabled={!selectedMainMenu}
-                    className="w-full border border-gray-300 rounded p-1"
-                  >
-                    <option value="">انتخاب کنید</option>
-                    {subMenuOptions.map((menu) => (
-                      <option key={menu.id} value={menu.id}>
-                        {menu.title_fa}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {selectedSubMenu &&
-                    subMenuOptions.find(
-                      (menu) => menu.id === Number(selectedSubMenu),
-                    )?.title}
-                </td>
-                <td className="border border-gray-300 px-2 py-2">
-                  <input
-                    type="checkbox"
-                    checked={activeState[1]}
-                    disabled={!selectedSubMenu}
-                    onChange={() => handleActiveChange(1)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">زیرزیرمنو</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <select
-                    value={selectedSubSubMenu}
-                    onChange={handleSubSubMenuChange}
-                    disabled={!selectedSubMenu}
-                    className="w-full border border-gray-300 rounded p-1"
-                  >
-                    <option value="">انتخاب کنید</option>
-                    {subSubMenuOptions.map((menu) => (
-                      <option key={menu.id} value={menu.id}>
-                        {menu.title_fa}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {selectedSubSubMenu &&
-                    subSubMenuOptions.find(
-                      (menu) => menu.id === Number(selectedSubSubMenu),
-                    )?.title}
-                </td>
-                <td className="border border-gray-300 px-2 py-2">
-                  <input
-                    type="checkbox"
-                    checked={activeState[2]}
-                    disabled={!selectedSubSubMenu}
-                    onChange={() => handleActiveChange(2)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="w-full flex justify-end mt-4">
-            <button
-              onClick={handleSubmit}
-              disabled={!isFormChanged}
-              className="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition"
-            >
-              ارسال
-            </button>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
 interface Menu {
@@ -39,13 +39,20 @@ function findMenuPath(slugs: string[], menus: Menu[]): string {
 
 export default function Layout({children}: {children: React.ReactNode}) {
   const params = useParams();
+  const router = useRouter();
   const [menus, setMenus] = useState<Menu[]>([]);
   const [path, setPath] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchMenus = async () => {
       try {
-        const response = await fetch('/api/menus');
+        const response = await fetch('/api/menus?hierarchical=true');
+        if (response.status === 401) {
+          console.log('Going to login1');
+          router.push('/login'); // هدایت به صفحه لاگین
+          return;
+        }
         const data: Menu[] = await response.json();
         setMenus(data);
 
@@ -59,16 +66,22 @@ export default function Layout({children}: {children: React.ReactNode}) {
         setPath(currentPath);
       } catch (error) {
         console.error('Error fetching menus:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMenus();
-  }, [params]);
+  }, [params, router]);
+
+  if (loading) {
+    return <div>در حال بارگذاری...</div>;
+  }
 
   return (
     <div>
       <div className="bg-gray-100 p-4 text-right font-bold">
-        {path || 'در حال بارگذاری...'}
+        {path || 'هیچ منویی یافت نشد'}
       </div>
       {children}
     </div>

@@ -1,7 +1,14 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {PrismaClient} from '@prisma/client';
+import jwt from 'jsonwebtoken'; // نصب این کتابخانه: yarn add jsonwebtoken
 
 const prisma = new PrismaClient();
+const SECRET_KEY = process.env.SECRET_KEY;
+if (!SECRET_KEY) {
+  throw new Error('SECRET_KEY is not defined in environment variables.');
+}
+
+// کلید محرمانه برای امضای توکن (همان کلیدی که در زمان تولید توکن استفاده شده است)
 
 export async function GET(
   req: NextRequest,
@@ -10,6 +17,22 @@ export async function GET(
   }: {params: {menuSlug: string; submenuSlug: string; subSubMenuSlug: string}},
 ) {
   try {
+    const jwt = require('jsonwebtoken');
+    // استخراج توکن از کوکی
+    const token = req.cookies.get('auth_token')?.value;
+    console.log('token4: ', token);
+    if (!token) {
+      return NextResponse.redirect('/login'); // هدایت به صفحه ورود در صورت نبود توکن
+    }
+    console.log('token5: ', token);
+    // اعتبارسنجی توکن
+    try {
+      jwt.verify(token, SECRET_KEY); // رمزگشایی و اعتبارسنجی توکن
+    } catch (err) {
+      console.error('Invalid token:', err);
+      return NextResponse.redirect('/login'); // هدایت به صفحه ورود در صورت توکن نامعتبر
+    }
+
     // استخراج پارامترها از context.params
     const {menuSlug, submenuSlug, subSubMenuSlug} = params;
 
@@ -26,7 +49,6 @@ export async function GET(
       },
     });
 
-    // چاپ خروجی منوی والد برای بررسی
     console.log('parentMenu:', parentMenu);
 
     if (!parentMenu) {

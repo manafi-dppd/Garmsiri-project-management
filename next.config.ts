@@ -1,9 +1,8 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true, // فعال‌سازی Strict Mode
-  /* سایر تنظیمات پروژه */
+  // حذف appDir: true
 };
 
 export default nextConfig;
-

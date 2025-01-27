@@ -14,6 +14,11 @@ export async function GET(
   const {menuSlug, submenuSlug, subSubmenuSlug} = params;
 
   try {
+    const token = req.cookies.get('auth_token');
+    console.log('token3: ', token);
+    if (!token) {
+      return NextResponse.redirect('/login');
+    }
     let menuQuery: any = {active: true};
 
     if (menuSlug) menuQuery = {...menuQuery, slug: menuSlug};

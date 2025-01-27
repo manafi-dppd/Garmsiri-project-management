@@ -313,7 +313,9 @@ const InvitationModal: React.FC<InvitationModalProps> = ({
             style={{maxWidth: '50%', margin: 'auto'}}
           >
             <div
-              className={`modal-body invitation-modal bg-gray-50 p-1 rounded-md mx-auto`}
+              className={`modal-body invitation-modal bg-gray-50 p-1 rounded-md mx-auto ${
+                hasLicenseRequirement ? 'w-full' : 'w-80'
+              }`}
               style={{
                 transition: 'max-height 0.3s ease-in-out',
               }}

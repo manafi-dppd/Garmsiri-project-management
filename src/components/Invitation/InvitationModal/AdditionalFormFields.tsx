@@ -77,7 +77,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
   const days = generateCalendar(selectedMonth, selectedYear);
 
   return (
-    <div className="bg-gray-100 p-4 rounded-md shadow-md space-y-4">
+    <div className="bg-gray-100 p-1 rounded-md shadow-md space-y-4">
       <div>
         <label
           htmlFor="introductionLetter"
@@ -137,7 +137,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
       </div>
-      <div className="p-4 border rounded shadow-md">
+      <div className="border rounded shadow-md">
         <span className="text-sm font-medium text-gray-700">
           تاریخ معرفی‌نامه
         </span>

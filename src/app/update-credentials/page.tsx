@@ -3,6 +3,7 @@
 
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {ReactNode, useEffect, useRef, useState} from 'react';
+import Cookies from 'js-cookie';
 
 interface ValidationErrors {
   confirmUsername: ReactNode;
@@ -24,6 +25,7 @@ const UpdateCredentialsPage = () => {
   const [confirmPasscode, setConfirmPasscode] = useState('');
   const [showPasscode, setShowPasscode] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showConfirmTooltip, setShowConfirmTooltip] = useState(false);
@@ -73,6 +75,8 @@ const UpdateCredentialsPage = () => {
       validationErrors.confirmUsername =
         'تکرار نام کاربری با مقدار وارد شده مطابقت ندارد.';
     }
+    // console.log('errors?.username: ', username)
+    // alert(errors?.username || 'مشکلی در ثبت اطلاعات پیش آمده است3.');
 
     if (passcode) {
       // رمز عبور: حداقل 8 و حداکثر 20 کاراکتر، ترکیبی از حرف و عدد
@@ -123,17 +127,60 @@ const UpdateCredentialsPage = () => {
           body: JSON.stringify(payload),
         });
 
-        const result = await response.json();
-        if (response.ok) {
-          alert('اطلاعات با موفقیت ثبت شد.');
-          router.push('/success-page');
-        } else {
-          alert(`خطا: ${result.error}`);
+        if (!response.ok) {
+          const errorResult = await response.json();
+          alert(`خطا: ${errorResult.error}`);
+          return;
         }
+
+        // const result = await response.json();
+        // const {token} = result;
+
+        // ذخیره توکن در کوکی
+        // Cookies.set('authToken', token, {expires: 7});
+
+        alert('اطلاعات با موفقیت ثبت شد.');
+        router.push('/');
       } catch (error) {
         console.error('خطا در ارسال اطلاعات:', error);
         alert('مشکلی در ثبت اطلاعات پیش آمده است.');
       }
+      // try {
+      //   // ارسال درخواست به سرور برای احراز هویت
+      //   const response = await fetch('/api/authenticate', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({username, password}),
+      //   });
+
+      //   if (!response.ok) {
+      //     const errorResult = await response.json();
+      //     console.error('Authentication Error:', errorResult);
+      //     throw new Error(
+      //       'Authentication failed. Please check your credentials.',
+      //     );
+      //   }
+
+      //   // دریافت توکن از پاسخ سرور
+      //   const data = await response.json();
+      //   console.log('Authentication response data:', data);
+      //   const {token} = data;
+
+      //   if (!token) {
+      //     throw new Error('Token is missing in the response.');
+      //   }
+
+      //   // تنظیم کوکی در کلاینت
+      //   Cookies.set('authToken', token, {expires: 7}); // کوکی با مدت انقضای 7 روز
+      //   console.log('Auth token set in cookies:', Cookies.get('authToken'));
+
+      //   // هدایت به صفحه بعدی
+      //   window.location.href = '/dashboard';
+      // } catch (err: any) {
+      //   setError(err.message || 'An error occurred. Please try again.');
+      // }
     }
   };
 
@@ -230,14 +277,13 @@ const UpdateCredentialsPage = () => {
                   if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
                     event.preventDefault();
                     setShowTooltip(true);
-                    setTimeout(() => setShowTooltip(false), 2000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                    setTimeout(() => setShowTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
                   }
                 }}
               />
               {showTooltip && (
                 <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
-                  صفحه کلید خود را به انگلیسی تغییر داده و کاراکتر فاصله وارد
-                  نکنید
+                  صفحه کلید انگلیسی شود و کاراکتر فاصله وارد نکنید
                 </div>
               )}
               <button
@@ -273,14 +319,13 @@ const UpdateCredentialsPage = () => {
                   if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
                     event.preventDefault();
                     setShowConfirmTooltip(true);
-                    setTimeout(() => setShowConfirmTooltip(false), 2000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                    setTimeout(() => setShowConfirmTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
                   }
                 }}
               />
               {showConfirmTooltip && (
                 <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
-                  صفحه کلید خود را به انگلیسی تغییر داده و کاراکتر فاصله وارد
-                  نکنید
+                  صفحه کلید انگلیسی شود و کاراکتر فاصله وارد نکنید
                 </div>
               )}
               <button

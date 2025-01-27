@@ -93,7 +93,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                         }
                       }}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                     />
                   </div>
 
@@ -117,7 +117,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                         }
                       }}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                     />
                   </div>
 
@@ -147,7 +147,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                       pattern="09[0-9]{9}"
                       maxLength={11}
                       placeholder="09XXXXXXXXX"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                     />
                   </div>
 
@@ -165,7 +165,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                       value={formData.endDate || ''}
                       onChange={handleChange}
                       min={today}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
                     />
                   </div>
 
@@ -233,7 +233,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                             handlePositionChange(selected);
                             resetEditedAccessLevel();
                           }}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="block w-full rounded-md shadow-sm border-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                         >
                           {positions.length > 0 ? (
                             positions.map((position) => (

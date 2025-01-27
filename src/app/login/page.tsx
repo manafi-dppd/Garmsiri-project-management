@@ -1,13 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 // app/login/page.tsx
 'use client';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -27,11 +28,16 @@ export default function LoginPage() {
       const data = await response.json();
       console.log('Login Response Data:', data);
 
-      router.push(
-        `/register?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(
-          data.lastName,
-        )}&mobile=${encodeURIComponent(data.mobile)}&id=${encodeURIComponent(data.id)}&enable=true`,
-      ); // اضافه شدن enable=true برای فعال کردن دکمه
+      // بررسی موفقیت ورود
+      if (data.message === 'Login successful') {
+        // هدایت به صفحه اصلی (Home)
+        router.push('/');
+      } else {
+        // هدایت به ثبت‌نام (در صورت نیاز)
+        router.push(
+          `/register?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}&mobile=${encodeURIComponent(data.mobile)}&id=${encodeURIComponent(data.id)}&enable=true`,
+        );
+      }
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -98,7 +104,19 @@ export default function LoginPage() {
                 required
                 placeholder="رمز عبور خود را وارد کنید"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                onKeyDown={(event) => {
+                  if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
+                    event.preventDefault();
+                    setShowTooltip(true);
+                    setTimeout(() => setShowTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                  }
+                }}
               />
+              {showTooltip && (
+                <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
+                  صفحه کلید انگلیسی شود و کاراکتر فاصله وارد نکنید
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -124,16 +142,6 @@ export default function LoginPage() {
             </p>
           )}
         </form>
-
-        {/* <p className="mt-10 text-center text-sm/6 text-gray-500">
-          Not a member?
-          <a
-            href="#"
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
-          >
-            Start a 14 day free trial
-          </a>
-        </p> */}
       </div>
     </div>
   );

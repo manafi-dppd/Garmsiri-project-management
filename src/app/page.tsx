@@ -29,7 +29,7 @@ export default function Page() {
       } else {
         localStorage.removeItem('hasReloaded');
       }
-    }, 10000); // تأخیر 10 ثانیه‌ای
+    }, 3000); // تأخیر 5 ثانیه‌ای
 
     return () => clearTimeout(timer); // پاکسازی تایمر هنگام خروج از کامپوننت
     //   } else {

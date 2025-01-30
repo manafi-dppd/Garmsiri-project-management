@@ -15,16 +15,20 @@
 }
 
 @font-face {
-  font-family: 'iranyekanwebbold'; /* نام فونت */
-  src: url('/fonts/font-file.woff2') format('woff2'),
-       url('/fonts/font-file.woff') format('woff');
-  font-weight: normal; /* یا bold */
-  font-style: normal; /* یا italic */
+  font-family: 'IRANYekanWebBold';
+  src: url('/fonts/IRANYekanWebBold.woff2') format('woff2'),
+       url('/fonts/IRANYekanWebBold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
 }
 
+/* سایر استایل‌های عمومی */
 body {
+  font-family: 'IRANYekanWebBold', sans-serif;
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
 

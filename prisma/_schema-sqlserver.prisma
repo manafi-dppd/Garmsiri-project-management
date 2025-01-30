@@ -1,0 +1,22 @@
+// schema-sqlserver.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/sqlserver"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model AbadeMakhzan {
+  id      Int      @id @default(autoincrement())
+  TooleBala      Float?
+  ArzeBala       Float?
+  TooleKaf       Float?
+  ArzeKaf        Float?
+  Omgh           Float?
+  HajmMohasebat  Float 
+  HadeaghalHajm  Int?
+  NameStation    String  
+}

@@ -1,6 +1,6 @@
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 
-const prisma = new PrismaClient();
+const prisma = sqliteClient;
 
 async function main() {
   // افزودن slug برای منوها

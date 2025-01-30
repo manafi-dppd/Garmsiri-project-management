@@ -4,6 +4,7 @@
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {ReactNode, useEffect, useRef, useState} from 'react';
 import Cookies from 'js-cookie';
+// import {FaSmile} from 'react-icons/fa'; // آیکون خوشامدگویی
 
 interface ValidationErrors {
   confirmUsername: ReactNode;
@@ -29,6 +30,8 @@ const UpdateCredentialsPage = () => {
   const searchParams = useSearchParams();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showConfirmTooltip, setShowConfirmTooltip] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -104,8 +107,8 @@ const UpdateCredentialsPage = () => {
     e.preventDefault();
 
     if (handleValidation()) {
+      setIsFormDisabled(true);
       const {firstName, lastName, mobile} = formData;
-      // const id = router.query?.id as string;
 
       const payload = {
         id,
@@ -133,56 +136,24 @@ const UpdateCredentialsPage = () => {
           return;
         }
 
-        // const result = await response.json();
-        // const {token} = result;
-
-        // ذخیره توکن در کوکی
-        // Cookies.set('authToken', token, {expires: 7});
-
-        alert('اطلاعات با موفقیت ثبت شد.');
-        router.push('/');
+        setShowAlert(true); // نمایش اعلان
       } catch (error) {
         console.error('خطا در ارسال اطلاعات:', error);
-        alert('مشکلی در ثبت اطلاعات پیش آمده است.');
+        alert('3مشکلی در ثبت اطلاعات پیش آمده است.');
       }
-      // try {
-      //   // ارسال درخواست به سرور برای احراز هویت
-      //   const response = await fetch('/api/authenticate', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({username, password}),
-      //   });
-
-      //   if (!response.ok) {
-      //     const errorResult = await response.json();
-      //     console.error('Authentication Error:', errorResult);
-      //     throw new Error(
-      //       'Authentication failed. Please check your credentials.',
-      //     );
-      //   }
-
-      //   // دریافت توکن از پاسخ سرور
-      //   const data = await response.json();
-      //   console.log('Authentication response data:', data);
-      //   const {token} = data;
-
-      //   if (!token) {
-      //     throw new Error('Token is missing in the response.');
-      //   }
-
-      //   // تنظیم کوکی در کلاینت
-      //   Cookies.set('authToken', token, {expires: 7}); // کوکی با مدت انقضای 7 روز
-      //   console.log('Auth token set in cookies:', Cookies.get('authToken'));
-
-      //   // هدایت به صفحه بعدی
-      //   window.location.href = '/dashboard';
-      // } catch (err: any) {
-      //   setError(err.message || 'An error occurred. Please try again.');
-      // }
     }
   };
+
+  // مدیریت نمایش و پنهان کردن اعلان و هدایت به صفحه دیگر
+  useEffect(() => {
+    if (showAlert) {
+      const timeout = setTimeout(() => {
+        setShowAlert(false);
+        router.push('/'); // هدایت به صفحه جدید
+      }, 12000);
+      return () => clearTimeout(timeout); // پاکسازی تایمر
+    }
+  }, [showAlert, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -195,14 +166,20 @@ const UpdateCredentialsPage = () => {
               alt="Password Update Icon"
             />
           </div>
-
           <p className="text-center text-gray-700 font-medium">
-            به منظور حفظ ایمنی اطلاعات توصیه می‌شود کلمه و رمز عبور خود را تغییر
-            دهید
+            تغییر کلمه و رمز عبور
+            <span className="font-light"> (اختیاری)</span>
           </p>
         </div>
+        <span className="block text-sm font-medium text-red-500">مهم:</span>
+        <span className="block text-sm font-light mb-8">
+          ورود کلمه و رمز عبور پس از چند روز ضروری است آنرا به خاطر بسپارید
+        </span>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className={`bg-white p-6 rounded shadow-md ${isFormDisabled ? 'opacity-50' : ''}`}
+        >
           <div>
             <label
               htmlFor="username"
@@ -223,6 +200,7 @@ const UpdateCredentialsPage = () => {
                   event.preventDefault();
                 }
               }}
+              disabled={isFormDisabled}
             />
             {errors.username && (
               <p className="text-red-500 text-xs mt-1">{errors.username}</p>
@@ -249,6 +227,7 @@ const UpdateCredentialsPage = () => {
                   event.preventDefault();
                 }
               }}
+              disabled={isFormDisabled}
             />
             {errors.confirmUsername && (
               <p className="text-red-500 text-xs mt-1">
@@ -280,6 +259,7 @@ const UpdateCredentialsPage = () => {
                     setTimeout(() => setShowTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
                   }
                 }}
+                disabled={isFormDisabled}
               />
               {showTooltip && (
                 <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
@@ -322,6 +302,7 @@ const UpdateCredentialsPage = () => {
                     setTimeout(() => setShowConfirmTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
                   }
                 }}
+                disabled={isFormDisabled}
               />
               {showConfirmTooltip && (
                 <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
@@ -345,12 +326,62 @@ const UpdateCredentialsPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300"
+            className={`w-full bg-blue-500 text-white mt-4 py-2 px-4 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 ${
+              isFormDisabled ? 'cursor-not-allowed' : ''
+            }`}
+            disabled={isFormDisabled} // غیرفعال کردن دکمه
           >
             ادامه
           </button>
         </form>
       </div>
+      {showAlert && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-gray-100 text-gray-800 px-12 py-8 rounded-xl shadow-2xl w-[600px] flex flex-col items-center relative">
+            {/* علامت تیک */}
+            <div className="flex items-center justify-center w-16 h-16 bg-red-600 text-white rounded-full absolute -top-8 shadow-md text-6xl">
+              ✓
+            </div>
+
+            {/* متن خوشامدگویی */}
+            <div className="text-center mt-8">
+              <p
+                className="text-xl font-bold"
+                // style={{fontFamily: 'IRANYekanWebBold'}}
+              >
+                {` جناب ${formData.firstName} ${formData.lastName} به `}
+              </p>
+              <p
+                className="text-2xl font-bold text-gray-700 mt-4"
+                style={{
+                  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+                  // fontFamily: 'IRANYekanWebBold',
+                }}
+              >
+                سامانه جامع مدیریت یکپارچه طرح گرمسیری
+              </p>
+              <p
+                className="text-gray-600 mt-4 text-2xl"
+                // style={{fontFamily: 'IRANYekanWebBold'}}
+              >
+                خوش آمدید
+              </p>
+            </div>
+
+            {/* دکمه OK */}
+            <button
+              onClick={() => {
+                setShowAlert(false);
+                router.push('/'); // انتقال به صفحه اصلی
+              }}
+              className="mt-8 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition-all text-4xl"
+              style={{fontFamily: 'IRANYekanWebBold'}}
+            >
+              شروع
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

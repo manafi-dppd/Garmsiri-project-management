@@ -1,18 +1,22 @@
 require('dotenv').config();
 import {NextResponse} from 'next/server';
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {serialize} from 'cookie'; // اصلاح ایمپورت
 
-const prisma = new PrismaClient();
-const JWT_SECRET = 'your_jwt_secret'; // این مقدار باید در فایل env ذخیره شود
+const prisma = sqliteClient;
+const JWT_SECRET = process.env.SECRET_KEY || 'default-secret-key';
 
-// بررسی اطلاعات کاربر با متد GET
 export async function GET(request: Request) {
   const {searchParams} = new URL(request.url);
-  const username = searchParams.get('username'); // مقدار ورودی از درخواست
+  const username = searchParams.get('username');
   const password = searchParams.get('password');
+  const ipAddress =
+    request.headers.get('x-forwarded-for') ||
+    request.headers.get('remote-addr') ||
+    'Unknown';
+  const userAgent = request.headers.get('user-agent') || 'Unknown';
 
   if (!username || !password) {
     return NextResponse.json(
@@ -22,38 +26,73 @@ export async function GET(request: Request) {
   }
 
   try {
-    // بررسی در جدول User
+    // یافتن کاربر در جدول User
     const user = await prisma.user.findUnique({
-      where: {userName: username}, // اصلاح نام فیلد
+      where: {userName: username},
     });
 
     if (user) {
+      // بررسی وضعیت endDate
+      if (user.endDate && new Date(user.endDate) < new Date()) {
+        // غیرفعال کردن حساب کاربر
+        await prisma.user.update({
+          where: {id: user.id},
+          data: {active: false},
+        });
+
+        // بروزرسانی جدول UserLoginHistory
+        await prisma.userLoginHistory.updateMany({
+          where: {
+            userId: user.id,
+            logoutTime: null, // فقط رکوردهایی که هنوز logoutTime تنظیم نشده‌اند
+          },
+          data: {
+            logoutTime: new Date(),
+            status: 'Expired', // وضعیت ورود تغییر می‌کند
+          },
+        });
+
+        return NextResponse.json(
+          {
+            error:
+              'Your account is expired and deactivated. Please contact support.',
+          },
+          {status: 403},
+        );
+      }
+
+      // اعتبارسنجی رمز عبور
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return NextResponse.json({error: 'Invalid credentials'}, {status: 401});
       }
-      const jwt = require('jsonwebtoken');
-      const payload = {
-        userId: user.id, // هر دیتایی که نیاز است در توکن ذخیره شود
-        username: user.userName,
-        iss: 'garmsiri', // صادرکننده توکن
-      };
 
       // تولید توکن
-      const secretKey = process.env.SECRET_KEY || 'default-secret-key';
-      const token = jwt.sign(payload, secretKey, {
-        expiresIn: '7d', // اعتبار توکن
-      });
-      // console.log('SECRET_KEY:', process.env.SECRET_KEY);
+      const payload = {
+        userId: user.id,
+        username: user.userName,
+        iss: 'garmsiri',
+      };
+      const token = jwt.sign(payload, JWT_SECRET, {expiresIn: '7d'});
 
-      // ایجاد کوکی
+      // ثبت تاریخچه ورود
+      await prisma.userLoginHistory.create({
+        data: {
+          userId: user.id,
+          ipAddress,
+          deviceInfo: userAgent,
+          status: 'Success',
+        },
+      });
+
+      // ایجاد کوکی و ارسال پاسخ
       const response = NextResponse.json({message: 'Login successful'});
       response.headers.append(
         'Set-Cookie',
         serialize('auth_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          maxAge: 60 * 60 * 24 * 7, // اعتبار کوکی برای 7 روز,
+          maxAge: 60 * 60 * 24 * 7,
           path: '/',
         }),
       );
@@ -61,9 +100,9 @@ export async function GET(request: Request) {
       return response;
     }
 
-    // اگر کاربر در جدول User نبود، بررسی جدول Invitation
+    // بررسی جدول Invitation
     const invitation = await prisma.invitation.findUnique({
-      where: {username}, // فرض بر اینکه در مدل Invitation فیلد username وجود دارد
+      where: {username},
     });
 
     if (!invitation) {
@@ -75,7 +114,6 @@ export async function GET(request: Request) {
       return NextResponse.json({error: 'Invalid credentials'}, {status: 401});
     }
 
-    // ارسال اطلاعات کاربر به فرم ثبت‌نام
     return NextResponse.json({
       firstName: invitation.firstName,
       lastName: invitation.lastName,

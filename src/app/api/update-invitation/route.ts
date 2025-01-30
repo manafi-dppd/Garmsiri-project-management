@@ -1,12 +1,12 @@
 require('dotenv').config();
 import {NextRequest, NextResponse} from 'next/server';
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 import {serialize} from 'cookie';
 
-const prisma = new PrismaClient();
+const prisma = sqliteClient;
 
 export async function POST(request: NextRequest) {
   try {
@@ -151,6 +151,7 @@ export async function POST(request: NextRequest) {
         : currentInvitation.password,
       isRegistered: true,
     };
+
     // بروزرسانی داده‌ها
     const updatedInvitation = await prisma.invitation.update({
       where: {id: parsedId},
@@ -167,6 +168,12 @@ export async function POST(request: NextRequest) {
     });
 
     // انتقال اطلاعات به جدول User
+    // const existingUser = await prisma.invitation.findUnique({
+    //   where: {id: parsedId},
+    // });
+    // console.log('existingUser:', existingUser);
+    // console.log('parsedId:', parsedId);
+
     const newUser = await prisma.user.upsert({
       where: {id: parsedId},
       update: {

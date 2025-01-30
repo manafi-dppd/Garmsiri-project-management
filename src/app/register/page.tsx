@@ -156,7 +156,7 @@ export default function RegisterPage() {
         `/update-credentials?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}&email=${email}&id=${id}`,
       );
     } else {
-      alert('مشکلی در ثبت اطلاعات پیش آمده است2.');
+      alert('مشکلی در ثبت اطلاعات پیش آمده است.');
     }
   };
 
@@ -170,7 +170,8 @@ export default function RegisterPage() {
         />
 
         <h2 className="mt-10 text-center text-xl font-bold text-gray-900">
-          اصلاح و تکمیل مشخصات(اختیاری)
+          اصلاح و تکمیل مشخصات
+          <span className="font-light"> (اختیاری)</span>
         </h2>
       </div>
 

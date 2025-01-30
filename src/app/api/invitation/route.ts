@@ -1,10 +1,10 @@
 import {NextResponse} from 'next/server';
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 import bcrypt from 'bcryptjs';
 import {v4 as uuidv4} from 'uuid';
 import {nanoid} from 'nanoid';
 
-const prisma = new PrismaClient();
+const prisma = sqliteClient;
 
 // تابع صحت‌سنجی اطلاعات
 const validateInvitationServer = (data: {

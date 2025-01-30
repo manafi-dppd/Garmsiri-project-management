@@ -1,13 +1,16 @@
 import {PrismaClient} from '@prisma/client';
 
-const globalForPrisma = global as unknown as {prisma: PrismaClient};
+// بررسی اینکه از کدام پایگاه داده استفاده شود
+const isUsingSqlServer = process.env.DB_TYPE === 'sqlserver';
 
-const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
-  });
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: isUsingSqlServer
+        ? process.env.SQLSERVER_DATABASE_URL
+        : process.env.SQLITE_DATABASE_URL,
+    },
+  },
+});
 
 export default prisma;

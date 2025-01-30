@@ -1,11 +1,18 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
-datasource db {
+datasource sqlite {
   provider = "sqlite"
-  url      = "file:./dev.sqlite"
+  url      = env("SQLITE_DATABASE_URL")
 }
+
+datasource sqlserver {
+  provider = "sqlserver"
+  url      = env("SQLSERVER_DATABASE_URL")
+}
+
 
 model Menu {
   id               Int                @id @default(autoincrement())
@@ -85,28 +92,28 @@ model InvitationAccess {
 }
 
 model User {
-  id               Int              @id @default(autoincrement())
+  id               Int                @id @default(autoincrement())
   first_name       String
   last_name        String
-  mobile           String           @unique
-  email            String?          @unique
+  mobile           String             @unique
+  email            String?            @unique
   gender           String
   inviterId        Int?
   invitationTime   DateTime
-  registrationTime DateTime         @default(now())
+  registrationTime DateTime           @default(now())
   endDate          DateTime?
-  active           Boolean          @default(true)
+  active           Boolean            @default(true)
   introdPathLetter String?
   letterIssuer     String?
   letterNumber     String?
   letterDate       String?
   letterApprover   String?
-  userName         String           @unique
+  userName         String             @unique
   password         String
-  invitations      Invitation[]
+  invitations      Invitation?
   positions        PositionOnUser[]
   accessLevels     UserAccess[]
-  loginHistories   UserLoginHistory[] // رابطه با UserLoginHistory
+  loginHistories   UserLoginHistory[]
 }
 
 model PositionOnUser {
@@ -127,13 +134,13 @@ model UserAccess {
 }
 
 model UserLoginHistory {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  loginTime   DateTime @default(now())
-  logoutTime  DateTime?
-  ipAddress   String?
-  deviceInfo  String?
-  userAgent   String?
-  status      String
-  User        User     @relation(fields: [userId], references: [id])
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  loginTime  DateTime  @default(now())
+  logoutTime DateTime?
+  ipAddress  String?
+  deviceInfo String?
+  userAgent  String?
+  status     String
+  User       User      @relation(fields: [userId], references: [id])
 }

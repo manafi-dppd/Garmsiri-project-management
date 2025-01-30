@@ -1,0 +1,270 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/sqlserver"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL_SQLSERVER")
+}
+
+model AbadeMakhzan {
+  IdMakhzan       Int     @id @default(autoincrement())
+  TooleBala       Decimal? @db.Decimal(4,1)
+  ArzeBala        Decimal? @db.Decimal(4,1)
+  TooleKaf        Decimal? @db.Decimal(4,1)
+  ArzeKaf         Decimal? @db.Decimal(4,1)
+  Omgh            Decimal? @db.Decimal(4,1)
+  HajmMohasebat   Decimal  @db.Decimal(6,1)
+  HadeaghalHajm   Int?
+  NameStation     String  @db.NVarChar(20)
+}
+
+model Abgir {
+  IdKontor Int     @id @default(autoincrement())
+  FIdRanesh Int
+  Abgir    String  @db.NVarChar(6)
+}
+
+model AtashSoozi {
+  IdAtash    Int  @id @db.TinyInt // تعیین به‌عنوان کلید اصلی
+  FIdRanesh  Int? @db.TinyInt
+  FIdTarDor  Int? @db.SmallInt
+  AtashSoozi Int?
+}
+
+model BahrebardairProgram {
+  IdProgram Int     @id @default(autoincrement())
+  FIdRanesh Int     @db.TinyInt
+  FIdTarDor Int     @db.SmallInt
+  Tedad     Int     @db.TinyInt
+  Shorooe   DateTime? @db.Time
+  Paian     DateTime? @db.Time
+}
+
+model BahrebardariKeshtDore {
+  IdBahDor Int     @id @default(autoincrement())
+  FIdSal   Int     @db.TinyInt
+  FIdDore  Int     @db.TinyInt
+  FIdRanesh Int    @db.TinyInt
+  FIdNoeM  Int     @db.TinyInt
+  Area     Decimal @db.Decimal(5,1)
+}
+
+model BahrebardariTaghvim {
+  IdTag     Int     @id @default(autoincrement())
+  FIdTarDor Int     @db.SmallInt
+  FIdRanesh Int     @db.TinyInt
+  Taghvim   Decimal @db.Decimal(9,2)
+}
+
+model BareshMotaleat {
+  IdBarMot  Int     @id @default(autoincrement())
+  FIdNet    Int     @db.TinyInt
+  FIdMah    Int     @db.TinyInt
+  BareshMotaleat Decimal @db.Decimal(4,2)
+}
+
+model DarajePipe {
+  IdDPipe     Int    @id @default(autoincrement())
+  DarajePipe  String @db.NVarChar(10)
+}
+
+model DarjeStation {
+  IdDStation     Int    @id @default(autoincrement())
+  DarajeStation  String @db.NVarChar(6)
+}
+
+model DoreKesht {
+  IdDore  Int    @id @default(autoincrement())
+  Dore    String @db.NVarChar(8)
+}
+
+model EshtebahAvamel {
+  IdEsht    Int   @id
+  FIdRanesh Int   @db.TinyInt
+  FIdTarDor Int   @db.SmallInt
+  Eshtebah  Int
+}
+
+model FlowBehbood {
+  IdBehbood Int     @id @default(autoincrement())
+  FIdRanesh Int     @db.TinyInt
+  FIdTarDor Int     @db.SmallInt
+  Flow      Int     @db.SmallInt
+}
+
+model Flowmeter {
+  IdFIT      Int    @id
+  FIdRanesh  Int
+  FIdTrikh   Int
+  Flowmeter  Float
+}
+
+model KhatRanesh {
+  IdRanesh     Int    @id @default(autoincrement())
+  RaneshName   String @db.NVarChar(15)
+  FIdPumpSta   Int
+  FIdDPipe     Int
+  FIdSePu      Int
+  FIdMeasuring Int
+}
+
+model KhatRaneshArea {
+  IdRanesh Int    @id @default(autoincrement())
+  FIdRanesh Int
+  FIdLand    Int
+  FIdNet     Int
+  Area       Decimal @db.Decimal(5,1)
+}
+
+model KhatRaneshPump {
+  IdRanesh        Int    @id @default(autoincrement())
+  FIdRanesh      Int
+  ModelPump      String? @db.NVarChar(25)
+  FIdPump        Int
+  TedadPump      Int?
+  DebiPomp       Decimal @db.Decimal(5,1)
+  FesharPump     Decimal @db.Decimal(4,1)
+  Randeman       Int
+  TavaneNami     Decimal @db.Decimal(4,1)
+  TavaneJazbi    Decimal @db.Decimal(4,1)
+  Voltazh        Int
+  DoreMotor      Int
+  FeshareMakesh  Int
+  FeshareRanesh  Int
+  SizeMakesh     Int
+  SizeRanesh     Int
+  SizeKolektor   Int
+  SizeShireKolektor Int
+}
+
+model KhatRaneshSegli {
+  IdRanesh Int    @id @default(autoincrement())
+  FIdRanesh Int
+  Zarfiat   Decimal @db.Decimal(5,1)
+}
+
+model Kontor {
+  IdKon      Int    @id @default(autoincrement())
+  FIdKontor  Int
+  FIdTarDor  Int
+  Kontor     Int
+}
+
+model Land {
+  IdLand Int    @id
+  Land   String @db.NVarChar(5)
+}
+
+model Mah {
+  IdMah Int    @id
+  Mah   String @db.NVarChar(8)
+}
+
+model MeasuringTool {
+  IdMeasuring Int    @id @default(autoincrement())
+  MeasuringTool String @db.NVarChar(20)
+  Precision    String @db.NVarChar(10)
+}
+
+model NashtShabake {
+  IdNasht    Int    @id @default(autoincrement())
+  FIdRanesh  Int
+  FIdTriDor  Int
+  NashtShabake Int
+}
+
+model Network {
+  IdNet  Int    @id @default(autoincrement())
+  Network String @db.NVarChar(20)
+  FIdSP   Int
+}
+
+model NoeKesht {
+  IdNoeK Int    @id @default(autoincrement())
+  Kesht  String @db.NVarChar(5)
+}
+
+model NoeMahsool {
+  IdNoeM  Int    @id @default(autoincrement())
+  Mahsool String @db.NVarChar(30)
+  FIdNoeK Int
+}
+
+model NonFIT {
+  IdNonFIT  Int   @id
+  FIdRanesh Int
+  FIdTarDor Int   @default(autoincrement())
+  VOLUM     Int
+}
+
+model PumpStation {
+  IdPumpSta   Int    @id @default(autoincrement())
+  NameStation String @db.NVarChar(20)
+  KM          Int?
+  FIdNet      Int
+  FIdDStation Int
+  FIdMakhzan  Int?
+}
+
+model PumpType {
+  IdPump   Int    @id @default(autoincrement())
+  PumpType String @db.NVarChar(50)
+}
+
+model RainfallStation {
+  IdRaiSta       Int    @id @default(autoincrement())
+  FIdWeaSta      Int
+  FIdTrikh       Int
+  FIdRaiTy       Int
+  ErtefaeBaresh  Decimal @db.Decimal(3, 1)
+}
+
+model RainfallType {
+  IdRaiTy       Int    @id @default(autoincrement())
+  RainfallType  String @db.NVarChar(5)
+}
+
+model SaleZeraee {
+  IdSal       Int    @id @default(autoincrement())
+  SaleZeraee  String @db.NVarChar(10)
+}
+
+model SeghliPump {
+  IdSePu      Int    @id @default(autoincrement())
+  SeghliPump  String @db.NVarChar(10)
+}
+
+model SystemPart {
+  IdSP  Int    @id @default(autoincrement())
+  Part  String @db.NVarChar(20)
+  KM    Int
+}
+
+model TakhlieMakhzan {
+  IdTakhlie  Int   @id @default(autoincrement())
+  FIdRanesh  Int
+  FIdTarDor  Int
+  Takhlie    Int
+}
+
+model Test {
+  IdTest    Int   @id @default(autoincrement())
+  FIdRanesh Int
+  FIdTarDor Int
+  Test      Int
+}
+
+model TrikhDoreKesht {
+  IdTarDor       Int    @id @default(autoincrement())
+  FIdSal        Int
+  FIdDore       Int
+  Trikh         DateTime @db.Date
+  TrikhKhorshidi String @db.NVarChar(10)
+}
+
+model WeatherStation {
+  IdWeaSta  Int    @id @default(autoincrement())
+  Station   String @db.NVarChar(20)
+}

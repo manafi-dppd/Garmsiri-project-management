@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 
-const prisma = new PrismaClient();
+const prisma = sqliteClient;
 
 // GET request: Fetch access levels based on positionId
 export async function GET(req) {

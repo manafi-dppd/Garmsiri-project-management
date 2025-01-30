@@ -1,8 +1,8 @@
 import {NextRequest, NextResponse} from 'next/server';
-import {PrismaClient} from '@prisma/client';
+import {sqliteClient, sqlServerClient} from '@prisma/db';
 import jwt from 'jsonwebtoken'; // نصب این کتابخانه: yarn add jsonwebtoken
 
-const prisma = new PrismaClient();
+const prisma = sqliteClient;
 const SECRET_KEY = process.env.SECRET_KEY;
 if (!SECRET_KEY) {
   throw new Error('SECRET_KEY is not defined in environment variables.');

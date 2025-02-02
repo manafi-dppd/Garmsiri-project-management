@@ -1,16 +1,15 @@
-import {sqliteClient, sqlServerClient} from '@prisma/db';
+import {sqlServerClient} from './prisma/db.js';
 
-const prisma = sqliteClient;
-
-async function main() {
+async function test() {
   try {
-    const users = await prisma.user.findMany();
-    console.log(users);
+    await sqlServerClient.$connect();
+    const tables =
+      await sqlServerClient.$queryRaw`SELECT name FROM sys.tables;`;
+    console.log('✅ اتصال موفق شد! لیست جداول:', tables);
+    await sqlServerClient.$disconnect();
   } catch (error) {
-    console.error('خطا در اتصال به پایگاه داده:', error);
-  } finally {
-    await prisma.$disconnect();
+    console.error('❌ خطای اتصال به دیتابیس:', error);
   }
 }
 
-main();
+test();

@@ -752,7 +752,7 @@ export namespace Prisma {
 
   /**
    * Prisma Client JS version: 6.3.0
-   * Query Engine version: 11f085a2012c0f4778414c8db2651556ee0ef959
+   * Query Engine version: acc0b9dd43eb689cbd20c9470515d719db10d0b0
    */
   export type PrismaVersion = {
     client: string
@@ -4754,6 +4754,10 @@ export namespace Prisma {
      * Filter which AbadeMakhzans to update
      */
     where?: AbadeMakhzanWhereInput
+    /**
+     * Limit how many AbadeMakhzans to update.
+     */
+    limit?: number
   }
 
   /**
@@ -4808,6 +4812,10 @@ export namespace Prisma {
      * Filter which AbadeMakhzans to delete
      */
     where?: AbadeMakhzanWhereInput
+    /**
+     * Limit how many AbadeMakhzans to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -5643,6 +5651,10 @@ export namespace Prisma {
      * Filter which Abgirs to update
      */
     where?: AbgirWhereInput
+    /**
+     * Limit how many Abgirs to update.
+     */
+    limit?: number
   }
 
   /**
@@ -5697,6 +5709,10 @@ export namespace Prisma {
      * Filter which Abgirs to delete
      */
     where?: AbgirWhereInput
+    /**
+     * Limit how many Abgirs to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -6551,6 +6567,10 @@ export namespace Prisma {
      * Filter which AtashSoozis to update
      */
     where?: AtashSooziWhereInput
+    /**
+     * Limit how many AtashSoozis to update.
+     */
+    limit?: number
   }
 
   /**
@@ -6605,6 +6625,10 @@ export namespace Prisma {
      * Filter which AtashSoozis to delete
      */
     where?: AtashSooziWhereInput
+    /**
+     * Limit how many AtashSoozis to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -7481,6 +7505,10 @@ export namespace Prisma {
      * Filter which BahrebardairPrograms to update
      */
     where?: BahrebardairProgramWhereInput
+    /**
+     * Limit how many BahrebardairPrograms to update.
+     */
+    limit?: number
   }
 
   /**
@@ -7535,6 +7563,10 @@ export namespace Prisma {
      * Filter which BahrebardairPrograms to delete
      */
     where?: BahrebardairProgramWhereInput
+    /**
+     * Limit how many BahrebardairPrograms to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -8419,6 +8451,10 @@ export namespace Prisma {
      * Filter which BahrebardariKeshtDores to update
      */
     where?: BahrebardariKeshtDoreWhereInput
+    /**
+     * Limit how many BahrebardariKeshtDores to update.
+     */
+    limit?: number
   }
 
   /**
@@ -8473,6 +8509,10 @@ export namespace Prisma {
      * Filter which BahrebardariKeshtDores to delete
      */
     where?: BahrebardariKeshtDoreWhereInput
+    /**
+     * Limit how many BahrebardariKeshtDores to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -9327,6 +9367,10 @@ export namespace Prisma {
      * Filter which BahrebardariTaghvims to update
      */
     where?: BahrebardariTaghvimWhereInput
+    /**
+     * Limit how many BahrebardariTaghvims to update.
+     */
+    limit?: number
   }
 
   /**
@@ -9381,6 +9425,10 @@ export namespace Prisma {
      * Filter which BahrebardariTaghvims to delete
      */
     where?: BahrebardariTaghvimWhereInput
+    /**
+     * Limit how many BahrebardariTaghvims to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -10235,6 +10283,10 @@ export namespace Prisma {
      * Filter which BareshMotaleats to update
      */
     where?: BareshMotaleatWhereInput
+    /**
+     * Limit how many BareshMotaleats to update.
+     */
+    limit?: number
   }
 
   /**
@@ -10289,6 +10341,10 @@ export namespace Prisma {
      * Filter which BareshMotaleats to delete
      */
     where?: BareshMotaleatWhereInput
+    /**
+     * Limit how many BareshMotaleats to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -11109,6 +11165,10 @@ export namespace Prisma {
      * Filter which DarajePipes to update
      */
     where?: DarajePipeWhereInput
+    /**
+     * Limit how many DarajePipes to update.
+     */
+    limit?: number
   }
 
   /**
@@ -11163,6 +11223,10 @@ export namespace Prisma {
      * Filter which DarajePipes to delete
      */
     where?: DarajePipeWhereInput
+    /**
+     * Limit how many DarajePipes to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -11983,6 +12047,10 @@ export namespace Prisma {
      * Filter which DarjeStations to update
      */
     where?: DarjeStationWhereInput
+    /**
+     * Limit how many DarjeStations to update.
+     */
+    limit?: number
   }
 
   /**
@@ -12037,6 +12105,10 @@ export namespace Prisma {
      * Filter which DarjeStations to delete
      */
     where?: DarjeStationWhereInput
+    /**
+     * Limit how many DarjeStations to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -12857,6 +12929,10 @@ export namespace Prisma {
      * Filter which DoreKeshts to update
      */
     where?: DoreKeshtWhereInput
+    /**
+     * Limit how many DoreKeshts to update.
+     */
+    limit?: number
   }
 
   /**
@@ -12911,6 +12987,10 @@ export namespace Prisma {
      * Filter which DoreKeshts to delete
      */
     where?: DoreKeshtWhereInput
+    /**
+     * Limit how many DoreKeshts to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -13765,6 +13845,10 @@ export namespace Prisma {
      * Filter which EshtebahAvamels to update
      */
     where?: EshtebahAvamelWhereInput
+    /**
+     * Limit how many EshtebahAvamels to update.
+     */
+    limit?: number
   }
 
   /**
@@ -13819,6 +13903,10 @@ export namespace Prisma {
      * Filter which EshtebahAvamels to delete
      */
     where?: EshtebahAvamelWhereInput
+    /**
+     * Limit how many EshtebahAvamels to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -14673,6 +14761,10 @@ export namespace Prisma {
      * Filter which FlowBehboods to update
      */
     where?: FlowBehboodWhereInput
+    /**
+     * Limit how many FlowBehboods to update.
+     */
+    limit?: number
   }
 
   /**
@@ -14727,6 +14819,10 @@ export namespace Prisma {
      * Filter which FlowBehboods to delete
      */
     where?: FlowBehboodWhereInput
+    /**
+     * Limit how many FlowBehboods to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -15581,6 +15677,10 @@ export namespace Prisma {
      * Filter which Flowmeters to update
      */
     where?: FlowmeterWhereInput
+    /**
+     * Limit how many Flowmeters to update.
+     */
+    limit?: number
   }
 
   /**
@@ -15635,6 +15735,10 @@ export namespace Prisma {
      * Filter which Flowmeters to delete
      */
     where?: FlowmeterWhereInput
+    /**
+     * Limit how many Flowmeters to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -16515,6 +16619,10 @@ export namespace Prisma {
      * Filter which KhatRaneshes to update
      */
     where?: KhatRaneshWhereInput
+    /**
+     * Limit how many KhatRaneshes to update.
+     */
+    limit?: number
   }
 
   /**
@@ -16569,6 +16677,10 @@ export namespace Prisma {
      * Filter which KhatRaneshes to delete
      */
     where?: KhatRaneshWhereInput
+    /**
+     * Limit how many KhatRaneshes to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -17438,6 +17550,10 @@ export namespace Prisma {
      * Filter which KhatRaneshAreas to update
      */
     where?: KhatRaneshAreaWhereInput
+    /**
+     * Limit how many KhatRaneshAreas to update.
+     */
+    limit?: number
   }
 
   /**
@@ -17492,6 +17608,10 @@ export namespace Prisma {
      * Filter which KhatRaneshAreas to delete
      */
     where?: KhatRaneshAreaWhereInput
+    /**
+     * Limit how many KhatRaneshAreas to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -18552,6 +18672,10 @@ export namespace Prisma {
      * Filter which KhatRaneshPumps to update
      */
     where?: KhatRaneshPumpWhereInput
+    /**
+     * Limit how many KhatRaneshPumps to update.
+     */
+    limit?: number
   }
 
   /**
@@ -18606,6 +18730,10 @@ export namespace Prisma {
      * Filter which KhatRaneshPumps to delete
      */
     where?: KhatRaneshPumpWhereInput
+    /**
+     * Limit how many KhatRaneshPumps to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -19445,6 +19573,10 @@ export namespace Prisma {
      * Filter which KhatRaneshSeglis to update
      */
     where?: KhatRaneshSegliWhereInput
+    /**
+     * Limit how many KhatRaneshSeglis to update.
+     */
+    limit?: number
   }
 
   /**
@@ -19499,6 +19631,10 @@ export namespace Prisma {
      * Filter which KhatRaneshSeglis to delete
      */
     where?: KhatRaneshSegliWhereInput
+    /**
+     * Limit how many KhatRaneshSeglis to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -20353,6 +20489,10 @@ export namespace Prisma {
      * Filter which Kontors to update
      */
     where?: KontorWhereInput
+    /**
+     * Limit how many Kontors to update.
+     */
+    limit?: number
   }
 
   /**
@@ -20407,6 +20547,10 @@ export namespace Prisma {
      * Filter which Kontors to delete
      */
     where?: KontorWhereInput
+    /**
+     * Limit how many Kontors to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -21227,6 +21371,10 @@ export namespace Prisma {
      * Filter which Lands to update
      */
     where?: LandWhereInput
+    /**
+     * Limit how many Lands to update.
+     */
+    limit?: number
   }
 
   /**
@@ -21281,6 +21429,10 @@ export namespace Prisma {
      * Filter which Lands to delete
      */
     where?: LandWhereInput
+    /**
+     * Limit how many Lands to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -22101,6 +22253,10 @@ export namespace Prisma {
      * Filter which Mahs to update
      */
     where?: MahWhereInput
+    /**
+     * Limit how many Mahs to update.
+     */
+    limit?: number
   }
 
   /**
@@ -22155,6 +22311,10 @@ export namespace Prisma {
      * Filter which Mahs to delete
      */
     where?: MahWhereInput
+    /**
+     * Limit how many Mahs to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -22986,6 +23146,10 @@ export namespace Prisma {
      * Filter which MeasuringTools to update
      */
     where?: MeasuringToolWhereInput
+    /**
+     * Limit how many MeasuringTools to update.
+     */
+    limit?: number
   }
 
   /**
@@ -23040,6 +23204,10 @@ export namespace Prisma {
      * Filter which MeasuringTools to delete
      */
     where?: MeasuringToolWhereInput
+    /**
+     * Limit how many MeasuringTools to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -23894,6 +24062,10 @@ export namespace Prisma {
      * Filter which NashtShabakes to update
      */
     where?: NashtShabakeWhereInput
+    /**
+     * Limit how many NashtShabakes to update.
+     */
+    limit?: number
   }
 
   /**
@@ -23948,6 +24120,10 @@ export namespace Prisma {
      * Filter which NashtShabakes to delete
      */
     where?: NashtShabakeWhereInput
+    /**
+     * Limit how many NashtShabakes to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -24783,6 +24959,10 @@ export namespace Prisma {
      * Filter which Networks to update
      */
     where?: NetworkWhereInput
+    /**
+     * Limit how many Networks to update.
+     */
+    limit?: number
   }
 
   /**
@@ -24837,6 +25017,10 @@ export namespace Prisma {
      * Filter which Networks to delete
      */
     where?: NetworkWhereInput
+    /**
+     * Limit how many Networks to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -25657,6 +25841,10 @@ export namespace Prisma {
      * Filter which NoeKeshts to update
      */
     where?: NoeKeshtWhereInput
+    /**
+     * Limit how many NoeKeshts to update.
+     */
+    limit?: number
   }
 
   /**
@@ -25711,6 +25899,10 @@ export namespace Prisma {
      * Filter which NoeKeshts to delete
      */
     where?: NoeKeshtWhereInput
+    /**
+     * Limit how many NoeKeshts to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -26546,6 +26738,10 @@ export namespace Prisma {
      * Filter which NoeMahsools to update
      */
     where?: NoeMahsoolWhereInput
+    /**
+     * Limit how many NoeMahsools to update.
+     */
+    limit?: number
   }
 
   /**
@@ -26600,6 +26796,10 @@ export namespace Prisma {
      * Filter which NoeMahsools to delete
      */
     where?: NoeMahsoolWhereInput
+    /**
+     * Limit how many NoeMahsools to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -27454,6 +27654,10 @@ export namespace Prisma {
      * Filter which NonFITS to update
      */
     where?: NonFITWhereInput
+    /**
+     * Limit how many NonFITS to update.
+     */
+    limit?: number
   }
 
   /**
@@ -27508,6 +27712,10 @@ export namespace Prisma {
      * Filter which NonFITS to delete
      */
     where?: NonFITWhereInput
+    /**
+     * Limit how many NonFITS to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -28388,6 +28596,10 @@ export namespace Prisma {
      * Filter which PumpStations to update
      */
     where?: PumpStationWhereInput
+    /**
+     * Limit how many PumpStations to update.
+     */
+    limit?: number
   }
 
   /**
@@ -28442,6 +28654,10 @@ export namespace Prisma {
      * Filter which PumpStations to delete
      */
     where?: PumpStationWhereInput
+    /**
+     * Limit how many PumpStations to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -29262,6 +29478,10 @@ export namespace Prisma {
      * Filter which PumpTypes to update
      */
     where?: PumpTypeWhereInput
+    /**
+     * Limit how many PumpTypes to update.
+     */
+    limit?: number
   }
 
   /**
@@ -29316,6 +29536,10 @@ export namespace Prisma {
      * Filter which PumpTypes to delete
      */
     where?: PumpTypeWhereInput
+    /**
+     * Limit how many PumpTypes to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -30185,6 +30409,10 @@ export namespace Prisma {
      * Filter which RainfallStations to update
      */
     where?: RainfallStationWhereInput
+    /**
+     * Limit how many RainfallStations to update.
+     */
+    limit?: number
   }
 
   /**
@@ -30239,6 +30467,10 @@ export namespace Prisma {
      * Filter which RainfallStations to delete
      */
     where?: RainfallStationWhereInput
+    /**
+     * Limit how many RainfallStations to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -31059,6 +31291,10 @@ export namespace Prisma {
      * Filter which RainfallTypes to update
      */
     where?: RainfallTypeWhereInput
+    /**
+     * Limit how many RainfallTypes to update.
+     */
+    limit?: number
   }
 
   /**
@@ -31113,6 +31349,10 @@ export namespace Prisma {
      * Filter which RainfallTypes to delete
      */
     where?: RainfallTypeWhereInput
+    /**
+     * Limit how many RainfallTypes to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -31933,6 +32173,10 @@ export namespace Prisma {
      * Filter which SaleZeraees to update
      */
     where?: SaleZeraeeWhereInput
+    /**
+     * Limit how many SaleZeraees to update.
+     */
+    limit?: number
   }
 
   /**
@@ -31987,6 +32231,10 @@ export namespace Prisma {
      * Filter which SaleZeraees to delete
      */
     where?: SaleZeraeeWhereInput
+    /**
+     * Limit how many SaleZeraees to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -32807,6 +33055,10 @@ export namespace Prisma {
      * Filter which SeghliPumps to update
      */
     where?: SeghliPumpWhereInput
+    /**
+     * Limit how many SeghliPumps to update.
+     */
+    limit?: number
   }
 
   /**
@@ -32861,6 +33113,10 @@ export namespace Prisma {
      * Filter which SeghliPumps to delete
      */
     where?: SeghliPumpWhereInput
+    /**
+     * Limit how many SeghliPumps to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -33696,6 +33952,10 @@ export namespace Prisma {
      * Filter which SystemParts to update
      */
     where?: SystemPartWhereInput
+    /**
+     * Limit how many SystemParts to update.
+     */
+    limit?: number
   }
 
   /**
@@ -33750,6 +34010,10 @@ export namespace Prisma {
      * Filter which SystemParts to delete
      */
     where?: SystemPartWhereInput
+    /**
+     * Limit how many SystemParts to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -34604,6 +34868,10 @@ export namespace Prisma {
      * Filter which TakhlieMakhzans to update
      */
     where?: TakhlieMakhzanWhereInput
+    /**
+     * Limit how many TakhlieMakhzans to update.
+     */
+    limit?: number
   }
 
   /**
@@ -34658,6 +34926,10 @@ export namespace Prisma {
      * Filter which TakhlieMakhzans to delete
      */
     where?: TakhlieMakhzanWhereInput
+    /**
+     * Limit how many TakhlieMakhzans to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -35512,6 +35784,10 @@ export namespace Prisma {
      * Filter which Tests to update
      */
     where?: TestWhereInput
+    /**
+     * Limit how many Tests to update.
+     */
+    limit?: number
   }
 
   /**
@@ -35566,6 +35842,10 @@ export namespace Prisma {
      * Filter which Tests to delete
      */
     where?: TestWhereInput
+    /**
+     * Limit how many Tests to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -36427,6 +36707,10 @@ export namespace Prisma {
      * Filter which TrikhDoreKeshts to update
      */
     where?: TrikhDoreKeshtWhereInput
+    /**
+     * Limit how many TrikhDoreKeshts to update.
+     */
+    limit?: number
   }
 
   /**
@@ -36481,6 +36765,10 @@ export namespace Prisma {
      * Filter which TrikhDoreKeshts to delete
      */
     where?: TrikhDoreKeshtWhereInput
+    /**
+     * Limit how many TrikhDoreKeshts to delete.
+     */
+    limit?: number
   }
 
   /**
@@ -37301,6 +37589,10 @@ export namespace Prisma {
      * Filter which WeatherStations to update
      */
     where?: WeatherStationWhereInput
+    /**
+     * Limit how many WeatherStations to update.
+     */
+    limit?: number
   }
 
   /**
@@ -37355,6 +37647,10 @@ export namespace Prisma {
      * Filter which WeatherStations to delete
      */
     where?: WeatherStationWhereInput
+    /**
+     * Limit how many WeatherStations to delete.
+     */
+    limit?: number
   }
 
   /**

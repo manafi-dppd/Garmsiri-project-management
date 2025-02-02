@@ -1,0 +1,1 @@
+console.log('DATABASE_URL_SQLSERVER =', process.env.DATABASE_URL_SQLSERVER);

@@ -1,5 +1,6 @@
 import {NextResponse} from 'next/server';
-import prisma from '@/lib/prisma'; // فایل اتصال Prisma به پروژه
+import {sqliteClient, sqlServerClient} from '@prisma/db';
+const prisma = sqliteClient;
 
 export async function GET() {
   try {
@@ -12,7 +13,6 @@ export async function GET() {
         },
       },
     });
-
     return NextResponse.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);

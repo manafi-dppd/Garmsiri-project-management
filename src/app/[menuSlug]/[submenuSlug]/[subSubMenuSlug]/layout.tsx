@@ -80,8 +80,8 @@ export default function Layout({children}: {children: React.ReactNode}) {
 
   return (
     <div>
-      <div className="bg-gray-100 p-4 text-right font-bold">
-        {path || 'هیچ منویی یافت نشد'}
+      <div className="bg-gray-100 text-right font-bold">
+        {/* {path || 'هیچ منویی یافت نشد'} */}
       </div>
       {children}
     </div>

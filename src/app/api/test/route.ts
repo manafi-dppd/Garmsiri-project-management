@@ -9,7 +9,7 @@ export async function GET() {
     });
 
     // دریافت یک رکورد از جدول AbadeMakhzan در SQL Server
-    const sqlServerData = await sqlServerClient.bahrebardariKeshtDore.findMany({
+    const sqlServerData = await sqlServerClient.abadeMakhzan.findMany({
       take: 5, // دریافت ۵ رکورد اول
     });
 

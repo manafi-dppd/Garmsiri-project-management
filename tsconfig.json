@@ -10,11 +10,11 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "types": ["node"],
+    // "types": ["node"],
     "noEmit": true,
     "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "outDir": "./dist",
     "isolatedModules": true,
@@ -25,6 +25,7 @@
         "name": "next"
       }
     ],
+    "types": ["next-auth"],
     "paths": {
       "@/*": ["./src/*"],
       "@prisma/*": ["./prisma/*"]

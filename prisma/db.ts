@@ -27,9 +27,6 @@ dotenv.config();
 import {PrismaClient as PrismaSqliteClient} from './sqlite/generated/sqlite'; // مسیر مربوط به SQLite
 import {PrismaClient as PrismaSqlServerClient} from './sqlserver/generated/sqlserver'; // مسیر مربوط به SQL Server
 
-console.log('🔗 SQLite Database URL:', process.env.DATABASE_URL_SQLITE);
-console.log('🔗 SQL Server Database URL:', process.env.DATABASE_URL_SQLSERVER);
-
 if (!process.env.DATABASE_URL_SQLSERVER) {
   throw new Error('🚨 خطا: متغیر محیطی DATABASE_URL_SQLSERVER تعریف نشده است!');
 }

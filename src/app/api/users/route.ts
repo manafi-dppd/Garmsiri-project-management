@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {sqliteClient, sqlServerClient} from '@prisma/db';
+import {sqliteClient} from '@prisma/db';
 const prisma = sqliteClient;
 
 export async function GET() {

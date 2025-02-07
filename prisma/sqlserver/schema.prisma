@@ -86,6 +86,13 @@ model DarajePipe {
   KhatRanesh KhatRanesh[]
 }
 
+model DeliveryPoints {
+  IdDp        TinyInt       @id @default(autoincrement()) @db.TinyInt
+  DeliveryPoint String      @db.NVarChar(15)
+  PumpStations PumpStation[]
+}
+
+
 model DarjeStation {
   IdDStation    Int           @id(map: "PK__DarjeSta__7C7072F4DE436631") @default(autoincrement()) @db.TinyInt
   DarajeStation String        @db.NVarChar(6)
@@ -267,16 +274,18 @@ model NonFIT {
 }
 
 model PumpStation {
-  IdPumpSta    Int           @id(map: "PK__PumpStat__C68EBC54BFE8F9CE") @default(autoincrement()) @db.TinyInt
-  NameStation  String        @db.NVarChar(20)
-  KM           Int?
-  FIdNet       Int           @db.TinyInt
-  FIdDStation  Int           @db.TinyInt
-  FIdMakhzan   Int?          @db.TinyInt
+  IdPumpSta     Int           @id @default(autoincrement()) @db.Int
+  NameStation   String        @db.NVarChar(20)
+  KM            Int?
+  FIdNet        TinyInt       @db.TinyInt
+  FIdDStation   TinyInt       @db.TinyInt
+  FIdMakhzan    TinyInt?      @db.TinyInt
+  FIdDP       TinyInt       @db.TinyInt
+  DeliveryPoint DeliveryPoints? @relation(fields: [FIdDP], references: [IdDp], onDelete: SetNull, onUpdate: NoAction, map: "FK_PumpStation_DeliveryPoints")
   KhatRanesh   KhatRanesh[]
-  AbadeMakhzan AbadeMakhzan? @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
-  DarjeStation DarjeStation  @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
-  Network      Network       @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_PumpStation_Network")
+  AbadeMakhzan AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
+  DarjeStation DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
+  Network      Network        @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_PumpStation_Network")
 }
 
 model PumpType {

@@ -13,7 +13,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
     <html lang="fa" dir="rtl">
       <body className="font-sans rtl bg-gray-100 text-gray-900">
         <Header />
-        <main className="container mx-auto py-4">{children}</main>
+        <main className="container mx-auto py-2">{children}</main>
         <Footer />
       </body>
     </html>

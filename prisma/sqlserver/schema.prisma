@@ -1,11 +1,13 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/sqlserver"
 }
 
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL_SQLSERVER")
 }
+
 
 model AbadeMakhzan {
   IdMakhzan     Int           @id(map: "PK__AbadeMak__D703228772CB5AB8") @default(autoincrement()) @db.TinyInt
@@ -49,17 +51,16 @@ model BahrebardairProgram {
   TrikhDoreKesht TrikhDoreKesht @relation(fields: [FIdTarDor], references: [IdTarDor], onUpdate: NoAction, map: "FK_BahrebardairProgram_TrikhDoreKesht")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model BahrebardariKeshtDore {
-  IdBahDor   Int        @id(map: "PK__Bahrebar__69906E8F86D7E80D") @default(autoincrement()) @db.SmallInt
-  FIdSal     Int        @db.TinyInt
-  FIdDore    Int        @db.TinyInt
-  FIdRanesh  Int        @db.TinyInt
-  FIdNoeM    Int        @db.TinyInt
-  Area       Decimal    @db.Decimal(5, 1)
-  DoreKesht  DoreKesht  @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_DoreKesht")
-  KhatRanesh KhatRanesh @relation(fields: [FIdRanesh], references: [IdRanesh], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_KhatRanesh")
-  NoeMahsool NoeMahsool @relation(fields: [FIdNoeM], references: [IdNoeM], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_NoeMahsool")
-  SaleZeraee SaleZeraee @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_SaleZeraee")
+  IdBahDor         Int              @id(map: "PK_BahrebardariKeshtDore") @db.TinyInt
+  FIdShDo          Int              @db.TinyInt
+  FIdRanesh        Int              @db.TinyInt
+  FIdNoeM          Int              @db.TinyInt
+  Area             Decimal          @db.Decimal(6, 2)
+  KhatRanesh       KhatRanesh       @relation(fields: [FIdRanesh], references: [IdRanesh], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_KhatRanesh")
+  NoeMahsool       NoeMahsool       @relation(fields: [FIdNoeM], references: [IdNoeM], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_NoeMahsool")
+  ShabakeDoreKesht ShabakeDoreKesht @relation(fields: [FIdShDo], references: [IdShDo], onUpdate: NoAction, map: "FK_BahrebardariKeshtDore_ShabakeDoreKesht")
 }
 
 model BahrebardariTaghvim {
@@ -72,12 +73,12 @@ model BahrebardariTaghvim {
 }
 
 model BareshMotaleat {
-  IdBarMot       Int     @id(map: "PK__BareshMo__9D6A84A83D616234") @default(autoincrement()) @db.SmallInt
-  FIdNet         Int     @db.TinyInt
-  FIdMah         Int     @db.TinyInt
-  BareshMotaleat Decimal @db.Decimal(4, 2)
-  Mah            Mah     @relation(fields: [FIdMah], references: [IdMah], onUpdate: NoAction, map: "FK_BareshMotaleat_Mah")
-  Network        Network @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_BareshMotaleat_Network")
+  IdBarMot       Int       @id(map: "PK__BareshMo__9D6A84A83D616234") @default(autoincrement()) @db.SmallInt
+  FIdNet         Int       @db.TinyInt
+  FIdMah         Int       @db.TinyInt
+  BareshMotaleat Decimal   @db.Decimal(4, 2)
+  Mah            MahShamsi @relation(fields: [FIdMah], references: [IdMah], onUpdate: NoAction, map: "FK_BareshMotaleat_Mah")
+  Network        Network   @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_BareshMotaleat_Network")
 }
 
 model DarajePipe {
@@ -87,11 +88,10 @@ model DarajePipe {
 }
 
 model DeliveryPoints {
-  IdDp        TinyInt       @id @default(autoincrement()) @db.TinyInt
-  DeliveryPoint String      @db.NVarChar(15)
-  PumpStations PumpStation[]
+  IdDp          Int           @id(map: "PK__Delivery__B77398D22C5C7627") @default(autoincrement()) @db.TinyInt
+  DeliveryPoint String        @db.NVarChar(15)
+  PumpStations  PumpStation[]
 }
-
 
 model DarjeStation {
   IdDStation    Int           @id(map: "PK__DarjeSta__7C7072F4DE436631") @default(autoincrement()) @db.TinyInt
@@ -100,10 +100,10 @@ model DarjeStation {
 }
 
 model DoreKesht {
-  IdDore                Int                     @id(map: "PK__DoreKesh__0E7A1B57FC0C3425") @default(autoincrement()) @db.TinyInt
-  Dore                  String                  @db.NVarChar(8)
-  BahrebardariKeshtDore BahrebardariKeshtDore[]
-  TrikhDoreKesht        TrikhDoreKesht[]
+  IdDore           Int                @id(map: "PK__DoreKesh__0E7A1B57FC0C3425") @default(autoincrement()) @db.TinyInt
+  Dore             String             @db.NVarChar(8)
+  ShabakeDoreKesht ShabakeDoreKesht[]
+  TrikhDoreKesht   TrikhDoreKesht[]
 }
 
 model EshtebahAvamel {
@@ -216,12 +216,6 @@ model Land {
   KhatRaneshArea KhatRaneshArea[]
 }
 
-model Mah {
-  IdMah          Int              @id(map: "PK__Mah__0D13B74816DDE506") @db.TinyInt
-  Mah            String           @db.NVarChar(8)
-  BareshMotaleat BareshMotaleat[]
-}
-
 model MeasuringTool {
   IdMeasuring   Int          @id(map: "PK__Measurin__3B3D9C30263B7B2D") @default(autoincrement()) @db.TinyInt
   MeasuringTool String       @db.NVarChar(20)
@@ -239,13 +233,14 @@ model NashtShabake {
 }
 
 model Network {
-  IdNet          Int              @id(map: "PK_Network") @default(autoincrement()) @db.TinyInt
-  Network        String           @db.NVarChar(20)
-  FIdSP          Int              @db.TinyInt
-  BareshMotaleat BareshMotaleat[]
-  KhatRaneshArea KhatRaneshArea[]
-  SystemPart     SystemPart       @relation(fields: [FIdSP], references: [IdSP], onUpdate: NoAction, map: "FK_Network_SystemPart")
-  PumpStation    PumpStation[]
+  IdNet            Int                @id(map: "PK_Network") @default(autoincrement()) @db.TinyInt
+  Network          String             @db.NVarChar(20)
+  FIdSP            Int                @db.TinyInt
+  BareshMotaleat   BareshMotaleat[]
+  KhatRaneshArea   KhatRaneshArea[]
+  SystemPart       SystemPart         @relation(fields: [FIdSP], references: [IdSP], onUpdate: NoAction, map: "FK_Network_SystemPart")
+  PumpStation      PumpStation[]
+  ShabakeDoreKesht ShabakeDoreKesht[]
 
   @@index([Network], map: "NonClusteredIndex-20240112-194637")
 }
@@ -274,18 +269,18 @@ model NonFIT {
 }
 
 model PumpStation {
-  IdPumpSta     Int           @id @default(autoincrement()) @db.Int
-  NameStation   String        @db.NVarChar(20)
+  IdPumpSta     Int            @id(map: "PK__PumpStat__C68EBC54BFE8F9CE") @default(autoincrement()) @db.TinyInt
+  NameStation   String         @db.NVarChar(20)
   KM            Int?
-  FIdNet        TinyInt       @db.TinyInt
-  FIdDStation   TinyInt       @db.TinyInt
-  FIdMakhzan    TinyInt?      @db.TinyInt
-  FIdDP       TinyInt       @db.TinyInt
-  DeliveryPoint DeliveryPoints? @relation(fields: [FIdDP], references: [IdDp], onDelete: SetNull, onUpdate: NoAction, map: "FK_PumpStation_DeliveryPoints")
-  KhatRanesh   KhatRanesh[]
-  AbadeMakhzan AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
-  DarjeStation DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
-  Network      Network        @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_PumpStation_Network")
+  FIdNet        Int            @db.TinyInt
+  FIdDStation   Int            @db.TinyInt
+  FIdMakhzan    Int?           @db.TinyInt
+  FIdDP         Int            @db.TinyInt
+  KhatRanesh    KhatRanesh[]
+  AbadeMakhzan  AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
+  DarjeStation  DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
+  DeliveryPoint DeliveryPoints @relation(fields: [FIdDP], references: [IdDp], onUpdate: NoAction, map: "FK_PumpStation_DeliveryPoints")
+  Network       Network        @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_PumpStation_Network")
 }
 
 model PumpType {
@@ -312,10 +307,10 @@ model RainfallType {
 }
 
 model SaleZeraee {
-  IdSal                 Int                     @id(map: "PK__SaleZera__2B04014FF1E1BBA2") @default(autoincrement()) @db.TinyInt
-  SaleZeraee            String                  @db.NVarChar(10)
-  BahrebardariKeshtDore BahrebardariKeshtDore[]
-  TrikhDoreKesht        TrikhDoreKesht[]
+  IdSal            Int                @id(map: "PK__SaleZera__2B04014FF1E1BBA2") @default(autoincrement()) @db.TinyInt
+  SaleZeraee       String             @db.NVarChar(10)
+  ShabakeDoreKesht ShabakeDoreKesht[]
+  TrikhDoreKesht   TrikhDoreKesht[]
 }
 
 model SeghliPump {
@@ -357,6 +352,9 @@ model TrikhDoreKesht {
   FIdDore             Int                   @db.TinyInt
   Trikh               DateTime              @db.Date
   TrikhKhorshidi      String                @db.NVarChar(10)
+  Dahe                Int                   @db.TinyInt
+  Sal                 Int
+  Mah                 Int                   @db.TinyInt
   BahrebardairProgram BahrebardairProgram[]
   BahrebardariTaghvim BahrebardariTaghvim[]
   EshtebahAvamel      EshtebahAvamel[]
@@ -369,6 +367,7 @@ model TrikhDoreKesht {
   TakhlieMakhzan      TakhlieMakhzan[]
   Test                Test[]
   DoreKesht           DoreKesht             @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_TrikhDoreKesht_DoreKesht")
+  MahShamsi           MahShamsi             @relation(fields: [Mah], references: [IdMah], onUpdate: NoAction, map: "FK_TrikhDoreKesht_Mah")
   SaleZeraee          SaleZeraee            @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_TrikhDoreKesht_SaleZeraee")
 }
 
@@ -386,4 +385,24 @@ model sysdiagrams {
   definition   Bytes?
 
   @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model MahShamsi {
+  IdMah          Int              @id(map: "PK__Mah__0D13B74816DDE506") @db.TinyInt
+  Mah            String           @db.NVarChar(8)
+  BareshMotaleat BareshMotaleat[]
+  TrikhDoreKesht TrikhDoreKesht[]
+}
+
+model ShabakeDoreKesht {
+  IdShDo                Int                     @id(map: "PK_ShabakeDoreKesht") @db.TinyInt
+  FIdNet                Int                     @db.TinyInt
+  TrikhShorooe          DateTime                @db.Date
+  TrikhPayan            DateTime                @db.Date
+  FIdSal                Int                     @db.TinyInt
+  FIdDore               Int                     @db.TinyInt
+  BahrebardariKeshtDore BahrebardariKeshtDore[]
+  DoreKesht             DoreKesht               @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_DoreKesht")
+  Network               Network                 @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_Network")
+  SaleZeraee            SaleZeraee              @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_SaleZeraee")
 }

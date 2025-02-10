@@ -17,11 +17,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.3.0
+ * Prisma Client JS version: 6.3.1
  * Query Engine version: acc0b9dd43eb689cbd20c9470515d719db10d0b0
  */
 Prisma.prismaVersion = {
-  client: "6.3.0",
+  client: "6.3.1",
   engine: "acc0b9dd43eb689cbd20c9470515d719db10d0b0"
 }
 
@@ -136,13 +136,6 @@ exports.Prisma.AbgirScalarFieldEnum = {
   Abgir: 'Abgir'
 };
 
-exports.Prisma.AtashSooziScalarFieldEnum = {
-  IdAtash: 'IdAtash',
-  FIdRanesh: 'FIdRanesh',
-  FIdTarDor: 'FIdTarDor',
-  AtashSoozi: 'AtashSoozi'
-};
-
 exports.Prisma.BahrebardairProgramScalarFieldEnum = {
   IdProgram: 'IdProgram',
   FIdRanesh: 'FIdRanesh',
@@ -154,8 +147,7 @@ exports.Prisma.BahrebardairProgramScalarFieldEnum = {
 
 exports.Prisma.BahrebardariKeshtDoreScalarFieldEnum = {
   IdBahDor: 'IdBahDor',
-  FIdSal: 'FIdSal',
-  FIdDore: 'FIdDore',
+  FIdShDo: 'FIdShDo',
   FIdRanesh: 'FIdRanesh',
   FIdNoeM: 'FIdNoeM',
   Area: 'Area'
@@ -178,6 +170,11 @@ exports.Prisma.BareshMotaleatScalarFieldEnum = {
 exports.Prisma.DarajePipeScalarFieldEnum = {
   IdDPipe: 'IdDPipe',
   DarajePipe: 'DarajePipe'
+};
+
+exports.Prisma.DeliveryPointsScalarFieldEnum = {
+  IdDp: 'IdDp',
+  DeliveryPoint: 'DeliveryPoint'
 };
 
 exports.Prisma.DarjeStationScalarFieldEnum = {
@@ -267,11 +264,6 @@ exports.Prisma.LandScalarFieldEnum = {
   Land: 'Land'
 };
 
-exports.Prisma.MahScalarFieldEnum = {
-  IdMah: 'IdMah',
-  Mah: 'Mah'
-};
-
 exports.Prisma.MeasuringToolScalarFieldEnum = {
   IdMeasuring: 'IdMeasuring',
   MeasuringTool: 'MeasuringTool',
@@ -315,7 +307,8 @@ exports.Prisma.PumpStationScalarFieldEnum = {
   KM: 'KM',
   FIdNet: 'FIdNet',
   FIdDStation: 'FIdDStation',
-  FIdMakhzan: 'FIdMakhzan'
+  FIdMakhzan: 'FIdMakhzan',
+  FIdDP: 'FIdDP'
 };
 
 exports.Prisma.PumpTypeScalarFieldEnum = {
@@ -371,12 +364,37 @@ exports.Prisma.TrikhDoreKeshtScalarFieldEnum = {
   FIdSal: 'FIdSal',
   FIdDore: 'FIdDore',
   Trikh: 'Trikh',
-  TrikhKhorshidi: 'TrikhKhorshidi'
+  TrikhKhorshidi: 'TrikhKhorshidi',
+  Dahe: 'Dahe',
+  Sal: 'Sal',
+  Mah: 'Mah'
 };
 
 exports.Prisma.WeatherStationScalarFieldEnum = {
   IdWeaSta: 'IdWeaSta',
   Station: 'Station'
+};
+
+exports.Prisma.SysdiagramsScalarFieldEnum = {
+  name: 'name',
+  principal_id: 'principal_id',
+  diagram_id: 'diagram_id',
+  version: 'version',
+  definition: 'definition'
+};
+
+exports.Prisma.MahShamsiScalarFieldEnum = {
+  IdMah: 'IdMah',
+  Mah: 'Mah'
+};
+
+exports.Prisma.ShabakeDoreKeshtScalarFieldEnum = {
+  IdShDo: 'IdShDo',
+  FIdNet: 'FIdNet',
+  TrikhShorooe: 'TrikhShorooe',
+  TrikhPayan: 'TrikhPayan',
+  FIdSal: 'FIdSal',
+  FIdDore: 'FIdDore'
 };
 
 exports.Prisma.SortOrder = {
@@ -393,12 +411,12 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   AbadeMakhzan: 'AbadeMakhzan',
   Abgir: 'Abgir',
-  AtashSoozi: 'AtashSoozi',
   BahrebardairProgram: 'BahrebardairProgram',
   BahrebardariKeshtDore: 'BahrebardariKeshtDore',
   BahrebardariTaghvim: 'BahrebardariTaghvim',
   BareshMotaleat: 'BareshMotaleat',
   DarajePipe: 'DarajePipe',
+  DeliveryPoints: 'DeliveryPoints',
   DarjeStation: 'DarjeStation',
   DoreKesht: 'DoreKesht',
   EshtebahAvamel: 'EshtebahAvamel',
@@ -410,7 +428,6 @@ exports.Prisma.ModelName = {
   KhatRaneshSegli: 'KhatRaneshSegli',
   Kontor: 'Kontor',
   Land: 'Land',
-  Mah: 'Mah',
   MeasuringTool: 'MeasuringTool',
   NashtShabake: 'NashtShabake',
   Network: 'Network',
@@ -427,7 +444,10 @@ exports.Prisma.ModelName = {
   TakhlieMakhzan: 'TakhlieMakhzan',
   Test: 'Test',
   TrikhDoreKesht: 'TrikhDoreKesht',
-  WeatherStation: 'WeatherStation'
+  WeatherStation: 'WeatherStation',
+  sysdiagrams: 'sysdiagrams',
+  MahShamsi: 'MahShamsi',
+  ShabakeDoreKesht: 'ShabakeDoreKesht'
 };
 
 /**

@@ -1,24 +1,38 @@
 'use client';
 
 import {useState, useEffect} from 'react';
-// import {toPersianDate} from '@/utils/dateUtils';
 
-// const convertPersianToEnglish = (str: string) => {
-//   return str.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
-// };
-
-const HeaderRequestPumping = () => {
-  // const [agriculturalYear, setAgriculturalYear] = useState<string>('');
-  // const [isNovember, setIsNovember] = useState<boolean>(false);
-  // const [currentJalaliYear, setCurrentJalaliYear] = useState<number>(0);
-  // const [farmingSeason, setFarmingSeason] = useState<string>(''); // مقدار "دوره کشت"
+interface HeaderRequestPumpingProps {
+  setUserName: (name: string) => void;
+  setUserRole: (role: string) => void;
+  setFirstName: (role: string) => void;
+  setLastName: (role: string) => void;
+  setNetworkName: (name: string) => void;
+  setPumpStationName: (name: string) => void;
+  setIdPumpStation: (Id: number) => void;
+  setSaleZeraee: (year: string) => void;
+  setDoreKesht: (season: string) => void;
+  setIdShDo: (Id: number) => void;
+}
+const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
+  setUserName,
+  setUserRole,
+  setFirstName,
+  setLastName,
+  setNetworkName,
+  setPumpStationName,
+  setIdPumpStation,
+  setSaleZeraee,
+  setDoreKesht,
+  setIdShDo,
+}) => {
   const [userPositions, setUserPositions] = useState<string[]>([]);
   const [networks, setNetworks] = useState<{IdNet: number; Network: string}[]>(
     [],
   );
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
-  const [saleZeraee, setSaleZeraee] = useState<string | null>(null);
-  const [dore, setDore] = useState<string | null>(null);
+  const [localSaleZeraee, setLocalSaleZeraee] = useState<string | null>(null);
+  const [localDore, setLocalDore] = useState<string | null>(null);
   const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(
     null,
   );
@@ -31,75 +45,19 @@ const HeaderRequestPumping = () => {
     {IdPumpSta: number; NameStation: string}[]
   >([]);
   const [selectedPumpStation, setSelectedPumpStation] = useState<string>('');
-  // useEffect(() => {
-  //   const todayPersian = toPersianDate(new Date()); // تبدیل تاریخ به شمسی
-  //   const englishDate = convertPersianToEnglish(todayPersian); // تبدیل اعداد فارسی به انگلیسی
-  //   console.log('todayPersian:', todayPersian);
-  //   console.log('englishDate:', englishDate);
-
-  //   const parts = englishDate.split('/'); // تقسیم رشته به روز، ماه و سال
-  //   if (parts.length !== 3) return;
-
-  //   const year = parseInt(parts[0]);
-  //   const month = parseInt(parts[1]);
-
-  //   console.log('year:', year);
-  //   console.log('month:', month);
-
-  //   if (isNaN(year) || isNaN(month)) {
-  //     console.error('⛔ خطا: مقدار سال یا ماه معتبر نیست.');
-  //     return;
-  //   }
-
-  //   setCurrentJalaliYear(year);
-
-  //   let calculatedYear = '';
-  //   let season = '';
-
-  //   // تعیین مقدار سال زراعی و دوره کشت
-  //   if (month >= 4 && month <= 7) {
-  //     calculatedYear = `${year - 1}-${year}`;
-  //     season = 'تابستانه';
-  //   } else if (month >= 9 && month <= 12) {
-  //     calculatedYear = `${year}-${year + 1}`;
-  //     season = 'پاییزه';
-  //   } else if (month >= 1 && month <= 3) {
-  //     calculatedYear = `${year - 1}-${year}`;
-  //     season = 'پاییزه';
-  //   }
-
-  //   if (month === 8) {
-  //     setIsNovember(true);
-  //     calculatedYear = `${year - 1}-${year}`; // مقدار پیش‌فرض در آبان
-  //     season = 'تابستانه'; // مقدار پیش‌فرض در آبان
-  //   } else {
-  //     setIsNovember(false);
-  //   }
-
-  //   setAgriculturalYear(calculatedYear);
-  //   setFarmingSeason(season);
-  // }, []);
-
-  // // تابع تغییر مقدار سال زراعی در آبان‌ماه
-  // const handleAgriculturalYearChange = (value: string) => {
-  //   setAgriculturalYear(value);
-
-  //   // تنظیم مقدار "دوره کشت" در آبان‌ماه
-  //   if (isNovember) {
-  //     if (value === `${currentJalaliYear - 1}-${currentJalaliYear}`) {
-  //       setFarmingSeason('تابستانه');
-  //     } else {
-  //       setFarmingSeason('پاییزه');
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     fetch('/api/user-position')
       .then((res) => res.json())
-      .then((data) => setUserPositions(data.positions))
+      .then((data) => {
+        setUserName(data.username);
+        setUserPositions(data.positions);
+        setUserRole(data.positions);
+        setFirstName(data.firstname);
+        setLastName(data.lastname);
+      })
       .catch(console.error);
-  }, []);
+  }, [setFirstName, setLastName, setUserName, setUserRole]);
 
   useEffect(() => {
     fetch('/api/irrigation-networks')
@@ -198,16 +156,18 @@ const HeaderRequestPumping = () => {
       filteredNetworks.length === 1 &&
       selectedNetworkId !== filteredNetworks[0].IdNet
     ) {
+      setSelectedNetwork(filteredNetworks[0].Network);
+      setNetworkName(filteredNetworks[0].Network);
       setSelectedNetworkId(filteredNetworks[0].IdNet);
     }
-  }, [filteredNetworks, selectedNetworkId]);
+  }, [filteredNetworks, selectedNetworkId, setNetworkName]);
 
   // تغییر `selectedNetwork` و استخراج `IdNet`
   const handleNetworkChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const networkName = event.target.value;
     setSelectedNetwork(networkName);
+    setNetworkName(networkName);
 
-    // پیدا کردن `IdNet` متناظر با `Network`
     const network = networks.find((n) => n.Network === networkName);
     if (network) {
       setSelectedNetworkId(network.IdNet);
@@ -216,15 +176,45 @@ const HeaderRequestPumping = () => {
     }
   };
 
+  const handlePumpStationChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const stationName = event.target.value;
+    setSelectedPumpStation(stationName);
+    setPumpStationName(stationName);
+
+    // پیدا کردن IdPumpSta مربوط به ایستگاه انتخاب‌شده
+    const selectedStation = pumpStations.find(
+      (station) => station.NameStation === stationName,
+    );
+    if (selectedStation) {
+      setIdPumpStation(selectedStation.IdPumpSta);
+    }
+  };
+
   // واکشی ایستگاه‌های پمپاژ با `FIdDP = 2`
   useEffect(() => {
     if (selectedNetworkId !== null) {
       fetch(`/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2`)
         .then((res) => res.json())
-        .then((data) => setPumpStations(data.pumpStations))
+        .then((data) => {
+          setPumpStations(data.pumpStations);
+
+          if (data.pumpStations.length === 1) {
+            setSelectedPumpStation(data.pumpStations[0].NameStation);
+            setPumpStationName(data.pumpStations[0].NameStation);
+            setIdPumpStation(data.pumpStations[0].IdPumpSta);
+          } else {
+            // اگر ایستگاه پمپاژ چند گزینه‌ای است، مقدار آن را تهی کنیم
+            setSelectedPumpStation('');
+            setPumpStationName('');
+            setIdPumpStation(0);
+          }
+        })
         .catch(console.error);
     }
-  }, [selectedNetworkId]);
+  }, [selectedNetworkId, setIdPumpStation, setPumpStationName]);
+
   useEffect(() => {
     if (selectedNetworkId !== null) {
       fetch(`/api/network-data?networkId=${selectedNetworkId}`)
@@ -233,15 +223,16 @@ const HeaderRequestPumping = () => {
           if (data.error) {
             console.error(data.error);
           } else {
-            console.log('SaleZeraee:', data.SaleZeraee);
-            console.log('Dore:', data.Dore);
-            setSaleZeraee(data.SaleZeraee || []);
-            setDore(data.Dore || []);
+            setLocalSaleZeraee(data.SaleZeraee || '');
+            setLocalDore(data.Dore || '');
+            setSaleZeraee(data.SaleZeraee || ''); // ارسال به کامپوننت والد
+            setDoreKesht(data.Dore || ''); // ارسال به کامپوننت والد
+            setIdShDo(data.IdShDo || ''); // ارسال به کامپوننت والد
           }
         })
         .catch((error) => console.error('خطا در دریافت اطلاعات:', error));
     }
-  }, [selectedNetworkId]);
+  }, [selectedNetworkId, setDoreKesht, setIdShDo, setSaleZeraee]);
 
   return (
     <div className="container justify-center flex flex-wrap items-center gap-4 p-2 bg-blue-100 rounded-lg shadow-md">
@@ -296,7 +287,7 @@ const HeaderRequestPumping = () => {
             id="pumpStation"
             className="border p-2 rounded-lg"
             value={selectedPumpStation}
-            onChange={(e) => setSelectedPumpStation(e.target.value)}
+            onChange={handlePumpStationChange}
           >
             <option value="" disabled hidden>
               انتخاب کنید
@@ -314,12 +305,12 @@ const HeaderRequestPumping = () => {
         <label className="font-semibold" htmlFor="saleZeraee">
           سال زراعی
         </label>
-        {Array.isArray(saleZeraee) && saleZeraee.length === 1 ? (
+        {Array.isArray(localSaleZeraee) && localSaleZeraee.length === 1 ? (
           <input
             type="text"
             id="saleZeraee"
             className="border p-2 rounded-lg bg-gray-200"
-            value={saleZeraee[0]}
+            value={localSaleZeraee[0]}
             readOnly
           />
         ) : (
@@ -332,8 +323,8 @@ const HeaderRequestPumping = () => {
             <option value="" disabled hidden>
               انتخاب کنید
             </option>
-            {Array.isArray(saleZeraee) &&
-              saleZeraee.map((year, index) => (
+            {Array.isArray(localSaleZeraee) &&
+              localSaleZeraee.map((year, index) => (
                 <option key={index} value={year}>
                   {year}
                 </option>
@@ -347,12 +338,12 @@ const HeaderRequestPumping = () => {
         <label className="font-semibold" htmlFor="dore">
           دوره کشت
         </label>
-        {Array.isArray(dore) && dore.length === 1 ? (
+        {Array.isArray(localDore) && localDore.length === 1 ? (
           <input
             type="text"
             id="dore"
             className="border p-2 rounded-lg bg-gray-200"
-            value={dore[0]}
+            value={localDore[0]}
             readOnly
           />
         ) : (
@@ -365,8 +356,8 @@ const HeaderRequestPumping = () => {
             <option value="" disabled hidden>
               انتخاب کنید
             </option>
-            {Array.isArray(dore) &&
-              dore.map((d, index) => (
+            {Array.isArray(localDore) &&
+              localDore.map((d, index) => (
                 <option key={index} value={d}>
                   {d}
                 </option>

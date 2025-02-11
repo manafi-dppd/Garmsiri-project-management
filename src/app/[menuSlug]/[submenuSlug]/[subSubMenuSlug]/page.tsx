@@ -1,7 +1,7 @@
 'use client';
 
 import {useParams} from 'next/navigation';
-import RequestPumpingStation from '@/components/RequestPumpingStation/HeaderForm';
+import RequestPumpingStation from '@/components/RequestPumpingStation/RequestPumpingStation';
 
 export default function Page() {
   const params = useParams();

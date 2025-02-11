@@ -43,8 +43,14 @@ export async function GET(req: Request) {
     }
 
     const positions = user.positions.map((p) => p.Position.title);
+    const username = user.userName;
+    const firstname = user.first_name;
+    const lastname = user.last_name;
 
-    return NextResponse.json({positions}, {status: 200});
+    return NextResponse.json(
+      {username, positions, firstname, lastname},
+      {status: 200},
+    );
   } catch (error) {
     console.error('Error fetching positions:', error);
     return NextResponse.json({error: 'Internal server error'}, {status: 500});

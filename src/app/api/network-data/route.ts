@@ -98,9 +98,22 @@ export async function GET(req: NextRequest) {
       select: {Dore: true},
     });
 
+    // دریافت IdShDo از ShabakeDoreKesht
+    const idShDoRecords = await sqlServerClient.shabakeDoreKesht.findMany({
+      where: {
+        FIdNet: selectedNetworkId,
+        FIdSal: {in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal]},
+        FIdDore: {
+          in: Array.isArray(finalFIdDore) ? finalFIdDore : [finalFIdDore],
+        },
+      },
+      select: {IdShDo: true},
+    });
+
     return NextResponse.json({
       SaleZeraee: saleZeraee.map((s) => s.SaleZeraee),
       Dore: doreKesht.map((d) => d.Dore),
+      IdShDo: idShDoRecords.map((i) => i.IdShDo), // اضافه کردن IdShDo به خروجی
     });
   } catch (error) {
     console.error('خطا در دریافت داده‌های شبکه:', error);

@@ -1,5 +1,18 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
+
+interface KhatRanesh {
+  Zarfiat: ReactNode;
+  FIdSePu: number;
+  FIdDPipe: number;
+  Active: boolean;
+  IdRanesh: number;
+  RaneshName: string;
+  DebiPomp?: number;
+  TedadPump?: number;
+  FesharPump?: number;
+  Randeman?: number;
+  TavaneNami?: number;
+}
 
 interface BodyRequestPumpingProps {
   userName: string;
@@ -8,6 +21,7 @@ interface BodyRequestPumpingProps {
   lastName: string;
   networkName: string;
   pumpStationName: string;
+  selectedNetworkId: number | null;
   idPumpStation: number;
   saleZeraee: string;
   doreKesht: string;
@@ -22,43 +36,145 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   networkName,
   pumpStationName,
   idPumpStation,
+  selectedNetworkId,
   saleZeraee,
   doreKesht,
   idShDo,
 }) => {
+  console.log('selectedNetworkId: ', selectedNetworkId);
+  const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
+
+  useEffect(() => {
+    if (idPumpStation === 0) return;
+    const fetchKhatRanesh = async () => {
+      try {
+        const res = await fetch(
+          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`,
+        );
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data: KhatRanesh[] = await res.json();
+        console.log('Fetched data:', data);
+        setKhatRaneshList(data);
+      } catch (error) {
+        console.error('Error fetching KhatRanesh:', error);
+      }
+    };
+
+    fetchKhatRanesh();
+  }, [idPumpStation]);
+
   return (
-    <div className="p-4 border rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">اطلاعات درخواست</h2>
-      <p>
-        <strong>نام کاربر:</strong> {userName}
-      </p>
-      <p>
-        <strong>نقش کاربر:</strong> {userRole}
-      </p>
-      <p>
-        <strong>نام :</strong> {firstName}
-      </p>
-      <p>
-        <strong>نام خانوادگی :</strong> {lastName}
-      </p>
-      <p>
-        <strong>شبکه آبیاری:</strong> {networkName}
-      </p>
-      <p>
-        <strong>ایستگاه پمپاژ:</strong> {pumpStationName}
-      </p>
-      <p>
-        <strong>آی دی ایستگاه پمپاژ:</strong> {idPumpStation}
-      </p>
-      <p>
-        <strong>سال زراعی:</strong> {saleZeraee}
-      </p>
-      <p>
-        <strong>دوره کشت:</strong> {doreKesht}
-      </p>
-      <p>
-        <strong>آی دی سال زراعی-دوره کشت:</strong> {idShDo}
-      </p>
+    <div className="overflow-x-auto">
+      {selectedNetworkId === null ? (
+        <h2 className="text-lg font-semibold mb-4 p-4 border rounded-lg shadow">
+          شبکه مورد نظر خود را انتخاب کنید
+        </h2>
+      ) : idPumpStation === 0 ? (
+        <h2 className="text-lg font-semibold mb-4 p-4 border rounded-lg shadow">
+          ایستگاه پمپاژ مورد نظر خود را انتخاب کنید
+        </h2>
+      ) : (
+        <table className="table-auto border-collapse w-full border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2" colSpan={2}>
+                خط رانش
+              </th>
+              {khatRaneshList
+                .filter(
+                  (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                )
+                .map((ranesh) => (
+                  <th
+                    key={ranesh.IdRanesh}
+                    className="border border-gray-300 px-4 py-2"
+                    colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                  >
+                    {ranesh.RaneshName}
+                  </th>
+                ))}
+            </tr>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2" colSpan={2}>
+                دبی پمپ
+              </th>
+              {khatRaneshList
+                .filter(
+                  (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                )
+                .map((ranesh) => (
+                  <td
+                    key={ranesh.IdRanesh}
+                    className="border border-gray-300 px-4 py-2"
+                    colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                  >
+                    {ranesh.FIdSePu === 1 ? ranesh.DebiPomp : ranesh.Zarfiat}
+                  </td>
+                ))}
+            </tr>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2" rowSpan={2}>
+                روز
+              </th>
+              <th className="border border-gray-300 px-4 py-2" rowSpan={2}>
+                تاریخ
+              </th>
+              {khatRaneshList
+                .filter(
+                  (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                )
+                .map((ranesh) => (
+                  <React.Fragment key={ranesh.IdRanesh}>
+                    {ranesh.FIdSePu === 1 && (
+                      <th
+                        className="border border-gray-300 px-4 py-2"
+                        rowSpan={2}
+                      >
+                        تعداد پمپ
+                      </th>
+                    )}
+                    <th className="border border-gray-300 px-4 py-2">
+                      دبی درخواستی
+                    </th>
+                    <th
+                      className="border border-gray-300 px-4 py-2"
+                      colSpan={3}
+                    >
+                      زمان پمپاژ (ساعت)
+                    </th>
+                  </React.Fragment>
+                ))}
+            </tr>
+            <tr>
+              {khatRaneshList
+                .filter(
+                  (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                )
+                .map((ranesh) => (
+                  <React.Fragment key={ranesh.IdRanesh}>
+                    <th className="border border-gray-300 px-4 py-2">L/S</th>
+                    <th className="border border-gray-300 px-4 py-2">از</th>
+                    <th className="border border-gray-300 px-4 py-2">تا</th>
+                    <th className="border border-gray-300 px-4 py-2">مدت</th>
+                  </React.Fragment>
+                ))}
+            </tr>
+          </thead>
+          {/* <tbody>
+          <tr>
+            {khatRaneshList.map((ranesh) => (
+              <React.Fragment key={ranesh.IdRanesh}>
+                <td className="border border-gray-300 px-4 py-2">
+                  {ranesh.FIdPumpSta === idPumpStation ? ranesh.DebiPomp : ''}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">--</td>
+                <td className="border border-gray-300 px-4 py-2">--</td>
+              </React.Fragment>
+            ))}
+          </tr>
+        </tbody> */}
+        </table>
+      )}
     </div>
   );
 };

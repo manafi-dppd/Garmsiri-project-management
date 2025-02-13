@@ -140,6 +140,7 @@ model KhatRanesh {
   FIdDPipe              Int                     @db.TinyInt
   FIdSePu               Int                     @db.TinyInt
   FIdMeasuring          Int                     @db.TinyInt
+  Active                Boolean                 @default(true) @db.Bit
   Abgir                 Abgir[]
   BahrebardairProgram   BahrebardairProgram[]
   BahrebardariKeshtDore BahrebardariKeshtDore[]
@@ -276,6 +277,7 @@ model PumpStation {
   FIdDStation   Int            @db.TinyInt
   FIdMakhzan    Int?           @db.TinyInt
   FIdDP         Int            @db.TinyInt
+  Ready         Boolean        @default(true) @db.Bit
   KhatRanesh    KhatRanesh[]
   AbadeMakhzan  AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
   DarjeStation  DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")

@@ -9,6 +9,7 @@ interface HeaderRequestPumpingProps {
   setLastName: (role: string) => void;
   setNetworkName: (name: string) => void;
   setPumpStationName: (name: string) => void;
+  setSelectedNetworkId: (id: number | null) => void;
   setIdPumpStation: (Id: number) => void;
   setSaleZeraee: (year: string) => void;
   setDoreKesht: (season: string) => void;
@@ -22,6 +23,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   setNetworkName,
   setPumpStationName,
   setIdPumpStation,
+  setSelectedNetworkId,
   setSaleZeraee,
   setDoreKesht,
   setIdShDo,
@@ -33,9 +35,9 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [localSaleZeraee, setLocalSaleZeraee] = useState<string | null>(null);
   const [localDore, setLocalDore] = useState<string | null>(null);
-  const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(
-    null,
-  );
+  // const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(
+  //   null,
+  // );
   const [selectedSaleZeraee, setSelectedSaleZeraee] = useState<string>('');
   const [selectedDore, setSelectedDore] = useState<string>('');
   const [filteredNetworks, setFilteredNetworks] = useState<
@@ -44,6 +46,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   const [pumpStations, setPumpStations] = useState<
     {IdPumpSta: number; NameStation: string}[]
   >([]);
+  const [selectedNetworkId, setLocalSelectedNetworkId] = useState<number | null>(null);
   const [selectedPumpStation, setSelectedPumpStation] = useState<string>('');
 
   useEffect(() => {
@@ -158,6 +161,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
     ) {
       setSelectedNetwork(filteredNetworks[0].Network);
       setNetworkName(filteredNetworks[0].Network);
+      setLocalSelectedNetworkId(filteredNetworks[0].IdNet);
       setSelectedNetworkId(filteredNetworks[0].IdNet);
     }
   }, [filteredNetworks, selectedNetworkId, setNetworkName]);
@@ -170,8 +174,10 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
 
     const network = networks.find((n) => n.Network === networkName);
     if (network) {
+      setLocalSelectedNetworkId(network.IdNet);
       setSelectedNetworkId(network.IdNet);
     } else {
+      setLocalSelectedNetworkId(null);
       setSelectedNetworkId(null);
     }
   };
@@ -272,7 +278,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
       {/* ایستگاه پمپاژ */}
       <div className="flex items-center gap-2">
         <label className="font-semibold" htmlFor="pumpStation">
-          ایستگاه پمپاژ
+          ایستگاه
         </label>
         {pumpStations.length === 1 ? (
           <input

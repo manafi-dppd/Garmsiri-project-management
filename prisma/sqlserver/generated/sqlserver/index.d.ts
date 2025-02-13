@@ -17681,6 +17681,7 @@ export namespace Prisma {
     FIdDPipe: number | null
     FIdSePu: number | null
     FIdMeasuring: number | null
+    Active: boolean | null
   }
 
   export type KhatRaneshMaxAggregateOutputType = {
@@ -17690,6 +17691,7 @@ export namespace Prisma {
     FIdDPipe: number | null
     FIdSePu: number | null
     FIdMeasuring: number | null
+    Active: boolean | null
   }
 
   export type KhatRaneshCountAggregateOutputType = {
@@ -17699,6 +17701,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active: number
     _all: number
   }
 
@@ -17726,6 +17729,7 @@ export namespace Prisma {
     FIdDPipe?: true
     FIdSePu?: true
     FIdMeasuring?: true
+    Active?: true
   }
 
   export type KhatRaneshMaxAggregateInputType = {
@@ -17735,6 +17739,7 @@ export namespace Prisma {
     FIdDPipe?: true
     FIdSePu?: true
     FIdMeasuring?: true
+    Active?: true
   }
 
   export type KhatRaneshCountAggregateInputType = {
@@ -17744,6 +17749,7 @@ export namespace Prisma {
     FIdDPipe?: true
     FIdSePu?: true
     FIdMeasuring?: true
+    Active?: true
     _all?: true
   }
 
@@ -17840,6 +17846,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active: boolean
     _count: KhatRaneshCountAggregateOutputType | null
     _avg: KhatRaneshAvgAggregateOutputType | null
     _sum: KhatRaneshSumAggregateOutputType | null
@@ -17868,6 +17875,7 @@ export namespace Prisma {
     FIdDPipe?: boolean
     FIdSePu?: boolean
     FIdMeasuring?: boolean
+    Active?: boolean
     Abgir?: boolean | KhatRanesh$AbgirArgs<ExtArgs>
     BahrebardairProgram?: boolean | KhatRanesh$BahrebardairProgramArgs<ExtArgs>
     BahrebardariKeshtDore?: boolean | KhatRanesh$BahrebardariKeshtDoreArgs<ExtArgs>
@@ -17898,9 +17906,10 @@ export namespace Prisma {
     FIdDPipe?: boolean
     FIdSePu?: boolean
     FIdMeasuring?: boolean
+    Active?: boolean
   }
 
-  export type KhatRaneshOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdRanesh" | "RaneshName" | "FIdPumpSta" | "FIdDPipe" | "FIdSePu" | "FIdMeasuring", ExtArgs["result"]["khatRanesh"]>
+  export type KhatRaneshOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdRanesh" | "RaneshName" | "FIdPumpSta" | "FIdDPipe" | "FIdSePu" | "FIdMeasuring" | "Active", ExtArgs["result"]["khatRanesh"]>
   export type KhatRaneshInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Abgir?: boolean | KhatRanesh$AbgirArgs<ExtArgs>
     BahrebardairProgram?: boolean | KhatRanesh$BahrebardairProgramArgs<ExtArgs>
@@ -17952,6 +17961,7 @@ export namespace Prisma {
       FIdDPipe: number
       FIdSePu: number
       FIdMeasuring: number
+      Active: boolean
     }, ExtArgs["result"]["khatRanesh"]>
     composites: {}
   }
@@ -18345,6 +18355,7 @@ export namespace Prisma {
     readonly FIdDPipe: FieldRef<"KhatRanesh", 'Int'>
     readonly FIdSePu: FieldRef<"KhatRanesh", 'Int'>
     readonly FIdMeasuring: FieldRef<"KhatRanesh", 'Int'>
+    readonly Active: FieldRef<"KhatRanesh", 'Boolean'>
   }
     
 
@@ -29995,6 +30006,7 @@ export namespace Prisma {
     FIdDStation: number | null
     FIdMakhzan: number | null
     FIdDP: number | null
+    Ready: boolean | null
   }
 
   export type PumpStationMaxAggregateOutputType = {
@@ -30005,6 +30017,7 @@ export namespace Prisma {
     FIdDStation: number | null
     FIdMakhzan: number | null
     FIdDP: number | null
+    Ready: boolean | null
   }
 
   export type PumpStationCountAggregateOutputType = {
@@ -30015,6 +30028,7 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan: number
     FIdDP: number
+    Ready: number
     _all: number
   }
 
@@ -30045,6 +30059,7 @@ export namespace Prisma {
     FIdDStation?: true
     FIdMakhzan?: true
     FIdDP?: true
+    Ready?: true
   }
 
   export type PumpStationMaxAggregateInputType = {
@@ -30055,6 +30070,7 @@ export namespace Prisma {
     FIdDStation?: true
     FIdMakhzan?: true
     FIdDP?: true
+    Ready?: true
   }
 
   export type PumpStationCountAggregateInputType = {
@@ -30065,6 +30081,7 @@ export namespace Prisma {
     FIdDStation?: true
     FIdMakhzan?: true
     FIdDP?: true
+    Ready?: true
     _all?: true
   }
 
@@ -30162,6 +30179,7 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan: number | null
     FIdDP: number
+    Ready: boolean
     _count: PumpStationCountAggregateOutputType | null
     _avg: PumpStationAvgAggregateOutputType | null
     _sum: PumpStationSumAggregateOutputType | null
@@ -30191,6 +30209,7 @@ export namespace Prisma {
     FIdDStation?: boolean
     FIdMakhzan?: boolean
     FIdDP?: boolean
+    Ready?: boolean
     KhatRanesh?: boolean | PumpStation$KhatRaneshArgs<ExtArgs>
     AbadeMakhzan?: boolean | PumpStation$AbadeMakhzanArgs<ExtArgs>
     DarjeStation?: boolean | DarjeStationDefaultArgs<ExtArgs>
@@ -30209,9 +30228,10 @@ export namespace Prisma {
     FIdDStation?: boolean
     FIdMakhzan?: boolean
     FIdDP?: boolean
+    Ready?: boolean
   }
 
-  export type PumpStationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdPumpSta" | "NameStation" | "KM" | "FIdNet" | "FIdDStation" | "FIdMakhzan" | "FIdDP", ExtArgs["result"]["pumpStation"]>
+  export type PumpStationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdPumpSta" | "NameStation" | "KM" | "FIdNet" | "FIdDStation" | "FIdMakhzan" | "FIdDP" | "Ready", ExtArgs["result"]["pumpStation"]>
   export type PumpStationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     KhatRanesh?: boolean | PumpStation$KhatRaneshArgs<ExtArgs>
     AbadeMakhzan?: boolean | PumpStation$AbadeMakhzanArgs<ExtArgs>
@@ -30238,6 +30258,7 @@ export namespace Prisma {
       FIdDStation: number
       FIdMakhzan: number | null
       FIdDP: number
+      Ready: boolean
     }, ExtArgs["result"]["pumpStation"]>
     composites: {}
   }
@@ -30619,6 +30640,7 @@ export namespace Prisma {
     readonly FIdDStation: FieldRef<"PumpStation", 'Int'>
     readonly FIdMakhzan: FieldRef<"PumpStation", 'Int'>
     readonly FIdDP: FieldRef<"PumpStation", 'Int'>
+    readonly Ready: FieldRef<"PumpStation", 'Boolean'>
   }
     
 
@@ -44127,7 +44149,8 @@ export namespace Prisma {
     FIdPumpSta: 'FIdPumpSta',
     FIdDPipe: 'FIdDPipe',
     FIdSePu: 'FIdSePu',
-    FIdMeasuring: 'FIdMeasuring'
+    FIdMeasuring: 'FIdMeasuring',
+    Active: 'Active'
   };
 
   export type KhatRaneshScalarFieldEnum = (typeof KhatRaneshScalarFieldEnum)[keyof typeof KhatRaneshScalarFieldEnum]
@@ -44257,7 +44280,8 @@ export namespace Prisma {
     FIdNet: 'FIdNet',
     FIdDStation: 'FIdDStation',
     FIdMakhzan: 'FIdMakhzan',
-    FIdDP: 'FIdDP'
+    FIdDP: 'FIdDP',
+    Ready: 'Ready'
   };
 
   export type PumpStationScalarFieldEnum = (typeof PumpStationScalarFieldEnum)[keyof typeof PumpStationScalarFieldEnum]
@@ -44441,6 +44465,13 @@ export namespace Prisma {
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -45165,6 +45196,7 @@ export namespace Prisma {
     FIdDPipe?: IntFilter<"KhatRanesh"> | number
     FIdSePu?: IntFilter<"KhatRanesh"> | number
     FIdMeasuring?: IntFilter<"KhatRanesh"> | number
+    Active?: BoolFilter<"KhatRanesh"> | boolean
     Abgir?: AbgirListRelationFilter
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
     BahrebardariKeshtDore?: BahrebardariKeshtDoreListRelationFilter
@@ -45192,6 +45224,7 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+    Active?: SortOrder
     Abgir?: AbgirOrderByRelationAggregateInput
     BahrebardairProgram?: BahrebardairProgramOrderByRelationAggregateInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreOrderByRelationAggregateInput
@@ -45222,6 +45255,7 @@ export namespace Prisma {
     FIdDPipe?: IntFilter<"KhatRanesh"> | number
     FIdSePu?: IntFilter<"KhatRanesh"> | number
     FIdMeasuring?: IntFilter<"KhatRanesh"> | number
+    Active?: BoolFilter<"KhatRanesh"> | boolean
     Abgir?: AbgirListRelationFilter
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
     BahrebardariKeshtDore?: BahrebardariKeshtDoreListRelationFilter
@@ -45249,6 +45283,7 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+    Active?: SortOrder
     _count?: KhatRaneshCountOrderByAggregateInput
     _avg?: KhatRaneshAvgOrderByAggregateInput
     _max?: KhatRaneshMaxOrderByAggregateInput
@@ -45266,6 +45301,7 @@ export namespace Prisma {
     FIdDPipe?: IntWithAggregatesFilter<"KhatRanesh"> | number
     FIdSePu?: IntWithAggregatesFilter<"KhatRanesh"> | number
     FIdMeasuring?: IntWithAggregatesFilter<"KhatRanesh"> | number
+    Active?: BoolWithAggregatesFilter<"KhatRanesh"> | boolean
   }
 
   export type KhatRaneshAreaWhereInput = {
@@ -45919,6 +45955,7 @@ export namespace Prisma {
     FIdDStation?: IntFilter<"PumpStation"> | number
     FIdMakhzan?: IntNullableFilter<"PumpStation"> | number | null
     FIdDP?: IntFilter<"PumpStation"> | number
+    Ready?: BoolFilter<"PumpStation"> | boolean
     KhatRanesh?: KhatRaneshListRelationFilter
     AbadeMakhzan?: XOR<AbadeMakhzanNullableScalarRelationFilter, AbadeMakhzanWhereInput> | null
     DarjeStation?: XOR<DarjeStationScalarRelationFilter, DarjeStationWhereInput>
@@ -45934,6 +45971,7 @@ export namespace Prisma {
     FIdDStation?: SortOrder
     FIdMakhzan?: SortOrderInput | SortOrder
     FIdDP?: SortOrder
+    Ready?: SortOrder
     KhatRanesh?: KhatRaneshOrderByRelationAggregateInput
     AbadeMakhzan?: AbadeMakhzanOrderByWithRelationInput
     DarjeStation?: DarjeStationOrderByWithRelationInput
@@ -45952,6 +45990,7 @@ export namespace Prisma {
     FIdDStation?: IntFilter<"PumpStation"> | number
     FIdMakhzan?: IntNullableFilter<"PumpStation"> | number | null
     FIdDP?: IntFilter<"PumpStation"> | number
+    Ready?: BoolFilter<"PumpStation"> | boolean
     KhatRanesh?: KhatRaneshListRelationFilter
     AbadeMakhzan?: XOR<AbadeMakhzanNullableScalarRelationFilter, AbadeMakhzanWhereInput> | null
     DarjeStation?: XOR<DarjeStationScalarRelationFilter, DarjeStationWhereInput>
@@ -45967,6 +46006,7 @@ export namespace Prisma {
     FIdDStation?: SortOrder
     FIdMakhzan?: SortOrderInput | SortOrder
     FIdDP?: SortOrder
+    Ready?: SortOrder
     _count?: PumpStationCountOrderByAggregateInput
     _avg?: PumpStationAvgOrderByAggregateInput
     _max?: PumpStationMaxOrderByAggregateInput
@@ -45985,6 +46025,7 @@ export namespace Prisma {
     FIdDStation?: IntWithAggregatesFilter<"PumpStation"> | number
     FIdMakhzan?: IntNullableWithAggregatesFilter<"PumpStation"> | number | null
     FIdDP?: IntWithAggregatesFilter<"PumpStation"> | number
+    Ready?: BoolWithAggregatesFilter<"PumpStation"> | boolean
   }
 
   export type PumpTypeWhereInput = {
@@ -47306,6 +47347,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -47333,6 +47375,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -47351,6 +47394,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -47378,6 +47422,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -47400,10 +47445,12 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
   }
 
   export type KhatRaneshUpdateManyMutationInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type KhatRaneshUncheckedUpdateManyInput = {
@@ -47413,6 +47460,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type KhatRaneshAreaCreateInput = {
@@ -47987,6 +48035,7 @@ export namespace Prisma {
   export type PumpStationCreateInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshCreateNestedManyWithoutPumpStationInput
     AbadeMakhzan?: AbadeMakhzanCreateNestedOneWithoutPumpStationInput
     DarjeStation: DarjeStationCreateNestedOneWithoutPumpStationInput
@@ -48002,12 +48051,14 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
     KhatRanesh?: KhatRaneshUncheckedCreateNestedManyWithoutPumpStationInput
   }
 
   export type PumpStationUpdateInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUpdateManyWithoutPumpStationNestedInput
     AbadeMakhzan?: AbadeMakhzanUpdateOneWithoutPumpStationNestedInput
     DarjeStation?: DarjeStationUpdateOneRequiredWithoutPumpStationNestedInput
@@ -48023,6 +48074,7 @@ export namespace Prisma {
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUncheckedUpdateManyWithoutPumpStationNestedInput
   }
 
@@ -48033,11 +48085,13 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
   }
 
   export type PumpStationUpdateManyMutationInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PumpStationUncheckedUpdateManyInput = {
@@ -48048,6 +48102,7 @@ export namespace Prisma {
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PumpTypeCreateInput = {
@@ -49389,6 +49444,11 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type AbgirListRelationFilter = {
     every?: AbgirWhereInput
     some?: AbgirWhereInput
@@ -49556,6 +49616,7 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+    Active?: SortOrder
   }
 
   export type KhatRaneshAvgOrderByAggregateInput = {
@@ -49573,6 +49634,7 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+    Active?: SortOrder
   }
 
   export type KhatRaneshMinOrderByAggregateInput = {
@@ -49582,6 +49644,7 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+    Active?: SortOrder
   }
 
   export type KhatRaneshSumOrderByAggregateInput = {
@@ -49590,6 +49653,14 @@ export namespace Prisma {
     FIdDPipe?: SortOrder
     FIdSePu?: SortOrder
     FIdMeasuring?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type LandScalarRelationFilter = {
@@ -50097,6 +50168,7 @@ export namespace Prisma {
     FIdDStation?: SortOrder
     FIdMakhzan?: SortOrder
     FIdDP?: SortOrder
+    Ready?: SortOrder
   }
 
   export type PumpStationAvgOrderByAggregateInput = {
@@ -50116,6 +50188,7 @@ export namespace Prisma {
     FIdDStation?: SortOrder
     FIdMakhzan?: SortOrder
     FIdDP?: SortOrder
+    Ready?: SortOrder
   }
 
   export type PumpStationMinOrderByAggregateInput = {
@@ -50126,6 +50199,7 @@ export namespace Prisma {
     FIdDStation?: SortOrder
     FIdMakhzan?: SortOrder
     FIdDP?: SortOrder
+    Ready?: SortOrder
   }
 
   export type PumpStationSumOrderByAggregateInput = {
@@ -51412,6 +51486,10 @@ export namespace Prisma {
     connectOrCreate?: TestCreateOrConnectWithoutKhatRaneshInput | TestCreateOrConnectWithoutKhatRaneshInput[]
     createMany?: TestCreateManyKhatRaneshInputEnvelope
     connect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type AbgirUpdateManyWithoutKhatRaneshNestedInput = {
@@ -53748,6 +53826,19 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -53824,6 +53915,7 @@ export namespace Prisma {
   export type PumpStationCreateWithoutAbadeMakhzanInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshCreateNestedManyWithoutPumpStationInput
     DarjeStation: DarjeStationCreateNestedOneWithoutPumpStationInput
     DeliveryPoint: DeliveryPointsCreateNestedOneWithoutPumpStationsInput
@@ -53837,6 +53929,7 @@ export namespace Prisma {
     FIdNet: number
     FIdDStation: number
     FIdDP: number
+    Ready?: boolean
     KhatRanesh?: KhatRaneshUncheckedCreateNestedManyWithoutPumpStationInput
   }
 
@@ -53876,10 +53969,12 @@ export namespace Prisma {
     FIdDStation?: IntFilter<"PumpStation"> | number
     FIdMakhzan?: IntNullableFilter<"PumpStation"> | number | null
     FIdDP?: IntFilter<"PumpStation"> | number
+    Ready?: BoolFilter<"PumpStation"> | boolean
   }
 
   export type KhatRaneshCreateWithoutAbgirInput = {
     RaneshName: string
+    Active?: boolean
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
@@ -53906,6 +54001,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -53959,6 +54055,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutAbgirInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
@@ -53985,6 +54082,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54028,6 +54126,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutBahrebardairProgramInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
@@ -54054,6 +54153,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54133,6 +54233,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutBahrebardairProgramInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
@@ -54159,6 +54260,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54228,6 +54330,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutBahrebardariKeshtDoreInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
@@ -54254,6 +54357,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54326,6 +54430,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutBahrebardariKeshtDoreInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
@@ -54352,6 +54457,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54420,6 +54526,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutBahrebardariTaghvimInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -54446,6 +54553,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54525,6 +54633,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutBahrebardariTaghvimInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -54551,6 +54660,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54710,6 +54820,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutDarajePipeInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -54735,6 +54846,7 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54786,11 +54898,13 @@ export namespace Prisma {
     FIdDPipe?: IntFilter<"KhatRanesh"> | number
     FIdSePu?: IntFilter<"KhatRanesh"> | number
     FIdMeasuring?: IntFilter<"KhatRanesh"> | number
+    Active?: BoolFilter<"KhatRanesh"> | boolean
   }
 
   export type PumpStationCreateWithoutDeliveryPointInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshCreateNestedManyWithoutPumpStationInput
     AbadeMakhzan?: AbadeMakhzanCreateNestedOneWithoutPumpStationInput
     DarjeStation: DarjeStationCreateNestedOneWithoutPumpStationInput
@@ -54804,6 +54918,7 @@ export namespace Prisma {
     FIdNet: number
     FIdDStation: number
     FIdMakhzan?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshUncheckedCreateNestedManyWithoutPumpStationInput
   }
 
@@ -54835,6 +54950,7 @@ export namespace Prisma {
   export type PumpStationCreateWithoutDarjeStationInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshCreateNestedManyWithoutPumpStationInput
     AbadeMakhzan?: AbadeMakhzanCreateNestedOneWithoutPumpStationInput
     DeliveryPoint: DeliveryPointsCreateNestedOneWithoutPumpStationsInput
@@ -54848,6 +54964,7 @@ export namespace Prisma {
     FIdNet: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
     KhatRanesh?: KhatRaneshUncheckedCreateNestedManyWithoutPumpStationInput
   }
 
@@ -55013,6 +55130,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutEshtebahAvamelInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -55039,6 +55157,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55118,6 +55237,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutEshtebahAvamelInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -55144,6 +55264,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55213,6 +55334,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutFlowBehboodInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -55239,6 +55361,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55318,6 +55441,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutFlowBehboodInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -55344,6 +55468,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55413,6 +55538,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutFlowmeterInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -55439,6 +55565,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55518,6 +55645,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutFlowmeterInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -55544,6 +55672,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55793,6 +55922,7 @@ export namespace Prisma {
   export type PumpStationCreateWithoutKhatRaneshInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     AbadeMakhzan?: AbadeMakhzanCreateNestedOneWithoutPumpStationInput
     DarjeStation: DarjeStationCreateNestedOneWithoutPumpStationInput
     DeliveryPoint: DeliveryPointsCreateNestedOneWithoutPumpStationsInput
@@ -55807,6 +55937,7 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
   }
 
   export type PumpStationCreateOrConnectWithoutKhatRaneshInput = {
@@ -56237,6 +56368,7 @@ export namespace Prisma {
   export type PumpStationUpdateWithoutKhatRaneshInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     AbadeMakhzan?: AbadeMakhzanUpdateOneWithoutPumpStationNestedInput
     DarjeStation?: DarjeStationUpdateOneRequiredWithoutPumpStationNestedInput
     DeliveryPoint?: DeliveryPointsUpdateOneRequiredWithoutPumpStationsNestedInput
@@ -56251,6 +56383,7 @@ export namespace Prisma {
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SeghliPumpUpsertWithoutKhatRaneshInput = {
@@ -56471,6 +56604,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutKhatRaneshAreaInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -56497,6 +56631,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -56567,6 +56702,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutKhatRaneshAreaInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -56593,6 +56729,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -56659,6 +56796,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutKhatRaneshPumpInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -56685,6 +56823,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -56732,6 +56871,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutKhatRaneshPumpInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -56758,6 +56898,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -56795,6 +56936,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutKhatRaneshSegliInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -56821,6 +56963,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -56854,6 +56997,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutKhatRaneshSegliInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -56880,6 +57024,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57071,6 +57216,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutMeasuringToolInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -57096,6 +57242,7 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdDPipe: number
     FIdSePu: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57139,6 +57286,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutNashtShabakeInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -57165,6 +57313,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57244,6 +57393,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutNashtShabakeInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -57270,6 +57420,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57398,6 +57549,7 @@ export namespace Prisma {
   export type PumpStationCreateWithoutNetworkInput = {
     NameStation: string
     KM?: number | null
+    Ready?: boolean
     KhatRanesh?: KhatRaneshCreateNestedManyWithoutPumpStationInput
     AbadeMakhzan?: AbadeMakhzanCreateNestedOneWithoutPumpStationInput
     DarjeStation: DarjeStationCreateNestedOneWithoutPumpStationInput
@@ -57411,6 +57563,7 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
     KhatRanesh?: KhatRaneshUncheckedCreateNestedManyWithoutPumpStationInput
   }
 
@@ -57666,6 +57819,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutNonFITInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -57692,6 +57846,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57771,6 +57926,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutNonFITInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -57797,6 +57953,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57866,6 +58023,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutPumpStationInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -57891,6 +58049,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58502,6 +58661,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutSeghliPumpInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -58527,6 +58687,7 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdDPipe: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58621,6 +58782,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutTakhlieMakhzanInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -58647,6 +58809,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58726,6 +58889,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutTakhlieMakhzanInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -58752,6 +58916,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -58821,6 +58986,7 @@ export namespace Prisma {
 
   export type KhatRaneshCreateWithoutTestInput = {
     RaneshName: string
+    Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
@@ -58847,6 +59013,7 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58926,6 +59093,7 @@ export namespace Prisma {
 
   export type KhatRaneshUpdateWithoutTestInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -58952,6 +59120,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -59851,11 +60020,13 @@ export namespace Prisma {
     FIdNet: number
     FIdDStation: number
     FIdDP: number
+    Ready?: boolean
   }
 
   export type PumpStationUpdateWithoutAbadeMakhzanInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUpdateManyWithoutPumpStationNestedInput
     DarjeStation?: DarjeStationUpdateOneRequiredWithoutPumpStationNestedInput
     DeliveryPoint?: DeliveryPointsUpdateOneRequiredWithoutPumpStationsNestedInput
@@ -59869,6 +60040,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUncheckedUpdateManyWithoutPumpStationNestedInput
   }
 
@@ -59879,6 +60051,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type KontorCreateManyAbgirInput = {
@@ -59908,10 +60081,12 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
   }
 
   export type KhatRaneshUpdateWithoutDarajePipeInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -59937,6 +60112,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -59959,6 +60135,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PumpStationCreateManyDeliveryPointInput = {
@@ -59967,11 +60144,13 @@ export namespace Prisma {
     FIdNet: number
     FIdDStation: number
     FIdMakhzan?: number | null
+    Ready?: boolean
   }
 
   export type PumpStationUpdateWithoutDeliveryPointInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUpdateManyWithoutPumpStationNestedInput
     AbadeMakhzan?: AbadeMakhzanUpdateOneWithoutPumpStationNestedInput
     DarjeStation?: DarjeStationUpdateOneRequiredWithoutPumpStationNestedInput
@@ -59985,6 +60164,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUncheckedUpdateManyWithoutPumpStationNestedInput
   }
 
@@ -59995,6 +60175,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PumpStationCreateManyDarjeStationInput = {
@@ -60003,11 +60184,13 @@ export namespace Prisma {
     FIdNet: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
   }
 
   export type PumpStationUpdateWithoutDarjeStationInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUpdateManyWithoutPumpStationNestedInput
     AbadeMakhzan?: AbadeMakhzanUpdateOneWithoutPumpStationNestedInput
     DeliveryPoint?: DeliveryPointsUpdateOneRequiredWithoutPumpStationsNestedInput
@@ -60021,6 +60204,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUncheckedUpdateManyWithoutPumpStationNestedInput
   }
 
@@ -60031,6 +60215,7 @@ export namespace Prisma {
     FIdNet?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ShabakeDoreKeshtCreateManyDoreKeshtInput = {
@@ -60539,10 +60724,12 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdDPipe: number
     FIdSePu: number
+    Active?: boolean
   }
 
   export type KhatRaneshUpdateWithoutMeasuringToolInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -60568,6 +60755,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -60590,6 +60778,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type BareshMotaleatCreateManyNetworkInput = {
@@ -60609,6 +60798,7 @@ export namespace Prisma {
     FIdDStation: number
     FIdMakhzan?: number | null
     FIdDP: number
+    Ready?: boolean
   }
 
   export type ShabakeDoreKeshtCreateManyNetworkInput = {
@@ -60659,6 +60849,7 @@ export namespace Prisma {
   export type PumpStationUpdateWithoutNetworkInput = {
     NameStation?: StringFieldUpdateOperationsInput | string
     KM?: NullableIntFieldUpdateOperationsInput | number | null
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUpdateManyWithoutPumpStationNestedInput
     AbadeMakhzan?: AbadeMakhzanUpdateOneWithoutPumpStationNestedInput
     DarjeStation?: DarjeStationUpdateOneRequiredWithoutPumpStationNestedInput
@@ -60672,6 +60863,7 @@ export namespace Prisma {
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
     KhatRanesh?: KhatRaneshUncheckedUpdateManyWithoutPumpStationNestedInput
   }
 
@@ -60682,6 +60874,7 @@ export namespace Prisma {
     FIdDStation?: IntFieldUpdateOperationsInput | number
     FIdMakhzan?: NullableIntFieldUpdateOperationsInput | number | null
     FIdDP?: IntFieldUpdateOperationsInput | number
+    Ready?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ShabakeDoreKeshtUpdateWithoutNetworkInput = {
@@ -60763,10 +60956,12 @@ export namespace Prisma {
     FIdDPipe: number
     FIdSePu: number
     FIdMeasuring: number
+    Active?: boolean
   }
 
   export type KhatRaneshUpdateWithoutPumpStationInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -60792,6 +60987,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -60814,6 +61010,7 @@ export namespace Prisma {
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdSePu?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type KhatRaneshPumpCreateManyPumpTypeInput = {
@@ -61019,10 +61216,12 @@ export namespace Prisma {
     FIdPumpSta: number
     FIdDPipe: number
     FIdMeasuring: number
+    Active?: boolean
   }
 
   export type KhatRaneshUpdateWithoutSeghliPumpInput = {
     RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
@@ -61048,6 +61247,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -61070,6 +61270,7 @@ export namespace Prisma {
     FIdPumpSta?: IntFieldUpdateOperationsInput | number
     FIdDPipe?: IntFieldUpdateOperationsInput | number
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type NetworkCreateManySystemPartInput = {

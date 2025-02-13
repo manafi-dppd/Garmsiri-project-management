@@ -1,5 +1,5 @@
-import {NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
+import { NextResponse } from 'next/server';
+import { sqlServerClient } from '@prisma/db';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -7,19 +7,21 @@ export async function GET(req: Request) {
   const FIdDP = Number(url.searchParams.get('FIdDP'));
 
   if (!networkId || FIdDP !== 2) {
-    return NextResponse.json({error: 'پارامترهای نامعتبر'}, {status: 400});
+    return NextResponse.json({ error: 'پارامترهای نامعتبر' }, { status: 400 });
   }
 
   try {
     const pumpStations = await sqlServerClient.$queryRaw`
-  SELECT IdPumpSta, NameStation
-  FROM PumpStation
-  WHERE FIdNet = ${networkId} AND FIdDP = ${FIdDP};
-`;
+      SELECT IdPumpSta, NameStation
+      FROM PumpStation
+      WHERE FIdNet = ${networkId} 
+        AND FIdDP = ${FIdDP} 
+        AND Ready = 1;  -- فیلتر کردن بر اساس مقدار Ready
+    `;
 
-    return NextResponse.json({pumpStations});
+    return NextResponse.json({ pumpStations });
   } catch (error) {
     console.error('خطا در واکشی اطلاعات:', error);
-    return NextResponse.json({error: 'خطا در واکشی اطلاعات'}, {status: 500});
+    return NextResponse.json({ error: 'خطا در واکشی اطلاعات' }, { status: 500 });
   }
 }

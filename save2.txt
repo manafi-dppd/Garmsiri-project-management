@@ -1,129 +1,65 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from 'react';
 
-interface MenuItem {
-  id: number;
-  title_fa: string;
-  parentId: number | null;
-  checked?: boolean;
-  children?: MenuItem[];
+interface BodyRequestPumpingProps {
+  userName: string;
+  userRole: string;
+  firstName: string;
+  lastName: string;
+  networkName: string;
+  pumpStationName: string;
+  idPumpStation: number;
+  saleZeraee: string;
+  doreKesht: string;
+  idShDo: number;
 }
 
-const AccessLevelModal: React.FC<{ show: boolean; onClose: () => void }> = ({ show, onClose }) => {
-  const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
-
-  useEffect(() => {
-    if (show) {
-      axios
-        .get<MenuItem[]>("/api/menus")
-        .then((response) => {
-          const menuData = response.data;
-          setMenuTree(buildMenuHierarchy(menuData));
-        })
-        .catch((error) => console.error("Failed to fetch menus:", error));
-    }
-  }, [show]);
-
-  const buildMenuHierarchy = (menuData: MenuItem[]): MenuItem[] => {
-    const menuMap = new Map<number | null, MenuItem[]>();
-    menuData.forEach((menu) => {
-      if (!menuMap.has(menu.parentId)) {
-        menuMap.set(menu.parentId, []);
-      }
-      menuMap.get(menu.parentId)?.push({ ...menu, children: [] });
-    });
-
-    const buildHierarchy = (parentId: number | null): MenuItem[] =>
-      (menuMap.get(parentId) || []).map((menu) => ({
-        ...menu,
-        children: buildHierarchy(menu.id),
-      }));
-
-    return buildHierarchy(null);
-  };
-
-  const handleCheckboxChange = (menuId: number, checked: boolean, menuList: MenuItem[]): MenuItem[] => {
-    const updateTree = (items: MenuItem[]): MenuItem[] =>
-      items.map((item) => {
-        if (item.id === menuId) {
-          item.checked = checked;
-          if (item.children) {
-            item.children = updateTree(
-              item.children.map((child) => ({ ...child, checked }))
-            );
-          }
-        } else if (item.children) {
-          item.children = updateTree(item.children);
-        }
-        return item;
-      });
-
-    return updateTree(menuList);
-  };
-
-  const handleCheckboxToggle = (menuId: number, checked: boolean) => {
-    setMenuTree((prev) => handleCheckboxChange(menuId, checked, [...prev]));
-  };
-
-  const renderMenuTree = (menus: MenuItem[], level: number = 0): JSX.Element[] => {
-    return menus.map((menu) => (
-      <div
-        key={menu.id}
-        className={`ml-${level * 5} pr-3 } text-ellipsis overflow-hidden whitespace-normal`}
-      >
-        <label className="block">
-          <input
-            type="checkbox"
-            checked={menu.checked || false}
-            onChange={(e) => handleCheckboxToggle(menu.id, e.target.checked)}
-            className="mr-2"
-          />
-          <span className="break-words">{menu.title_fa}</span>
-        </label>
-        {menu.children && renderMenuTree(menu.children, level + 1)}
-      </div>
-    ));
-  };
-
+const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
+  userName,
+  userRole,
+  firstName,
+  lastName,
+  networkName,
+  pumpStationName,
+  idPumpStation,
+  saleZeraee,
+  doreKesht,
+  idShDo,
+}) => {
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ${
-        show ? "block" : "hidden"
-      }`}
-    >
-      <div className="bg-white rounded-lg shadow-xl w-4/5 max-h-[90vh] overflow-auto">
-        <div className="flex justify-between items-center p-4 border-b border-gray-200">
-          <h5 className="text-lg font-semibold">سطح دسترسی</h5>
-          <button
-            type="button"
-            className="text-gray-400 hover:text-gray-600 focus:outline-none"
-            onClick={onClose}
-          >
-            &times;
-          </button>
-        </div>
-        <div className="p-4 overflow-auto max-h-[70vh]">
-          <div className="flex flex-wrap">{renderMenuTree(menuTree)}</div>
-        </div>
-        <div className="flex justify-end p-4 border-t border-gray-200 space-x-2">
-          <button
-            type="button"
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-            onClick={onClose}
-          >
-            بستن
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={() => console.log(menuTree)}
-          >
-            ذخیره
-          </button>
-        </div>
-      </div>
+    <div className="p-4 border rounded-lg shadow">
+      <h2 className="text-lg font-semibold mb-4">اطلاعات درخواست</h2>
+      <p>
+        <strong>نام کاربر:</strong> {userName}
+      </p>
+      <p>
+        <strong>نقش کاربر:</strong> {userRole}
+      </p>
+      <p>
+        <strong>نام :</strong> {firstName}
+      </p>
+      <p>
+        <strong>نام خانوادگی :</strong> {lastName}
+      </p>
+      <p>
+        <strong>شبکه آبیاری:</strong> {networkName}
+      </p>
+      <p>
+        <strong>ایستگاه پمپاژ:</strong> {pumpStationName}
+      </p>
+      <p>
+        <strong>آی دی ایستگاه پمپاژ:</strong> {idPumpStation}
+      </p>
+      <p>
+        <strong>سال زراعی:</strong> {saleZeraee}
+      </p>
+      <p>
+        <strong>دوره کشت:</strong> {doreKesht}
+      </p>
+      <p>
+        <strong>آی دی سال زراعی-دوره کشت:</strong> {idShDo}
+      </p>
     </div>
   );
 };
 
-export default AccessLevelModal;
+export default BodyRequestPumping;

@@ -221,7 +221,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\D\\Software\\project_for_Next\\garmsiri14031104\\garmsiri\\prisma\\sqlite\\generated\\sqlite",
+      "value": "D:\\Asghar\\Garmsiri\\FOR Next\\garmsiri14031104\\garmsiri\\prisma\\sqlite\\generated\\sqlite",
       "fromEnvVar": null
     },
     "config": {
@@ -235,7 +235,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\D\\Software\\project_for_Next\\garmsiri14031104\\garmsiri\\prisma\\sqlite\\schema.prisma",
+    "sourceFilePath": "D:\\Asghar\\Garmsiri\\FOR Next\\garmsiri14031104\\garmsiri\\prisma\\sqlite\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -249,6 +249,7 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

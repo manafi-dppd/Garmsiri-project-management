@@ -10,6 +10,7 @@ const RequestPumpingStation = () => {
   const [networkName, setNetworkName] = useState('');
   const [pumpStationName, setPumpStationName] = useState('');
   const [idPumpStation, setIdPumpStation] = useState<number | null>(null);
+  const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(null);
   const [saleZeraee, setSaleZeraee] = useState('');
   const [doreKesht, setDoreKesht] = useState('');
   const [idShDo, setIdShDo] = useState<number | null>(null);
@@ -22,6 +23,7 @@ const RequestPumpingStation = () => {
         setLastName={setLastName}
         setNetworkName={setNetworkName}
         setPumpStationName={setPumpStationName}
+        setSelectedNetworkId={setSelectedNetworkId}
         setIdPumpStation={setIdPumpStation}
         setSaleZeraee={setSaleZeraee}
         setDoreKesht={setDoreKesht}
@@ -34,6 +36,7 @@ const RequestPumpingStation = () => {
         lastName={lastName}
         networkName={networkName}
         pumpStationName={pumpStationName}
+        selectedNetworkId={selectedNetworkId}
         idPumpStation={idPumpStation ?? 0}
         saleZeraee={saleZeraee}
         doreKesht={doreKesht}

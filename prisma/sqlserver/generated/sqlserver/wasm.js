@@ -214,7 +214,8 @@ exports.Prisma.KhatRaneshScalarFieldEnum = {
   FIdPumpSta: 'FIdPumpSta',
   FIdDPipe: 'FIdDPipe',
   FIdSePu: 'FIdSePu',
-  FIdMeasuring: 'FIdMeasuring'
+  FIdMeasuring: 'FIdMeasuring',
+  Active: 'Active'
 };
 
 exports.Prisma.KhatRaneshAreaScalarFieldEnum = {
@@ -308,7 +309,8 @@ exports.Prisma.PumpStationScalarFieldEnum = {
   FIdNet: 'FIdNet',
   FIdDStation: 'FIdDStation',
   FIdMakhzan: 'FIdMakhzan',
-  FIdDP: 'FIdDP'
+  FIdDP: 'FIdDP',
+  Ready: 'Ready'
 };
 
 exports.Prisma.PumpTypeScalarFieldEnum = {

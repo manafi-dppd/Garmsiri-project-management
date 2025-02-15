@@ -35,9 +35,6 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [localSaleZeraee, setLocalSaleZeraee] = useState<string | null>(null);
   const [localDore, setLocalDore] = useState<string | null>(null);
-  // const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(
-  //   null,
-  // );
   const [selectedSaleZeraee, setSelectedSaleZeraee] = useState<string>('');
   const [selectedDore, setSelectedDore] = useState<string>('');
   const [filteredNetworks, setFilteredNetworks] = useState<
@@ -294,6 +291,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
             className="border p-2 rounded-lg"
             value={selectedPumpStation}
             onChange={handlePumpStationChange}
+            disabled={!selectedNetwork}
           >
             <option value="" disabled hidden>
               انتخاب کنید
@@ -325,6 +323,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
             className="border p-2 rounded-lg"
             value={selectedSaleZeraee}
             onChange={(e) => setSelectedSaleZeraee(e.target.value)}
+            disabled={!selectedNetwork}
           >
             <option value="" disabled hidden>
               انتخاب کنید
@@ -358,6 +357,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
             className="border p-2 rounded-lg"
             value={selectedDore}
             onChange={(e) => setSelectedDore(e.target.value)}
+            disabled={!selectedNetwork}
           >
             <option value="" disabled hidden>
               انتخاب کنید

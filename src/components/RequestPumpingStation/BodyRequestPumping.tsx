@@ -1,4 +1,8 @@
 import React, {ReactNode, useEffect, useState} from 'react';
+import {toPersianDate} from '@/utils/dateUtils';
+import axios from 'axios';
+
+type ToPersianDate = (date: string | Date | undefined) => string;
 
 interface KhatRanesh {
   Zarfiat: ReactNode;
@@ -28,6 +32,17 @@ interface BodyRequestPumpingProps {
   idShDo: number;
 }
 
+interface RecordType {
+  name: ReactNode;
+  IdTarDor: number;
+  Trikh: string;
+  Dahe: number;
+}
+interface PageData {
+  dahe: number;
+  rows: {date: string; day: string}[];
+}
+
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   userName,
   userRole,
@@ -43,6 +58,12 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 }) => {
   console.log('selectedNetworkId: ', selectedNetworkId);
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
+  const [data, setData] = useState<
+    Record<string, {date: string; day: string}[]>
+  >({});
+  const [loading, setLoading] = useState<boolean>(true);
+  const [records, setRecords] = useState<RecordType[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (idPumpStation === 0) return;
@@ -62,6 +83,31 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
     fetchKhatRanesh();
   }, [idPumpStation]);
+  console.log('selectedNetworkId: ', selectedNetworkId);
+  useEffect(() => {
+    if (!selectedNetworkId) return;
+
+    const fetchRecords = async () => {
+      try {
+        const response = await axios.get(
+          `/api/getRecords?networkId=${selectedNetworkId}`,
+        );
+
+        if (response.data.error) {
+          setMessage(response.data.error); // ذخیره پیام خطا در متغیر message
+          setRecords([]); // لیست رکوردها را خالی کنید
+        } else {
+          setRecords(response.data);
+          setMessage(null); // خطا را پاک کنید
+        }
+      } catch (error) {
+        console.error('Error fetching records:', error);
+        setMessage('خطایی در دریافت اطلاعات رخ داده است.'); // نمایش پیام خطا
+      }
+    };
+
+    fetchRecords();
+  }, [selectedNetworkId]);
 
   return (
     <div className="overflow-x-auto">
@@ -160,19 +206,22 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                 ))}
             </tr>
           </thead>
-          {/* <tbody>
-          <tr>
-            {khatRaneshList.map((ranesh) => (
-              <React.Fragment key={ranesh.IdRanesh}>
-                <td className="border border-gray-300 px-4 py-2">
-                  {ranesh.FIdPumpSta === idPumpStation ? ranesh.DebiPomp : ''}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">--</td>
-                <td className="border border-gray-300 px-4 py-2">--</td>
-              </React.Fragment>
-            ))}
-          </tr>
-        </tbody> */}
+          {message ? (
+            <p>{message}</p>
+          ) : Array.isArray(records) && records.length > 0 ? (
+            <tbody>
+              {records.map((record: RecordType, index: number) => (
+                <tr key={record.IdTarDor}>
+                  <td>{toPersianDate(record.Trikh, 'dddd')}</td>{' '}
+                  {/* نمایش روز هفته */}
+                  <td>{toPersianDate(record.Trikh, 'YYYY/MM/DD')}</td>{' '}
+                  {/* نمایش تاریخ شمسی */}
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <p>داده‌ای برای نمایش وجود ندارد</p>
+          )}
         </table>
       )}
     </div>
@@ -180,3 +229,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 };
 
 export default BodyRequestPumping;
+function setNoRecordsMessage(message: any) {
+  throw new Error('Function not implemented.');
+}

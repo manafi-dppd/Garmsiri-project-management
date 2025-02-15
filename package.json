@@ -35,6 +35,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "express": "^4.21.2",
+    "jalaali-js": "^1.2.7",
     "jalali-moment": "^3.3.11",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",

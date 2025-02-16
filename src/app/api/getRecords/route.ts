@@ -6,11 +6,14 @@ const prisma = sqlServerClient; // تنظیمات Prisma
 export async function GET(req: NextRequest) {
   const {searchParams} = new URL(req.url);
   const networkId = searchParams.get('networkId');
+  const dahe = searchParams.get('dahe'); // مقدار دهه مورد نظر
+  const sal = searchParams.get('sal'); // مقدار سال مورد نظر
+  const mah = searchParams.get('mah'); // مقدار ماه مورد نظر
 
   if (!networkId) {
     return NextResponse.json({error: 'Network ID is required'}, {status: 400});
   }
- 
+  console.log('networkId: ', networkId);
   try {
     const currentDate = new Date(); // تاریخ فعلی
 
@@ -26,23 +29,32 @@ export async function GET(req: NextRequest) {
 
     if (!shabake) {
       return NextResponse.json(
-        {message: 'تقویم آبیاری در سامانه بارگذاری شده است'},
+        {message: 'تقویم آبیاری در سامانه بارگذاری نشده است'},
         {status: 404},
       );
     }
 
-    // دریافت رکوردهای `TrikhDoreKesht` فقط در بازه‌ی مشخص شده
+    // فیلتر کردن رکوردها بر اساس سال، ماه و دهه
     const records = await prisma.trikhDoreKesht.findMany({
       where: {
         Trikh: {
           gte: shabake.TrikhShorooe,
           lte: shabake.TrikhPayan,
         },
+        Sal: Number(sal), // فقط رکوردهای سال مشخص را بگیر
+        Mah: Number(mah), // فقط رکوردهای ماه مشخص را بگیر
+        Dahe: Number(dahe), // فقط رکوردهای دهه مشخص را بگیر
       },
-      select: {IdTarDor: true, Trikh: true, Dahe: true},
+      select: {
+        IdTarDor: true,
+        Trikh: true,
+        Dahe: true,
+        Sal: true,
+        Mah: true,
+      },
       orderBy: {Trikh: 'asc'},
     });
-    console.log('records: ', records);
+
     return NextResponse.json(records);
   } catch (error) {
     console.error('Database error:', error);

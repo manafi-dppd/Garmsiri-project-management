@@ -57,19 +57,19 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
 
   return (
     /* دکمه‌های دهه */
-    <div className="flex justify-between items-center mt-4">
+    <div className="flex items-center justify-center gap-4 mt-4">
       {/* دکمه "دهه قبل" */}
       <button
         onClick={handlePrevDahe}
         disabled={selectedDahe === 1}
         className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-      ${
-        selectedDahe === 1
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          : 'bg-blue-500 text-white hover:bg-blue-700'
-      }`}
+    ${
+      selectedDahe === 1
+        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        : 'bg-blue-500 text-white hover:bg-blue-700'
+    }`}
       >
-        <span className="text-xl">&lt;</span> دهه قبل
+        <span className="text-xl">&lt;</span>
       </button>
 
       {/* نمایش دهه فعلی */}
@@ -82,13 +82,13 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
         onClick={handleNextDahe}
         disabled={selectedDahe === 3}
         className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-      ${
-        selectedDahe === 3
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          : 'bg-blue-500 text-white hover:bg-blue-700'
-      }`}
+    ${
+      selectedDahe === 3
+        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        : 'bg-blue-500 text-white hover:bg-blue-700'
+    }`}
       >
-        دهه بعد <span className="text-xl">&gt;</span>
+        <span className="text-xl">&gt;</span>
       </button>
     </div>
   );

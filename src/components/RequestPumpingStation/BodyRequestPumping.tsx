@@ -47,6 +47,11 @@ interface PageData {
   dahe: number;
   rows: {date: string; day: string}[];
 }
+interface PredictedVolume {
+  [IdTarDor: number]: {
+    [IdRanesh: number]: number;
+  };
+}
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   userName,
@@ -57,12 +62,13 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   pumpStationName,
   idPumpStation,
   selectedNetworkId,
-  // networkId,
   saleZeraee,
   doreKesht,
   idShDo,
 }) => {
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
+  const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
+
   const [data, setData] = useState<
     Record<string, {date: string; day: string}[]>
   >({});
@@ -80,6 +86,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [mahList, setMahList] = useState<MahItem[]>([]); // لیست ماه‌ها
   const [selectedMah, setSelectedMah] = useState<number | null>(null); // ماه انتخاب شده
   const [selectedDahe, setSelectedDahe] = useState<number>(1);
+  const [finalVolumes, setFinalVolumes] = useState<{[key: number]: number}>({});
   const allDates = [
     {Mah: 1, Dahe: 1},
     {Mah: 1, Dahe: 2},
@@ -88,24 +95,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     // داده‌های مربوط به همه ماه‌ها و دهه‌ها اینجا تعریف شوند
   ];
 
-  useEffect(() => {
-    if (idPumpStation === 0) return;
-    const fetchKhatRanesh = async () => {
-      try {
-        const res = await fetch(
-          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`,
-        );
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data: KhatRanesh[] = await res.json();
-        console.log('Fetched data:', data);
-        setKhatRaneshList(data);
-      } catch (error) {
-        console.error('Error fetching KhatRanesh:', error);
-      }
-    };
-
-    fetchKhatRanesh();
-  }, [idPumpStation]);
   useEffect(() => {
     const fetchMahList = async () => {
       try {
@@ -128,29 +117,94 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
       fetchMahList();
     }
   }, [selectedNetworkId]);
-  useEffect(() => {
-    if (selectedNetworkId === null || selectedMah === null) return;
 
+  useEffect(() => {
+    if (idPumpStation === 0) return;
+    const fetchKhatRanesh = async () => {
+      try {
+        const res = await fetch(
+          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`,
+        );
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data: KhatRanesh[] = await res.json();
+        setKhatRaneshList(data);
+      } catch (error) {
+        console.error('Error fetching KhatRanesh:', error);
+      }
+    };
+
+    fetchKhatRanesh();
+  }, [idPumpStation]);  
+
+  useEffect(() => {
+    if (!selectedNetworkId || !selectedMah || idPumpStation === 0) return;
+  
     const fetchRecords = async () => {
       try {
         const res = await fetch(
-          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`,
+          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`
         );
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setRecords(data);
-          setMessage(null);
-        } else {
+        if (!res.ok) throw new Error('Failed to fetch');
+  
+        const data: {
+          message: string;
+          records: any[];
+          predictedVolumes: {
+            IdTarDor: number;
+            volumes: { FIdRanesh: number; TotalTaghvim: number }[];
+          }[];
+        } = await res.json();
+  
+        if (!Array.isArray(data.records)) {
           setMessage(data.message || 'خطایی رخ داده است');
+          return;
         }
+  
+        setRecords(data.records);
+        setMessage(null);
+  
+        // پردازش حجم پیش‌بینی
+        const predictedVolumesMap: { [key: number]: { [key: number]: number } } = {};
+  
+        data.predictedVolumes.forEach(({ IdTarDor, volumes }: { IdTarDor: number; volumes: { FIdRanesh: number; TotalTaghvim: number }[] }) => {
+          predictedVolumesMap[IdTarDor] = volumes.reduce(
+            (acc: { [key: number]: number }, { FIdRanesh, TotalTaghvim }: { FIdRanesh: number; TotalTaghvim: number }) => {
+              acc[FIdRanesh] = (acc[FIdRanesh] || 0) + (TotalTaghvim || 0);
+              return acc;
+            },
+            {}
+          );
+        });
+  
+        setPredictedVolumes(predictedVolumesMap);
       } catch (error) {
         console.error('خطا در دریافت داده‌ها:', error);
         setMessage('خطا در دریافت داده‌ها');
       }
     };
-
+  
     fetchRecords();
-  }, [selectedNetworkId, sal, selectedMah, dahe]);
+  }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation]);
+  
+  useEffect(() => {
+    if (!predictedVolumes || !khatRaneshList.length) return;
+
+    const summedVolumes: {[key: number]: number} = {};
+
+    Object.values(predictedVolumes).forEach((tarDor) => {
+      Object.entries(tarDor).forEach(([raneshId, volume]) => {
+        const parsedRaneshId = Number(raneshId);
+        const parsedVolume = parseFloat(volume as string); // تبدیل مقدار به عدد
+
+        if (!isNaN(parsedRaneshId) && !isNaN(parsedVolume)) {
+          summedVolumes[parsedRaneshId] =
+            (summedVolumes[parsedRaneshId] || 0) + parsedVolume;
+        }
+      });
+    });
+
+    setFinalVolumes(summedVolumes);
+  }, [predictedVolumes, khatRaneshList]);
 
   return (
     <div className="overflow-x-auto">
@@ -172,7 +226,8 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                 </th>
                 {khatRaneshList
                   .filter(
-                    (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    (ranesh) =>
+                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
                   )
                   .map((ranesh) => (
                     <th
@@ -190,7 +245,8 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                 </th>
                 {khatRaneshList
                   .filter(
-                    (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    (ranesh) =>
+                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
                   )
                   .map((ranesh) => (
                     <td
@@ -211,7 +267,8 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                 </th>
                 {khatRaneshList
                   .filter(
-                    (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    (ranesh) =>
+                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
                   )
                   .map((ranesh) => (
                     <React.Fragment key={ranesh.IdRanesh}>
@@ -238,7 +295,8 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
               <tr>
                 {khatRaneshList
                   .filter(
-                    (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    (ranesh) =>
+                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
                   )
                   .map((ranesh) => (
                     <React.Fragment key={ranesh.IdRanesh}>
@@ -262,12 +320,36 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                     {/* تاریخ شمسی */}
                   </tr>
                 ))}
+                <tr className="bg-yellow-100 font-semibold">
+                  <td
+                    className="border border-gray-300 px-4 py-2 font-bold"
+                    colSpan={2}
+                  >
+                    حجم پیش بینی
+                  </td>
+                  {khatRaneshList.filter(
+                    (ranesh) =>
+                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                  )
+                  .map((ranesh) => (
+                    <td
+                      key={ranesh.IdRanesh}
+                      className="border border-gray-300 px-4 py-2 text-center font-semibold"
+                      colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                    >
+                      {finalVolumes[ranesh.IdRanesh] !== undefined
+                        ? finalVolumes[ranesh.IdRanesh].toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        // نمایش مقدار با دو رقم اعشار
+                        : '-'}
+                    </td>
+                  ))}
+                </tr>
               </tbody>
             ) : (
               <p>داده‌ای برای نمایش وجود ندارد</p>
             )}
           </table>
-  
+
           {/* نمایش محتوای ماه انتخاب‌شده */}
           {selectedMah !== null && sal !== null && (
             <div>
@@ -282,7 +364,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
               />
             </div>
           )}
-  
+
           {/* زبانه‌های ماه‌ها - نمایش فقط اگر شبکه و ایستگاه انتخاب شده باشند */}
           {selectedNetworkId !== null && idPumpStation !== 0 && (
             <div className="flex border-b border-gray-300">
@@ -313,8 +395,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
       )}
     </div>
   );
-  
-  
 };
 
 export default BodyRequestPumping;

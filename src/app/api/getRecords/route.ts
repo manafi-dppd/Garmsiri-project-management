@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (!networkId) {
     return NextResponse.json({error: 'Network ID is required'}, {status: 400});
   }
-  console.log('networkId: ', networkId);
+
   try {
     const currentDate = new Date(); // تاریخ فعلی
 
@@ -55,7 +55,33 @@ export async function GET(req: NextRequest) {
       orderBy: {Trikh: 'asc'},
     });
 
-    return NextResponse.json(records);
+    // دریافت مقادیر حجم پیش‌بینی‌شده
+    const predictedVolumes = await Promise.all(
+      records.map(async (record) => {
+        const raneshVolumes = await prisma.bahrebardariTaghvim.groupBy({
+          by: ['FIdRanesh'],
+          where: {
+            FIdTarDor: record.IdTarDor,
+          },
+          _sum: {
+            Taghvim: true,
+          },
+        });
+        return {
+          IdTarDor: record.IdTarDor,
+          volumes: raneshVolumes.map((rv) => ({
+            FIdRanesh: rv.FIdRanesh,
+            TotalTaghvim: rv._sum.Taghvim || 0,
+          })),
+          
+        };
+      }),
+    );
+
+    return NextResponse.json({
+      records,
+      predictedVolumes,
+    });
   } catch (error) {
     console.error('Database error:', error);
     return NextResponse.json({error: 'Internal Server Error'}, {status: 500});

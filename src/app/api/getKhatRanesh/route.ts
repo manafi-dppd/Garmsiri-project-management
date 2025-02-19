@@ -40,8 +40,7 @@ export async function GET(req: NextRequest) {
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/getKhatRaneshPump?idRanesh=${ranesh.IdRanesh}`,
           );
           
-          const pumpData = await pumpRes.json();
-          console.log('pumpData: ', pumpData)          
+          const pumpData = await pumpRes.json();         
           return {...ranesh, ...pumpData};
         } else {
           // واکشی مقدار `Zarfiat` از جدول `KhatRaneshSegli`

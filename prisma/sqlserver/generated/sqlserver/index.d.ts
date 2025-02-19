@@ -29,6 +29,11 @@ export type Abgir = $Result.DefaultSelection<Prisma.$AbgirPayload>
  */
 export type BahrebardairProgram = $Result.DefaultSelection<Prisma.$BahrebardairProgramPayload>
 /**
+ * Model BahrebardairProgramSeghli
+ * 
+ */
+export type BahrebardairProgramSeghli = $Result.DefaultSelection<Prisma.$BahrebardairProgramSeghliPayload>
+/**
  * Model BahrebardariKeshtDore
  * The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
  */
@@ -363,6 +368,16 @@ export class PrismaClient<
     * ```
     */
   get bahrebardairProgram(): Prisma.BahrebardairProgramDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bahrebardairProgramSeghli`: Exposes CRUD operations for the **BahrebardairProgramSeghli** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BahrebardairProgramSeghlis
+    * const bahrebardairProgramSeghlis = await prisma.bahrebardairProgramSeghli.findMany()
+    * ```
+    */
+  get bahrebardairProgramSeghli(): Prisma.BahrebardairProgramSeghliDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.bahrebardariKeshtDore`: Exposes CRUD operations for the **BahrebardariKeshtDore** model.
@@ -1166,6 +1181,7 @@ export namespace Prisma {
     AbadeMakhzan: 'AbadeMakhzan',
     Abgir: 'Abgir',
     BahrebardairProgram: 'BahrebardairProgram',
+    BahrebardairProgramSeghli: 'BahrebardairProgramSeghli',
     BahrebardariKeshtDore: 'BahrebardariKeshtDore',
     BahrebardariTaghvim: 'BahrebardariTaghvim',
     BareshMotaleat: 'BareshMotaleat',
@@ -1217,7 +1233,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "abadeMakhzan" | "abgir" | "bahrebardairProgram" | "bahrebardariKeshtDore" | "bahrebardariTaghvim" | "bareshMotaleat" | "darajePipe" | "deliveryPoints" | "darjeStation" | "doreKesht" | "eshtebahAvamel" | "flowBehbood" | "flowmeter" | "khatRanesh" | "khatRaneshArea" | "khatRaneshPump" | "khatRaneshSegli" | "kontor" | "land" | "measuringTool" | "nashtShabake" | "network" | "noeKesht" | "noeMahsool" | "nonFIT" | "pumpStation" | "pumpType" | "rainfallStation" | "rainfallType" | "saleZeraee" | "seghliPump" | "systemPart" | "takhlieMakhzan" | "test" | "trikhDoreKesht" | "weatherStation" | "sysdiagrams" | "mahShamsi" | "shabakeDoreKesht"
+      modelProps: "abadeMakhzan" | "abgir" | "bahrebardairProgram" | "bahrebardairProgramSeghli" | "bahrebardariKeshtDore" | "bahrebardariTaghvim" | "bareshMotaleat" | "darajePipe" | "deliveryPoints" | "darjeStation" | "doreKesht" | "eshtebahAvamel" | "flowBehbood" | "flowmeter" | "khatRanesh" | "khatRaneshArea" | "khatRaneshPump" | "khatRaneshSegli" | "kontor" | "land" | "measuringTool" | "nashtShabake" | "network" | "noeKesht" | "noeMahsool" | "nonFIT" | "pumpStation" | "pumpType" | "rainfallStation" | "rainfallType" | "saleZeraee" | "seghliPump" | "systemPart" | "takhlieMakhzan" | "test" | "trikhDoreKesht" | "weatherStation" | "sysdiagrams" | "mahShamsi" | "shabakeDoreKesht"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1416,6 +1432,72 @@ export namespace Prisma {
           count: {
             args: Prisma.BahrebardairProgramCountArgs<ExtArgs>
             result: $Utils.Optional<BahrebardairProgramCountAggregateOutputType> | number
+          }
+        }
+      }
+      BahrebardairProgramSeghli: {
+        payload: Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>
+        fields: Prisma.BahrebardairProgramSeghliFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BahrebardairProgramSeghliFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BahrebardairProgramSeghliFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          findFirst: {
+            args: Prisma.BahrebardairProgramSeghliFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BahrebardairProgramSeghliFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          findMany: {
+            args: Prisma.BahrebardairProgramSeghliFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>[]
+          }
+          create: {
+            args: Prisma.BahrebardairProgramSeghliCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          createMany: {
+            args: Prisma.BahrebardairProgramSeghliCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.BahrebardairProgramSeghliDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          update: {
+            args: Prisma.BahrebardairProgramSeghliUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          deleteMany: {
+            args: Prisma.BahrebardairProgramSeghliDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BahrebardairProgramSeghliUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BahrebardairProgramSeghliUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BahrebardairProgramSeghliPayload>
+          }
+          aggregate: {
+            args: Prisma.BahrebardairProgramSeghliAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBahrebardairProgramSeghli>
+          }
+          groupBy: {
+            args: Prisma.BahrebardairProgramSeghliGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BahrebardairProgramSeghliGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BahrebardairProgramSeghliCountArgs<ExtArgs>
+            result: $Utils.Optional<BahrebardairProgramSeghliCountAggregateOutputType> | number
           }
         }
       }
@@ -3882,6 +3964,7 @@ export namespace Prisma {
     abadeMakhzan?: AbadeMakhzanOmit
     abgir?: AbgirOmit
     bahrebardairProgram?: BahrebardairProgramOmit
+    bahrebardairProgramSeghli?: BahrebardairProgramSeghliOmit
     bahrebardariKeshtDore?: BahrebardariKeshtDoreOmit
     bahrebardariTaghvim?: BahrebardariTaghvimOmit
     bareshMotaleat?: BareshMotaleatOmit
@@ -4209,6 +4292,7 @@ export namespace Prisma {
   export type KhatRaneshCountOutputType = {
     Abgir: number
     BahrebardairProgram: number
+    BahrebardairProgramSeghli: number
     BahrebardariKeshtDore: number
     BahrebardariTaghvim: number
     EshtebahAvamel: number
@@ -4226,6 +4310,7 @@ export namespace Prisma {
   export type KhatRaneshCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Abgir?: boolean | KhatRaneshCountOutputTypeCountAbgirArgs
     BahrebardairProgram?: boolean | KhatRaneshCountOutputTypeCountBahrebardairProgramArgs
+    BahrebardairProgramSeghli?: boolean | KhatRaneshCountOutputTypeCountBahrebardairProgramSeghliArgs
     BahrebardariKeshtDore?: boolean | KhatRaneshCountOutputTypeCountBahrebardariKeshtDoreArgs
     BahrebardariTaghvim?: boolean | KhatRaneshCountOutputTypeCountBahrebardariTaghvimArgs
     EshtebahAvamel?: boolean | KhatRaneshCountOutputTypeCountEshtebahAvamelArgs
@@ -4263,6 +4348,13 @@ export namespace Prisma {
    */
   export type KhatRaneshCountOutputTypeCountBahrebardairProgramArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BahrebardairProgramWhereInput
+  }
+
+  /**
+   * KhatRaneshCountOutputType without action
+   */
+  export type KhatRaneshCountOutputTypeCountBahrebardairProgramSeghliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BahrebardairProgramSeghliWhereInput
   }
 
   /**
@@ -4733,6 +4825,7 @@ export namespace Prisma {
 
   export type TrikhDoreKeshtCountOutputType = {
     BahrebardairProgram: number
+    BahrebardairProgramSeghli: number
     BahrebardariTaghvim: number
     EshtebahAvamel: number
     FlowBehbood: number
@@ -4747,6 +4840,7 @@ export namespace Prisma {
 
   export type TrikhDoreKeshtCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     BahrebardairProgram?: boolean | TrikhDoreKeshtCountOutputTypeCountBahrebardairProgramArgs
+    BahrebardairProgramSeghli?: boolean | TrikhDoreKeshtCountOutputTypeCountBahrebardairProgramSeghliArgs
     BahrebardariTaghvim?: boolean | TrikhDoreKeshtCountOutputTypeCountBahrebardariTaghvimArgs
     EshtebahAvamel?: boolean | TrikhDoreKeshtCountOutputTypeCountEshtebahAvamelArgs
     FlowBehbood?: boolean | TrikhDoreKeshtCountOutputTypeCountFlowBehboodArgs
@@ -4775,6 +4869,13 @@ export namespace Prisma {
    */
   export type TrikhDoreKeshtCountOutputTypeCountBahrebardairProgramArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BahrebardairProgramWhereInput
+  }
+
+  /**
+   * TrikhDoreKeshtCountOutputType without action
+   */
+  export type TrikhDoreKeshtCountOutputTypeCountBahrebardairProgramSeghliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BahrebardairProgramSeghliWhereInput
   }
 
   /**
@@ -7974,6 +8075,995 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: BahrebardairProgramInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BahrebardairProgramSeghli
+   */
+
+  export type AggregateBahrebardairProgramSeghli = {
+    _count: BahrebardairProgramSeghliCountAggregateOutputType | null
+    _avg: BahrebardairProgramSeghliAvgAggregateOutputType | null
+    _sum: BahrebardairProgramSeghliSumAggregateOutputType | null
+    _min: BahrebardairProgramSeghliMinAggregateOutputType | null
+    _max: BahrebardairProgramSeghliMaxAggregateOutputType | null
+  }
+
+  export type BahrebardairProgramSeghliAvgAggregateOutputType = {
+    IdProSrgl: number | null
+    FIdRanesh: number | null
+    FIdTarDor: number | null
+    Zarfiat: Decimal | null
+  }
+
+  export type BahrebardairProgramSeghliSumAggregateOutputType = {
+    IdProSrgl: number | null
+    FIdRanesh: number | null
+    FIdTarDor: number | null
+    Zarfiat: Decimal | null
+  }
+
+  export type BahrebardairProgramSeghliMinAggregateOutputType = {
+    IdProSrgl: number | null
+    FIdRanesh: number | null
+    FIdTarDor: number | null
+    Zarfiat: Decimal | null
+    Shorooe: Date | null
+    Paian: Date | null
+  }
+
+  export type BahrebardairProgramSeghliMaxAggregateOutputType = {
+    IdProSrgl: number | null
+    FIdRanesh: number | null
+    FIdTarDor: number | null
+    Zarfiat: Decimal | null
+    Shorooe: Date | null
+    Paian: Date | null
+  }
+
+  export type BahrebardairProgramSeghliCountAggregateOutputType = {
+    IdProSrgl: number
+    FIdRanesh: number
+    FIdTarDor: number
+    Zarfiat: number
+    Shorooe: number
+    Paian: number
+    _all: number
+  }
+
+
+  export type BahrebardairProgramSeghliAvgAggregateInputType = {
+    IdProSrgl?: true
+    FIdRanesh?: true
+    FIdTarDor?: true
+    Zarfiat?: true
+  }
+
+  export type BahrebardairProgramSeghliSumAggregateInputType = {
+    IdProSrgl?: true
+    FIdRanesh?: true
+    FIdTarDor?: true
+    Zarfiat?: true
+  }
+
+  export type BahrebardairProgramSeghliMinAggregateInputType = {
+    IdProSrgl?: true
+    FIdRanesh?: true
+    FIdTarDor?: true
+    Zarfiat?: true
+    Shorooe?: true
+    Paian?: true
+  }
+
+  export type BahrebardairProgramSeghliMaxAggregateInputType = {
+    IdProSrgl?: true
+    FIdRanesh?: true
+    FIdTarDor?: true
+    Zarfiat?: true
+    Shorooe?: true
+    Paian?: true
+  }
+
+  export type BahrebardairProgramSeghliCountAggregateInputType = {
+    IdProSrgl?: true
+    FIdRanesh?: true
+    FIdTarDor?: true
+    Zarfiat?: true
+    Shorooe?: true
+    Paian?: true
+    _all?: true
+  }
+
+  export type BahrebardairProgramSeghliAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BahrebardairProgramSeghli to aggregate.
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BahrebardairProgramSeghlis to fetch.
+     */
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BahrebardairProgramSeghlis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BahrebardairProgramSeghlis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BahrebardairProgramSeghlis
+    **/
+    _count?: true | BahrebardairProgramSeghliCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BahrebardairProgramSeghliAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BahrebardairProgramSeghliSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BahrebardairProgramSeghliMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BahrebardairProgramSeghliMaxAggregateInputType
+  }
+
+  export type GetBahrebardairProgramSeghliAggregateType<T extends BahrebardairProgramSeghliAggregateArgs> = {
+        [P in keyof T & keyof AggregateBahrebardairProgramSeghli]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBahrebardairProgramSeghli[P]>
+      : GetScalarType<T[P], AggregateBahrebardairProgramSeghli[P]>
+  }
+
+
+
+
+  export type BahrebardairProgramSeghliGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BahrebardairProgramSeghliWhereInput
+    orderBy?: BahrebardairProgramSeghliOrderByWithAggregationInput | BahrebardairProgramSeghliOrderByWithAggregationInput[]
+    by: BahrebardairProgramSeghliScalarFieldEnum[] | BahrebardairProgramSeghliScalarFieldEnum
+    having?: BahrebardairProgramSeghliScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BahrebardairProgramSeghliCountAggregateInputType | true
+    _avg?: BahrebardairProgramSeghliAvgAggregateInputType
+    _sum?: BahrebardairProgramSeghliSumAggregateInputType
+    _min?: BahrebardairProgramSeghliMinAggregateInputType
+    _max?: BahrebardairProgramSeghliMaxAggregateInputType
+  }
+
+  export type BahrebardairProgramSeghliGroupByOutputType = {
+    IdProSrgl: number
+    FIdRanesh: number
+    FIdTarDor: number
+    Zarfiat: Decimal | null
+    Shorooe: Date | null
+    Paian: Date | null
+    _count: BahrebardairProgramSeghliCountAggregateOutputType | null
+    _avg: BahrebardairProgramSeghliAvgAggregateOutputType | null
+    _sum: BahrebardairProgramSeghliSumAggregateOutputType | null
+    _min: BahrebardairProgramSeghliMinAggregateOutputType | null
+    _max: BahrebardairProgramSeghliMaxAggregateOutputType | null
+  }
+
+  type GetBahrebardairProgramSeghliGroupByPayload<T extends BahrebardairProgramSeghliGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BahrebardairProgramSeghliGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BahrebardairProgramSeghliGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BahrebardairProgramSeghliGroupByOutputType[P]>
+            : GetScalarType<T[P], BahrebardairProgramSeghliGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BahrebardairProgramSeghliSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    IdProSrgl?: boolean
+    FIdRanesh?: boolean
+    FIdTarDor?: boolean
+    Zarfiat?: boolean
+    Shorooe?: boolean
+    Paian?: boolean
+    KhatRanesh?: boolean | KhatRaneshDefaultArgs<ExtArgs>
+    TrikhDoreKesht?: boolean | TrikhDoreKeshtDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bahrebardairProgramSeghli"]>
+
+
+
+  export type BahrebardairProgramSeghliSelectScalar = {
+    IdProSrgl?: boolean
+    FIdRanesh?: boolean
+    FIdTarDor?: boolean
+    Zarfiat?: boolean
+    Shorooe?: boolean
+    Paian?: boolean
+  }
+
+  export type BahrebardairProgramSeghliOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdProSrgl" | "FIdRanesh" | "FIdTarDor" | "Zarfiat" | "Shorooe" | "Paian", ExtArgs["result"]["bahrebardairProgramSeghli"]>
+  export type BahrebardairProgramSeghliInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    KhatRanesh?: boolean | KhatRaneshDefaultArgs<ExtArgs>
+    TrikhDoreKesht?: boolean | TrikhDoreKeshtDefaultArgs<ExtArgs>
+  }
+
+  export type $BahrebardairProgramSeghliPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BahrebardairProgramSeghli"
+    objects: {
+      KhatRanesh: Prisma.$KhatRaneshPayload<ExtArgs>
+      TrikhDoreKesht: Prisma.$TrikhDoreKeshtPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      IdProSrgl: number
+      FIdRanesh: number
+      FIdTarDor: number
+      Zarfiat: Prisma.Decimal | null
+      Shorooe: Date | null
+      Paian: Date | null
+    }, ExtArgs["result"]["bahrebardairProgramSeghli"]>
+    composites: {}
+  }
+
+  type BahrebardairProgramSeghliGetPayload<S extends boolean | null | undefined | BahrebardairProgramSeghliDefaultArgs> = $Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload, S>
+
+  type BahrebardairProgramSeghliCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BahrebardairProgramSeghliFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BahrebardairProgramSeghliCountAggregateInputType | true
+    }
+
+  export interface BahrebardairProgramSeghliDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BahrebardairProgramSeghli'], meta: { name: 'BahrebardairProgramSeghli' } }
+    /**
+     * Find zero or one BahrebardairProgramSeghli that matches the filter.
+     * @param {BahrebardairProgramSeghliFindUniqueArgs} args - Arguments to find a BahrebardairProgramSeghli
+     * @example
+     * // Get one BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BahrebardairProgramSeghliFindUniqueArgs>(args: SelectSubset<T, BahrebardairProgramSeghliFindUniqueArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find one BahrebardairProgramSeghli that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BahrebardairProgramSeghliFindUniqueOrThrowArgs} args - Arguments to find a BahrebardairProgramSeghli
+     * @example
+     * // Get one BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BahrebardairProgramSeghliFindUniqueOrThrowArgs>(args: SelectSubset<T, BahrebardairProgramSeghliFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first BahrebardairProgramSeghli that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliFindFirstArgs} args - Arguments to find a BahrebardairProgramSeghli
+     * @example
+     * // Get one BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BahrebardairProgramSeghliFindFirstArgs>(args?: SelectSubset<T, BahrebardairProgramSeghliFindFirstArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first BahrebardairProgramSeghli that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliFindFirstOrThrowArgs} args - Arguments to find a BahrebardairProgramSeghli
+     * @example
+     * // Get one BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BahrebardairProgramSeghliFindFirstOrThrowArgs>(args?: SelectSubset<T, BahrebardairProgramSeghliFindFirstOrThrowArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find zero or more BahrebardairProgramSeghlis that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BahrebardairProgramSeghlis
+     * const bahrebardairProgramSeghlis = await prisma.bahrebardairProgramSeghli.findMany()
+     * 
+     * // Get first 10 BahrebardairProgramSeghlis
+     * const bahrebardairProgramSeghlis = await prisma.bahrebardairProgramSeghli.findMany({ take: 10 })
+     * 
+     * // Only select the `IdProSrgl`
+     * const bahrebardairProgramSeghliWithIdProSrglOnly = await prisma.bahrebardairProgramSeghli.findMany({ select: { IdProSrgl: true } })
+     * 
+     */
+    findMany<T extends BahrebardairProgramSeghliFindManyArgs>(args?: SelectSubset<T, BahrebardairProgramSeghliFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findMany", ClientOptions>>
+
+    /**
+     * Create a BahrebardairProgramSeghli.
+     * @param {BahrebardairProgramSeghliCreateArgs} args - Arguments to create a BahrebardairProgramSeghli.
+     * @example
+     * // Create one BahrebardairProgramSeghli
+     * const BahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.create({
+     *   data: {
+     *     // ... data to create a BahrebardairProgramSeghli
+     *   }
+     * })
+     * 
+     */
+    create<T extends BahrebardairProgramSeghliCreateArgs>(args: SelectSubset<T, BahrebardairProgramSeghliCreateArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Create many BahrebardairProgramSeghlis.
+     * @param {BahrebardairProgramSeghliCreateManyArgs} args - Arguments to create many BahrebardairProgramSeghlis.
+     * @example
+     * // Create many BahrebardairProgramSeghlis
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BahrebardairProgramSeghliCreateManyArgs>(args?: SelectSubset<T, BahrebardairProgramSeghliCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a BahrebardairProgramSeghli.
+     * @param {BahrebardairProgramSeghliDeleteArgs} args - Arguments to delete one BahrebardairProgramSeghli.
+     * @example
+     * // Delete one BahrebardairProgramSeghli
+     * const BahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.delete({
+     *   where: {
+     *     // ... filter to delete one BahrebardairProgramSeghli
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BahrebardairProgramSeghliDeleteArgs>(args: SelectSubset<T, BahrebardairProgramSeghliDeleteArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Update one BahrebardairProgramSeghli.
+     * @param {BahrebardairProgramSeghliUpdateArgs} args - Arguments to update one BahrebardairProgramSeghli.
+     * @example
+     * // Update one BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BahrebardairProgramSeghliUpdateArgs>(args: SelectSubset<T, BahrebardairProgramSeghliUpdateArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Delete zero or more BahrebardairProgramSeghlis.
+     * @param {BahrebardairProgramSeghliDeleteManyArgs} args - Arguments to filter BahrebardairProgramSeghlis to delete.
+     * @example
+     * // Delete a few BahrebardairProgramSeghlis
+     * const { count } = await prisma.bahrebardairProgramSeghli.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BahrebardairProgramSeghliDeleteManyArgs>(args?: SelectSubset<T, BahrebardairProgramSeghliDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BahrebardairProgramSeghlis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BahrebardairProgramSeghlis
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BahrebardairProgramSeghliUpdateManyArgs>(args: SelectSubset<T, BahrebardairProgramSeghliUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one BahrebardairProgramSeghli.
+     * @param {BahrebardairProgramSeghliUpsertArgs} args - Arguments to update or create a BahrebardairProgramSeghli.
+     * @example
+     * // Update or create a BahrebardairProgramSeghli
+     * const bahrebardairProgramSeghli = await prisma.bahrebardairProgramSeghli.upsert({
+     *   create: {
+     *     // ... data to create a BahrebardairProgramSeghli
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BahrebardairProgramSeghli we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BahrebardairProgramSeghliUpsertArgs>(args: SelectSubset<T, BahrebardairProgramSeghliUpsertArgs<ExtArgs>>): Prisma__BahrebardairProgramSeghliClient<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+
+
+    /**
+     * Count the number of BahrebardairProgramSeghlis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliCountArgs} args - Arguments to filter BahrebardairProgramSeghlis to count.
+     * @example
+     * // Count the number of BahrebardairProgramSeghlis
+     * const count = await prisma.bahrebardairProgramSeghli.count({
+     *   where: {
+     *     // ... the filter for the BahrebardairProgramSeghlis we want to count
+     *   }
+     * })
+    **/
+    count<T extends BahrebardairProgramSeghliCountArgs>(
+      args?: Subset<T, BahrebardairProgramSeghliCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BahrebardairProgramSeghliCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BahrebardairProgramSeghli.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BahrebardairProgramSeghliAggregateArgs>(args: Subset<T, BahrebardairProgramSeghliAggregateArgs>): Prisma.PrismaPromise<GetBahrebardairProgramSeghliAggregateType<T>>
+
+    /**
+     * Group by BahrebardairProgramSeghli.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BahrebardairProgramSeghliGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BahrebardairProgramSeghliGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BahrebardairProgramSeghliGroupByArgs['orderBy'] }
+        : { orderBy?: BahrebardairProgramSeghliGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BahrebardairProgramSeghliGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBahrebardairProgramSeghliGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BahrebardairProgramSeghli model
+   */
+  readonly fields: BahrebardairProgramSeghliFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BahrebardairProgramSeghli.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BahrebardairProgramSeghliClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    KhatRanesh<T extends KhatRaneshDefaultArgs<ExtArgs> = {}>(args?: Subset<T, KhatRaneshDefaultArgs<ExtArgs>>): Prisma__KhatRaneshClient<$Result.GetResult<Prisma.$KhatRaneshPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    TrikhDoreKesht<T extends TrikhDoreKeshtDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKeshtDefaultArgs<ExtArgs>>): Prisma__TrikhDoreKeshtClient<$Result.GetResult<Prisma.$TrikhDoreKeshtPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BahrebardairProgramSeghli model
+   */ 
+  interface BahrebardairProgramSeghliFieldRefs {
+    readonly IdProSrgl: FieldRef<"BahrebardairProgramSeghli", 'Int'>
+    readonly FIdRanesh: FieldRef<"BahrebardairProgramSeghli", 'Int'>
+    readonly FIdTarDor: FieldRef<"BahrebardairProgramSeghli", 'Int'>
+    readonly Zarfiat: FieldRef<"BahrebardairProgramSeghli", 'Decimal'>
+    readonly Shorooe: FieldRef<"BahrebardairProgramSeghli", 'DateTime'>
+    readonly Paian: FieldRef<"BahrebardairProgramSeghli", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BahrebardairProgramSeghli findUnique
+   */
+  export type BahrebardairProgramSeghliFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter, which BahrebardairProgramSeghli to fetch.
+     */
+    where: BahrebardairProgramSeghliWhereUniqueInput
+  }
+
+  /**
+   * BahrebardairProgramSeghli findUniqueOrThrow
+   */
+  export type BahrebardairProgramSeghliFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter, which BahrebardairProgramSeghli to fetch.
+     */
+    where: BahrebardairProgramSeghliWhereUniqueInput
+  }
+
+  /**
+   * BahrebardairProgramSeghli findFirst
+   */
+  export type BahrebardairProgramSeghliFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter, which BahrebardairProgramSeghli to fetch.
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BahrebardairProgramSeghlis to fetch.
+     */
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BahrebardairProgramSeghlis.
+     */
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BahrebardairProgramSeghlis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BahrebardairProgramSeghlis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BahrebardairProgramSeghlis.
+     */
+    distinct?: BahrebardairProgramSeghliScalarFieldEnum | BahrebardairProgramSeghliScalarFieldEnum[]
+  }
+
+  /**
+   * BahrebardairProgramSeghli findFirstOrThrow
+   */
+  export type BahrebardairProgramSeghliFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter, which BahrebardairProgramSeghli to fetch.
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BahrebardairProgramSeghlis to fetch.
+     */
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BahrebardairProgramSeghlis.
+     */
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BahrebardairProgramSeghlis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BahrebardairProgramSeghlis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BahrebardairProgramSeghlis.
+     */
+    distinct?: BahrebardairProgramSeghliScalarFieldEnum | BahrebardairProgramSeghliScalarFieldEnum[]
+  }
+
+  /**
+   * BahrebardairProgramSeghli findMany
+   */
+  export type BahrebardairProgramSeghliFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter, which BahrebardairProgramSeghlis to fetch.
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BahrebardairProgramSeghlis to fetch.
+     */
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BahrebardairProgramSeghlis.
+     */
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BahrebardairProgramSeghlis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BahrebardairProgramSeghlis.
+     */
+    skip?: number
+    distinct?: BahrebardairProgramSeghliScalarFieldEnum | BahrebardairProgramSeghliScalarFieldEnum[]
+  }
+
+  /**
+   * BahrebardairProgramSeghli create
+   */
+  export type BahrebardairProgramSeghliCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BahrebardairProgramSeghli.
+     */
+    data: XOR<BahrebardairProgramSeghliCreateInput, BahrebardairProgramSeghliUncheckedCreateInput>
+  }
+
+  /**
+   * BahrebardairProgramSeghli createMany
+   */
+  export type BahrebardairProgramSeghliCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BahrebardairProgramSeghlis.
+     */
+    data: BahrebardairProgramSeghliCreateManyInput | BahrebardairProgramSeghliCreateManyInput[]
+  }
+
+  /**
+   * BahrebardairProgramSeghli update
+   */
+  export type BahrebardairProgramSeghliUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BahrebardairProgramSeghli.
+     */
+    data: XOR<BahrebardairProgramSeghliUpdateInput, BahrebardairProgramSeghliUncheckedUpdateInput>
+    /**
+     * Choose, which BahrebardairProgramSeghli to update.
+     */
+    where: BahrebardairProgramSeghliWhereUniqueInput
+  }
+
+  /**
+   * BahrebardairProgramSeghli updateMany
+   */
+  export type BahrebardairProgramSeghliUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BahrebardairProgramSeghlis.
+     */
+    data: XOR<BahrebardairProgramSeghliUpdateManyMutationInput, BahrebardairProgramSeghliUncheckedUpdateManyInput>
+    /**
+     * Filter which BahrebardairProgramSeghlis to update
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * Limit how many BahrebardairProgramSeghlis to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BahrebardairProgramSeghli upsert
+   */
+  export type BahrebardairProgramSeghliUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BahrebardairProgramSeghli to update in case it exists.
+     */
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    /**
+     * In case the BahrebardairProgramSeghli found by the `where` argument doesn't exist, create a new BahrebardairProgramSeghli with this data.
+     */
+    create: XOR<BahrebardairProgramSeghliCreateInput, BahrebardairProgramSeghliUncheckedCreateInput>
+    /**
+     * In case the BahrebardairProgramSeghli was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BahrebardairProgramSeghliUpdateInput, BahrebardairProgramSeghliUncheckedUpdateInput>
+  }
+
+  /**
+   * BahrebardairProgramSeghli delete
+   */
+  export type BahrebardairProgramSeghliDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    /**
+     * Filter which BahrebardairProgramSeghli to delete.
+     */
+    where: BahrebardairProgramSeghliWhereUniqueInput
+  }
+
+  /**
+   * BahrebardairProgramSeghli deleteMany
+   */
+  export type BahrebardairProgramSeghliDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BahrebardairProgramSeghlis to delete
+     */
+    where?: BahrebardairProgramSeghliWhereInput
+    /**
+     * Limit how many BahrebardairProgramSeghlis to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BahrebardairProgramSeghli without action
+   */
+  export type BahrebardairProgramSeghliDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
   }
 
 
@@ -17878,6 +18968,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: boolean | KhatRanesh$AbgirArgs<ExtArgs>
     BahrebardairProgram?: boolean | KhatRanesh$BahrebardairProgramArgs<ExtArgs>
+    BahrebardairProgramSeghli?: boolean | KhatRanesh$BahrebardairProgramSeghliArgs<ExtArgs>
     BahrebardariKeshtDore?: boolean | KhatRanesh$BahrebardariKeshtDoreArgs<ExtArgs>
     BahrebardariTaghvim?: boolean | KhatRanesh$BahrebardariTaghvimArgs<ExtArgs>
     EshtebahAvamel?: boolean | KhatRanesh$EshtebahAvamelArgs<ExtArgs>
@@ -17913,6 +19004,7 @@ export namespace Prisma {
   export type KhatRaneshInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Abgir?: boolean | KhatRanesh$AbgirArgs<ExtArgs>
     BahrebardairProgram?: boolean | KhatRanesh$BahrebardairProgramArgs<ExtArgs>
+    BahrebardairProgramSeghli?: boolean | KhatRanesh$BahrebardairProgramSeghliArgs<ExtArgs>
     BahrebardariKeshtDore?: boolean | KhatRanesh$BahrebardariKeshtDoreArgs<ExtArgs>
     BahrebardariTaghvim?: boolean | KhatRanesh$BahrebardariTaghvimArgs<ExtArgs>
     EshtebahAvamel?: boolean | KhatRanesh$EshtebahAvamelArgs<ExtArgs>
@@ -17937,6 +19029,7 @@ export namespace Prisma {
     objects: {
       Abgir: Prisma.$AbgirPayload<ExtArgs>[]
       BahrebardairProgram: Prisma.$BahrebardairProgramPayload<ExtArgs>[]
+      BahrebardairProgramSeghli: Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>[]
       BahrebardariKeshtDore: Prisma.$BahrebardariKeshtDorePayload<ExtArgs>[]
       BahrebardariTaghvim: Prisma.$BahrebardariTaghvimPayload<ExtArgs>[]
       EshtebahAvamel: Prisma.$EshtebahAvamelPayload<ExtArgs>[]
@@ -18304,6 +19397,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     Abgir<T extends KhatRanesh$AbgirArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$AbgirArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbgirPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     BahrebardairProgram<T extends KhatRanesh$BahrebardairProgramArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$BahrebardairProgramArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardairProgramPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    BahrebardairProgramSeghli<T extends KhatRanesh$BahrebardairProgramSeghliArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$BahrebardairProgramSeghliArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     BahrebardariKeshtDore<T extends KhatRanesh$BahrebardariKeshtDoreArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$BahrebardariKeshtDoreArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardariKeshtDorePayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     BahrebardariTaghvim<T extends KhatRanesh$BahrebardariTaghvimArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$BahrebardariTaghvimArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardariTaghvimPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     EshtebahAvamel<T extends KhatRanesh$EshtebahAvamelArgs<ExtArgs> = {}>(args?: Subset<T, KhatRanesh$EshtebahAvamelArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EshtebahAvamelPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
@@ -18743,6 +19837,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BahrebardairProgramScalarFieldEnum | BahrebardairProgramScalarFieldEnum[]
+  }
+
+  /**
+   * KhatRanesh.BahrebardairProgramSeghli
+   */
+  export type KhatRanesh$BahrebardairProgramSeghliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    where?: BahrebardairProgramSeghliWhereInput
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BahrebardairProgramSeghliScalarFieldEnum | BahrebardairProgramSeghliScalarFieldEnum[]
   }
 
   /**
@@ -39025,6 +40143,7 @@ export namespace Prisma {
     Sal?: boolean
     Mah?: boolean
     BahrebardairProgram?: boolean | TrikhDoreKesht$BahrebardairProgramArgs<ExtArgs>
+    BahrebardairProgramSeghli?: boolean | TrikhDoreKesht$BahrebardairProgramSeghliArgs<ExtArgs>
     BahrebardariTaghvim?: boolean | TrikhDoreKesht$BahrebardariTaghvimArgs<ExtArgs>
     EshtebahAvamel?: boolean | TrikhDoreKesht$EshtebahAvamelArgs<ExtArgs>
     FlowBehbood?: boolean | TrikhDoreKesht$FlowBehboodArgs<ExtArgs>
@@ -39057,6 +40176,7 @@ export namespace Prisma {
   export type TrikhDoreKeshtOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdTarDor" | "FIdSal" | "FIdDore" | "Trikh" | "TrikhKhorshidi" | "Dahe" | "Sal" | "Mah", ExtArgs["result"]["trikhDoreKesht"]>
   export type TrikhDoreKeshtInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     BahrebardairProgram?: boolean | TrikhDoreKesht$BahrebardairProgramArgs<ExtArgs>
+    BahrebardairProgramSeghli?: boolean | TrikhDoreKesht$BahrebardairProgramSeghliArgs<ExtArgs>
     BahrebardariTaghvim?: boolean | TrikhDoreKesht$BahrebardariTaghvimArgs<ExtArgs>
     EshtebahAvamel?: boolean | TrikhDoreKesht$EshtebahAvamelArgs<ExtArgs>
     FlowBehbood?: boolean | TrikhDoreKesht$FlowBehboodArgs<ExtArgs>
@@ -39077,6 +40197,7 @@ export namespace Prisma {
     name: "TrikhDoreKesht"
     objects: {
       BahrebardairProgram: Prisma.$BahrebardairProgramPayload<ExtArgs>[]
+      BahrebardairProgramSeghli: Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>[]
       BahrebardariTaghvim: Prisma.$BahrebardariTaghvimPayload<ExtArgs>[]
       EshtebahAvamel: Prisma.$EshtebahAvamelPayload<ExtArgs>[]
       FlowBehbood: Prisma.$FlowBehboodPayload<ExtArgs>[]
@@ -39441,6 +40562,7 @@ export namespace Prisma {
   export interface Prisma__TrikhDoreKeshtClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     BahrebardairProgram<T extends TrikhDoreKesht$BahrebardairProgramArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKesht$BahrebardairProgramArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardairProgramPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    BahrebardairProgramSeghli<T extends TrikhDoreKesht$BahrebardairProgramSeghliArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKesht$BahrebardairProgramSeghliArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardairProgramSeghliPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     BahrebardariTaghvim<T extends TrikhDoreKesht$BahrebardariTaghvimArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKesht$BahrebardariTaghvimArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BahrebardariTaghvimPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     EshtebahAvamel<T extends TrikhDoreKesht$EshtebahAvamelArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKesht$EshtebahAvamelArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EshtebahAvamelPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     FlowBehbood<T extends TrikhDoreKesht$FlowBehboodArgs<ExtArgs> = {}>(args?: Subset<T, TrikhDoreKesht$FlowBehboodArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FlowBehboodPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
@@ -39854,6 +40976,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BahrebardairProgramScalarFieldEnum | BahrebardairProgramScalarFieldEnum[]
+  }
+
+  /**
+   * TrikhDoreKesht.BahrebardairProgramSeghli
+   */
+  export type TrikhDoreKesht$BahrebardairProgramSeghliArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BahrebardairProgramSeghli
+     */
+    select?: BahrebardairProgramSeghliSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BahrebardairProgramSeghli
+     */
+    omit?: BahrebardairProgramSeghliOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BahrebardairProgramSeghliInclude<ExtArgs> | null
+    where?: BahrebardairProgramSeghliWhereInput
+    orderBy?: BahrebardairProgramSeghliOrderByWithRelationInput | BahrebardairProgramSeghliOrderByWithRelationInput[]
+    cursor?: BahrebardairProgramSeghliWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BahrebardairProgramSeghliScalarFieldEnum | BahrebardairProgramSeghliScalarFieldEnum[]
   }
 
   /**
@@ -44050,6 +45196,18 @@ export namespace Prisma {
   export type BahrebardairProgramScalarFieldEnum = (typeof BahrebardairProgramScalarFieldEnum)[keyof typeof BahrebardairProgramScalarFieldEnum]
 
 
+  export const BahrebardairProgramSeghliScalarFieldEnum: {
+    IdProSrgl: 'IdProSrgl',
+    FIdRanesh: 'FIdRanesh',
+    FIdTarDor: 'FIdTarDor',
+    Zarfiat: 'Zarfiat',
+    Shorooe: 'Shorooe',
+    Paian: 'Paian'
+  };
+
+  export type BahrebardairProgramSeghliScalarFieldEnum = (typeof BahrebardairProgramSeghliScalarFieldEnum)[keyof typeof BahrebardairProgramSeghliScalarFieldEnum]
+
+
   export const BahrebardariKeshtDoreScalarFieldEnum: {
     IdBahDor: 'IdBahDor',
     FIdShDo: 'FIdShDo',
@@ -44677,6 +45835,71 @@ export namespace Prisma {
     Paian?: DateTimeNullableWithAggregatesFilter<"BahrebardairProgram"> | Date | string | null
   }
 
+  export type BahrebardairProgramSeghliWhereInput = {
+    AND?: BahrebardairProgramSeghliWhereInput | BahrebardairProgramSeghliWhereInput[]
+    OR?: BahrebardairProgramSeghliWhereInput[]
+    NOT?: BahrebardairProgramSeghliWhereInput | BahrebardairProgramSeghliWhereInput[]
+    IdProSrgl?: IntFilter<"BahrebardairProgramSeghli"> | number
+    FIdRanesh?: IntFilter<"BahrebardairProgramSeghli"> | number
+    FIdTarDor?: IntFilter<"BahrebardairProgramSeghli"> | number
+    Zarfiat?: DecimalNullableFilter<"BahrebardairProgramSeghli"> | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    Paian?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    KhatRanesh?: XOR<KhatRaneshScalarRelationFilter, KhatRaneshWhereInput>
+    TrikhDoreKesht?: XOR<TrikhDoreKeshtScalarRelationFilter, TrikhDoreKeshtWhereInput>
+  }
+
+  export type BahrebardairProgramSeghliOrderByWithRelationInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrderInput | SortOrder
+    Shorooe?: SortOrderInput | SortOrder
+    Paian?: SortOrderInput | SortOrder
+    KhatRanesh?: KhatRaneshOrderByWithRelationInput
+    TrikhDoreKesht?: TrikhDoreKeshtOrderByWithRelationInput
+  }
+
+  export type BahrebardairProgramSeghliWhereUniqueInput = Prisma.AtLeast<{
+    IdProSrgl?: number
+    AND?: BahrebardairProgramSeghliWhereInput | BahrebardairProgramSeghliWhereInput[]
+    OR?: BahrebardairProgramSeghliWhereInput[]
+    NOT?: BahrebardairProgramSeghliWhereInput | BahrebardairProgramSeghliWhereInput[]
+    FIdRanesh?: IntFilter<"BahrebardairProgramSeghli"> | number
+    FIdTarDor?: IntFilter<"BahrebardairProgramSeghli"> | number
+    Zarfiat?: DecimalNullableFilter<"BahrebardairProgramSeghli"> | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    Paian?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    KhatRanesh?: XOR<KhatRaneshScalarRelationFilter, KhatRaneshWhereInput>
+    TrikhDoreKesht?: XOR<TrikhDoreKeshtScalarRelationFilter, TrikhDoreKeshtWhereInput>
+  }, "IdProSrgl">
+
+  export type BahrebardairProgramSeghliOrderByWithAggregationInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrderInput | SortOrder
+    Shorooe?: SortOrderInput | SortOrder
+    Paian?: SortOrderInput | SortOrder
+    _count?: BahrebardairProgramSeghliCountOrderByAggregateInput
+    _avg?: BahrebardairProgramSeghliAvgOrderByAggregateInput
+    _max?: BahrebardairProgramSeghliMaxOrderByAggregateInput
+    _min?: BahrebardairProgramSeghliMinOrderByAggregateInput
+    _sum?: BahrebardairProgramSeghliSumOrderByAggregateInput
+  }
+
+  export type BahrebardairProgramSeghliScalarWhereWithAggregatesInput = {
+    AND?: BahrebardairProgramSeghliScalarWhereWithAggregatesInput | BahrebardairProgramSeghliScalarWhereWithAggregatesInput[]
+    OR?: BahrebardairProgramSeghliScalarWhereWithAggregatesInput[]
+    NOT?: BahrebardairProgramSeghliScalarWhereWithAggregatesInput | BahrebardairProgramSeghliScalarWhereWithAggregatesInput[]
+    IdProSrgl?: IntWithAggregatesFilter<"BahrebardairProgramSeghli"> | number
+    FIdRanesh?: IntWithAggregatesFilter<"BahrebardairProgramSeghli"> | number
+    FIdTarDor?: IntWithAggregatesFilter<"BahrebardairProgramSeghli"> | number
+    Zarfiat?: DecimalNullableWithAggregatesFilter<"BahrebardairProgramSeghli"> | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: DateTimeNullableWithAggregatesFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    Paian?: DateTimeNullableWithAggregatesFilter<"BahrebardairProgramSeghli"> | Date | string | null
+  }
+
   export type BahrebardariKeshtDoreWhereInput = {
     AND?: BahrebardariKeshtDoreWhereInput | BahrebardariKeshtDoreWhereInput[]
     OR?: BahrebardariKeshtDoreWhereInput[]
@@ -45199,6 +46422,7 @@ export namespace Prisma {
     Active?: BoolFilter<"KhatRanesh"> | boolean
     Abgir?: AbgirListRelationFilter
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliListRelationFilter
     BahrebardariKeshtDore?: BahrebardariKeshtDoreListRelationFilter
     BahrebardariTaghvim?: BahrebardariTaghvimListRelationFilter
     EshtebahAvamel?: EshtebahAvamelListRelationFilter
@@ -45227,6 +46451,7 @@ export namespace Prisma {
     Active?: SortOrder
     Abgir?: AbgirOrderByRelationAggregateInput
     BahrebardairProgram?: BahrebardairProgramOrderByRelationAggregateInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliOrderByRelationAggregateInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreOrderByRelationAggregateInput
     BahrebardariTaghvim?: BahrebardariTaghvimOrderByRelationAggregateInput
     EshtebahAvamel?: EshtebahAvamelOrderByRelationAggregateInput
@@ -45258,6 +46483,7 @@ export namespace Prisma {
     Active?: BoolFilter<"KhatRanesh"> | boolean
     Abgir?: AbgirListRelationFilter
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliListRelationFilter
     BahrebardariKeshtDore?: BahrebardariKeshtDoreListRelationFilter
     BahrebardariTaghvim?: BahrebardariTaghvimListRelationFilter
     EshtebahAvamel?: EshtebahAvamelListRelationFilter
@@ -46432,6 +47658,7 @@ export namespace Prisma {
     Sal?: IntFilter<"TrikhDoreKesht"> | number
     Mah?: IntFilter<"TrikhDoreKesht"> | number
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliListRelationFilter
     BahrebardariTaghvim?: BahrebardariTaghvimListRelationFilter
     EshtebahAvamel?: EshtebahAvamelListRelationFilter
     FlowBehbood?: FlowBehboodListRelationFilter
@@ -46457,6 +47684,7 @@ export namespace Prisma {
     Sal?: SortOrder
     Mah?: SortOrder
     BahrebardairProgram?: BahrebardairProgramOrderByRelationAggregateInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliOrderByRelationAggregateInput
     BahrebardariTaghvim?: BahrebardariTaghvimOrderByRelationAggregateInput
     EshtebahAvamel?: EshtebahAvamelOrderByRelationAggregateInput
     FlowBehbood?: FlowBehboodOrderByRelationAggregateInput
@@ -46485,6 +47713,7 @@ export namespace Prisma {
     Sal?: IntFilter<"TrikhDoreKesht"> | number
     Mah?: IntFilter<"TrikhDoreKesht"> | number
     BahrebardairProgram?: BahrebardairProgramListRelationFilter
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliListRelationFilter
     BahrebardariTaghvim?: BahrebardariTaghvimListRelationFilter
     EshtebahAvamel?: EshtebahAvamelListRelationFilter
     FlowBehbood?: FlowBehboodListRelationFilter
@@ -46925,6 +48154,63 @@ export namespace Prisma {
     Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type BahrebardairProgramSeghliCreateInput = {
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+    KhatRanesh: KhatRaneshCreateNestedOneWithoutBahrebardairProgramSeghliInput
+    TrikhDoreKesht: TrikhDoreKeshtCreateNestedOneWithoutBahrebardairProgramSeghliInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedCreateInput = {
+    IdProSrgl?: number
+    FIdRanesh: number
+    FIdTarDor: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUpdateInput = {
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KhatRanesh?: KhatRaneshUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput
+    TrikhDoreKesht?: TrikhDoreKeshtUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdRanesh?: IntFieldUpdateOperationsInput | number
+    FIdTarDor?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliCreateManyInput = {
+    FIdRanesh: number
+    FIdTarDor: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUpdateManyMutationInput = {
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateManyInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdRanesh?: IntFieldUpdateOperationsInput | number
+    FIdTarDor?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type BahrebardariKeshtDoreCreateInput = {
     IdBahDor: number
     Area: Decimal | DecimalJsLike | number | string
@@ -47350,6 +48636,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -47378,6 +48665,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -47397,6 +48685,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -47425,6 +48714,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -48432,6 +49722,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -48457,6 +49748,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -48475,6 +49767,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -48500,6 +49793,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -49060,6 +50354,47 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type BahrebardairProgramSeghliCountOrderByAggregateInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrder
+    Shorooe?: SortOrder
+    Paian?: SortOrder
+  }
+
+  export type BahrebardairProgramSeghliAvgOrderByAggregateInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrder
+  }
+
+  export type BahrebardairProgramSeghliMaxOrderByAggregateInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrder
+    Shorooe?: SortOrder
+    Paian?: SortOrder
+  }
+
+  export type BahrebardairProgramSeghliMinOrderByAggregateInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrder
+    Shorooe?: SortOrder
+    Paian?: SortOrder
+  }
+
+  export type BahrebardairProgramSeghliSumOrderByAggregateInput = {
+    IdProSrgl?: SortOrder
+    FIdRanesh?: SortOrder
+    FIdTarDor?: SortOrder
+    Zarfiat?: SortOrder
+  }
+
   export type NoeMahsoolScalarRelationFilter = {
     is?: NoeMahsoolWhereInput
     isNot?: NoeMahsoolWhereInput
@@ -49461,6 +50796,12 @@ export namespace Prisma {
     none?: BahrebardairProgramWhereInput
   }
 
+  export type BahrebardairProgramSeghliListRelationFilter = {
+    every?: BahrebardairProgramSeghliWhereInput
+    some?: BahrebardairProgramSeghliWhereInput
+    none?: BahrebardairProgramSeghliWhereInput
+  }
+
   export type BahrebardariKeshtDoreListRelationFilter = {
     every?: BahrebardariKeshtDoreWhereInput
     some?: BahrebardariKeshtDoreWhereInput
@@ -49558,6 +50899,10 @@ export namespace Prisma {
   }
 
   export type BahrebardairProgramOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BahrebardairProgramSeghliOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50868,6 +52213,34 @@ export namespace Prisma {
     update?: XOR<XOR<TrikhDoreKeshtUpdateToOneWithWhereWithoutBahrebardairProgramInput, TrikhDoreKeshtUpdateWithoutBahrebardairProgramInput>, TrikhDoreKeshtUncheckedUpdateWithoutBahrebardairProgramInput>
   }
 
+  export type KhatRaneshCreateNestedOneWithoutBahrebardairProgramSeghliInput = {
+    create?: XOR<KhatRaneshCreateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    connectOrCreate?: KhatRaneshCreateOrConnectWithoutBahrebardairProgramSeghliInput
+    connect?: KhatRaneshWhereUniqueInput
+  }
+
+  export type TrikhDoreKeshtCreateNestedOneWithoutBahrebardairProgramSeghliInput = {
+    create?: XOR<TrikhDoreKeshtCreateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    connectOrCreate?: TrikhDoreKeshtCreateOrConnectWithoutBahrebardairProgramSeghliInput
+    connect?: TrikhDoreKeshtWhereUniqueInput
+  }
+
+  export type KhatRaneshUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput = {
+    create?: XOR<KhatRaneshCreateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    connectOrCreate?: KhatRaneshCreateOrConnectWithoutBahrebardairProgramSeghliInput
+    upsert?: KhatRaneshUpsertWithoutBahrebardairProgramSeghliInput
+    connect?: KhatRaneshWhereUniqueInput
+    update?: XOR<XOR<KhatRaneshUpdateToOneWithWhereWithoutBahrebardairProgramSeghliInput, KhatRaneshUpdateWithoutBahrebardairProgramSeghliInput>, KhatRaneshUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+  }
+
+  export type TrikhDoreKeshtUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput = {
+    create?: XOR<TrikhDoreKeshtCreateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    connectOrCreate?: TrikhDoreKeshtCreateOrConnectWithoutBahrebardairProgramSeghliInput
+    upsert?: TrikhDoreKeshtUpsertWithoutBahrebardairProgramSeghliInput
+    connect?: TrikhDoreKeshtWhereUniqueInput
+    update?: XOR<XOR<TrikhDoreKeshtUpdateToOneWithWhereWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUpdateWithoutBahrebardairProgramSeghliInput>, TrikhDoreKeshtUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+  }
+
   export type KhatRaneshCreateNestedOneWithoutBahrebardariKeshtDoreInput = {
     create?: XOR<KhatRaneshCreateWithoutBahrebardariKeshtDoreInput, KhatRaneshUncheckedCreateWithoutBahrebardariKeshtDoreInput>
     connectOrCreate?: KhatRaneshCreateOrConnectWithoutBahrebardariKeshtDoreInput
@@ -51282,6 +52655,13 @@ export namespace Prisma {
     connect?: BahrebardairProgramWhereUniqueInput | BahrebardairProgramWhereUniqueInput[]
   }
 
+  export type BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput> | BahrebardairProgramSeghliCreateWithoutKhatRaneshInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput | BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyKhatRaneshInputEnvelope
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+  }
+
   export type BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput = {
     create?: XOR<BahrebardariKeshtDoreCreateWithoutKhatRaneshInput, BahrebardariKeshtDoreUncheckedCreateWithoutKhatRaneshInput> | BahrebardariKeshtDoreCreateWithoutKhatRaneshInput[] | BahrebardariKeshtDoreUncheckedCreateWithoutKhatRaneshInput[]
     connectOrCreate?: BahrebardariKeshtDoreCreateOrConnectWithoutKhatRaneshInput | BahrebardariKeshtDoreCreateOrConnectWithoutKhatRaneshInput[]
@@ -51404,6 +52784,13 @@ export namespace Prisma {
     connect?: BahrebardairProgramWhereUniqueInput | BahrebardairProgramWhereUniqueInput[]
   }
 
+  export type BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput> | BahrebardairProgramSeghliCreateWithoutKhatRaneshInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput | BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyKhatRaneshInputEnvelope
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+  }
+
   export type BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput = {
     create?: XOR<BahrebardariKeshtDoreCreateWithoutKhatRaneshInput, BahrebardariKeshtDoreUncheckedCreateWithoutKhatRaneshInput> | BahrebardariKeshtDoreCreateWithoutKhatRaneshInput[] | BahrebardariKeshtDoreUncheckedCreateWithoutKhatRaneshInput[]
     connectOrCreate?: BahrebardariKeshtDoreCreateOrConnectWithoutKhatRaneshInput | BahrebardariKeshtDoreCreateOrConnectWithoutKhatRaneshInput[]
@@ -51518,6 +52905,20 @@ export namespace Prisma {
     update?: BahrebardairProgramUpdateWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramUpdateWithWhereUniqueWithoutKhatRaneshInput[]
     updateMany?: BahrebardairProgramUpdateManyWithWhereWithoutKhatRaneshInput | BahrebardairProgramUpdateManyWithWhereWithoutKhatRaneshInput[]
     deleteMany?: BahrebardairProgramScalarWhereInput | BahrebardairProgramScalarWhereInput[]
+  }
+
+  export type BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput> | BahrebardairProgramSeghliCreateWithoutKhatRaneshInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput | BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput[]
+    upsert?: BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutKhatRaneshInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyKhatRaneshInputEnvelope
+    set?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    disconnect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    delete?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    update?: BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutKhatRaneshInput[]
+    updateMany?: BahrebardairProgramSeghliUpdateManyWithWhereWithoutKhatRaneshInput | BahrebardairProgramSeghliUpdateManyWithWhereWithoutKhatRaneshInput[]
+    deleteMany?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
   }
 
   export type BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput = {
@@ -51746,6 +53147,20 @@ export namespace Prisma {
     update?: BahrebardairProgramUpdateWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramUpdateWithWhereUniqueWithoutKhatRaneshInput[]
     updateMany?: BahrebardairProgramUpdateManyWithWhereWithoutKhatRaneshInput | BahrebardairProgramUpdateManyWithWhereWithoutKhatRaneshInput[]
     deleteMany?: BahrebardairProgramScalarWhereInput | BahrebardairProgramScalarWhereInput[]
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput> | BahrebardairProgramSeghliCreateWithoutKhatRaneshInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput | BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput[]
+    upsert?: BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutKhatRaneshInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyKhatRaneshInputEnvelope
+    set?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    disconnect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    delete?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    update?: BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutKhatRaneshInput | BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutKhatRaneshInput[]
+    updateMany?: BahrebardairProgramSeghliUpdateManyWithWhereWithoutKhatRaneshInput | BahrebardairProgramSeghliUpdateManyWithWhereWithoutKhatRaneshInput[]
+    deleteMany?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
   }
 
   export type BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput = {
@@ -52909,6 +54324,13 @@ export namespace Prisma {
     connect?: BahrebardairProgramWhereUniqueInput | BahrebardairProgramWhereUniqueInput[]
   }
 
+  export type BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInputEnvelope
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+  }
+
   export type BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput = {
     create?: XOR<BahrebardariTaghvimCreateWithoutTrikhDoreKeshtInput, BahrebardariTaghvimUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardariTaghvimCreateWithoutTrikhDoreKeshtInput[] | BahrebardariTaghvimUncheckedCreateWithoutTrikhDoreKeshtInput[]
     connectOrCreate?: BahrebardariTaghvimCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardariTaghvimCreateOrConnectWithoutTrikhDoreKeshtInput[]
@@ -53004,6 +54426,13 @@ export namespace Prisma {
     connect?: BahrebardairProgramWhereUniqueInput | BahrebardairProgramWhereUniqueInput[]
   }
 
+  export type BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInputEnvelope
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+  }
+
   export type BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput = {
     create?: XOR<BahrebardariTaghvimCreateWithoutTrikhDoreKeshtInput, BahrebardariTaghvimUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardariTaghvimCreateWithoutTrikhDoreKeshtInput[] | BahrebardariTaghvimUncheckedCreateWithoutTrikhDoreKeshtInput[]
     connectOrCreate?: BahrebardariTaghvimCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardariTaghvimCreateOrConnectWithoutTrikhDoreKeshtInput[]
@@ -53090,6 +54519,20 @@ export namespace Prisma {
     update?: BahrebardairProgramUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput[]
     updateMany?: BahrebardairProgramUpdateManyWithWhereWithoutTrikhDoreKeshtInput | BahrebardairProgramUpdateManyWithWhereWithoutTrikhDoreKeshtInput[]
     deleteMany?: BahrebardairProgramScalarWhereInput | BahrebardairProgramScalarWhereInput[]
+  }
+
+  export type BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput[]
+    upsert?: BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInputEnvelope
+    set?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    disconnect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    delete?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    update?: BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput[]
+    updateMany?: BahrebardairProgramSeghliUpdateManyWithWhereWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpdateManyWithWhereWithoutTrikhDoreKeshtInput[]
+    deleteMany?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
   }
 
   export type BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput = {
@@ -53268,6 +54711,20 @@ export namespace Prisma {
     update?: BahrebardairProgramUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput[]
     updateMany?: BahrebardairProgramUpdateManyWithWhereWithoutTrikhDoreKeshtInput | BahrebardairProgramUpdateManyWithWhereWithoutTrikhDoreKeshtInput[]
     deleteMany?: BahrebardairProgramScalarWhereInput | BahrebardairProgramScalarWhereInput[]
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput = {
+    create?: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput> | BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput[] | BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput[]
+    connectOrCreate?: BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput[]
+    upsert?: BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput[]
+    createMany?: BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInputEnvelope
+    set?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    disconnect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    delete?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    connect?: BahrebardairProgramSeghliWhereUniqueInput | BahrebardairProgramSeghliWhereUniqueInput[]
+    update?: BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput[]
+    updateMany?: BahrebardairProgramSeghliUpdateManyWithWhereWithoutTrikhDoreKeshtInput | BahrebardairProgramSeghliUpdateManyWithWhereWithoutTrikhDoreKeshtInput[]
+    deleteMany?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
   }
 
   export type BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput = {
@@ -53976,6 +55433,7 @@ export namespace Prisma {
     RaneshName: string
     Active?: boolean
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -54003,6 +55461,7 @@ export namespace Prisma {
     FIdMeasuring: number
     Active?: boolean
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54057,6 +55516,7 @@ export namespace Prisma {
     RaneshName?: StringFieldUpdateOperationsInput | string
     Active?: BoolFieldUpdateOperationsInput | boolean
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -54084,6 +55544,7 @@ export namespace Prisma {
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54128,6 +55589,7 @@ export namespace Prisma {
     RaneshName: string
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -54155,6 +55617,7 @@ export namespace Prisma {
     FIdMeasuring: number
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54179,6 +55642,7 @@ export namespace Prisma {
     TrikhKhorshidi: string
     Dahe: number
     Sal: number
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -54203,6 +55667,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     Mah: number
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -54235,6 +55700,7 @@ export namespace Prisma {
     RaneshName?: StringFieldUpdateOperationsInput | string
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -54262,6 +55728,7 @@ export namespace Prisma {
     FIdMeasuring?: IntFieldUpdateOperationsInput | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54292,6 +55759,7 @@ export namespace Prisma {
     TrikhKhorshidi?: StringFieldUpdateOperationsInput | string
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -54316,6 +55784,219 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Flowmeter?: FlowmeterUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Kontor?: KontorUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    NashtShabake?: NashtShabakeUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    NonFIT?: NonFITUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    RainfallStation?: RainfallStationUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    TakhlieMakhzan?: TakhlieMakhzanUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Test?: TestUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+  }
+
+  export type KhatRaneshCreateWithoutBahrebardairProgramSeghliInput = {
+    RaneshName: string
+    Active?: boolean
+    Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
+    BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
+    EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
+    FlowBehbood?: FlowBehboodCreateNestedManyWithoutKhatRaneshInput
+    Flowmeter?: FlowmeterCreateNestedManyWithoutKhatRaneshInput
+    DarajePipe: DarajePipeCreateNestedOneWithoutKhatRaneshInput
+    MeasuringTool: MeasuringToolCreateNestedOneWithoutKhatRaneshInput
+    PumpStation: PumpStationCreateNestedOneWithoutKhatRaneshInput
+    SeghliPump: SeghliPumpCreateNestedOneWithoutKhatRaneshInput
+    KhatRaneshArea?: KhatRaneshAreaCreateNestedManyWithoutKhatRaneshInput
+    KhatRaneshPump?: KhatRaneshPumpCreateNestedManyWithoutKhatRaneshInput
+    KhatRaneshSegli?: KhatRaneshSegliCreateNestedManyWithoutKhatRaneshInput
+    NashtShabake?: NashtShabakeCreateNestedManyWithoutKhatRaneshInput
+    NonFIT?: NonFITCreateNestedManyWithoutKhatRaneshInput
+    TakhlieMakhzan?: TakhlieMakhzanCreateNestedManyWithoutKhatRaneshInput
+    Test?: TestCreateNestedManyWithoutKhatRaneshInput
+  }
+
+  export type KhatRaneshUncheckedCreateWithoutBahrebardairProgramSeghliInput = {
+    IdRanesh?: number
+    RaneshName: string
+    FIdPumpSta: number
+    FIdDPipe: number
+    FIdSePu: number
+    FIdMeasuring: number
+    Active?: boolean
+    Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
+    EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
+    FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutKhatRaneshInput
+    Flowmeter?: FlowmeterUncheckedCreateNestedManyWithoutKhatRaneshInput
+    KhatRaneshArea?: KhatRaneshAreaUncheckedCreateNestedManyWithoutKhatRaneshInput
+    KhatRaneshPump?: KhatRaneshPumpUncheckedCreateNestedManyWithoutKhatRaneshInput
+    KhatRaneshSegli?: KhatRaneshSegliUncheckedCreateNestedManyWithoutKhatRaneshInput
+    NashtShabake?: NashtShabakeUncheckedCreateNestedManyWithoutKhatRaneshInput
+    NonFIT?: NonFITUncheckedCreateNestedManyWithoutKhatRaneshInput
+    TakhlieMakhzan?: TakhlieMakhzanUncheckedCreateNestedManyWithoutKhatRaneshInput
+    Test?: TestUncheckedCreateNestedManyWithoutKhatRaneshInput
+  }
+
+  export type KhatRaneshCreateOrConnectWithoutBahrebardairProgramSeghliInput = {
+    where: KhatRaneshWhereUniqueInput
+    create: XOR<KhatRaneshCreateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+  }
+
+  export type TrikhDoreKeshtCreateWithoutBahrebardairProgramSeghliInput = {
+    Trikh: Date | string
+    TrikhKhorshidi: string
+    Dahe: number
+    Sal: number
+    BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
+    EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
+    FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
+    Flowmeter?: FlowmeterCreateNestedManyWithoutTrikhDoreKeshtInput
+    Kontor?: KontorCreateNestedManyWithoutTrikhDoreKeshtInput
+    NashtShabake?: NashtShabakeCreateNestedManyWithoutTrikhDoreKeshtInput
+    NonFIT?: NonFITCreateNestedManyWithoutTrikhDoreKeshtInput
+    RainfallStation?: RainfallStationCreateNestedManyWithoutTrikhDoreKeshtInput
+    TakhlieMakhzan?: TakhlieMakhzanCreateNestedManyWithoutTrikhDoreKeshtInput
+    Test?: TestCreateNestedManyWithoutTrikhDoreKeshtInput
+    DoreKesht: DoreKeshtCreateNestedOneWithoutTrikhDoreKeshtInput
+    MahShamsi: MahShamsiCreateNestedOneWithoutTrikhDoreKeshtInput
+    SaleZeraee: SaleZeraeeCreateNestedOneWithoutTrikhDoreKeshtInput
+  }
+
+  export type TrikhDoreKeshtUncheckedCreateWithoutBahrebardairProgramSeghliInput = {
+    IdTarDor?: number
+    FIdSal: number
+    FIdDore: number
+    Trikh: Date | string
+    TrikhKhorshidi: string
+    Dahe: number
+    Sal: number
+    Mah: number
+    BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    Flowmeter?: FlowmeterUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    Kontor?: KontorUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    NashtShabake?: NashtShabakeUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    NonFIT?: NonFITUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    RainfallStation?: RainfallStationUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    TakhlieMakhzan?: TakhlieMakhzanUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    Test?: TestUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+  }
+
+  export type TrikhDoreKeshtCreateOrConnectWithoutBahrebardairProgramSeghliInput = {
+    where: TrikhDoreKeshtWhereUniqueInput
+    create: XOR<TrikhDoreKeshtCreateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+  }
+
+  export type KhatRaneshUpsertWithoutBahrebardairProgramSeghliInput = {
+    update: XOR<KhatRaneshUpdateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+    create: XOR<KhatRaneshCreateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    where?: KhatRaneshWhereInput
+  }
+
+  export type KhatRaneshUpdateToOneWithWhereWithoutBahrebardairProgramSeghliInput = {
+    where?: KhatRaneshWhereInput
+    data: XOR<KhatRaneshUpdateWithoutBahrebardairProgramSeghliInput, KhatRaneshUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+  }
+
+  export type KhatRaneshUpdateWithoutBahrebardairProgramSeghliInput = {
+    RaneshName?: StringFieldUpdateOperationsInput | string
+    Active?: BoolFieldUpdateOperationsInput | boolean
+    Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
+    EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
+    FlowBehbood?: FlowBehboodUpdateManyWithoutKhatRaneshNestedInput
+    Flowmeter?: FlowmeterUpdateManyWithoutKhatRaneshNestedInput
+    DarajePipe?: DarajePipeUpdateOneRequiredWithoutKhatRaneshNestedInput
+    MeasuringTool?: MeasuringToolUpdateOneRequiredWithoutKhatRaneshNestedInput
+    PumpStation?: PumpStationUpdateOneRequiredWithoutKhatRaneshNestedInput
+    SeghliPump?: SeghliPumpUpdateOneRequiredWithoutKhatRaneshNestedInput
+    KhatRaneshArea?: KhatRaneshAreaUpdateManyWithoutKhatRaneshNestedInput
+    KhatRaneshPump?: KhatRaneshPumpUpdateManyWithoutKhatRaneshNestedInput
+    KhatRaneshSegli?: KhatRaneshSegliUpdateManyWithoutKhatRaneshNestedInput
+    NashtShabake?: NashtShabakeUpdateManyWithoutKhatRaneshNestedInput
+    NonFIT?: NonFITUpdateManyWithoutKhatRaneshNestedInput
+    TakhlieMakhzan?: TakhlieMakhzanUpdateManyWithoutKhatRaneshNestedInput
+    Test?: TestUpdateManyWithoutKhatRaneshNestedInput
+  }
+
+  export type KhatRaneshUncheckedUpdateWithoutBahrebardairProgramSeghliInput = {
+    IdRanesh?: IntFieldUpdateOperationsInput | number
+    RaneshName?: StringFieldUpdateOperationsInput | string
+    FIdPumpSta?: IntFieldUpdateOperationsInput | number
+    FIdDPipe?: IntFieldUpdateOperationsInput | number
+    FIdSePu?: IntFieldUpdateOperationsInput | number
+    FIdMeasuring?: IntFieldUpdateOperationsInput | number
+    Active?: BoolFieldUpdateOperationsInput | boolean
+    Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    Flowmeter?: FlowmeterUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    KhatRaneshArea?: KhatRaneshAreaUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    KhatRaneshPump?: KhatRaneshPumpUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    KhatRaneshSegli?: KhatRaneshSegliUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    NashtShabake?: NashtShabakeUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    NonFIT?: NonFITUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    TakhlieMakhzan?: TakhlieMakhzanUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    Test?: TestUncheckedUpdateManyWithoutKhatRaneshNestedInput
+  }
+
+  export type TrikhDoreKeshtUpsertWithoutBahrebardairProgramSeghliInput = {
+    update: XOR<TrikhDoreKeshtUpdateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+    create: XOR<TrikhDoreKeshtCreateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedCreateWithoutBahrebardairProgramSeghliInput>
+    where?: TrikhDoreKeshtWhereInput
+  }
+
+  export type TrikhDoreKeshtUpdateToOneWithWhereWithoutBahrebardairProgramSeghliInput = {
+    where?: TrikhDoreKeshtWhereInput
+    data: XOR<TrikhDoreKeshtUpdateWithoutBahrebardairProgramSeghliInput, TrikhDoreKeshtUncheckedUpdateWithoutBahrebardairProgramSeghliInput>
+  }
+
+  export type TrikhDoreKeshtUpdateWithoutBahrebardairProgramSeghliInput = {
+    Trikh?: DateTimeFieldUpdateOperationsInput | Date | string
+    TrikhKhorshidi?: StringFieldUpdateOperationsInput | string
+    Dahe?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
+    EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
+    FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Flowmeter?: FlowmeterUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Kontor?: KontorUpdateManyWithoutTrikhDoreKeshtNestedInput
+    NashtShabake?: NashtShabakeUpdateManyWithoutTrikhDoreKeshtNestedInput
+    NonFIT?: NonFITUpdateManyWithoutTrikhDoreKeshtNestedInput
+    RainfallStation?: RainfallStationUpdateManyWithoutTrikhDoreKeshtNestedInput
+    TakhlieMakhzan?: TakhlieMakhzanUpdateManyWithoutTrikhDoreKeshtNestedInput
+    Test?: TestUpdateManyWithoutTrikhDoreKeshtNestedInput
+    DoreKesht?: DoreKeshtUpdateOneRequiredWithoutTrikhDoreKeshtNestedInput
+    MahShamsi?: MahShamsiUpdateOneRequiredWithoutTrikhDoreKeshtNestedInput
+    SaleZeraee?: SaleZeraeeUpdateOneRequiredWithoutTrikhDoreKeshtNestedInput
+  }
+
+  export type TrikhDoreKeshtUncheckedUpdateWithoutBahrebardairProgramSeghliInput = {
+    IdTarDor?: IntFieldUpdateOperationsInput | number
+    FIdSal?: IntFieldUpdateOperationsInput | number
+    FIdDore?: IntFieldUpdateOperationsInput | number
+    Trikh?: DateTimeFieldUpdateOperationsInput | Date | string
+    TrikhKhorshidi?: StringFieldUpdateOperationsInput | string
+    Dahe?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    Mah?: IntFieldUpdateOperationsInput | number
+    BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -54333,6 +56014,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutKhatRaneshInput
@@ -54360,6 +56042,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54433,6 +56116,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutKhatRaneshNestedInput
@@ -54460,6 +56144,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54529,6 +56214,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutKhatRaneshInput
@@ -54556,6 +56242,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -54580,6 +56267,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -54604,6 +56292,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -54636,6 +56325,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutKhatRaneshNestedInput
@@ -54663,6 +56353,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -54693,6 +56384,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -54717,6 +56409,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -54823,6 +56516,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -54849,6 +56543,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55026,6 +56721,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55049,6 +56745,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55133,6 +56830,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutKhatRaneshInput
@@ -55160,6 +56858,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55184,6 +56883,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55208,6 +56908,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55240,6 +56941,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutKhatRaneshNestedInput
@@ -55267,6 +56969,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55297,6 +57000,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55321,6 +57025,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55337,6 +57042,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -55364,6 +57070,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55388,6 +57095,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55412,6 +57120,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     Flowmeter?: FlowmeterUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55444,6 +57153,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -55471,6 +57181,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55501,6 +57212,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55525,6 +57237,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     Flowmeter?: FlowmeterUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55541,6 +57254,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -55568,6 +57282,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -55592,6 +57307,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55616,6 +57332,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -55648,6 +57365,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -55675,6 +57393,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -55705,6 +57424,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55729,6 +57449,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -55782,6 +57503,30 @@ export namespace Prisma {
 
   export type BahrebardairProgramCreateManyKhatRaneshInputEnvelope = {
     data: BahrebardairProgramCreateManyKhatRaneshInput | BahrebardairProgramCreateManyKhatRaneshInput[]
+  }
+
+  export type BahrebardairProgramSeghliCreateWithoutKhatRaneshInput = {
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+    TrikhDoreKesht: TrikhDoreKeshtCreateNestedOneWithoutBahrebardairProgramSeghliInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput = {
+    IdProSrgl?: number
+    FIdTarDor: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliCreateOrConnectWithoutKhatRaneshInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    create: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput>
+  }
+
+  export type BahrebardairProgramSeghliCreateManyKhatRaneshInputEnvelope = {
+    data: BahrebardairProgramSeghliCreateManyKhatRaneshInput | BahrebardairProgramSeghliCreateManyKhatRaneshInput[]
   }
 
   export type BahrebardariKeshtDoreCreateWithoutKhatRaneshInput = {
@@ -56179,6 +57924,34 @@ export namespace Prisma {
     Tedad?: IntFilter<"BahrebardairProgram"> | number
     Shorooe?: DateTimeNullableFilter<"BahrebardairProgram"> | Date | string | null
     Paian?: DateTimeNullableFilter<"BahrebardairProgram"> | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutKhatRaneshInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    update: XOR<BahrebardairProgramSeghliUpdateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedUpdateWithoutKhatRaneshInput>
+    create: XOR<BahrebardairProgramSeghliCreateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedCreateWithoutKhatRaneshInput>
+  }
+
+  export type BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutKhatRaneshInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    data: XOR<BahrebardairProgramSeghliUpdateWithoutKhatRaneshInput, BahrebardairProgramSeghliUncheckedUpdateWithoutKhatRaneshInput>
+  }
+
+  export type BahrebardairProgramSeghliUpdateManyWithWhereWithoutKhatRaneshInput = {
+    where: BahrebardairProgramSeghliScalarWhereInput
+    data: XOR<BahrebardairProgramSeghliUpdateManyMutationInput, BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshInput>
+  }
+
+  export type BahrebardairProgramSeghliScalarWhereInput = {
+    AND?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
+    OR?: BahrebardairProgramSeghliScalarWhereInput[]
+    NOT?: BahrebardairProgramSeghliScalarWhereInput | BahrebardairProgramSeghliScalarWhereInput[]
+    IdProSrgl?: IntFilter<"BahrebardairProgramSeghli"> | number
+    FIdRanesh?: IntFilter<"BahrebardairProgramSeghli"> | number
+    FIdTarDor?: IntFilter<"BahrebardairProgramSeghli"> | number
+    Zarfiat?: DecimalNullableFilter<"BahrebardairProgramSeghli"> | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
+    Paian?: DateTimeNullableFilter<"BahrebardairProgramSeghli"> | Date | string | null
   }
 
   export type BahrebardariKeshtDoreUpsertWithWhereUniqueWithoutKhatRaneshInput = {
@@ -56607,6 +58380,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -56634,6 +58408,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -56705,6 +58480,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -56732,6 +58508,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -56799,6 +58576,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -56826,6 +58604,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -56874,6 +58653,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -56901,6 +58681,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -56939,6 +58720,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -56966,6 +58748,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57000,6 +58783,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -57027,6 +58811,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57062,6 +58847,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57086,6 +58872,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57141,6 +58928,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -57165,6 +58953,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -57219,6 +59008,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -57245,6 +59035,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57289,6 +59080,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -57316,6 +59108,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57340,6 +59133,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57364,6 +59158,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57396,6 +59191,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -57423,6 +59219,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57453,6 +59250,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -57477,6 +59275,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -57822,6 +59621,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -57849,6 +59649,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -57873,6 +59674,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57897,6 +59699,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -57929,6 +59732,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -57956,6 +59760,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -57986,6 +59791,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58010,6 +59816,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58026,6 +59833,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -58052,6 +59860,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58355,6 +60164,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58379,6 +60189,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58446,6 +60257,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58470,6 +60282,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58583,6 +60396,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58606,6 +60420,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58664,6 +60479,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -58690,6 +60506,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58785,6 +60602,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -58812,6 +60630,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -58836,6 +60655,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58860,6 +60680,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -58892,6 +60713,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -58919,6 +60741,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -58949,6 +60772,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58973,6 +60797,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -58989,6 +60814,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutKhatRaneshInput
@@ -59016,6 +60842,7 @@ export namespace Prisma {
     Active?: boolean
     Abgir?: AbgirUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutKhatRaneshInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedCreateNestedManyWithoutKhatRaneshInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutKhatRaneshInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutKhatRaneshInput
@@ -59040,6 +60867,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -59064,6 +60892,7 @@ export namespace Prisma {
     Sal: number
     Mah: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -59096,6 +60925,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -59123,6 +60953,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -59153,6 +60984,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -59177,6 +61009,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -59210,6 +61043,30 @@ export namespace Prisma {
 
   export type BahrebardairProgramCreateManyTrikhDoreKeshtInputEnvelope = {
     data: BahrebardairProgramCreateManyTrikhDoreKeshtInput | BahrebardairProgramCreateManyTrikhDoreKeshtInput[]
+  }
+
+  export type BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput = {
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+    KhatRanesh: KhatRaneshCreateNestedOneWithoutBahrebardairProgramSeghliInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput = {
+    IdProSrgl?: number
+    FIdRanesh: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliCreateOrConnectWithoutTrikhDoreKeshtInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    create: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput>
+  }
+
+  export type BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInputEnvelope = {
+    data: BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInput | BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInput[]
   }
 
   export type BahrebardariTaghvimCreateWithoutTrikhDoreKeshtInput = {
@@ -59480,6 +61337,22 @@ export namespace Prisma {
   export type BahrebardairProgramUpdateManyWithWhereWithoutTrikhDoreKeshtInput = {
     where: BahrebardairProgramScalarWhereInput
     data: XOR<BahrebardairProgramUpdateManyMutationInput, BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtInput>
+  }
+
+  export type BahrebardairProgramSeghliUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    update: XOR<BahrebardairProgramSeghliUpdateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedUpdateWithoutTrikhDoreKeshtInput>
+    create: XOR<BahrebardairProgramSeghliCreateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedCreateWithoutTrikhDoreKeshtInput>
+  }
+
+  export type BahrebardairProgramSeghliUpdateWithWhereUniqueWithoutTrikhDoreKeshtInput = {
+    where: BahrebardairProgramSeghliWhereUniqueInput
+    data: XOR<BahrebardairProgramSeghliUpdateWithoutTrikhDoreKeshtInput, BahrebardairProgramSeghliUncheckedUpdateWithoutTrikhDoreKeshtInput>
+  }
+
+  export type BahrebardairProgramSeghliUpdateManyWithWhereWithoutTrikhDoreKeshtInput = {
+    where: BahrebardairProgramSeghliScalarWhereInput
+    data: XOR<BahrebardairProgramSeghliUpdateManyMutationInput, BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtInput>
   }
 
   export type BahrebardariTaghvimUpsertWithWhereUniqueWithoutTrikhDoreKeshtInput = {
@@ -59773,6 +61646,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -59796,6 +61670,7 @@ export namespace Prisma {
     Dahe: number
     Sal: number
     BahrebardairProgram?: BahrebardairProgramUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     EshtebahAvamel?: EshtebahAvamelUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
     FlowBehbood?: FlowBehboodUncheckedCreateNestedManyWithoutTrikhDoreKeshtInput
@@ -60089,6 +61964,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -60115,6 +61991,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -60267,6 +62144,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -60290,6 +62168,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -60319,6 +62198,13 @@ export namespace Prisma {
   export type BahrebardairProgramCreateManyKhatRaneshInput = {
     FIdTarDor: number
     Tedad: number
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliCreateManyKhatRaneshInput = {
+    FIdTarDor: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
     Shorooe?: Date | string | null
     Paian?: Date | string | null
   }
@@ -60436,6 +62322,29 @@ export namespace Prisma {
     IdProgram?: IntFieldUpdateOperationsInput | number
     FIdTarDor?: IntFieldUpdateOperationsInput | number
     Tedad?: IntFieldUpdateOperationsInput | number
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUpdateWithoutKhatRaneshInput = {
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrikhDoreKesht?: TrikhDoreKeshtUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateWithoutKhatRaneshInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdTarDor?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdTarDor?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -60732,6 +62641,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -60758,6 +62668,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -60964,6 +62875,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -60990,6 +62902,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -61166,6 +63079,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -61189,6 +63103,7 @@ export namespace Prisma {
     Sal?: IntFieldUpdateOperationsInput | number
     Mah?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -61224,6 +63139,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutKhatRaneshNestedInput
@@ -61250,6 +63166,7 @@ export namespace Prisma {
     Active?: BoolFieldUpdateOperationsInput | boolean
     Abgir?: AbgirUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutKhatRaneshNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariKeshtDore?: BahrebardariKeshtDoreUncheckedUpdateManyWithoutKhatRaneshNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutKhatRaneshNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutKhatRaneshNestedInput
@@ -61302,6 +63219,13 @@ export namespace Prisma {
   export type BahrebardairProgramCreateManyTrikhDoreKeshtInput = {
     FIdRanesh: number
     Tedad: number
+    Shorooe?: Date | string | null
+    Paian?: Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliCreateManyTrikhDoreKeshtInput = {
+    FIdRanesh: number
+    Zarfiat?: Decimal | DecimalJsLike | number | string | null
     Shorooe?: Date | string | null
     Paian?: Date | string | null
   }
@@ -61379,6 +63303,29 @@ export namespace Prisma {
     IdProgram?: IntFieldUpdateOperationsInput | number
     FIdRanesh?: IntFieldUpdateOperationsInput | number
     Tedad?: IntFieldUpdateOperationsInput | number
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUpdateWithoutTrikhDoreKeshtInput = {
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    KhatRanesh?: KhatRaneshUpdateOneRequiredWithoutBahrebardairProgramSeghliNestedInput
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateWithoutTrikhDoreKeshtInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdRanesh?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtInput = {
+    IdProSrgl?: IntFieldUpdateOperationsInput | number
+    FIdRanesh?: IntFieldUpdateOperationsInput | number
+    Zarfiat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Shorooe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Paian?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -61622,6 +63569,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUpdateManyWithoutTrikhDoreKeshtNestedInput
@@ -61645,6 +63593,7 @@ export namespace Prisma {
     Dahe?: IntFieldUpdateOperationsInput | number
     Sal?: IntFieldUpdateOperationsInput | number
     BahrebardairProgram?: BahrebardairProgramUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
+    BahrebardairProgramSeghli?: BahrebardairProgramSeghliUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     BahrebardariTaghvim?: BahrebardariTaghvimUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     EshtebahAvamel?: EshtebahAvamelUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput
     FlowBehbood?: FlowBehboodUncheckedUpdateManyWithoutTrikhDoreKeshtNestedInput

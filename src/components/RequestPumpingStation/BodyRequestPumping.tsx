@@ -38,6 +38,7 @@ interface BodyRequestPumpingProps {
 }
 
 interface RecordType {
+  Zarfit: string;
   name: ReactNode;
   IdTarDor: number;
   Trikh: string;
@@ -51,6 +52,12 @@ interface PredictedVolume {
   [IdTarDor: number]: {
     [IdRanesh: number]: number;
   };
+}
+interface PumpingData {
+  Tedad: number;
+  Zarfiat: number | null;
+  Shorooe: string | null;
+  Paian: string | null;
 }
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
@@ -68,11 +75,16 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 }) => {
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
   const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
-
+  const [selectedPumpCounts, setSelectedPumpCounts] = useState<{
+    [key: number]: {[date: string]: number};
+  }>({});
+  const [timeValues, setTimeValues] = useState<{
+    [key: number]: {[key: number]: {from: string; to: string}};
+  }>({});
   const [data, setData] = useState<
     Record<string, {date: string; day: string}[]>
   >({});
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [records, setRecords] = useState<RecordType[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const {
@@ -94,6 +106,9 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     {Mah: 2, Dahe: 1},
     // داده‌های مربوط به همه ماه‌ها و دهه‌ها اینجا تعریف شوند
   ];
+  const [pumpData, setPumpData] = useState<{
+    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+  }>({});
 
   useEffect(() => {
     const fetchMahList = async () => {
@@ -134,58 +149,114 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     };
 
     fetchKhatRanesh();
-  }, [idPumpStation]);  
+  }, [idPumpStation]);
+
+  // تابع برای تغییر مقدار انتخابی دراپ‌داون
+  const handlePumpCountChange = (
+    recordId: number,
+    raneshId: number,
+    value: number,
+  ) => {
+    setSelectedPumpCounts((prev) => ({
+      ...prev,
+      [recordId]: {
+        ...prev[recordId],
+        [raneshId]: value,
+      },
+    }));
+
+    setTimeValues((prev) => ({
+      ...prev,
+      [recordId]: {
+        ...prev[recordId],
+        [raneshId]: value > 0 ? {from: '08:00', to: ''} : {from: '', to: ''},
+      },
+    }));
+  };
+
+  const handleTimeChange = (
+    recordId: number,
+    raneshId: number,
+    field: 'from' | 'to',
+    value: string,
+  ) => {
+    setTimeValues((prev) => ({
+      ...prev,
+      [recordId]: {
+        ...prev[recordId],
+        [raneshId]: {
+          ...prev[recordId]?.[raneshId],
+          [field]: value,
+        },
+      },
+    }));
+  };
 
   useEffect(() => {
     if (!selectedNetworkId || !selectedMah || idPumpStation === 0) return;
-  
+
     const fetchRecords = async () => {
       try {
         const res = await fetch(
-          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`
+          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`,
         );
         if (!res.ok) throw new Error('Failed to fetch');
-  
+
         const data: {
           message: string;
           records: any[];
           predictedVolumes: {
             IdTarDor: number;
-            volumes: { FIdRanesh: number; TotalTaghvim: number }[];
+            volumes: {FIdRanesh: number; TotalTaghvim: number}[];
           }[];
         } = await res.json();
-  
+
         if (!Array.isArray(data.records)) {
           setMessage(data.message || 'خطایی رخ داده است');
           return;
         }
-  
+
         setRecords(data.records);
         setMessage(null);
-  
+
         // پردازش حجم پیش‌بینی
-        const predictedVolumesMap: { [key: number]: { [key: number]: number } } = {};
-  
-        data.predictedVolumes.forEach(({ IdTarDor, volumes }: { IdTarDor: number; volumes: { FIdRanesh: number; TotalTaghvim: number }[] }) => {
-          predictedVolumesMap[IdTarDor] = volumes.reduce(
-            (acc: { [key: number]: number }, { FIdRanesh, TotalTaghvim }: { FIdRanesh: number; TotalTaghvim: number }) => {
-              acc[FIdRanesh] = (acc[FIdRanesh] || 0) + (TotalTaghvim || 0);
-              return acc;
-            },
-            {}
-          );
-        });
-  
+        const predictedVolumesMap: {[key: number]: {[key: number]: number}} =
+          {};
+
+        data.predictedVolumes.forEach(
+          ({
+            IdTarDor,
+            volumes,
+          }: {
+            IdTarDor: number;
+            volumes: {FIdRanesh: number; TotalTaghvim: number}[];
+          }) => {
+            predictedVolumesMap[IdTarDor] = volumes.reduce(
+              (
+                acc: {[key: number]: number},
+                {
+                  FIdRanesh,
+                  TotalTaghvim,
+                }: {FIdRanesh: number; TotalTaghvim: number},
+              ) => {
+                acc[FIdRanesh] = (acc[FIdRanesh] || 0) + (TotalTaghvim || 0);
+                return acc;
+              },
+              {},
+            );
+          },
+        );
+
         setPredictedVolumes(predictedVolumesMap);
       } catch (error) {
         console.error('خطا در دریافت داده‌ها:', error);
         setMessage('خطا در دریافت داده‌ها');
       }
     };
-  
+
     fetchRecords();
   }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation]);
-  
+  // console.log('predictedVolumes: ', predictedVolumes);
   useEffect(() => {
     if (!predictedVolumes || !khatRaneshList.length) return;
 
@@ -205,6 +276,63 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
     setFinalVolumes(summedVolumes);
   }, [predictedVolumes, khatRaneshList]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const newPumpData: typeof pumpData = {};
+
+        for (const idTarDor in predictedVolumes) {
+          newPumpData[idTarDor] = {};
+
+          for (const idRanesh in predictedVolumes[idTarDor]) {
+            const response = await fetch(
+              `/api/request-pumping?idRanesh=${idRanesh}&idTarDor=${idTarDor}`,
+            );
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const data: PumpingData = await response.json();
+            newPumpData[idTarDor][idRanesh] = data;
+          }
+        }
+
+        setPumpData(newPumpData);
+      } catch (error) {
+        console.error('Error fetching pump data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [predictedVolumes]);
+  // console.log('PumpData: ', pumpData);
+  const handleZarfiatChange = (
+    idTarDor: number,
+    idRanesh: number,
+    value: string,
+  ) => {
+    setPumpData((prevData) => {
+      const newData = {...prevData};
+
+      if (!newData[idTarDor]) {
+        newData[idTarDor] = {};
+      }
+
+      if (!newData[idTarDor][idRanesh]) {
+        newData[idTarDor][idRanesh] = {
+          Zarfiat: 0,
+          Tedad: 0, // مقدار پیش‌فرض برای Tedad
+          Shorooe: '', // مقدار پیش‌فرض برای Shorooe (باید مطابق با نوع `time(7)` باشد)
+          Paian: '', // مقدار پیش‌فرض برای Paian
+        };
+      }
+
+      newData[idTarDor][idRanesh].Zarfiat = Number(value) || 0; // مقداردهی عددی
+
+      return newData;
+    });
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -309,17 +437,257 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
               </tr>
             </thead>
             {message ? (
-              <p>{message}</p>
+              <caption>{message}</caption>
             ) : records && Array.isArray(records) && records.length > 0 ? ( // ✅ بررسی مقدار records قبل از .length
               <tbody>
-                {records.map((record) => (
-                  <tr key={record.IdTarDor}>
-                    <td>{toPersianDate(record.Trikh, 'dddd')}</td>{' '}
-                    {/* روز هفته */}
-                    <td>{toPersianDate(record.Trikh, 'YYYY/MM/DD')}</td>{' '}
-                    {/* تاریخ شمسی */}
-                  </tr>
-                ))}
+                {records.map((record) => {
+                  const pumpInfo = pumpData[record.IdTarDor];
+
+                  return (
+                    <tr key={record.IdTarDor}>
+                      <td>{toPersianDate(record.Trikh, 'dddd')}</td>
+                      <td>{toPersianDate(record.Trikh, 'YYYY/MM/DD')}</td>
+                      {khatRaneshList
+                        .filter(
+                          (ranesh) =>
+                            ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                        )
+                        .map((ranesh) => {
+                          const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+
+                          return (
+                            <React.Fragment key={ranesh.IdRanesh}>
+                              {ranesh.FIdSePu === 1 && (
+                                // فیلد مربوط به ستون "تعداد پمپ" که مقدار Tedad بایستی در از بین گزینه های دراپ داون آن انتخاب شود
+                                <td className="border border-gray-300 px-4 py-2">
+                                  <select
+                                    value={
+                                      selectedPumpCounts[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ] ||
+                                      raneshInfo?.Tedad ||
+                                      0
+                                    }
+                                    onChange={(e) =>
+                                      handlePumpCountChange(
+                                        record.IdTarDor,
+                                        ranesh.IdRanesh,
+                                        Number(e.target.value),
+                                      )
+                                    }
+                                    className="border rounded px-2 py-1"
+                                  >
+                                    {Array.from(
+                                      {length: (ranesh.TedadPump || 0) + 1},
+                                      (_, i) => (
+                                        <option key={i} value={i}>
+                                          {i}
+                                        </option>
+                                      ),
+                                    )}
+                                  </select>
+                                </td>
+                              )}
+                              {/* فیلد "ظرفیت" که مقدار Zarfit بایستی نمایش داده شود */}
+                              <td className="border border-gray-300 px-4 py-2">
+                                {ranesh.FIdSePu === 2 ? (
+                                  <input
+                                    type="number"
+                                    value={
+                                      raneshInfo?.Zarfiat != null
+                                        ? raneshInfo.Zarfiat.toString()
+                                        : ''
+                                    }
+                                    onChange={(e) => {
+                                      const maxZarfiat = Number(
+                                        khatRaneshList.find(
+                                          (khat) =>
+                                            khat.IdRanesh === ranesh.IdRanesh,
+                                        )?.Zarfiat ?? Infinity,
+                                      );
+
+                                      const newValue = e.target.value; // مقدار را به عنوان string دریافت می‌کنیم
+
+                                      if (
+                                        !isNaN(Number(newValue)) &&
+                                        Number(newValue) <= maxZarfiat
+                                      ) {
+                                        handleZarfiatChange(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          newValue,
+                                        );
+                                      }
+                                    }}
+                                    min="0"
+                                    max={String(
+                                      khatRaneshList.find(
+                                        (khat) =>
+                                          khat.IdRanesh === ranesh.IdRanesh,
+                                      )?.Zarfiat ?? '',
+                                    )}
+                                    placeholder={String(
+                                      khatRaneshList.find(
+                                        (khat) =>
+                                          khat.IdRanesh === ranesh.IdRanesh,
+                                      )?.Zarfiat ?? '',
+                                    )}
+                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
+      text-gray-700 shadow-sm hover:shadow-md 
+      focus:ring-2 focus:ring-blue-400 focus:outline-none
+      transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center"
+                                  />
+                                ) : (
+                                  (() => {
+                                    // تعداد پمپ انتخاب‌شده
+                                    const selectedTedad =
+                                      selectedPumpCounts[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ] ??
+                                      raneshInfo?.Tedad ??
+                                      0;
+
+                                    // دبی پمپ مربوط به این IdRanesh
+                                    const debiPomp =
+                                      khatRaneshList.find(
+                                        (khat) =>
+                                          khat.IdRanesh === ranesh.IdRanesh,
+                                      )?.DebiPomp ?? 0;
+
+                                    // مقدار نهایی دبی درخواستی
+                                    return (selectedTedad * debiPomp).toFixed(
+                                      1,
+                                    );
+                                  })()
+                                )}
+                              </td>
+
+                              {/* فیلد "از" که مقدار Shorooe در اینجا جاگذاری شود */}
+                              <td className="border border-gray-300 px-4 py-2">
+                                <input
+                                  type="time"
+                                  step="300"
+                                  value={
+                                    timeValues[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ]?.from ??
+                                    (raneshInfo?.Shorooe
+                                      ? new Date(raneshInfo.Shorooe)
+                                          .toISOString()
+                                          .slice(11, 16)
+                                      : '')
+                                  }
+                                  onChange={(e) =>
+                                    handleTimeChange(
+                                      record.IdTarDor,
+                                      ranesh.IdRanesh,
+                                      'from',
+                                      e.target.value,
+                                    )
+                                  }
+                                  disabled={
+                                    selectedPumpCounts[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ] === 0
+                                  }
+                                  className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
+    text-gray-700 shadow-sm hover:shadow-md 
+    focus:ring-2 focus:ring-blue-400 focus:outline-none
+    transition-all duration-300 hover:bg-blue-50 cursor-pointer"
+                                />
+                              </td>
+
+                              <td className="border border-gray-300 px-4 py-2">
+                                <input
+                                  type="time"
+                                  step="300"
+                                  value={
+                                    timeValues[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ]?.to ??
+                                    (raneshInfo?.Paian
+                                      ? new Date(raneshInfo.Paian)
+                                          .toISOString()
+                                          .slice(11, 16)
+                                      : '')
+                                  }
+                                  onChange={(e) =>
+                                    handleTimeChange(
+                                      record.IdTarDor,
+                                      ranesh.IdRanesh,
+                                      'to',
+                                      e.target.value,
+                                    )
+                                  }
+                                  disabled={
+                                    selectedPumpCounts[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ] === 0
+                                  }
+                                  className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
+    text-gray-700 shadow-sm hover:shadow-md 
+    focus:ring-2 focus:ring-blue-400 focus:outline-none
+    transition-all duration-300 hover:bg-blue-50 cursor-pointer"
+                                />
+                              </td>
+
+                              <td className="border border-gray-300 px-4 py-2 text-center">
+                                {(() => {
+                                  const fromValue =
+                                    timeValues[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ]?.from ??
+                                    (raneshInfo?.Shorooe
+                                      ? new Date(raneshInfo.Shorooe)
+                                          .toISOString()
+                                          .slice(11, 16)
+                                      : '');
+
+                                  const toValue =
+                                    timeValues[record.IdTarDor]?.[
+                                      ranesh.IdRanesh
+                                    ]?.to ??
+                                    (raneshInfo?.Paian
+                                      ? new Date(raneshInfo.Paian)
+                                          .toISOString()
+                                          .slice(11, 16)
+                                      : '');
+
+                                  if (fromValue && toValue) {
+                                    const [fromHours, fromMinutes] = fromValue
+                                      .split(':')
+                                      .map(Number);
+                                    const [toHours, toMinutes] = toValue
+                                      .split(':')
+                                      .map(Number);
+
+                                    const fromTotalMinutes =
+                                      fromHours * 60 + fromMinutes;
+                                    const toTotalMinutes =
+                                      toHours * 60 + toMinutes;
+                                    const durationMinutes =
+                                      toTotalMinutes - fromTotalMinutes;
+
+                                    if (durationMinutes >= 0) {
+                                      const hours = Math.floor(
+                                        durationMinutes / 60,
+                                      );
+                                      const minutes = durationMinutes % 60;
+                                      return `${hours.toString().padStart(2, '0')}:${minutes
+                                        .toString()
+                                        .padStart(2, '0')}`;
+                                    }
+                                  }
+                                  return '-';
+                                })()}
+                              </td>
+                            </React.Fragment>
+                          );
+                        })}
+                    </tr>
+                  );
+                })}
+
                 <tr className="bg-yellow-100 font-semibold">
                   <td
                     className="border border-gray-300 px-4 py-2 font-bold"
@@ -327,26 +695,34 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                   >
                     حجم پیش بینی
                   </td>
-                  {khatRaneshList.filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                  )
-                  .map((ranesh) => (
-                    <td
-                      key={ranesh.IdRanesh}
-                      className="border border-gray-300 px-4 py-2 text-center font-semibold"
-                      colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                    >
-                      {finalVolumes[ranesh.IdRanesh] !== undefined
-                        ? finalVolumes[ranesh.IdRanesh].toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        // نمایش مقدار با دو رقم اعشار
-                        : '-'}
-                    </td>
-                  ))}
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => (
+                      <td
+                        key={ranesh.IdRanesh}
+                        className="border border-gray-300 px-4 py-2 text-center font-semibold"
+                        colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                      >
+                        {finalVolumes[ranesh.IdRanesh] !== undefined
+                          ? finalVolumes[ranesh.IdRanesh]
+                              .toFixed(1)
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                          : '-'}
+                      </td>
+                    ))}
                 </tr>
               </tbody>
             ) : (
-              <p>داده‌ای برای نمایش وجود ندارد</p>
+              <tbody>
+                <tr>
+                  <td colSpan={100} className="text-center">
+                    داده‌ای برای نمایش وجود ندارد
+                  </td>
+                </tr>
+              </tbody>
             )}
           </table>
 

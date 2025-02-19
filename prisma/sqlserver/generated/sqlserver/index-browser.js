@@ -145,6 +145,15 @@ exports.Prisma.BahrebardairProgramScalarFieldEnum = {
   Paian: 'Paian'
 };
 
+exports.Prisma.BahrebardairProgramSeghliScalarFieldEnum = {
+  IdProSrgl: 'IdProSrgl',
+  FIdRanesh: 'FIdRanesh',
+  FIdTarDor: 'FIdTarDor',
+  Zarfiat: 'Zarfiat',
+  Shorooe: 'Shorooe',
+  Paian: 'Paian'
+};
+
 exports.Prisma.BahrebardariKeshtDoreScalarFieldEnum = {
   IdBahDor: 'IdBahDor',
   FIdShDo: 'FIdShDo',
@@ -414,6 +423,7 @@ exports.Prisma.ModelName = {
   AbadeMakhzan: 'AbadeMakhzan',
   Abgir: 'Abgir',
   BahrebardairProgram: 'BahrebardairProgram',
+  BahrebardairProgramSeghli: 'BahrebardairProgramSeghli',
   BahrebardariKeshtDore: 'BahrebardariKeshtDore',
   BahrebardariTaghvim: 'BahrebardariTaghvim',
   BareshMotaleat: 'BareshMotaleat',

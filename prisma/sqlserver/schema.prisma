@@ -51,6 +51,17 @@ model BahrebardairProgram {
   TrikhDoreKesht TrikhDoreKesht @relation(fields: [FIdTarDor], references: [IdTarDor], onUpdate: NoAction, map: "FK_BahrebardairProgram_TrikhDoreKesht")
 }
 
+model BahrebardairProgramSeghli {
+  IdProSrgl      Int            @id(map: "PK_BahrebardairProgramSeghli") @default(autoincrement())
+  FIdRanesh      Int            @db.TinyInt
+  FIdTarDor      Int            @db.SmallInt
+  Zarfiat        Decimal?       @db.Decimal(5, 1)
+  Shorooe        DateTime?      @db.Time
+  Paian          DateTime?      @db.Time
+  KhatRanesh     KhatRanesh     @relation(fields: [FIdRanesh], references: [IdRanesh], onUpdate: NoAction, map: "FK_BahrebardairProgramSeghli_KhatRanesh")
+  TrikhDoreKesht TrikhDoreKesht @relation(fields: [FIdTarDor], references: [IdTarDor], onUpdate: NoAction, map: "FK_BahrebardairProgramSeghli_TrikhDoreKesht")
+}
+
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model BahrebardariKeshtDore {
   IdBahDor         Int              @id(map: "PK_BahrebardariKeshtDore") @db.TinyInt
@@ -143,6 +154,7 @@ model KhatRanesh {
   Active                Boolean                 @default(true) @db.Bit
   Abgir                 Abgir[]
   BahrebardairProgram   BahrebardairProgram[]
+  BahrebardairProgramSeghli BahrebardairProgramSeghli[]
   BahrebardariKeshtDore BahrebardariKeshtDore[]
   BahrebardariTaghvim   BahrebardariTaghvim[]
   EshtebahAvamel        EshtebahAvamel[]
@@ -358,6 +370,7 @@ model TrikhDoreKesht {
   Sal                 Int
   Mah                 Int                   @db.TinyInt
   BahrebardairProgram BahrebardairProgram[]
+  BahrebardairProgramSeghli BahrebardairProgramSeghli[]
   BahrebardariTaghvim BahrebardariTaghvim[]
   EshtebahAvamel      EshtebahAvamel[]
   FlowBehbood         FlowBehbood[]

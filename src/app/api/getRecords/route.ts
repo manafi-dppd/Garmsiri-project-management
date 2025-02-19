@@ -73,11 +73,10 @@ export async function GET(req: NextRequest) {
             FIdRanesh: rv.FIdRanesh,
             TotalTaghvim: rv._sum.Taghvim || 0,
           })),
-          
         };
       }),
     );
-
+    // console.log('predictedVolumes,', predictedVolumes);
     return NextResponse.json({
       records,
       predictedVolumes,

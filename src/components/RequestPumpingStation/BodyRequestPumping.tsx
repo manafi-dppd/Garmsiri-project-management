@@ -1031,7 +1031,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                     className="border border-gray-300 px-4 py-2 text-center"
                     colSpan={2}
                   >
-                    حجم آب درخواستی
+                    حجم درخواستی
                   </th>
                   {khatRaneshList
                     .filter(
@@ -1140,6 +1140,102 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                           : '-'}
                       </td>
                     ))}
+                </tr>
+                <tr className="bg-gray-200 font-bold">
+                  <td
+                    className="border border-gray-300 px-4 py-2 text-center"
+                    colSpan={2}
+                  >
+                    اضافه درخواست
+                  </td>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => {
+                      // محاسبه حجم آب درخواستی برای این خط رانش
+                      const totalWaterVolume = records.reduce((sum, record) => {
+                        const pumpInfo = pumpData[record.IdTarDor];
+                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+
+                        if (!raneshInfo) return sum;
+
+                        const debi =
+                          ranesh.FIdSePu === 2
+                            ? Number(raneshInfo?.Zarfiat ?? 0)
+                            : (selectedPumpCounts[record.IdTarDor]?.[
+                                ranesh.IdRanesh
+                              ] ??
+                                raneshInfo.Tedad ??
+                                0) *
+                              (khatRaneshList.find(
+                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
+                              )?.DebiPomp ?? 0);
+
+                        const fromValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                            ?.from ??
+                          (raneshInfo.Shorooe
+                            ? new Date(raneshInfo.Shorooe)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        const toValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
+                          (raneshInfo.Paian
+                            ? new Date(raneshInfo.Paian)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        if (fromValue && toValue) {
+                          const [fromHours, fromMinutes] = fromValue
+                            .split(':')
+                            .map(Number);
+                          const [toHours, toMinutes] = toValue
+                            .split(':')
+                            .map(Number);
+
+                          let durationMinutes =
+                            toHours * 60 +
+                            toMinutes -
+                            (fromHours * 60 + fromMinutes);
+
+                          if (durationMinutes <= 0) durationMinutes += 1440;
+
+                          const durationHours = durationMinutes / 60;
+
+                          return sum + debi * durationHours * 3.6;
+                        }
+                        return sum;
+                      }, 0);
+
+                      // مقدار پیش‌بینی شده برای این خط رانش
+                      const predictedVolume =
+                        finalVolumes[ranesh.IdRanesh] ?? 0;
+
+                      // محاسبه مقدار اضافه درخواست
+                      const extraRequest = totalWaterVolume - predictedVolume;
+
+                      // تعیین کلاس‌های رنگی بر اساس مقدار اضافه درخواست
+                      const textColor =
+                        extraRequest > 0 ? 'text-red-700' : 'text-black';
+                      const bgColor = extraRequest > 0 ? 'bg-red-100' : '';
+
+                      return (
+                        <td
+                          key={ranesh.IdRanesh}
+                          className={`border border-gray-300 px-4 py-2 text-center ${textColor} ${bgColor}`}
+                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        >
+                          {extraRequest
+                            .toFixed(1)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                      );
+                    })}
                 </tr>
               </tbody>
             ) : (

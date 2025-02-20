@@ -38,6 +38,7 @@ interface BodyRequestPumpingProps {
 }
 
 interface RecordType {
+  raneshData: any;
   Zarfit: string;
   name: ReactNode;
   IdTarDor: number;
@@ -169,7 +170,13 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
       ...prev,
       [recordId]: {
         ...prev[recordId],
-        [raneshId]: value > 0 ? {from: '08:00', to: ''} : {from: '', to: ''},
+        [raneshId]:
+          value > 0
+            ? {
+                from: prev[recordId]?.[raneshId]?.from || '08:00', // مقدار قبلی را نگه‌می‌دارد مگر اینکه خالی باشد
+                to: prev[recordId]?.[raneshId]?.to ?? '', // مقدار قبلی را نگه‌می‌دارد
+              }
+            : {from: '', to: ''}, // مقدار `from` و `to` را در صورت مقدار `0` شدن پاک می‌کند
       },
     }));
   };
@@ -256,7 +263,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
     fetchRecords();
   }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation]);
-  // console.log('predictedVolumes: ', predictedVolumes);
   useEffect(() => {
     if (!predictedVolumes || !khatRaneshList.length) return;
 
@@ -306,7 +312,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
     fetchData();
   }, [predictedVolumes]);
-  // console.log('PumpData: ', pumpData);
   const handleZarfiatChange = (
     idTarDor: number,
     idRanesh: number,
@@ -323,7 +328,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
         newData[idTarDor][idRanesh] = {
           Zarfiat: 0,
           Tedad: 0, // مقدار پیش‌فرض برای Tedad
-          Shorooe: '', // مقدار پیش‌فرض برای Shorooe (باید مطابق با نوع `time(7)` باشد)
+          Shorooe: '', // مقدار پیش‌فرض برای Shorooe
           Paian: '', // مقدار پیش‌فرض برای Paian
         };
       }
@@ -331,6 +336,59 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
       newData[idTarDor][idRanesh].Zarfiat = Number(value) || 0; // مقداردهی عددی
 
       return newData;
+    });
+
+    // مقداردهی from و to بر اساس مقدار Zarfiat
+    setTimeValues((prev) => ({
+      ...prev,
+      [idTarDor]: {
+        ...prev[idTarDor],
+        [idRanesh]:
+          Number(value) > 0
+            ? {
+                from: prev[idTarDor]?.[idRanesh]?.from || '08:00', // مقدار `from` فقط اگر خالی باشد مقدار `08:00` می‌گیرد
+                to: prev[idTarDor]?.[idRanesh]?.to ?? '', // مقدار `to` بدون تغییر باقی می‌ماند
+              }
+            : {from: '', to: ''}, // اگر Zarfiat صفر باشد، `from` و `to` خالی می‌شوند
+      },
+    }));
+  };
+  const updateTime = (
+    idTarDor: number,
+    idRanesh: number,
+    field: 'from' | 'to',
+    type: 'hour' | 'minute',
+    increment: number,
+  ) => {
+    setTimeValues((prev) => {
+      const currentTime = prev[idTarDor]?.[idRanesh]?.[field] || '08:00';
+      const [hours, minutes] = currentTime.split(':').map(Number);
+
+      let newHours = hours;
+      let newMinutes = minutes;
+
+      if (type === 'hour') {
+        newHours = Math.min(Math.max(hours + increment, 0), 23);
+      } else {
+        newMinutes = Math.round((minutes + increment) / 5) * 5;
+        if (newMinutes >= 60) newMinutes = 55;
+        if (newMinutes < 0) newMinutes = 0;
+      }
+
+      const formattedTime = `${newHours.toString().padStart(2, '0')}:${newMinutes
+        .toString()
+        .padStart(2, '0')}`;
+
+      return {
+        ...prev,
+        [idTarDor]: {
+          ...prev[idTarDor],
+          [idRanesh]: {
+            ...prev[idTarDor]?.[idRanesh],
+            [field]: formattedTime,
+          },
+        },
+      };
     });
   };
 
@@ -563,72 +621,349 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                               </td>
 
                               {/* فیلد "از" که مقدار Shorooe در اینجا جاگذاری شود */}
-                              <td className="border border-gray-300 px-4 py-2">
-                                <input
-                                  type="time"
-                                  step="300"
-                                  value={
-                                    timeValues[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ]?.from ??
-                                    (raneshInfo?.Shorooe
-                                      ? new Date(raneshInfo.Shorooe)
-                                          .toISOString()
-                                          .slice(11, 16)
-                                      : '')
-                                  }
-                                  onChange={(e) =>
-                                    handleTimeChange(
-                                      record.IdTarDor,
-                                      ranesh.IdRanesh,
-                                      'from',
-                                      e.target.value,
-                                    )
-                                  }
-                                  disabled={
-                                    selectedPumpCounts[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ] === 0
-                                  }
-                                  className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
-    text-gray-700 shadow-sm hover:shadow-md 
-    focus:ring-2 focus:ring-blue-400 focus:outline-none
-    transition-all duration-300 hover:bg-blue-50 cursor-pointer"
-                                />
+                              <td className="border border-gray-300 px-4 py-2 relative">
+                                <div className="relative w-full">
+                                  <input
+                                    type="text"
+                                    value={
+                                      timeValues[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ]?.from ??
+                                      (raneshInfo?.Shorooe
+                                        ? new Date(raneshInfo.Shorooe)
+                                            .toISOString()
+                                            .slice(11, 16)
+                                        : '')
+                                    }
+                                    onChange={(e) => {
+                                      const newValue = e.target.value.replace(
+                                        /[^0-9:]/g,
+                                        '',
+                                      );
+                                      if (newValue.length <= 5) {
+                                        handleTimeChange(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          newValue,
+                                        );
+                                      }
+                                    }}
+                                    onBlur={(e) => {
+                                      const [hours, minutes] = e.target.value
+                                        .split(':')
+                                        .map(Number);
+                                      if (!isNaN(hours) && !isNaN(minutes)) {
+                                        const validHours = Math.min(
+                                          Math.max(hours, 0),
+                                          23,
+                                        );
+                                        const validMinutes =
+                                          Math.round(minutes / 5) * 5;
+                                        const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
+                                          .toString()
+                                          .padStart(2, '0')}`;
+                                        handleTimeChange(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          formattedValue,
+                                        );
+                                      }
+                                    }}
+                                    placeholder="HH:MM"
+                                    disabled={
+                                      (selectedPumpCounts[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ] ||
+                                        raneshInfo?.Tedad ||
+                                        0) === 0 &&
+                                      (raneshInfo?.Zarfiat == null ||
+                                        raneshInfo?.Zarfiat <= 0)
+                                    }
+                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
+                 text-gray-700 shadow-sm hover:shadow-md 
+                 focus:ring-2 focus:ring-blue-400 focus:outline-none
+                 transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center relative"
+                                  />
+
+                                  {/* فلش‌های تغییر ساعت (سمت چپ داخل input) */}
+                                  <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          'hour',
+                                          1,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▲
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          'hour',
+                                          -1,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▼
+                                    </button>
+                                  </div>
+
+                                  {/* فلش‌های تغییر دقیقه (سمت راست داخل input) */}
+                                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          'minute',
+                                          5,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▲
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'from',
+                                          'minute',
+                                          -5,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▼
+                                    </button>
+                                  </div>
+                                </div>
                               </td>
 
-                              <td className="border border-gray-300 px-4 py-2">
-                                <input
-                                  type="time"
-                                  step="300"
-                                  value={
-                                    timeValues[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ]?.to ??
-                                    (raneshInfo?.Paian
-                                      ? new Date(raneshInfo.Paian)
-                                          .toISOString()
-                                          .slice(11, 16)
-                                      : '')
-                                  }
-                                  onChange={(e) =>
-                                    handleTimeChange(
-                                      record.IdTarDor,
-                                      ranesh.IdRanesh,
-                                      'to',
-                                      e.target.value,
-                                    )
-                                  }
-                                  disabled={
-                                    selectedPumpCounts[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ] === 0
-                                  }
-                                  className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
-    text-gray-700 shadow-sm hover:shadow-md 
-    focus:ring-2 focus:ring-blue-400 focus:outline-none
-    transition-all duration-300 hover:bg-blue-50 cursor-pointer"
-                                />
+                              <td className="border border-gray-300 px-4 py-2 relative">
+                                <div className="relative w-full">
+                                  <input
+                                    type="text"
+                                    step="300"
+                                    value={
+                                      timeValues[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ]?.to ??
+                                      (raneshInfo?.Paian
+                                        ? new Date(raneshInfo.Paian)
+                                            .toISOString()
+                                            .slice(11, 16)
+                                        : '')
+                                    }
+                                    onChange={(e) => {
+                                      const newValue = e.target.value.replace(
+                                        /[^0-9:]/g,
+                                        '',
+                                      );
+                                      if (newValue.length <= 5) {
+                                        handleTimeChange(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          newValue,
+                                        );
+                                      }
+                                    }}
+                                    onBlur={(e) => {
+                                      const [hours, minutes] = e.target.value
+                                        .split(':')
+                                        .map(Number);
+                                      if (!isNaN(hours) && !isNaN(minutes)) {
+                                        const validHours = Math.min(
+                                          Math.max(hours, 0),
+                                          23,
+                                        );
+                                        const validMinutes =
+                                          Math.round(minutes / 5) * 5;
+                                        const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
+                                          .toString()
+                                          .padStart(2, '0')}`;
+                                        handleTimeChange(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          formattedValue,
+                                        );
+                                      }
+                                    }}
+                                    placeholder="HH:MM"
+                                    disabled={
+                                      (selectedPumpCounts[record.IdTarDor]?.[
+                                        ranesh.IdRanesh
+                                      ] ||
+                                        raneshInfo?.Tedad ||
+                                        0) === 0 &&
+                                      (raneshInfo?.Zarfiat == null ||
+                                        raneshInfo?.Zarfiat <= 0)
+                                    }
+                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
+                 text-gray-700 shadow-sm hover:shadow-md 
+                 focus:ring-2 focus:ring-blue-400 focus:outline-none
+                 transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center relative"
+                                  />
+
+                                  {/* فلش‌های تغییر ساعت (سمت چپ داخل input) */}
+                                  <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          'hour',
+                                          1,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▲
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          'hour',
+                                          -1,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▼
+                                    </button>
+                                  </div>
+
+                                  {/* فلش‌های تغییر دقیقه (سمت راست داخل input) */}
+                                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          'minute',
+                                          5,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▲
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="text-gray-600 hover:text-black text-xs p-0.5"
+                                      onClick={() =>
+                                        updateTime(
+                                          record.IdTarDor,
+                                          ranesh.IdRanesh,
+                                          'to',
+                                          'minute',
+                                          -5,
+                                        )
+                                      }
+                                      disabled={
+                                        (selectedPumpCounts[record.IdTarDor]?.[
+                                          ranesh.IdRanesh
+                                        ] ||
+                                          raneshInfo?.Tedad ||
+                                          0) === 0 &&
+                                        (raneshInfo?.Zarfiat == null ||
+                                          raneshInfo?.Zarfiat <= 0)
+                                      }
+                                    >
+                                      ▼
+                                    </button>
+                                  </div>
+                                </div>
                               </td>
 
                               <td className="border border-gray-300 px-4 py-2 text-center">
@@ -665,18 +1000,22 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                                       fromHours * 60 + fromMinutes;
                                     const toTotalMinutes =
                                       toHours * 60 + toMinutes;
-                                    const durationMinutes =
+
+                                    let durationMinutes =
                                       toTotalMinutes - fromTotalMinutes;
 
-                                    if (durationMinutes >= 0) {
-                                      const hours = Math.floor(
-                                        durationMinutes / 60,
-                                      );
-                                      const minutes = durationMinutes % 60;
-                                      return `${hours.toString().padStart(2, '0')}:${minutes
-                                        .toString()
-                                        .padStart(2, '0')}`;
+                                    // اگر زمان شروع بزرگ‌تر یا مساوی زمان پایان بود، یعنی اختلاف مربوط به روز بعد است
+                                    if (durationMinutes <= 0) {
+                                      durationMinutes += 1440; // اضافه کردن ۲۴ ساعت به دقیقه
                                     }
+
+                                    const hours = Math.floor(
+                                      durationMinutes / 60,
+                                    );
+                                    const minutes = durationMinutes % 60;
+                                    return `${hours.toString().padStart(2, '0')}:${minutes
+                                      .toString()
+                                      .padStart(2, '0')}`;
                                   }
                                   return '-';
                                 })()}
@@ -687,6 +1026,94 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                     </tr>
                   );
                 })}
+                <tr>
+                  <th
+                    className="border border-gray-300 px-4 py-2 text-center"
+                    colSpan={2}
+                  >
+                    حجم آب درخواستی
+                  </th>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => {
+                      // محاسبه حجم آب درخواستی برای هر خط رانش
+                      const totalWaterVolume = records.reduce((sum, record) => {
+                        // دریافت اطلاعات مربوط به این خط رانش از رکورد
+                        const pumpInfo = pumpData[record.IdTarDor];
+                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+
+                        if (!raneshInfo) return sum; // در صورتی که داده‌ای وجود نداشت، محاسبه نکن
+
+                        // مقدار دبی درخواستی
+                        const debi =
+                          ranesh.FIdSePu === 2
+                            ? Number(raneshInfo?.Zarfiat ?? 0)
+                            : (selectedPumpCounts[record.IdTarDor]?.[
+                                ranesh.IdRanesh
+                              ] ??
+                                raneshInfo.Tedad ??
+                                0) *
+                              (khatRaneshList.find(
+                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
+                              )?.DebiPomp ?? 0);
+
+                        // مدت زمان (بر حسب ساعت)
+                        const fromValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                            ?.from ??
+                          (raneshInfo.Shorooe
+                            ? new Date(raneshInfo.Shorooe)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        const toValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
+                          (raneshInfo.Paian
+                            ? new Date(raneshInfo.Paian)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        if (fromValue && toValue) {
+                          const [fromHours, fromMinutes] = fromValue
+                            .split(':')
+                            .map(Number);
+                          const [toHours, toMinutes] = toValue
+                            .split(':')
+                            .map(Number);
+
+                          let durationMinutes =
+                            toHours * 60 +
+                            toMinutes -
+                            (fromHours * 60 + fromMinutes);
+
+                          if (durationMinutes <= 0) durationMinutes += 1440; // اضافه کردن ۲۴ ساعت به دقیقه
+
+                          const durationHours = durationMinutes / 60;
+
+                          // محاسبه مقدار حجم آب درخواستی برای این رکورد
+                          return sum + debi * durationHours * 3.6;
+                        }
+                        return sum;
+                      }, 0);
+
+                      return (
+                        <td
+                          key={ranesh.IdRanesh}
+                          className="border border-gray-300 px-4 py-2 text-center font-bold"
+                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        >
+                          {totalWaterVolume
+                            .toFixed(1)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                      );
+                    })}
+                </tr>
 
                 <tr className="bg-yellow-100 font-semibold">
                   <td

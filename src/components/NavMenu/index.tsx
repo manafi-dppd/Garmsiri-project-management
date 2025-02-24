@@ -153,25 +153,25 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
                   className="hover:text-gray-300 cursor-pointer flex items-center gap-2"
                 >
                   {menu.title === 'home' ? (
-                    <FaHome className="text-3xl text-blue-500" />
+                    <FaHome className="text-2xl text-blue-500" />
                   ) : menu.title === 'Current Affairs' ? (
                     <>
-                      <FaClock className="text-xl text-yellow-500" />
+                      <FaClock className="text-lg text-yellow-500" />
                       {menu.title_fa}
                     </>
                   ) : menu.title === 'Operation Records' ? (
                     <>
-                      <FaCogs className="text-xl text-green-500" />
+                      <FaCogs className="text-lg text-green-500" />
                       {menu.title_fa}
                     </>
                   ) : menu.title === 'Execution Records' ? (
                     <>
-                      <FaWrench className="text-xl text-red-500" />
+                      <FaWrench className="text-lg text-red-500" />
                       {menu.title_fa}
                     </>
                   ) : menu.title === 'Study Records' ? (
                     <>
-                      <FaCalculator className="text-xl text-purple-500" />
+                      <FaCalculator className="text-lg text-purple-500" />
                       {menu.title_fa}
                     </>
                   ) : (

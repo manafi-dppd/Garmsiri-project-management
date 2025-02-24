@@ -26,48 +26,51 @@ interface DateRecord {
 interface PaginationForMahProps {
   selectedMah: number;
   sal: number;
-  selectedDahe: number;
-  setSelectedDahe: (value: number) => void;
-  setDahe: (value: number) => void; // ✅ تعریف setDahe
-  allDates: {Mah: number; Dahe: number}[]; // ✅ مشخص کردن نوع allDates
+  selectedDahe: number; // دریافت selectedDahe به عنوان prop
+  setSelectedDahe: (value: number) => void; // دریافت تابع setSelectedDahe
+  setDahe: (value: number) => void; // دریافت تابع setDahe
+  allDates: {Mah: number; Dahe: number}[];
 }
 
-// کامپوننت مدیریت دهه‌های ماه
 const PaginationForMah: React.FC<PaginationForMahProps> = ({
   selectedMah,
   sal,
-  selectedDahe,
-  setSelectedDahe,
-  setDahe, // ← دریافت تابع setDahe برای تغییر مقدار dahe در BodyRequestPumping.tsx
+  selectedDahe, // استفاده از selectedDahe
+  setSelectedDahe, // استفاده از setSelectedDahe
+  setDahe, // استفاده از setDahe
   allDates,
 }) => {
   const handlePrevDahe = () => {
     if (selectedDahe > 1) {
       setSelectedDahe(selectedDahe - 1);
-      setDahe(selectedDahe - 1); // ✅ مقدار جدید به BodyRequestPumping.tsx ارسال شد
+      setDahe(selectedDahe - 1); // به‌روزرسانی دهه در BodyRequestPumping.tsx
     }
   };
 
   const handleNextDahe = () => {
     if (selectedDahe < 3) {
       setSelectedDahe(selectedDahe + 1);
-      setDahe(selectedDahe + 1); // ✅ مقدار جدید به BodyRequestPumping.tsx ارسال شد
+      setDahe(selectedDahe + 1); // به‌روزرسانی دهه در BodyRequestPumping.tsx
     }
   };
 
   return (
-    /* دکمه‌های دهه */
-    <div className="flex items-center justify-center gap-4 mt-4">
+    <div
+      className="flex items-center justify-right gap-4 mt-4"
+      style={{
+        transform: 'scale(0.70)',
+      }}
+    >
       {/* دکمه "دهه قبل" */}
       <button
         onClick={handlePrevDahe}
         disabled={selectedDahe === 1}
         className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-    ${
-      selectedDahe === 1
-        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        : 'bg-blue-500 text-white hover:bg-blue-700'
-    }`}
+          ${
+            selectedDahe === 1
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-700'
+          }`}
       >
         <span className="text-xl">&lt;</span>
       </button>
@@ -82,11 +85,11 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
         onClick={handleNextDahe}
         disabled={selectedDahe === 3}
         className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-    ${
-      selectedDahe === 3
-        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        : 'bg-blue-500 text-white hover:bg-blue-700'
-    }`}
+          ${
+            selectedDahe === 3
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-700'
+          }`}
       >
         <span className="text-xl">&gt;</span>
       </button>

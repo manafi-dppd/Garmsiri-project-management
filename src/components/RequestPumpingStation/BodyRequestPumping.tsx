@@ -1,65 +1,18 @@
-import React, {ReactNode, useEffect, useState} from 'react';
-import {toPersianDate} from '@/utils/dateUtils';
-import {getCurrentSalMahDahe} from '@/utils/dateUtils';
+import React, {useState, useEffect} from 'react';
+import {toPersianDate, getCurrentSalMahDahe} from '@/utils/dateUtils';
+import PumpingTable from './components/PumpingTable';
+import PumpingForm from './PumpingForm';
+import PumpingActions from './PumpingActions';
+import {usePumpingData} from './hooks/usePumpingData';
+import {usePumpingTime} from './hooks/usePumpingTime';
 import PaginationForMah, {convertMahToPersian} from './PaginationForMah';
-
-type ToPersianDate = (date: string | Date | undefined) => string;
-type MahItem = {
-  Mah: number; // شماره ماه
-  Sal: number; // سال زراعی
-};
-
-interface KhatRanesh {
-  Zarfiat: ReactNode;
-  FIdSePu: number;
-  FIdDPipe: number;
-  Active: boolean;
-  IdRanesh: number;
-  RaneshName: string;
-  DebiPomp?: number;
-  TedadPump?: number;
-  FesharPump?: number;
-  Randeman?: number;
-  TavaneNami?: number;
-}
-
-interface BodyRequestPumpingProps {
-  userName: string;
-  userRole: string;
-  firstName: string;
-  lastName: string;
-  networkName: string;
-  pumpStationName: string;
-  selectedNetworkId: number | null;
-  idPumpStation: number;
-  saleZeraee: string;
-  doreKesht: string;
-  idShDo: number;
-}
-
-interface RecordType {
-  raneshData: any;
-  Zarfit: string;
-  name: ReactNode;
-  IdTarDor: number;
-  Trikh: string;
-  Dahe: number;
-}
-interface PageData {
-  dahe: number;
-  rows: {date: string; day: string}[];
-}
-interface PredictedVolume {
-  [IdTarDor: number]: {
-    [IdRanesh: number]: number;
-  };
-}
-interface PumpingData {
-  Tedad: number;
-  Zarfiat: number | null;
-  Shorooe: string | null;
-  Paian: string | null;
-}
+import {
+  BodyRequestPumpingProps,
+  KhatRanesh,
+  PredictedVolume,
+  PumpingData,
+  RecordType,
+} from './types';
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   userName,
@@ -74,1215 +27,138 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   doreKesht,
   idShDo,
 }) => {
-  const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
-  const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
-  const [selectedPumpCounts, setSelectedPumpCounts] = useState<{
-    [key: number]: {[date: string]: number};
-  }>({});
-  const [timeValues, setTimeValues] = useState<{
-    [key: number]: {[key: number]: {from: string; to: string}};
-  }>({});
-  const [data, setData] = useState<
-    Record<string, {date: string; day: string}[]>
-  >({});
-  const [loading, setLoading] = useState<boolean>(false);
-  const [records, setRecords] = useState<RecordType[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
+  console.log('networkName: ', networkName);
   const {
-    sal: initialSal,
-    mah: initialMah,
-    dahe: initialDahe,
+    sal: currentSal,
+    mah: currentMah,
+    dahe: currentDahe,
   } = getCurrentSalMahDahe();
-  const [sal, setSal] = useState(initialSal); // مقدار سال شمسی
-  const [mah, setMah] = useState(initialMah); // مقدار ماه شمسی
-  const [dahe, setDahe] = useState(initialDahe); // مقدار دهه شمسی
-  const [mahList, setMahList] = useState<MahItem[]>([]); // لیست ماه‌ها
-  const [selectedMah, setSelectedMah] = useState<number | null>(null); // ماه انتخاب شده
-  const [selectedDahe, setSelectedDahe] = useState<number>(1);
-  const [finalVolumes, setFinalVolumes] = useState<{[key: number]: number}>({});
-  const allDates = [
-    {Mah: 1, Dahe: 1},
-    {Mah: 1, Dahe: 2},
-    {Mah: 1, Dahe: 3},
-    {Mah: 2, Dahe: 1},
-    // داده‌های مربوط به همه ماه‌ها و دهه‌ها اینجا تعریف شوند
-  ];
-  const [pumpData, setPumpData] = useState<{
-    [idTarDor: number]: {[idRanesh: number]: PumpingData};
-  }>({});
+
+  const [sal, setSal] = useState<number>(currentSal);
+  const [mah, setMah] = useState(currentMah);
+  const [dahe, setDahe] = useState(currentDahe);
+  const [selectedMah, setSelectedMah] = useState(currentMah);
+  const [selectedDahe, setSelectedDahe] = useState(currentDahe);
+  const [allDates, setAllDates] = useState<{Mah: number; Dahe: number}[]>([]);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+
+  const {
+    khatRaneshList,
+    predictedVolumes,
+    pumpData,
+    loading,
+    records,
+    message,
+    finalVolumes,
+    mahList,
+  } = usePumpingData(
+    selectedNetworkId,
+    idPumpStation,
+    selectedMah,
+    sal,
+    selectedDahe,
+    dahe,
+  );
+
+  const {
+    timeValues,
+    handleTimeChange,
+    updateTime,
+    selectedPumpCounts,
+    handlePumpCountChange,
+  } = usePumpingTime();
 
   useEffect(() => {
-    const fetchMahList = async () => {
-      try {
-        const res = await fetch(
-          `/api/getMahList?networkId=${selectedNetworkId}`,
-        );
-        const data: MahItem[] = await res.json();
+    // بررسی آیا ماه و سال انتخاب شده مربوط به گذشته یا جاری است
+    const isPastOrCurrentMonth =
+      sal < currentSal || (sal === currentSal && mah < currentMah);
 
-        if (data.length > 0) {
-          setMahList(data);
-          setSelectedMah(data[0].Mah); // پیش‌فرض انتخاب اولین ماه
-          setSal(data[0].Sal); // مقدار سال زراعی
-        }
-      } catch (error) {
-        console.error('Failed to fetch Mah list:', error);
-      }
-    };
+    // بررسی آیا دهه انتخاب شده مربوط به گذشته یا جاری است
+    const isPastOrCurrentDahe =
+      sal === currentSal && mah === currentMah && dahe <= currentDahe;
+    // اگر ماه و دهه مربوط به گذشته یا جاری باشد، فرم غیرفعال می‌شود
+    setIsFormDisabled(isPastOrCurrentMonth || isPastOrCurrentDahe);
+  }, [sal, mah, dahe, currentSal, currentMah, currentDahe]);
 
-    if (selectedNetworkId) {
-      fetchMahList();
-    }
-  }, [selectedNetworkId]);
-
-  useEffect(() => {
-    if (idPumpStation === 0) return;
-    const fetchKhatRanesh = async () => {
-      try {
-        const res = await fetch(
-          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`,
-        );
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data: KhatRanesh[] = await res.json();
-        setKhatRaneshList(data);
-      } catch (error) {
-        console.error('Error fetching KhatRanesh:', error);
-      }
-    };
-
-    fetchKhatRanesh();
-  }, [idPumpStation]);
-
-  // تابع برای تغییر مقدار انتخابی دراپ‌داون
-  const handlePumpCountChange = (
-    recordId: number,
-    raneshId: number,
-    value: number,
-  ) => {
-    setSelectedPumpCounts((prev) => ({
-      ...prev,
-      [recordId]: {
-        ...prev[recordId],
-        [raneshId]: value,
-      },
-    }));
-
-    setTimeValues((prev) => ({
-      ...prev,
-      [recordId]: {
-        ...prev[recordId],
-        [raneshId]:
-          value > 0
-            ? {
-                from: prev[recordId]?.[raneshId]?.from || '08:00', // مقدار قبلی را نگه‌می‌دارد مگر اینکه خالی باشد
-                to: prev[recordId]?.[raneshId]?.to ?? '', // مقدار قبلی را نگه‌می‌دارد
-              }
-            : {from: '', to: ''}, // مقدار `from` و `to` را در صورت مقدار `0` شدن پاک می‌کند
-      },
-    }));
+  const handleSave = () => {
+    console.log('تنظیمات ذخیره شد');
   };
 
-  const handleTimeChange = (
-    recordId: number,
-    raneshId: number,
-    field: 'from' | 'to',
-    value: string,
-  ) => {
-    setTimeValues((prev) => ({
-      ...prev,
-      [recordId]: {
-        ...prev[recordId],
-        [raneshId]: {
-          ...prev[recordId]?.[raneshId],
-          [field]: value,
-        },
-      },
-    }));
-  };
-
-  useEffect(() => {
-    if (!selectedNetworkId || !selectedMah || idPumpStation === 0) return;
-
-    const fetchRecords = async () => {
-      try {
-        const res = await fetch(
-          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`,
-        );
-        if (!res.ok) throw new Error('Failed to fetch');
-
-        const data: {
-          message: string;
-          records: any[];
-          predictedVolumes: {
-            IdTarDor: number;
-            volumes: {FIdRanesh: number; TotalTaghvim: number}[];
-          }[];
-        } = await res.json();
-
-        if (!Array.isArray(data.records)) {
-          setMessage(data.message || 'خطایی رخ داده است');
-          return;
-        }
-
-        setRecords(data.records);
-        setMessage(null);
-
-        // پردازش حجم پیش‌بینی
-        const predictedVolumesMap: {[key: number]: {[key: number]: number}} =
-          {};
-
-        data.predictedVolumes.forEach(
-          ({
-            IdTarDor,
-            volumes,
-          }: {
-            IdTarDor: number;
-            volumes: {FIdRanesh: number; TotalTaghvim: number}[];
-          }) => {
-            predictedVolumesMap[IdTarDor] = volumes.reduce(
-              (
-                acc: {[key: number]: number},
-                {
-                  FIdRanesh,
-                  TotalTaghvim,
-                }: {FIdRanesh: number; TotalTaghvim: number},
-              ) => {
-                acc[FIdRanesh] = (acc[FIdRanesh] || 0) + (TotalTaghvim || 0);
-                return acc;
-              },
-              {},
-            );
-          },
-        );
-
-        setPredictedVolumes(predictedVolumesMap);
-      } catch (error) {
-        console.error('خطا در دریافت داده‌ها:', error);
-        setMessage('خطا در دریافت داده‌ها');
-      }
-    };
-
-    fetchRecords();
-  }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation]);
-  useEffect(() => {
-    if (!predictedVolumes || !khatRaneshList.length) return;
-
-    const summedVolumes: {[key: number]: number} = {};
-
-    Object.values(predictedVolumes).forEach((tarDor) => {
-      Object.entries(tarDor).forEach(([raneshId, volume]) => {
-        const parsedRaneshId = Number(raneshId);
-        const parsedVolume = parseFloat(volume as string); // تبدیل مقدار به عدد
-
-        if (!isNaN(parsedRaneshId) && !isNaN(parsedVolume)) {
-          summedVolumes[parsedRaneshId] =
-            (summedVolumes[parsedRaneshId] || 0) + parsedVolume;
-        }
-      });
-    });
-
-    setFinalVolumes(summedVolumes);
-  }, [predictedVolumes, khatRaneshList]);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const newPumpData: typeof pumpData = {};
-
-        for (const idTarDor in predictedVolumes) {
-          newPumpData[idTarDor] = {};
-
-          for (const idRanesh in predictedVolumes[idTarDor]) {
-            const response = await fetch(
-              `/api/request-pumping?idRanesh=${idRanesh}&idTarDor=${idTarDor}`,
-            );
-            if (!response.ok) throw new Error('Failed to fetch data');
-
-            const data: PumpingData = await response.json();
-            newPumpData[idTarDor][idRanesh] = data;
-          }
-        }
-
-        setPumpData(newPumpData);
-      } catch (error) {
-        console.error('Error fetching pump data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [predictedVolumes]);
-  const handleZarfiatChange = (
-    idTarDor: number,
-    idRanesh: number,
-    value: string,
-  ) => {
-    setPumpData((prevData) => {
-      const newData = {...prevData};
-
-      if (!newData[idTarDor]) {
-        newData[idTarDor] = {};
-      }
-
-      if (!newData[idTarDor][idRanesh]) {
-        newData[idTarDor][idRanesh] = {
-          Zarfiat: 0,
-          Tedad: 0, // مقدار پیش‌فرض برای Tedad
-          Shorooe: '', // مقدار پیش‌فرض برای Shorooe
-          Paian: '', // مقدار پیش‌فرض برای Paian
-        };
-      }
-
-      newData[idTarDor][idRanesh].Zarfiat = Number(value) || 0; // مقداردهی عددی
-
-      return newData;
-    });
-
-    // مقداردهی from و to بر اساس مقدار Zarfiat
-    setTimeValues((prev) => ({
-      ...prev,
-      [idTarDor]: {
-        ...prev[idTarDor],
-        [idRanesh]:
-          Number(value) > 0
-            ? {
-                from: prev[idTarDor]?.[idRanesh]?.from || '08:00', // مقدار `from` فقط اگر خالی باشد مقدار `08:00` می‌گیرد
-                to: prev[idTarDor]?.[idRanesh]?.to ?? '', // مقدار `to` بدون تغییر باقی می‌ماند
-              }
-            : {from: '', to: ''}, // اگر Zarfiat صفر باشد، `from` و `to` خالی می‌شوند
-      },
-    }));
-  };
-  const updateTime = (
-    idTarDor: number,
-    idRanesh: number,
-    field: 'from' | 'to',
-    type: 'hour' | 'minute',
-    increment: number,
-  ) => {
-    setTimeValues((prev) => {
-      const currentTime = prev[idTarDor]?.[idRanesh]?.[field] || '08:00';
-      const [hours, minutes] = currentTime.split(':').map(Number);
-
-      let newHours = hours;
-      let newMinutes = minutes;
-
-      if (type === 'hour') {
-        newHours = Math.min(Math.max(hours + increment, 0), 23);
-      } else {
-        newMinutes = Math.round((minutes + increment) / 5) * 5;
-        if (newMinutes >= 60) newMinutes = 55;
-        if (newMinutes < 0) newMinutes = 0;
-      }
-
-      const formattedTime = `${newHours.toString().padStart(2, '0')}:${newMinutes
-        .toString()
-        .padStart(2, '0')}`;
-
-      return {
-        ...prev,
-        [idTarDor]: {
-          ...prev[idTarDor],
-          [idRanesh]: {
-            ...prev[idTarDor]?.[idRanesh],
-            [field]: formattedTime,
-          },
-        },
-      };
-    });
+  const handleReset = () => {
+    console.log('تنظیمات بازنشانی شد');
   };
 
   return (
     <div className="overflow-x-auto">
       {selectedNetworkId === null ? (
-        <h2 className="text-lg font-semibold mb-4 p-4 border rounded-lg shadow">
-          شبکه مورد نظر خود را انتخاب کنید
-        </h2>
+        <h2>شبکه مورد نظر خود را انتخاب کنید</h2>
       ) : idPumpStation === 0 ? (
-        <h2 className="text-lg font-semibold mb-4 p-4 border rounded-lg shadow">
-          ایستگاه پمپاژ مورد نظر خود را انتخاب کنید
-        </h2>
+        <h2>ایستگاه پمپاژ مورد نظر خود را انتخاب کنید</h2>
       ) : (
-        <>
-          <table className="table-auto border-collapse w-full border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2" colSpan={2}>
-                  خط رانش
-                </th>
-                {khatRaneshList
-                  .filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                  )
-                  .map((ranesh) => (
-                    <th
-                      key={ranesh.IdRanesh}
-                      className="border border-gray-300 px-4 py-2"
-                      colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                    >
-                      {ranesh.RaneshName}
-                    </th>
-                  ))}
-              </tr>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2" colSpan={2}>
-                  دبی پمپ
-                </th>
-                {khatRaneshList
-                  .filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                  )
-                  .map((ranesh) => (
-                    <td
-                      key={ranesh.IdRanesh}
-                      className="border border-gray-300 px-4 py-2"
-                      colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                    >
-                      {ranesh.FIdSePu === 1 ? ranesh.DebiPomp : ranesh.Zarfiat}
-                    </td>
-                  ))}
-              </tr>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2" rowSpan={2}>
-                  روز
-                </th>
-                <th className="border border-gray-300 px-4 py-2" rowSpan={2}>
-                  تاریخ
-                </th>
-                {khatRaneshList
-                  .filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                  )
-                  .map((ranesh) => (
-                    <React.Fragment key={ranesh.IdRanesh}>
-                      {ranesh.FIdSePu === 1 && (
-                        <th
-                          className="border border-gray-300 px-4 py-2"
-                          rowSpan={2}
-                        >
-                          تعداد پمپ
-                        </th>
-                      )}
-                      <th className="border border-gray-300 px-4 py-2">
-                        دبی درخواستی
-                      </th>
-                      <th
-                        className="border border-gray-300 px-4 py-2"
-                        colSpan={3}
-                      >
-                        زمان پمپاژ (ساعت)
-                      </th>
-                    </React.Fragment>
-                  ))}
-              </tr>
-              <tr>
-                {khatRaneshList
-                  .filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                  )
-                  .map((ranesh) => (
-                    <React.Fragment key={ranesh.IdRanesh}>
-                      <th className="border border-gray-300 px-4 py-2">L/S</th>
-                      <th className="border border-gray-300 px-4 py-2">از</th>
-                      <th className="border border-gray-300 px-4 py-2">تا</th>
-                      <th className="border border-gray-300 px-4 py-2">مدت</th>
-                    </React.Fragment>
-                  ))}
-              </tr>
-            </thead>
-            {message ? (
-              <caption>{message}</caption>
-            ) : records && Array.isArray(records) && records.length > 0 ? ( // ✅ بررسی مقدار records قبل از .length
-              <tbody>
-                {records.map((record) => {
-                  const pumpInfo = pumpData[record.IdTarDor];
-
-                  return (
-                    <tr key={record.IdTarDor}>
-                      <td>{toPersianDate(record.Trikh, 'dddd')}</td>
-                      <td>{toPersianDate(record.Trikh, 'YYYY/MM/DD')}</td>
-                      {khatRaneshList
-                        .filter(
-                          (ranesh) =>
-                            ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                        )
-                        .map((ranesh) => {
-                          const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
-
-                          return (
-                            <React.Fragment key={ranesh.IdRanesh}>
-                              {ranesh.FIdSePu === 1 && (
-                                // فیلد مربوط به ستون "تعداد پمپ" که مقدار Tedad بایستی در از بین گزینه های دراپ داون آن انتخاب شود
-                                <td className="border border-gray-300 px-4 py-2">
-                                  <select
-                                    value={
-                                      selectedPumpCounts[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ] ||
-                                      raneshInfo?.Tedad ||
-                                      0
-                                    }
-                                    onChange={(e) =>
-                                      handlePumpCountChange(
-                                        record.IdTarDor,
-                                        ranesh.IdRanesh,
-                                        Number(e.target.value),
-                                      )
-                                    }
-                                    className="border rounded px-2 py-1"
-                                  >
-                                    {Array.from(
-                                      {length: (ranesh.TedadPump || 0) + 1},
-                                      (_, i) => (
-                                        <option key={i} value={i}>
-                                          {i}
-                                        </option>
-                                      ),
-                                    )}
-                                  </select>
-                                </td>
-                              )}
-                              {/* فیلد "ظرفیت" که مقدار Zarfit بایستی نمایش داده شود */}
-                              <td className="border border-gray-300 px-4 py-2">
-                                {ranesh.FIdSePu === 2 ? (
-                                  <input
-                                    type="number"
-                                    value={
-                                      raneshInfo?.Zarfiat != null
-                                        ? raneshInfo.Zarfiat.toString()
-                                        : ''
-                                    }
-                                    onChange={(e) => {
-                                      const maxZarfiat = Number(
-                                        khatRaneshList.find(
-                                          (khat) =>
-                                            khat.IdRanesh === ranesh.IdRanesh,
-                                        )?.Zarfiat ?? Infinity,
-                                      );
-
-                                      const newValue = e.target.value; // مقدار را به عنوان string دریافت می‌کنیم
-
-                                      if (
-                                        !isNaN(Number(newValue)) &&
-                                        Number(newValue) <= maxZarfiat
-                                      ) {
-                                        handleZarfiatChange(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          newValue,
-                                        );
-                                      }
-                                    }}
-                                    min="0"
-                                    max={String(
-                                      khatRaneshList.find(
-                                        (khat) =>
-                                          khat.IdRanesh === ranesh.IdRanesh,
-                                      )?.Zarfiat ?? '',
-                                    )}
-                                    placeholder={String(
-                                      khatRaneshList.find(
-                                        (khat) =>
-                                          khat.IdRanesh === ranesh.IdRanesh,
-                                      )?.Zarfiat ?? '',
-                                    )}
-                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 px-3 py-1.5 
-      text-gray-700 shadow-sm hover:shadow-md 
-      focus:ring-2 focus:ring-blue-400 focus:outline-none
-      transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center"
-                                  />
-                                ) : (
-                                  (() => {
-                                    // تعداد پمپ انتخاب‌شده
-                                    const selectedTedad =
-                                      selectedPumpCounts[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ] ??
-                                      raneshInfo?.Tedad ??
-                                      0;
-
-                                    // دبی پمپ مربوط به این IdRanesh
-                                    const debiPomp =
-                                      khatRaneshList.find(
-                                        (khat) =>
-                                          khat.IdRanesh === ranesh.IdRanesh,
-                                      )?.DebiPomp ?? 0;
-
-                                    // مقدار نهایی دبی درخواستی
-                                    return (selectedTedad * debiPomp).toFixed(
-                                      1,
-                                    );
-                                  })()
-                                )}
-                              </td>
-
-                              {/* فیلد "از" که مقدار Shorooe در اینجا جاگذاری شود */}
-                              <td className="border border-gray-300 px-4 py-2 relative">
-                                <div className="relative w-full">
-                                  <input
-                                    type="text"
-                                    value={
-                                      timeValues[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ]?.from ??
-                                      (raneshInfo?.Shorooe
-                                        ? new Date(raneshInfo.Shorooe)
-                                            .toISOString()
-                                            .slice(11, 16)
-                                        : '')
-                                    }
-                                    onChange={(e) => {
-                                      const newValue = e.target.value.replace(
-                                        /[^0-9:]/g,
-                                        '',
-                                      );
-                                      if (newValue.length <= 5) {
-                                        handleTimeChange(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          newValue,
-                                        );
-                                      }
-                                    }}
-                                    onBlur={(e) => {
-                                      const [hours, minutes] = e.target.value
-                                        .split(':')
-                                        .map(Number);
-                                      if (!isNaN(hours) && !isNaN(minutes)) {
-                                        const validHours = Math.min(
-                                          Math.max(hours, 0),
-                                          23,
-                                        );
-                                        const validMinutes =
-                                          Math.round(minutes / 5) * 5;
-                                        const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
-                                          .toString()
-                                          .padStart(2, '0')}`;
-                                        handleTimeChange(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          formattedValue,
-                                        );
-                                      }
-                                    }}
-                                    placeholder="HH:MM"
-                                    disabled={
-                                      (selectedPumpCounts[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ] ||
-                                        raneshInfo?.Tedad ||
-                                        0) === 0 &&
-                                      (raneshInfo?.Zarfiat == null ||
-                                        raneshInfo?.Zarfiat <= 0)
-                                    }
-                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
-                 text-gray-700 shadow-sm hover:shadow-md 
-                 focus:ring-2 focus:ring-blue-400 focus:outline-none
-                 transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center relative"
-                                  />
-
-                                  {/* فلش‌های تغییر ساعت (سمت چپ داخل input) */}
-                                  <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          'hour',
-                                          1,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▲
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          'hour',
-                                          -1,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▼
-                                    </button>
-                                  </div>
-
-                                  {/* فلش‌های تغییر دقیقه (سمت راست داخل input) */}
-                                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          'minute',
-                                          5,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▲
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'from',
-                                          'minute',
-                                          -5,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▼
-                                    </button>
-                                  </div>
-                                </div>
-                              </td>
-
-                              <td className="border border-gray-300 px-4 py-2 relative">
-                                <div className="relative w-full">
-                                  <input
-                                    type="text"
-                                    step="300"
-                                    value={
-                                      timeValues[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ]?.to ??
-                                      (raneshInfo?.Paian
-                                        ? new Date(raneshInfo.Paian)
-                                            .toISOString()
-                                            .slice(11, 16)
-                                        : '')
-                                    }
-                                    onChange={(e) => {
-                                      const newValue = e.target.value.replace(
-                                        /[^0-9:]/g,
-                                        '',
-                                      );
-                                      if (newValue.length <= 5) {
-                                        handleTimeChange(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          newValue,
-                                        );
-                                      }
-                                    }}
-                                    onBlur={(e) => {
-                                      const [hours, minutes] = e.target.value
-                                        .split(':')
-                                        .map(Number);
-                                      if (!isNaN(hours) && !isNaN(minutes)) {
-                                        const validHours = Math.min(
-                                          Math.max(hours, 0),
-                                          23,
-                                        );
-                                        const validMinutes =
-                                          Math.round(minutes / 5) * 5;
-                                        const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
-                                          .toString()
-                                          .padStart(2, '0')}`;
-                                        handleTimeChange(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          formattedValue,
-                                        );
-                                      }
-                                    }}
-                                    placeholder="HH:MM"
-                                    disabled={
-                                      (selectedPumpCounts[record.IdTarDor]?.[
-                                        ranesh.IdRanesh
-                                      ] ||
-                                        raneshInfo?.Tedad ||
-                                        0) === 0 &&
-                                      (raneshInfo?.Zarfiat == null ||
-                                        raneshInfo?.Zarfiat <= 0)
-                                    }
-                                    className="border border-blue-500 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
-                 text-gray-700 shadow-sm hover:shadow-md 
-                 focus:ring-2 focus:ring-blue-400 focus:outline-none
-                 transition-all duration-300 hover:bg-blue-50 cursor-pointer w-full text-center relative"
-                                  />
-
-                                  {/* فلش‌های تغییر ساعت (سمت چپ داخل input) */}
-                                  <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          'hour',
-                                          1,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▲
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          'hour',
-                                          -1,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▼
-                                    </button>
-                                  </div>
-
-                                  {/* فلش‌های تغییر دقیقه (سمت راست داخل input) */}
-                                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          'minute',
-                                          5,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▲
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="text-gray-600 hover:text-black text-xs p-0.5"
-                                      onClick={() =>
-                                        updateTime(
-                                          record.IdTarDor,
-                                          ranesh.IdRanesh,
-                                          'to',
-                                          'minute',
-                                          -5,
-                                        )
-                                      }
-                                      disabled={
-                                        (selectedPumpCounts[record.IdTarDor]?.[
-                                          ranesh.IdRanesh
-                                        ] ||
-                                          raneshInfo?.Tedad ||
-                                          0) === 0 &&
-                                        (raneshInfo?.Zarfiat == null ||
-                                          raneshInfo?.Zarfiat <= 0)
-                                      }
-                                    >
-                                      ▼
-                                    </button>
-                                  </div>
-                                </div>
-                              </td>
-
-                              <td className="border border-gray-300 px-4 py-2 text-center">
-                                {(() => {
-                                  const fromValue =
-                                    timeValues[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ]?.from ??
-                                    (raneshInfo?.Shorooe
-                                      ? new Date(raneshInfo.Shorooe)
-                                          .toISOString()
-                                          .slice(11, 16)
-                                      : '');
-
-                                  const toValue =
-                                    timeValues[record.IdTarDor]?.[
-                                      ranesh.IdRanesh
-                                    ]?.to ??
-                                    (raneshInfo?.Paian
-                                      ? new Date(raneshInfo.Paian)
-                                          .toISOString()
-                                          .slice(11, 16)
-                                      : '');
-
-                                  if (fromValue && toValue) {
-                                    const [fromHours, fromMinutes] = fromValue
-                                      .split(':')
-                                      .map(Number);
-                                    const [toHours, toMinutes] = toValue
-                                      .split(':')
-                                      .map(Number);
-
-                                    const fromTotalMinutes =
-                                      fromHours * 60 + fromMinutes;
-                                    const toTotalMinutes =
-                                      toHours * 60 + toMinutes;
-
-                                    let durationMinutes =
-                                      toTotalMinutes - fromTotalMinutes;
-
-                                    // اگر زمان شروع بزرگ‌تر یا مساوی زمان پایان بود، یعنی اختلاف مربوط به روز بعد است
-                                    if (durationMinutes <= 0) {
-                                      durationMinutes += 1440; // اضافه کردن ۲۴ ساعت به دقیقه
-                                    }
-
-                                    const hours = Math.floor(
-                                      durationMinutes / 60,
-                                    );
-                                    const minutes = durationMinutes % 60;
-                                    return `${hours.toString().padStart(2, '0')}:${minutes
-                                      .toString()
-                                      .padStart(2, '0')}`;
-                                  }
-                                  return '-';
-                                })()}
-                              </td>
-                            </React.Fragment>
-                          );
-                        })}
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <th
-                    className="border border-gray-300 px-4 py-2 text-center"
-                    colSpan={2}
-                  >
-                    حجم درخواستی
-                  </th>
-                  {khatRaneshList
-                    .filter(
-                      (ranesh) =>
-                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                    )
-                    .map((ranesh) => {
-                      // محاسبه حجم آب درخواستی برای هر خط رانش
-                      const totalWaterVolume = records.reduce((sum, record) => {
-                        // دریافت اطلاعات مربوط به این خط رانش از رکورد
-                        const pumpInfo = pumpData[record.IdTarDor];
-                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
-
-                        if (!raneshInfo) return sum; // در صورتی که داده‌ای وجود نداشت، محاسبه نکن
-
-                        // مقدار دبی درخواستی
-                        const debi =
-                          ranesh.FIdSePu === 2
-                            ? Number(raneshInfo?.Zarfiat ?? 0)
-                            : (selectedPumpCounts[record.IdTarDor]?.[
-                                ranesh.IdRanesh
-                              ] ??
-                                raneshInfo.Tedad ??
-                                0) *
-                              (khatRaneshList.find(
-                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                              )?.DebiPomp ?? 0);
-
-                        // مدت زمان (بر حسب ساعت)
-                        const fromValue =
-                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
-                            ?.from ??
-                          (raneshInfo.Shorooe
-                            ? new Date(raneshInfo.Shorooe)
-                                .toISOString()
-                                .slice(11, 16)
-                            : '');
-
-                        const toValue =
-                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
-                          (raneshInfo.Paian
-                            ? new Date(raneshInfo.Paian)
-                                .toISOString()
-                                .slice(11, 16)
-                            : '');
-
-                        if (fromValue && toValue) {
-                          const [fromHours, fromMinutes] = fromValue
-                            .split(':')
-                            .map(Number);
-                          const [toHours, toMinutes] = toValue
-                            .split(':')
-                            .map(Number);
-
-                          let durationMinutes =
-                            toHours * 60 +
-                            toMinutes -
-                            (fromHours * 60 + fromMinutes);
-
-                          if (durationMinutes <= 0) durationMinutes += 1440; // اضافه کردن ۲۴ ساعت به دقیقه
-
-                          const durationHours = durationMinutes / 60;
-
-                          // محاسبه مقدار حجم آب درخواستی برای این رکورد
-                          return sum + debi * durationHours * 3.6;
-                        }
-                        return sum;
-                      }, 0);
-
-                      return (
-                        <td
-                          key={ranesh.IdRanesh}
-                          className="border border-gray-300 px-4 py-2 text-center font-bold"
-                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                        >
-                          {totalWaterVolume
-                            .toFixed(1)
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        </td>
-                      );
-                    })}
-                </tr>
-
-                <tr className="bg-yellow-100 font-semibold">
-                  <td
-                    className="border border-gray-300 px-4 py-2 font-bold"
-                    colSpan={2}
-                  >
-                    حجم پیش بینی
-                  </td>
-                  {khatRaneshList
-                    .filter(
-                      (ranesh) =>
-                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                    )
-                    .map((ranesh) => (
-                      <td
-                        key={ranesh.IdRanesh}
-                        className="border border-gray-300 px-4 py-2 text-center font-semibold"
-                        colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                      >
-                        {finalVolumes[ranesh.IdRanesh] !== undefined
-                          ? finalVolumes[ranesh.IdRanesh]
-                              .toFixed(1)
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          : '-'}
-                      </td>
-                    ))}
-                </tr>
-                <tr className="bg-gray-200 font-bold">
-                  <td
-                    className="border border-gray-300 px-4 py-2 text-center"
-                    colSpan={2}
-                  >
-                    اضافه درخواست
-                  </td>
-                  {khatRaneshList
-                    .filter(
-                      (ranesh) =>
-                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
-                    )
-                    .map((ranesh) => {
-                      // محاسبه حجم آب درخواستی برای این خط رانش
-                      const totalWaterVolume = records.reduce((sum, record) => {
-                        const pumpInfo = pumpData[record.IdTarDor];
-                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
-
-                        if (!raneshInfo) return sum;
-
-                        const debi =
-                          ranesh.FIdSePu === 2
-                            ? Number(raneshInfo?.Zarfiat ?? 0)
-                            : (selectedPumpCounts[record.IdTarDor]?.[
-                                ranesh.IdRanesh
-                              ] ??
-                                raneshInfo.Tedad ??
-                                0) *
-                              (khatRaneshList.find(
-                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                              )?.DebiPomp ?? 0);
-
-                        const fromValue =
-                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
-                            ?.from ??
-                          (raneshInfo.Shorooe
-                            ? new Date(raneshInfo.Shorooe)
-                                .toISOString()
-                                .slice(11, 16)
-                            : '');
-
-                        const toValue =
-                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
-                          (raneshInfo.Paian
-                            ? new Date(raneshInfo.Paian)
-                                .toISOString()
-                                .slice(11, 16)
-                            : '');
-
-                        if (fromValue && toValue) {
-                          const [fromHours, fromMinutes] = fromValue
-                            .split(':')
-                            .map(Number);
-                          const [toHours, toMinutes] = toValue
-                            .split(':')
-                            .map(Number);
-
-                          let durationMinutes =
-                            toHours * 60 +
-                            toMinutes -
-                            (fromHours * 60 + fromMinutes);
-
-                          if (durationMinutes <= 0) durationMinutes += 1440;
-
-                          const durationHours = durationMinutes / 60;
-
-                          return sum + debi * durationHours * 3.6;
-                        }
-                        return sum;
-                      }, 0);
-
-                      // مقدار پیش‌بینی شده برای این خط رانش
-                      const predictedVolume =
-                        finalVolumes[ranesh.IdRanesh] ?? 0;
-
-                      // محاسبه مقدار اضافه درخواست
-                      const extraRequest = totalWaterVolume - predictedVolume;
-
-                      // تعیین کلاس‌های رنگی بر اساس مقدار اضافه درخواست
-                      const textColor =
-                        extraRequest > 0 ? 'text-red-700' : 'text-black';
-                      const bgColor = extraRequest > 0 ? 'bg-red-100' : '';
-
-                      return (
-                        <td
-                          key={ranesh.IdRanesh}
-                          className={`border border-gray-300 px-4 py-2 text-center ${textColor} ${bgColor}`}
-                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
-                        >
-                          {extraRequest
-                            .toFixed(1)
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        </td>
-                      );
-                    })}
-                </tr>
-              </tbody>
-            ) : (
-              <tbody>
-                <tr>
-                  <td colSpan={100} className="text-center">
-                    داده‌ای برای نمایش وجود ندارد
-                  </td>
-                </tr>
-              </tbody>
-            )}
-          </table>
-
-          {/* نمایش محتوای ماه انتخاب‌شده */}
+        <div>
+          <PumpingForm
+            khatRaneshList={khatRaneshList}
+            pumpData={pumpData}
+            selectedPumpCounts={selectedPumpCounts}
+            timeValues={timeValues}
+            handlePumpCountChange={handlePumpCountChange}
+            handleTimeChange={handleTimeChange}
+            updateTime={updateTime}
+            records={records}
+            message={message}
+            finalVolumes={finalVolumes}
+            isFormDisabled={isFormDisabled} // ارسال وضعیت غیرفعال بودن فرم
+          />
+          <PumpingActions
+            onSave={handleSave}
+            onReset={handleReset}
+            disabled={isFormDisabled}
+          />
           {selectedMah !== null && sal !== null && (
             <div>
-              {/* نمایش دهه‌بندی ماه */}
               <PaginationForMah
                 selectedMah={selectedMah}
                 sal={sal}
-                selectedDahe={dahe}
-                setSelectedDahe={setDahe}
-                setDahe={setDahe} // ← ارسال تابع setDahe برای تغییر مقدار dahe
+                selectedDahe={selectedDahe}
+                setSelectedDahe={setSelectedDahe}
+                setDahe={setDahe}
                 allDates={allDates}
               />
             </div>
           )}
 
-          {/* زبانه‌های ماه‌ها - نمایش فقط اگر شبکه و ایستگاه انتخاب شده باشند */}
           {selectedNetworkId !== null && idPumpStation !== 0 && (
-            <div className="flex border-b border-gray-300">
+            <div
+              className="flex border-b border-gray-300"
+              style={{
+                transform: 'scale(0.75)',
+                transformOrigin: 'top right',
+                width: 'max-content',
+              }}
+            >
               {[...mahList]
-                .sort((a, b) => a.Sal - b.Sal || a.Mah - b.Mah) // مرتب‌سازی: اول بر اساس سال، بعد ماه
+                .sort((a, b) => a.Sal - b.Sal || a.Mah - b.Mah)
                 .map((item) => (
                   <div
                     key={`${item.Mah}-${item.Sal}`}
                     className={`px-6 py-2 text-lg font-semibold cursor-pointer transition-all duration-300 border
                     border-gray-400 rounded-t-md
                     ${
-                      selectedMah === item.Mah
-                        ? 'bg-white text-blue-600 shadow-lg scale-105' // برجسته شدن زبانه فعال
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200' // تغییر رنگ هنگام هاور
+                      selectedMah === item.Mah && sal === item.Sal
+                        ? 'bg-white text-blue-600 shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                     onClick={() => {
                       setSelectedMah(item.Mah);
                       setSal(item.Sal);
-                      setSelectedDahe(1); // مقدار دهه به حالت اولیه (دهه ۱) برگردد
+                      setMah(item.Mah);
+                      setDahe(dahe);
+                      setSelectedDahe(
+                        item.Mah === currentMah && item.Sal === currentSal
+                          ? currentDahe
+                          : 1,
+                      );
+                      // console.log('mah: ', mah);
                     }}
                   >
                     {convertMahToPersian(item.Mah)} {item.Sal}
@@ -1290,13 +166,10 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
                 ))}
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );
 };
 
 export default BodyRequestPumping;
-function setNoRecordsMessage(message: any) {
-  throw new Error('Function not implemented.');
-}

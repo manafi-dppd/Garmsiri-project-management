@@ -43,7 +43,9 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   const [pumpStations, setPumpStations] = useState<
     {IdPumpSta: number; NameStation: string}[]
   >([]);
-  const [selectedNetworkId, setLocalSelectedNetworkId] = useState<number | null>(null);
+  const [selectedNetworkId, setLocalSelectedNetworkId] = useState<
+    number | null
+  >(null);
   const [selectedPumpStation, setSelectedPumpStation] = useState<string>('');
 
   useEffect(() => {
@@ -161,7 +163,12 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
       setLocalSelectedNetworkId(filteredNetworks[0].IdNet);
       setSelectedNetworkId(filteredNetworks[0].IdNet);
     }
-  }, [filteredNetworks, selectedNetworkId, setNetworkName]);
+  }, [
+    filteredNetworks,
+    selectedNetworkId,
+    setNetworkName,
+    setSelectedNetworkId,
+  ]);
 
   // تغییر `selectedNetwork` و استخراج `IdNet`
   const handleNetworkChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -238,7 +245,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   }, [selectedNetworkId, setDoreKesht, setIdShDo, setSaleZeraee]);
 
   return (
-    <div className="container justify-center flex flex-wrap items-center gap-4 p-2 bg-blue-100 rounded-lg shadow-md">
+    <div className="container justify-center flex flex-wrap items-center gap-4 px-2 bg-blue-100 rounded-lg shadow-md">
       {/* شبکه آبیاری */}
       <div className="flex items-center gap-2">
         <label className="font-semibold" htmlFor="network">

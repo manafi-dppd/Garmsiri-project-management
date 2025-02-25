@@ -6,13 +6,27 @@ import PumpingActions from './PumpingActions';
 import {usePumpingData} from './hooks/usePumpingData';
 import {usePumpingTime} from './hooks/usePumpingTime';
 import PaginationForMah, {convertMahToPersian} from './PaginationForMah';
+
 import {
-  BodyRequestPumpingProps,
+  // BodyRequestPumpingProps,
   KhatRanesh,
   PredictedVolume,
   PumpingData,
   RecordType,
 } from './types';
+interface BodyRequestPumpingProps {
+  userName: string;
+  userRole: string[]; // تغییر این خط
+  firstName: string;
+  lastName: string;
+  networkName: string;
+  pumpStationName: string;
+  selectedNetworkId: number | null;
+  idPumpStation: number;
+  saleZeraee: string;
+  doreKesht: string;
+  idShDo: number;
+}
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   userName,
@@ -27,7 +41,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   doreKesht,
   idShDo,
 }) => {
-  console.log('networkName: ', networkName);
   const {
     sal: currentSal,
     mah: currentMah,
@@ -41,6 +54,15 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [selectedDahe, setSelectedDahe] = useState(currentDahe);
   const [allDates, setAllDates] = useState<{Mah: number; Dahe: number}[]>([]);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const {taedAbMantaghe} = usePumpingData(
+    selectedNetworkId,
+    idPumpStation,
+    selectedMah,
+    sal,
+    mah,
+    dahe,
+    selectedDahe,
+  );
 
   const {
     khatRaneshList,
@@ -56,6 +78,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     idPumpStation,
     selectedMah,
     sal,
+    mah,
     selectedDahe,
     dahe,
   );
@@ -68,6 +91,14 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     handlePumpCountChange,
   } = usePumpingTime();
 
+  const isFormFilled = taedAbMantaghe.some(
+    (record) =>
+      record.FIdUserErsal !== null ||
+      record.FIdUserAbMantaghe !== null ||
+      record.FIdUserPeymankar !== null ||
+      record.FIdUserAbNiroo !== null,
+  );
+
   useEffect(() => {
     // بررسی آیا ماه و سال انتخاب شده مربوط به گذشته یا جاری است
     const isPastOrCurrentMonth =
@@ -76,9 +107,45 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     // بررسی آیا دهه انتخاب شده مربوط به گذشته یا جاری است
     const isPastOrCurrentDahe =
       sal === currentSal && mah === currentMah && dahe <= currentDahe;
-    // اگر ماه و دهه مربوط به گذشته یا جاری باشد، فرم غیرفعال می‌شود
-    setIsFormDisabled(isPastOrCurrentMonth || isPastOrCurrentDahe);
-  }, [sal, mah, dahe, currentSal, currentMah, currentDahe]);
+
+    // بررسی آیا userRole در لیست نقش‌های مجاز قرار دارد
+    const isUserRoleAllowed = userRole.some((role) =>
+      [
+        'Website Creator',
+        'Website Admin',
+        'Ezgele Water Users Representative',
+        'Jegiran Water Users Representative',
+        'Northern Zahab Water Users Representative',
+        'Southern Zahab Water Users Representative',
+        'Hoomeh Qaraviz Water Users Representative',
+        'Beshiveh Water Users Representative',
+        'Ghaleh Shahin Water Users Representative',
+        'Water Users Representative South Jagarlu',
+      ].includes(role),
+    );
+
+    // بررسی آیا TaedAbMantaghe برابر true است
+    const isTaedAbMantagheTrue = taedAbMantaghe.some(
+      (record) => record.TaedAbMantaghe === true,
+    );
+    console.log('isTaedAbMantagheTrue: ', isTaedAbMantagheTrue);
+    // اگر ماه و دهه مربوط به گذشته یا جاری باشد، یا userRole مجاز نباشد، یا TaedAbMantaghe برابر true باشد، فرم غیرفعال می‌شود
+    setIsFormDisabled(
+      isPastOrCurrentMonth ||
+        isPastOrCurrentDahe ||
+        !isUserRoleAllowed ||
+        isTaedAbMantagheTrue,
+    );
+  }, [
+    sal,
+    mah,
+    dahe,
+    currentSal,
+    currentMah,
+    currentDahe,
+    userRole,
+    taedAbMantaghe,
+  ]);
 
   const handleSave = () => {
     console.log('تنظیمات ذخیره شد');
@@ -113,6 +180,8 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
             onSave={handleSave}
             onReset={handleReset}
             disabled={isFormDisabled}
+            isFormDisabled={isFormDisabled}
+            isFormFilled={isFormFilled}
           />
           {selectedMah !== null && sal !== null && (
             <div>
@@ -131,7 +200,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
             <div
               className="flex border-b border-gray-300"
               style={{
-                transform: 'scale(0.75)',
+                transform: 'scale(0.9)',
                 transformOrigin: 'top right',
                 width: 'max-content',
               }}

@@ -7,6 +7,9 @@ interface PumpingTableProps {
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
+  setPumpData: (data: {
+    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+  }) => void;
   selectedPumpCounts: {[key: number]: {[date: string]: number}};
   timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
   handlePumpCountChange: (
@@ -36,6 +39,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   khatRaneshList,
   records,
   pumpData,
+  setPumpData,
   selectedPumpCounts,
   timeValues,
   handlePumpCountChange,
@@ -45,6 +49,34 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   finalVolumes,
   isFormDisabled,
 }) => {
+  const isFormFilled = records.some((record) =>
+    khatRaneshList.some(
+      (ranesh) =>
+        pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Zarfiat !== null ||
+        pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Tedad !== null,
+    ),
+  );
+  const handleZarfiatChange = (
+    IdTarDor: number,
+    IdRanesh: number,
+    newValue: string,
+  ) => {
+    const numericValue = Number(newValue);
+
+    if (!isNaN(numericValue)) {
+      setPumpData({
+        ...pumpData, // مقدار قبلی را نگه می‌دارد
+        [IdTarDor]: {
+          ...pumpData[IdTarDor],
+          [IdRanesh]: {
+            ...pumpData[IdTarDor]?.[IdRanesh],
+            Zarfiat: numericValue,
+          },
+        },
+      });
+    }
+  };
+
   return (
     <div
       className="max-h-[800px] overflow-auto border border-gray-300"
@@ -206,14 +238,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     .map((ranesh) => {
                       const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
 
-                      function handleZarfiatChange(
-                        IdTarDor: any,
-                        IdRanesh: any,
-                        newValue: string,
-                      ) {
-                        throw new Error('Function not implemented.');
-                      }
-
                       return (
                         <React.Fragment key={ranesh.IdRanesh}>
                           {ranesh.FIdSePu === 1 && (
@@ -327,40 +351,59 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     : '')
                                 }
                                 onChange={(e) => {
-                                  const newValue = e.target.value.replace(
+                                  let newValue = e.target.value.replace(
                                     /[^0-9:]/g,
                                     '',
+                                  ); // حذف کاراکترهای غیرمجاز
+                                  if (newValue.length > 5) return; // جلوگیری از طول بیشتر از ۵ کاراکتر
+
+                                  // اطمینان از درج فقط یک ":"
+                                  const parts = newValue.split(':');
+                                  if (parts.length > 2) return;
+
+                                  // اطمینان از اینکه مقدار در قالب HH:MM باشد
+                                  if (parts[0]?.length > 2)
+                                    newValue =
+                                      newValue.slice(0, 2) +
+                                      ':' +
+                                      newValue.slice(2, 4);
+
+                                  handleTimeChange(
+                                    record.IdTarDor,
+                                    ranesh.IdRanesh,
+                                    'from',
+                                    newValue,
                                   );
-                                  if (newValue.length <= 5) {
-                                    handleTimeChange(
-                                      record.IdTarDor,
-                                      ranesh.IdRanesh,
-                                      'from',
-                                      newValue,
-                                    );
-                                  }
                                 }}
                                 onBlur={(e) => {
-                                  const [hours, minutes] = e.target.value
+                                  let [hours, minutes] = e.target.value
                                     .split(':')
                                     .map(Number);
-                                  if (!isNaN(hours) && !isNaN(minutes)) {
-                                    const validHours = Math.min(
-                                      Math.max(hours, 0),
-                                      23,
-                                    );
-                                    const validMinutes =
-                                      Math.round(minutes / 5) * 5;
-                                    const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
-                                      .toString()
-                                      .padStart(2, '0')}`;
+
+                                  if (isNaN(hours) || isNaN(minutes)) {
                                     handleTimeChange(
                                       record.IdTarDor,
                                       ranesh.IdRanesh,
                                       'from',
-                                      formattedValue,
+                                      '',
                                     );
+                                    return;
                                   }
+
+                                  // تصحیح مقدار نامعتبر
+                                  hours = Math.min(Math.max(hours, 0), 23);
+                                  minutes = Math.min(Math.max(minutes, 0), 59);
+
+                                  const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes
+                                    .toString()
+                                    .padStart(2, '0')}`;
+
+                                  handleTimeChange(
+                                    record.IdTarDor,
+                                    ranesh.IdRanesh,
+                                    'from',
+                                    formattedValue,
+                                  );
                                 }}
                                 placeholder="HH:MM"
                                 disabled={
@@ -371,12 +414,12 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     0) === 0 &&
                                     (raneshInfo?.Zarfiat == null ||
                                       raneshInfo?.Zarfiat <= 0)) ||
-                                  isFormDisabled // غیرفعال کردن اگر فرم غیرفعال باشد
+                                  isFormDisabled
                                 }
                                 className="border border-green-400 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
-                 text-gray-700 shadow-sm hover:shadow-md 
-                 focus:ring-2 focus:ring-green-400 focus:outline-none
-                 transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center relative"
+             text-gray-700 shadow-sm hover:shadow-md 
+             focus:ring-2 focus:ring-green-400 focus:outline-none
+             transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center relative"
                               />
 
                               <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
@@ -502,40 +545,59 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     : '')
                                 }
                                 onChange={(e) => {
-                                  const newValue = e.target.value.replace(
+                                  let newValue = e.target.value.replace(
                                     /[^0-9:]/g,
                                     '',
+                                  ); // حذف کاراکترهای غیرمجاز
+                                  if (newValue.length > 5) return; // جلوگیری از طول بیشتر از ۵ کاراکتر
+
+                                  // اطمینان از درج فقط یک ":"
+                                  const parts = newValue.split(':');
+                                  if (parts.length > 2) return;
+
+                                  // اطمینان از اینکه مقدار در قالب HH:MM باشد
+                                  if (parts[0]?.length > 2)
+                                    newValue =
+                                      newValue.slice(0, 2) +
+                                      ':' +
+                                      newValue.slice(2, 4);
+
+                                  handleTimeChange(
+                                    record.IdTarDor,
+                                    ranesh.IdRanesh,
+                                    'to',
+                                    newValue,
                                   );
-                                  if (newValue.length <= 5) {
-                                    handleTimeChange(
-                                      record.IdTarDor,
-                                      ranesh.IdRanesh,
-                                      'to',
-                                      newValue,
-                                    );
-                                  }
                                 }}
                                 onBlur={(e) => {
-                                  const [hours, minutes] = e.target.value
+                                  let [hours, minutes] = e.target.value
                                     .split(':')
                                     .map(Number);
-                                  if (!isNaN(hours) && !isNaN(minutes)) {
-                                    const validHours = Math.min(
-                                      Math.max(hours, 0),
-                                      23,
-                                    );
-                                    const validMinutes =
-                                      Math.round(minutes / 5) * 5;
-                                    const formattedValue = `${validHours.toString().padStart(2, '0')}:${validMinutes
-                                      .toString()
-                                      .padStart(2, '0')}`;
+
+                                  if (isNaN(hours) || isNaN(minutes)) {
                                     handleTimeChange(
                                       record.IdTarDor,
                                       ranesh.IdRanesh,
                                       'to',
-                                      formattedValue,
+                                      '',
                                     );
+                                    return;
                                   }
+
+                                  // تصحیح مقدار نامعتبر
+                                  hours = Math.min(Math.max(hours, 0), 23);
+                                  minutes = Math.min(Math.max(minutes, 0), 59);
+
+                                  const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes
+                                    .toString()
+                                    .padStart(2, '0')}`;
+
+                                  handleTimeChange(
+                                    record.IdTarDor,
+                                    ranesh.IdRanesh,
+                                    'to',
+                                    formattedValue,
+                                  );
                                 }}
                                 placeholder="HH:MM"
                                 disabled={
@@ -546,12 +608,12 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     0) === 0 &&
                                     (raneshInfo?.Zarfiat == null ||
                                       raneshInfo?.Zarfiat <= 0)) ||
-                                  isFormDisabled // غیرفعال کردن اگر فرم غیرفعال باشد
+                                  isFormDisabled
                                 }
                                 className="border border-green-400 bg-white/90 rounded-lg h-10 pl-8 pr-8 py-1.5 
-                 text-gray-700 shadow-sm hover:shadow-md 
-                 focus:ring-2 focus:ring-green-400 focus:outline-none
-                 transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center relative"
+             text-gray-700 shadow-sm hover:shadow-md 
+             focus:ring-2 focus:ring-green-400 focus:outline-none
+             transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center relative"
                               />
 
                               <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">

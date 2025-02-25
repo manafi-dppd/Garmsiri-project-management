@@ -408,6 +408,47 @@ exports.Prisma.ShabakeDoreKeshtScalarFieldEnum = {
   FIdDore: 'FIdDore'
 };
 
+exports.Prisma.TaeedProgramScalarFieldEnum = {
+  IdTaeedProgram: 'IdTaeedProgram',
+  FIdPumpSta: 'FIdPumpSta',
+  FIdSal: 'FIdSal',
+  FIdDore: 'FIdDore',
+  Sal: 'Sal',
+  Mah: 'Mah',
+  Dahe: 'Dahe',
+  FIdUserErsal: 'FIdUserErsal',
+  FirstNErsal: 'FirstNErsal',
+  LastNErsal: 'LastNErsal',
+  TozihErsal: 'TozihErsal',
+  TarikhErsal: 'TarikhErsal',
+  FIdUserAbMantaghe: 'FIdUserAbMantaghe',
+  FirstNAbMantaghe: 'FirstNAbMantaghe',
+  LastNAbMantaghe: 'LastNAbMantaghe',
+  TozihAbMantaghe: 'TozihAbMantaghe',
+  TarikhAbMantaghe: 'TarikhAbMantaghe',
+  TaedAbMantaghe: 'TaedAbMantaghe',
+  FIdUserPeymankar: 'FIdUserPeymankar',
+  FirstNPeymankar: 'FirstNPeymankar',
+  LastNPeymankar: 'LastNPeymankar',
+  TozihPeymankar: 'TozihPeymankar',
+  TarikhPeymankar: 'TarikhPeymankar',
+  TaedPeymankar: 'TaedPeymankar',
+  FIdUserAbNiroo: 'FIdUserAbNiroo',
+  FirstNAbNiroo: 'FirstNAbNiroo',
+  LastNAbNiroo: 'LastNAbNiroo',
+  TozihAbNiroo: 'TozihAbNiroo',
+  TarikhAbNiroo: 'TarikhAbNiroo',
+  TaedAbNiroo: 'TaedAbNiroo',
+  FileNameNahaee: 'FileNameNahaee',
+  FilePathNahaee: 'FilePathNahaee',
+  TarikhFileNahee: 'TarikhFileNahee',
+  FIdUserTaeedNahaee: 'FIdUserTaeedNahaee',
+  FirstNTaeedNahaee: 'FirstNTaeedNahaee',
+  LastNTaeedNahaee: 'LastNTaeedNahaee',
+  TarikhTaeedNahaee: 'TarikhTaeedNahaee',
+  TaeedNahaee: 'TaeedNahaee'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -459,7 +500,8 @@ exports.Prisma.ModelName = {
   WeatherStation: 'WeatherStation',
   sysdiagrams: 'sysdiagrams',
   MahShamsi: 'MahShamsi',
-  ShabakeDoreKesht: 'ShabakeDoreKesht'
+  ShabakeDoreKesht: 'ShabakeDoreKesht',
+  TaeedProgram: 'TaeedProgram'
 };
 
 /**

@@ -150,7 +150,7 @@ model KhatRanesh {
   FIdDPipe                  Int                         @db.TinyInt
   FIdSePu                   Int                         @db.TinyInt
   FIdMeasuring              Int                         @db.TinyInt
-  Active                    Boolean                     @default(true) @db.Bit
+  Active                    Boolean                     @default(true)
   Abgir                     Abgir[]
   BahrebardairProgram       BahrebardairProgram[]
   BahrebardairProgramSeghli BahrebardairProgramSeghli[]
@@ -288,7 +288,7 @@ model PumpStation {
   FIdDStation   Int            @db.TinyInt
   FIdMakhzan    Int?           @db.TinyInt
   FIdDP         Int            @db.TinyInt
-  Ready         Boolean        @default(true) @db.Bit
+  Ready         Boolean        @default(true)
   KhatRanesh    KhatRanesh[]
   AbadeMakhzan  AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
   DarjeStation  DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
@@ -419,4 +419,45 @@ model ShabakeDoreKesht {
   DoreKesht             DoreKesht               @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_DoreKesht")
   Network               Network                 @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_Network")
   SaleZeraee            SaleZeraee              @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_SaleZeraee")
+}
+
+model TaeedProgram {
+  IdTaeedProgram     Int       @id(map: "PK__TaeedPro__0F876E0270B50505") @default(autoincrement())
+  FIdPumpSta         Int       @db.TinyInt
+  FIdSal             Int       @db.TinyInt
+  FIdDore            Int       @db.TinyInt
+  Sal                Int       @db.SmallInt
+  Mah                Int       @db.TinyInt
+  Dahe               Int       @db.TinyInt
+  FIdUserErsal       Int?      @db.TinyInt
+  FirstNErsal        String?   @db.NVarChar(20)
+  LastNErsal         String?   @db.NVarChar(20)
+  TozihErsal         String?   @db.NVarChar(Max)
+  TarikhErsal        DateTime? @db.SmallDateTime
+  FIdUserAbMantaghe  Int?      @db.TinyInt
+  FirstNAbMantaghe   String?   @db.NVarChar(20)
+  LastNAbMantaghe    String?   @db.NVarChar(20)
+  TozihAbMantaghe    String?   @db.NVarChar(Max)
+  TarikhAbMantaghe   DateTime? @db.SmallDateTime
+  TaedAbMantaghe     Boolean?
+  FIdUserPeymankar   Int?      @db.TinyInt
+  FirstNPeymankar    String?   @db.NVarChar(20)
+  LastNPeymankar     String?   @db.NVarChar(20)
+  TozihPeymankar     String?   @db.NVarChar(Max)
+  TarikhPeymankar    DateTime? @db.SmallDateTime
+  TaedPeymankar      Boolean?
+  FIdUserAbNiroo     Int?      @db.TinyInt
+  FirstNAbNiroo      String?   @db.NVarChar(20)
+  LastNAbNiroo       String?   @db.NVarChar(20)
+  TozihAbNiroo       String?   @db.NVarChar(Max)
+  TarikhAbNiroo      DateTime? @db.SmallDateTime
+  TaedAbNiroo        String?   @db.NChar(10)
+  FileNameNahaee     String?   @db.NVarChar(255)
+  FilePathNahaee     String?
+  TarikhFileNahee    DateTime? @db.SmallDateTime
+  FIdUserTaeedNahaee Int?      @db.TinyInt
+  FirstNTaeedNahaee  String?   @db.NVarChar(20)
+  LastNTaeedNahaee   String?   @db.NVarChar(20)
+  TarikhTaeedNahaee  DateTime? @db.SmallDateTime
+  TaeedNahaee        Boolean?
 }

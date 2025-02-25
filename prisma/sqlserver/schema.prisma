@@ -8,7 +8,6 @@ datasource db {
   url      = env("DATABASE_URL_SQLSERVER")
 }
 
-
 model AbadeMakhzan {
   IdMakhzan     Int           @id(map: "PK__AbadeMak__D703228772CB5AB8") @default(autoincrement()) @db.TinyInt
   TooleBala     Decimal?      @db.Decimal(4, 1)
@@ -145,32 +144,32 @@ model Flowmeter {
 }
 
 model KhatRanesh {
-  IdRanesh              Int                     @id(map: "PK__KhatRane__244AB78FA58F53F8") @default(autoincrement()) @db.TinyInt
-  RaneshName            String                  @db.NVarChar(15)
-  FIdPumpSta            Int                     @db.TinyInt
-  FIdDPipe              Int                     @db.TinyInt
-  FIdSePu               Int                     @db.TinyInt
-  FIdMeasuring          Int                     @db.TinyInt
-  Active                Boolean                 @default(true) @db.Bit
-  Abgir                 Abgir[]
-  BahrebardairProgram   BahrebardairProgram[]
+  IdRanesh                  Int                         @id(map: "PK__KhatRane__244AB78FA58F53F8") @default(autoincrement()) @db.TinyInt
+  RaneshName                String                      @db.NVarChar(15)
+  FIdPumpSta                Int                         @db.TinyInt
+  FIdDPipe                  Int                         @db.TinyInt
+  FIdSePu                   Int                         @db.TinyInt
+  FIdMeasuring              Int                         @db.TinyInt
+  Active                    Boolean                     @default(true)
+  Abgir                     Abgir[]
+  BahrebardairProgram       BahrebardairProgram[]
   BahrebardairProgramSeghli BahrebardairProgramSeghli[]
-  BahrebardariKeshtDore BahrebardariKeshtDore[]
-  BahrebardariTaghvim   BahrebardariTaghvim[]
-  EshtebahAvamel        EshtebahAvamel[]
-  FlowBehbood           FlowBehbood[]
-  Flowmeter             Flowmeter[]
-  DarajePipe            DarajePipe              @relation(fields: [FIdDPipe], references: [IdDPipe], onUpdate: NoAction, map: "FK_KhatRanesh_DarajePipe")
-  MeasuringTool         MeasuringTool           @relation(fields: [FIdMeasuring], references: [IdMeasuring], onUpdate: NoAction, map: "FK_KhatRanesh_MeasuringTool")
-  PumpStation           PumpStation             @relation(fields: [FIdPumpSta], references: [IdPumpSta], onUpdate: NoAction, map: "FK_KhatRanesh_PumpStation")
-  SeghliPump            SeghliPump              @relation(fields: [FIdSePu], references: [IdSePu], onUpdate: NoAction, map: "FK_KhatRanesh_SeghliPump")
-  KhatRaneshArea        KhatRaneshArea[]
-  KhatRaneshPump        KhatRaneshPump[]
-  KhatRaneshSegli       KhatRaneshSegli[]
-  NashtShabake          NashtShabake[]
-  NonFIT                NonFIT[]
-  TakhlieMakhzan        TakhlieMakhzan[]
-  Test                  Test[]
+  BahrebardariKeshtDore     BahrebardariKeshtDore[]
+  BahrebardariTaghvim       BahrebardariTaghvim[]
+  EshtebahAvamel            EshtebahAvamel[]
+  FlowBehbood               FlowBehbood[]
+  Flowmeter                 Flowmeter[]
+  DarajePipe                DarajePipe                  @relation(fields: [FIdDPipe], references: [IdDPipe], onUpdate: NoAction, map: "FK_KhatRanesh_DarajePipe")
+  MeasuringTool             MeasuringTool               @relation(fields: [FIdMeasuring], references: [IdMeasuring], onUpdate: NoAction, map: "FK_KhatRanesh_MeasuringTool")
+  PumpStation               PumpStation                 @relation(fields: [FIdPumpSta], references: [IdPumpSta], onUpdate: NoAction, map: "FK_KhatRanesh_PumpStation")
+  SeghliPump                SeghliPump                  @relation(fields: [FIdSePu], references: [IdSePu], onUpdate: NoAction, map: "FK_KhatRanesh_SeghliPump")
+  KhatRaneshArea            KhatRaneshArea[]
+  KhatRaneshPump            KhatRaneshPump[]
+  KhatRaneshSegli           KhatRaneshSegli[]
+  NashtShabake              NashtShabake[]
+  NonFIT                    NonFIT[]
+  TakhlieMakhzan            TakhlieMakhzan[]
+  Test                      Test[]
 }
 
 model KhatRaneshArea {
@@ -289,7 +288,7 @@ model PumpStation {
   FIdDStation   Int            @db.TinyInt
   FIdMakhzan    Int?           @db.TinyInt
   FIdDP         Int            @db.TinyInt
-  Ready         Boolean        @default(true) @db.Bit
+  Ready         Boolean        @default(true)
   KhatRanesh    KhatRanesh[]
   AbadeMakhzan  AbadeMakhzan?  @relation(fields: [FIdMakhzan], references: [IdMakhzan], onDelete: NoAction, onUpdate: NoAction, map: "FK_PumpStation_AbadeMakhzan")
   DarjeStation  DarjeStation   @relation(fields: [FIdDStation], references: [IdDStation], onUpdate: NoAction, map: "FK_PumpStation_DarjeStation")
@@ -361,29 +360,29 @@ model Test {
 }
 
 model TrikhDoreKesht {
-  IdTarDor            Int                   @id(map: "PK_TrikhDoreKesht") @default(autoincrement()) @db.SmallInt
-  FIdSal              Int                   @db.TinyInt
-  FIdDore             Int                   @db.TinyInt
-  Trikh               DateTime              @db.Date
-  TrikhKhorshidi      String                @db.NVarChar(10)
-  Dahe                Int                   @db.TinyInt
-  Sal                 Int
-  Mah                 Int                   @db.TinyInt
-  BahrebardairProgram BahrebardairProgram[]
+  IdTarDor                  Int                         @id(map: "PK_TrikhDoreKesht") @default(autoincrement()) @db.SmallInt
+  FIdSal                    Int                         @db.TinyInt
+  FIdDore                   Int                         @db.TinyInt
+  Trikh                     DateTime                    @db.Date
+  TrikhKhorshidi            String                      @db.NVarChar(10)
+  Dahe                      Int                         @db.TinyInt
+  Sal                       Int
+  Mah                       Int                         @db.TinyInt
+  BahrebardairProgram       BahrebardairProgram[]
   BahrebardairProgramSeghli BahrebardairProgramSeghli[]
-  BahrebardariTaghvim BahrebardariTaghvim[]
-  EshtebahAvamel      EshtebahAvamel[]
-  FlowBehbood         FlowBehbood[]
-  Flowmeter           Flowmeter[]
-  Kontor              Kontor[]
-  NashtShabake        NashtShabake[]
-  NonFIT              NonFIT[]
-  RainfallStation     RainfallStation[]
-  TakhlieMakhzan      TakhlieMakhzan[]
-  Test                Test[]
-  DoreKesht           DoreKesht             @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_TrikhDoreKesht_DoreKesht")
-  MahShamsi           MahShamsi             @relation(fields: [Mah], references: [IdMah], onUpdate: NoAction, map: "FK_TrikhDoreKesht_Mah")
-  SaleZeraee          SaleZeraee            @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_TrikhDoreKesht_SaleZeraee")
+  BahrebardariTaghvim       BahrebardariTaghvim[]
+  EshtebahAvamel            EshtebahAvamel[]
+  FlowBehbood               FlowBehbood[]
+  Flowmeter                 Flowmeter[]
+  Kontor                    Kontor[]
+  NashtShabake              NashtShabake[]
+  NonFIT                    NonFIT[]
+  RainfallStation           RainfallStation[]
+  TakhlieMakhzan            TakhlieMakhzan[]
+  Test                      Test[]
+  DoreKesht                 DoreKesht                   @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_TrikhDoreKesht_DoreKesht")
+  MahShamsi                 MahShamsi                   @relation(fields: [Mah], references: [IdMah], onUpdate: NoAction, map: "FK_TrikhDoreKesht_Mah")
+  SaleZeraee                SaleZeraee                  @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_TrikhDoreKesht_SaleZeraee")
 }
 
 model WeatherStation {
@@ -420,4 +419,45 @@ model ShabakeDoreKesht {
   DoreKesht             DoreKesht               @relation(fields: [FIdDore], references: [IdDore], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_DoreKesht")
   Network               Network                 @relation(fields: [FIdNet], references: [IdNet], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_Network")
   SaleZeraee            SaleZeraee              @relation(fields: [FIdSal], references: [IdSal], onUpdate: NoAction, map: "FK_ShabakeDoreKesht_SaleZeraee")
+}
+
+model TaeedProgram {
+  IdTaeedProgram     Int       @id(map: "PK__TaeedPro__0F876E0270B50505") @default(autoincrement())
+  FIdPumpSta         Int       @db.TinyInt
+  FIdSal             Int       @db.TinyInt
+  FIdDore            Int       @db.TinyInt
+  Sal                Int       @db.SmallInt
+  Mah                Int       @db.TinyInt
+  Dahe               Int       @db.TinyInt
+  FIdUserErsal       Int?      @db.TinyInt
+  FirstNErsal        String?   @db.NVarChar(20)
+  LastNErsal         String?   @db.NVarChar(20)
+  TozihErsal         String?   @db.NVarChar(Max)
+  TarikhErsal        DateTime? @db.SmallDateTime
+  FIdUserAbMantaghe  Int?      @db.TinyInt
+  FirstNAbMantaghe   String?   @db.NVarChar(20)
+  LastNAbMantaghe    String?   @db.NVarChar(20)
+  TozihAbMantaghe    String?   @db.NVarChar(Max)
+  TarikhAbMantaghe   DateTime? @db.SmallDateTime
+  TaedAbMantaghe     Boolean?
+  FIdUserPeymankar   Int?      @db.TinyInt
+  FirstNPeymankar    String?   @db.NVarChar(20)
+  LastNPeymankar     String?   @db.NVarChar(20)
+  TozihPeymankar     String?   @db.NVarChar(Max)
+  TarikhPeymankar    DateTime? @db.SmallDateTime
+  TaedPeymankar      Boolean?
+  FIdUserAbNiroo     Int?      @db.TinyInt
+  FirstNAbNiroo      String?   @db.NVarChar(20)
+  LastNAbNiroo       String?   @db.NVarChar(20)
+  TozihAbNiroo       String?   @db.NVarChar(Max)
+  TarikhAbNiroo      DateTime? @db.SmallDateTime
+  TaedAbNiroo        String?   @db.NChar(10)
+  FileNameNahaee     String?   @db.NVarChar(255)
+  FilePathNahaee     String?
+  TarikhFileNahee    DateTime? @db.SmallDateTime
+  FIdUserTaeedNahaee Int?      @db.TinyInt
+  FirstNTaeedNahaee  String?   @db.NVarChar(20)
+  LastNTaeedNahaee   String?   @db.NVarChar(20)
+  TarikhTaeedNahaee  DateTime? @db.SmallDateTime
+  TaeedNahaee        Boolean?
 }

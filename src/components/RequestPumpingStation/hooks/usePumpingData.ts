@@ -17,14 +17,17 @@ export const usePumpingData = (
   idPumpStation: number,
   selectedMah: number,
   sal: number,
-  selectedDahe: number,
+  mah: number,
   dahe: number,
+  selectedDahe: number,
 ) => {
   const {
     sal: currentSal,
     mah: currentMah,
     dahe: currentDahe,
   } = getCurrentSalMahDahe();
+  const [taedAbMantaghe, setTaedAbMantaghe] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
   const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
   const [pumpData, setPumpData] = useState<{
@@ -36,6 +39,29 @@ export const usePumpingData = (
   const [finalVolumes, setFinalVolumes] = useState<{[key: number]: number}>({});
   const [mahList, setMahList] = useState<MahItem[]>([]);
 
+  useEffect(() => {
+    const fetchTaedAbMantaghe = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&FIdPumpSta=${idPumpStation}`,
+        );
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const data = await response.json();
+        setTaedAbMantaghe(data);
+        console.log('data: ', data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unknown error occurred',
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTaedAbMantaghe();
+  }, [sal, selectedMah, dahe, idPumpStation]);
+  console.log('TaedAbMantaghe: ', taedAbMantaghe);
   useEffect(() => {
     const fetchMahList = async () => {
       try {
@@ -220,6 +246,8 @@ export const usePumpingData = (
     records, // اضافه کردن records به خروجی
     message, // اضافه کردن message به خروجی
     finalVolumes, // اضافه کردن finalVolumes به خروجی
+    taedAbMantaghe,
+    error,
   };
 };
 

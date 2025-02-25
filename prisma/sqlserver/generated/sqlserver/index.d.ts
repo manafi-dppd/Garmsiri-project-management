@@ -213,6 +213,11 @@ export type MahShamsi = $Result.DefaultSelection<Prisma.$MahShamsiPayload>
  * 
  */
 export type ShabakeDoreKesht = $Result.DefaultSelection<Prisma.$ShabakeDoreKeshtPayload>
+/**
+ * Model TaeedProgram
+ * 
+ */
+export type TaeedProgram = $Result.DefaultSelection<Prisma.$TaeedProgramPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -233,6 +238,7 @@ export class PrismaClient<
   U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
+  someTable: any;
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
 
     /**
@@ -738,6 +744,16 @@ export class PrismaClient<
     * ```
     */
   get shabakeDoreKesht(): Prisma.ShabakeDoreKeshtDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.taeedProgram`: Exposes CRUD operations for the **TaeedProgram** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TaeedPrograms
+    * const taeedPrograms = await prisma.taeedProgram.findMany()
+    * ```
+    */
+  get taeedProgram(): Prisma.TaeedProgramDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1217,7 +1233,8 @@ export namespace Prisma {
     WeatherStation: 'WeatherStation',
     sysdiagrams: 'sysdiagrams',
     MahShamsi: 'MahShamsi',
-    ShabakeDoreKesht: 'ShabakeDoreKesht'
+    ShabakeDoreKesht: 'ShabakeDoreKesht',
+    TaeedProgram: 'TaeedProgram'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1233,7 +1250,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "abadeMakhzan" | "abgir" | "bahrebardairProgram" | "bahrebardairProgramSeghli" | "bahrebardariKeshtDore" | "bahrebardariTaghvim" | "bareshMotaleat" | "darajePipe" | "deliveryPoints" | "darjeStation" | "doreKesht" | "eshtebahAvamel" | "flowBehbood" | "flowmeter" | "khatRanesh" | "khatRaneshArea" | "khatRaneshPump" | "khatRaneshSegli" | "kontor" | "land" | "measuringTool" | "nashtShabake" | "network" | "noeKesht" | "noeMahsool" | "nonFIT" | "pumpStation" | "pumpType" | "rainfallStation" | "rainfallType" | "saleZeraee" | "seghliPump" | "systemPart" | "takhlieMakhzan" | "test" | "trikhDoreKesht" | "weatherStation" | "sysdiagrams" | "mahShamsi" | "shabakeDoreKesht"
+      modelProps: "abadeMakhzan" | "abgir" | "bahrebardairProgram" | "bahrebardairProgramSeghli" | "bahrebardariKeshtDore" | "bahrebardariTaghvim" | "bareshMotaleat" | "darajePipe" | "deliveryPoints" | "darjeStation" | "doreKesht" | "eshtebahAvamel" | "flowBehbood" | "flowmeter" | "khatRanesh" | "khatRaneshArea" | "khatRaneshPump" | "khatRaneshSegli" | "kontor" | "land" | "measuringTool" | "nashtShabake" | "network" | "noeKesht" | "noeMahsool" | "nonFIT" | "pumpStation" | "pumpType" | "rainfallStation" | "rainfallType" | "saleZeraee" | "seghliPump" | "systemPart" | "takhlieMakhzan" | "test" | "trikhDoreKesht" | "weatherStation" | "sysdiagrams" | "mahShamsi" | "shabakeDoreKesht" | "taeedProgram"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3877,6 +3894,72 @@ export namespace Prisma {
           }
         }
       }
+      TaeedProgram: {
+        payload: Prisma.$TaeedProgramPayload<ExtArgs>
+        fields: Prisma.TaeedProgramFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaeedProgramFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaeedProgramFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          findFirst: {
+            args: Prisma.TaeedProgramFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaeedProgramFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          findMany: {
+            args: Prisma.TaeedProgramFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>[]
+          }
+          create: {
+            args: Prisma.TaeedProgramCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          createMany: {
+            args: Prisma.TaeedProgramCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TaeedProgramDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          update: {
+            args: Prisma.TaeedProgramUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaeedProgramDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaeedProgramUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TaeedProgramUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaeedProgramPayload>
+          }
+          aggregate: {
+            args: Prisma.TaeedProgramAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTaeedProgram>
+          }
+          groupBy: {
+            args: Prisma.TaeedProgramGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaeedProgramGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaeedProgramCountArgs<ExtArgs>
+            result: $Utils.Optional<TaeedProgramCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4001,6 +4084,7 @@ export namespace Prisma {
     sysdiagrams?: sysdiagramsOmit
     mahShamsi?: MahShamsiOmit
     shabakeDoreKesht?: ShabakeDoreKeshtOmit
+    taeedProgram?: TaeedProgramOmit
   }
 
   /* Types for Logging */
@@ -45146,6 +45230,1328 @@ export namespace Prisma {
 
 
   /**
+   * Model TaeedProgram
+   */
+
+  export type AggregateTaeedProgram = {
+    _count: TaeedProgramCountAggregateOutputType | null
+    _avg: TaeedProgramAvgAggregateOutputType | null
+    _sum: TaeedProgramSumAggregateOutputType | null
+    _min: TaeedProgramMinAggregateOutputType | null
+    _max: TaeedProgramMaxAggregateOutputType | null
+  }
+
+  export type TaeedProgramAvgAggregateOutputType = {
+    IdTaeedProgram: number | null
+    FIdPumpSta: number | null
+    FIdSal: number | null
+    FIdDore: number | null
+    Sal: number | null
+    Mah: number | null
+    Dahe: number | null
+    FIdUserErsal: number | null
+    FIdUserAbMantaghe: number | null
+    FIdUserPeymankar: number | null
+    FIdUserAbNiroo: number | null
+    FIdUserTaeedNahaee: number | null
+  }
+
+  export type TaeedProgramSumAggregateOutputType = {
+    IdTaeedProgram: number | null
+    FIdPumpSta: number | null
+    FIdSal: number | null
+    FIdDore: number | null
+    Sal: number | null
+    Mah: number | null
+    Dahe: number | null
+    FIdUserErsal: number | null
+    FIdUserAbMantaghe: number | null
+    FIdUserPeymankar: number | null
+    FIdUserAbNiroo: number | null
+    FIdUserTaeedNahaee: number | null
+  }
+
+  export type TaeedProgramMinAggregateOutputType = {
+    IdTaeedProgram: number | null
+    FIdPumpSta: number | null
+    FIdSal: number | null
+    FIdDore: number | null
+    Sal: number | null
+    Mah: number | null
+    Dahe: number | null
+    FIdUserErsal: number | null
+    FirstNErsal: string | null
+    LastNErsal: string | null
+    TozihErsal: string | null
+    TarikhErsal: Date | null
+    FIdUserAbMantaghe: number | null
+    FirstNAbMantaghe: string | null
+    LastNAbMantaghe: string | null
+    TozihAbMantaghe: string | null
+    TarikhAbMantaghe: Date | null
+    TaedAbMantaghe: boolean | null
+    FIdUserPeymankar: number | null
+    FirstNPeymankar: string | null
+    LastNPeymankar: string | null
+    TozihPeymankar: string | null
+    TarikhPeymankar: Date | null
+    TaedPeymankar: boolean | null
+    FIdUserAbNiroo: number | null
+    FirstNAbNiroo: string | null
+    LastNAbNiroo: string | null
+    TozihAbNiroo: string | null
+    TarikhAbNiroo: Date | null
+    TaedAbNiroo: string | null
+    FileNameNahaee: string | null
+    FilePathNahaee: string | null
+    TarikhFileNahee: Date | null
+    FIdUserTaeedNahaee: number | null
+    FirstNTaeedNahaee: string | null
+    LastNTaeedNahaee: string | null
+    TarikhTaeedNahaee: Date | null
+    TaeedNahaee: boolean | null
+  }
+
+  export type TaeedProgramMaxAggregateOutputType = {
+    IdTaeedProgram: number | null
+    FIdPumpSta: number | null
+    FIdSal: number | null
+    FIdDore: number | null
+    Sal: number | null
+    Mah: number | null
+    Dahe: number | null
+    FIdUserErsal: number | null
+    FirstNErsal: string | null
+    LastNErsal: string | null
+    TozihErsal: string | null
+    TarikhErsal: Date | null
+    FIdUserAbMantaghe: number | null
+    FirstNAbMantaghe: string | null
+    LastNAbMantaghe: string | null
+    TozihAbMantaghe: string | null
+    TarikhAbMantaghe: Date | null
+    TaedAbMantaghe: boolean | null
+    FIdUserPeymankar: number | null
+    FirstNPeymankar: string | null
+    LastNPeymankar: string | null
+    TozihPeymankar: string | null
+    TarikhPeymankar: Date | null
+    TaedPeymankar: boolean | null
+    FIdUserAbNiroo: number | null
+    FirstNAbNiroo: string | null
+    LastNAbNiroo: string | null
+    TozihAbNiroo: string | null
+    TarikhAbNiroo: Date | null
+    TaedAbNiroo: string | null
+    FileNameNahaee: string | null
+    FilePathNahaee: string | null
+    TarikhFileNahee: Date | null
+    FIdUserTaeedNahaee: number | null
+    FirstNTaeedNahaee: string | null
+    LastNTaeedNahaee: string | null
+    TarikhTaeedNahaee: Date | null
+    TaeedNahaee: boolean | null
+  }
+
+  export type TaeedProgramCountAggregateOutputType = {
+    IdTaeedProgram: number
+    FIdPumpSta: number
+    FIdSal: number
+    FIdDore: number
+    Sal: number
+    Mah: number
+    Dahe: number
+    FIdUserErsal: number
+    FirstNErsal: number
+    LastNErsal: number
+    TozihErsal: number
+    TarikhErsal: number
+    FIdUserAbMantaghe: number
+    FirstNAbMantaghe: number
+    LastNAbMantaghe: number
+    TozihAbMantaghe: number
+    TarikhAbMantaghe: number
+    TaedAbMantaghe: number
+    FIdUserPeymankar: number
+    FirstNPeymankar: number
+    LastNPeymankar: number
+    TozihPeymankar: number
+    TarikhPeymankar: number
+    TaedPeymankar: number
+    FIdUserAbNiroo: number
+    FirstNAbNiroo: number
+    LastNAbNiroo: number
+    TozihAbNiroo: number
+    TarikhAbNiroo: number
+    TaedAbNiroo: number
+    FileNameNahaee: number
+    FilePathNahaee: number
+    TarikhFileNahee: number
+    FIdUserTaeedNahaee: number
+    FirstNTaeedNahaee: number
+    LastNTaeedNahaee: number
+    TarikhTaeedNahaee: number
+    TaeedNahaee: number
+    _all: number
+  }
+
+
+  export type TaeedProgramAvgAggregateInputType = {
+    IdTaeedProgram?: true
+    FIdPumpSta?: true
+    FIdSal?: true
+    FIdDore?: true
+    Sal?: true
+    Mah?: true
+    Dahe?: true
+    FIdUserErsal?: true
+    FIdUserAbMantaghe?: true
+    FIdUserPeymankar?: true
+    FIdUserAbNiroo?: true
+    FIdUserTaeedNahaee?: true
+  }
+
+  export type TaeedProgramSumAggregateInputType = {
+    IdTaeedProgram?: true
+    FIdPumpSta?: true
+    FIdSal?: true
+    FIdDore?: true
+    Sal?: true
+    Mah?: true
+    Dahe?: true
+    FIdUserErsal?: true
+    FIdUserAbMantaghe?: true
+    FIdUserPeymankar?: true
+    FIdUserAbNiroo?: true
+    FIdUserTaeedNahaee?: true
+  }
+
+  export type TaeedProgramMinAggregateInputType = {
+    IdTaeedProgram?: true
+    FIdPumpSta?: true
+    FIdSal?: true
+    FIdDore?: true
+    Sal?: true
+    Mah?: true
+    Dahe?: true
+    FIdUserErsal?: true
+    FirstNErsal?: true
+    LastNErsal?: true
+    TozihErsal?: true
+    TarikhErsal?: true
+    FIdUserAbMantaghe?: true
+    FirstNAbMantaghe?: true
+    LastNAbMantaghe?: true
+    TozihAbMantaghe?: true
+    TarikhAbMantaghe?: true
+    TaedAbMantaghe?: true
+    FIdUserPeymankar?: true
+    FirstNPeymankar?: true
+    LastNPeymankar?: true
+    TozihPeymankar?: true
+    TarikhPeymankar?: true
+    TaedPeymankar?: true
+    FIdUserAbNiroo?: true
+    FirstNAbNiroo?: true
+    LastNAbNiroo?: true
+    TozihAbNiroo?: true
+    TarikhAbNiroo?: true
+    TaedAbNiroo?: true
+    FileNameNahaee?: true
+    FilePathNahaee?: true
+    TarikhFileNahee?: true
+    FIdUserTaeedNahaee?: true
+    FirstNTaeedNahaee?: true
+    LastNTaeedNahaee?: true
+    TarikhTaeedNahaee?: true
+    TaeedNahaee?: true
+  }
+
+  export type TaeedProgramMaxAggregateInputType = {
+    IdTaeedProgram?: true
+    FIdPumpSta?: true
+    FIdSal?: true
+    FIdDore?: true
+    Sal?: true
+    Mah?: true
+    Dahe?: true
+    FIdUserErsal?: true
+    FirstNErsal?: true
+    LastNErsal?: true
+    TozihErsal?: true
+    TarikhErsal?: true
+    FIdUserAbMantaghe?: true
+    FirstNAbMantaghe?: true
+    LastNAbMantaghe?: true
+    TozihAbMantaghe?: true
+    TarikhAbMantaghe?: true
+    TaedAbMantaghe?: true
+    FIdUserPeymankar?: true
+    FirstNPeymankar?: true
+    LastNPeymankar?: true
+    TozihPeymankar?: true
+    TarikhPeymankar?: true
+    TaedPeymankar?: true
+    FIdUserAbNiroo?: true
+    FirstNAbNiroo?: true
+    LastNAbNiroo?: true
+    TozihAbNiroo?: true
+    TarikhAbNiroo?: true
+    TaedAbNiroo?: true
+    FileNameNahaee?: true
+    FilePathNahaee?: true
+    TarikhFileNahee?: true
+    FIdUserTaeedNahaee?: true
+    FirstNTaeedNahaee?: true
+    LastNTaeedNahaee?: true
+    TarikhTaeedNahaee?: true
+    TaeedNahaee?: true
+  }
+
+  export type TaeedProgramCountAggregateInputType = {
+    IdTaeedProgram?: true
+    FIdPumpSta?: true
+    FIdSal?: true
+    FIdDore?: true
+    Sal?: true
+    Mah?: true
+    Dahe?: true
+    FIdUserErsal?: true
+    FirstNErsal?: true
+    LastNErsal?: true
+    TozihErsal?: true
+    TarikhErsal?: true
+    FIdUserAbMantaghe?: true
+    FirstNAbMantaghe?: true
+    LastNAbMantaghe?: true
+    TozihAbMantaghe?: true
+    TarikhAbMantaghe?: true
+    TaedAbMantaghe?: true
+    FIdUserPeymankar?: true
+    FirstNPeymankar?: true
+    LastNPeymankar?: true
+    TozihPeymankar?: true
+    TarikhPeymankar?: true
+    TaedPeymankar?: true
+    FIdUserAbNiroo?: true
+    FirstNAbNiroo?: true
+    LastNAbNiroo?: true
+    TozihAbNiroo?: true
+    TarikhAbNiroo?: true
+    TaedAbNiroo?: true
+    FileNameNahaee?: true
+    FilePathNahaee?: true
+    TarikhFileNahee?: true
+    FIdUserTaeedNahaee?: true
+    FirstNTaeedNahaee?: true
+    LastNTaeedNahaee?: true
+    TarikhTaeedNahaee?: true
+    TaeedNahaee?: true
+    _all?: true
+  }
+
+  export type TaeedProgramAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaeedProgram to aggregate.
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaeedPrograms to fetch.
+     */
+    orderBy?: TaeedProgramOrderByWithRelationInput | TaeedProgramOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaeedProgramWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaeedPrograms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaeedPrograms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TaeedPrograms
+    **/
+    _count?: true | TaeedProgramCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TaeedProgramAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TaeedProgramSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaeedProgramMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaeedProgramMaxAggregateInputType
+  }
+
+  export type GetTaeedProgramAggregateType<T extends TaeedProgramAggregateArgs> = {
+        [P in keyof T & keyof AggregateTaeedProgram]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTaeedProgram[P]>
+      : GetScalarType<T[P], AggregateTaeedProgram[P]>
+  }
+
+
+
+
+  export type TaeedProgramGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaeedProgramWhereInput
+    orderBy?: TaeedProgramOrderByWithAggregationInput | TaeedProgramOrderByWithAggregationInput[]
+    by: TaeedProgramScalarFieldEnum[] | TaeedProgramScalarFieldEnum
+    having?: TaeedProgramScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaeedProgramCountAggregateInputType | true
+    _avg?: TaeedProgramAvgAggregateInputType
+    _sum?: TaeedProgramSumAggregateInputType
+    _min?: TaeedProgramMinAggregateInputType
+    _max?: TaeedProgramMaxAggregateInputType
+  }
+
+  export type TaeedProgramGroupByOutputType = {
+    IdTaeedProgram: number
+    FIdPumpSta: number
+    FIdSal: number
+    FIdDore: number
+    Sal: number
+    Mah: number
+    Dahe: number
+    FIdUserErsal: number | null
+    FirstNErsal: string | null
+    LastNErsal: string | null
+    TozihErsal: string | null
+    TarikhErsal: Date | null
+    FIdUserAbMantaghe: number | null
+    FirstNAbMantaghe: string | null
+    LastNAbMantaghe: string | null
+    TozihAbMantaghe: string | null
+    TarikhAbMantaghe: Date | null
+    TaedAbMantaghe: boolean | null
+    FIdUserPeymankar: number | null
+    FirstNPeymankar: string | null
+    LastNPeymankar: string | null
+    TozihPeymankar: string | null
+    TarikhPeymankar: Date | null
+    TaedPeymankar: boolean | null
+    FIdUserAbNiroo: number | null
+    FirstNAbNiroo: string | null
+    LastNAbNiroo: string | null
+    TozihAbNiroo: string | null
+    TarikhAbNiroo: Date | null
+    TaedAbNiroo: string | null
+    FileNameNahaee: string | null
+    FilePathNahaee: string | null
+    TarikhFileNahee: Date | null
+    FIdUserTaeedNahaee: number | null
+    FirstNTaeedNahaee: string | null
+    LastNTaeedNahaee: string | null
+    TarikhTaeedNahaee: Date | null
+    TaeedNahaee: boolean | null
+    _count: TaeedProgramCountAggregateOutputType | null
+    _avg: TaeedProgramAvgAggregateOutputType | null
+    _sum: TaeedProgramSumAggregateOutputType | null
+    _min: TaeedProgramMinAggregateOutputType | null
+    _max: TaeedProgramMaxAggregateOutputType | null
+  }
+
+  type GetTaeedProgramGroupByPayload<T extends TaeedProgramGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaeedProgramGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaeedProgramGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaeedProgramGroupByOutputType[P]>
+            : GetScalarType<T[P], TaeedProgramGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaeedProgramSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    IdTaeedProgram?: boolean
+    FIdPumpSta?: boolean
+    FIdSal?: boolean
+    FIdDore?: boolean
+    Sal?: boolean
+    Mah?: boolean
+    Dahe?: boolean
+    FIdUserErsal?: boolean
+    FirstNErsal?: boolean
+    LastNErsal?: boolean
+    TozihErsal?: boolean
+    TarikhErsal?: boolean
+    FIdUserAbMantaghe?: boolean
+    FirstNAbMantaghe?: boolean
+    LastNAbMantaghe?: boolean
+    TozihAbMantaghe?: boolean
+    TarikhAbMantaghe?: boolean
+    TaedAbMantaghe?: boolean
+    FIdUserPeymankar?: boolean
+    FirstNPeymankar?: boolean
+    LastNPeymankar?: boolean
+    TozihPeymankar?: boolean
+    TarikhPeymankar?: boolean
+    TaedPeymankar?: boolean
+    FIdUserAbNiroo?: boolean
+    FirstNAbNiroo?: boolean
+    LastNAbNiroo?: boolean
+    TozihAbNiroo?: boolean
+    TarikhAbNiroo?: boolean
+    TaedAbNiroo?: boolean
+    FileNameNahaee?: boolean
+    FilePathNahaee?: boolean
+    TarikhFileNahee?: boolean
+    FIdUserTaeedNahaee?: boolean
+    FirstNTaeedNahaee?: boolean
+    LastNTaeedNahaee?: boolean
+    TarikhTaeedNahaee?: boolean
+    TaeedNahaee?: boolean
+  }, ExtArgs["result"]["taeedProgram"]>
+
+
+
+  export type TaeedProgramSelectScalar = {
+    IdTaeedProgram?: boolean
+    FIdPumpSta?: boolean
+    FIdSal?: boolean
+    FIdDore?: boolean
+    Sal?: boolean
+    Mah?: boolean
+    Dahe?: boolean
+    FIdUserErsal?: boolean
+    FirstNErsal?: boolean
+    LastNErsal?: boolean
+    TozihErsal?: boolean
+    TarikhErsal?: boolean
+    FIdUserAbMantaghe?: boolean
+    FirstNAbMantaghe?: boolean
+    LastNAbMantaghe?: boolean
+    TozihAbMantaghe?: boolean
+    TarikhAbMantaghe?: boolean
+    TaedAbMantaghe?: boolean
+    FIdUserPeymankar?: boolean
+    FirstNPeymankar?: boolean
+    LastNPeymankar?: boolean
+    TozihPeymankar?: boolean
+    TarikhPeymankar?: boolean
+    TaedPeymankar?: boolean
+    FIdUserAbNiroo?: boolean
+    FirstNAbNiroo?: boolean
+    LastNAbNiroo?: boolean
+    TozihAbNiroo?: boolean
+    TarikhAbNiroo?: boolean
+    TaedAbNiroo?: boolean
+    FileNameNahaee?: boolean
+    FilePathNahaee?: boolean
+    TarikhFileNahee?: boolean
+    FIdUserTaeedNahaee?: boolean
+    FirstNTaeedNahaee?: boolean
+    LastNTaeedNahaee?: boolean
+    TarikhTaeedNahaee?: boolean
+    TaeedNahaee?: boolean
+  }
+
+  export type TaeedProgramOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"IdTaeedProgram" | "FIdPumpSta" | "FIdSal" | "FIdDore" | "Sal" | "Mah" | "Dahe" | "FIdUserErsal" | "FirstNErsal" | "LastNErsal" | "TozihErsal" | "TarikhErsal" | "FIdUserAbMantaghe" | "FirstNAbMantaghe" | "LastNAbMantaghe" | "TozihAbMantaghe" | "TarikhAbMantaghe" | "TaedAbMantaghe" | "FIdUserPeymankar" | "FirstNPeymankar" | "LastNPeymankar" | "TozihPeymankar" | "TarikhPeymankar" | "TaedPeymankar" | "FIdUserAbNiroo" | "FirstNAbNiroo" | "LastNAbNiroo" | "TozihAbNiroo" | "TarikhAbNiroo" | "TaedAbNiroo" | "FileNameNahaee" | "FilePathNahaee" | "TarikhFileNahee" | "FIdUserTaeedNahaee" | "FirstNTaeedNahaee" | "LastNTaeedNahaee" | "TarikhTaeedNahaee" | "TaeedNahaee", ExtArgs["result"]["taeedProgram"]>
+
+  export type $TaeedProgramPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TaeedProgram"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      IdTaeedProgram: number
+      FIdPumpSta: number
+      FIdSal: number
+      FIdDore: number
+      Sal: number
+      Mah: number
+      Dahe: number
+      FIdUserErsal: number | null
+      FirstNErsal: string | null
+      LastNErsal: string | null
+      TozihErsal: string | null
+      TarikhErsal: Date | null
+      FIdUserAbMantaghe: number | null
+      FirstNAbMantaghe: string | null
+      LastNAbMantaghe: string | null
+      TozihAbMantaghe: string | null
+      TarikhAbMantaghe: Date | null
+      TaedAbMantaghe: boolean | null
+      FIdUserPeymankar: number | null
+      FirstNPeymankar: string | null
+      LastNPeymankar: string | null
+      TozihPeymankar: string | null
+      TarikhPeymankar: Date | null
+      TaedPeymankar: boolean | null
+      FIdUserAbNiroo: number | null
+      FirstNAbNiroo: string | null
+      LastNAbNiroo: string | null
+      TozihAbNiroo: string | null
+      TarikhAbNiroo: Date | null
+      TaedAbNiroo: string | null
+      FileNameNahaee: string | null
+      FilePathNahaee: string | null
+      TarikhFileNahee: Date | null
+      FIdUserTaeedNahaee: number | null
+      FirstNTaeedNahaee: string | null
+      LastNTaeedNahaee: string | null
+      TarikhTaeedNahaee: Date | null
+      TaeedNahaee: boolean | null
+    }, ExtArgs["result"]["taeedProgram"]>
+    composites: {}
+  }
+
+  type TaeedProgramGetPayload<S extends boolean | null | undefined | TaeedProgramDefaultArgs> = $Result.GetResult<Prisma.$TaeedProgramPayload, S>
+
+  type TaeedProgramCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaeedProgramFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaeedProgramCountAggregateInputType | true
+    }
+
+  export interface TaeedProgramDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TaeedProgram'], meta: { name: 'TaeedProgram' } }
+    /**
+     * Find zero or one TaeedProgram that matches the filter.
+     * @param {TaeedProgramFindUniqueArgs} args - Arguments to find a TaeedProgram
+     * @example
+     * // Get one TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaeedProgramFindUniqueArgs>(args: SelectSubset<T, TaeedProgramFindUniqueArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find one TaeedProgram that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaeedProgramFindUniqueOrThrowArgs} args - Arguments to find a TaeedProgram
+     * @example
+     * // Get one TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaeedProgramFindUniqueOrThrowArgs>(args: SelectSubset<T, TaeedProgramFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first TaeedProgram that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramFindFirstArgs} args - Arguments to find a TaeedProgram
+     * @example
+     * // Get one TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaeedProgramFindFirstArgs>(args?: SelectSubset<T, TaeedProgramFindFirstArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first TaeedProgram that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramFindFirstOrThrowArgs} args - Arguments to find a TaeedProgram
+     * @example
+     * // Get one TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaeedProgramFindFirstOrThrowArgs>(args?: SelectSubset<T, TaeedProgramFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find zero or more TaeedPrograms that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TaeedPrograms
+     * const taeedPrograms = await prisma.taeedProgram.findMany()
+     * 
+     * // Get first 10 TaeedPrograms
+     * const taeedPrograms = await prisma.taeedProgram.findMany({ take: 10 })
+     * 
+     * // Only select the `IdTaeedProgram`
+     * const taeedProgramWithIdTaeedProgramOnly = await prisma.taeedProgram.findMany({ select: { IdTaeedProgram: true } })
+     * 
+     */
+    findMany<T extends TaeedProgramFindManyArgs>(args?: SelectSubset<T, TaeedProgramFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "findMany", ClientOptions>>
+
+    /**
+     * Create a TaeedProgram.
+     * @param {TaeedProgramCreateArgs} args - Arguments to create a TaeedProgram.
+     * @example
+     * // Create one TaeedProgram
+     * const TaeedProgram = await prisma.taeedProgram.create({
+     *   data: {
+     *     // ... data to create a TaeedProgram
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaeedProgramCreateArgs>(args: SelectSubset<T, TaeedProgramCreateArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Create many TaeedPrograms.
+     * @param {TaeedProgramCreateManyArgs} args - Arguments to create many TaeedPrograms.
+     * @example
+     * // Create many TaeedPrograms
+     * const taeedProgram = await prisma.taeedProgram.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaeedProgramCreateManyArgs>(args?: SelectSubset<T, TaeedProgramCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TaeedProgram.
+     * @param {TaeedProgramDeleteArgs} args - Arguments to delete one TaeedProgram.
+     * @example
+     * // Delete one TaeedProgram
+     * const TaeedProgram = await prisma.taeedProgram.delete({
+     *   where: {
+     *     // ... filter to delete one TaeedProgram
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaeedProgramDeleteArgs>(args: SelectSubset<T, TaeedProgramDeleteArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Update one TaeedProgram.
+     * @param {TaeedProgramUpdateArgs} args - Arguments to update one TaeedProgram.
+     * @example
+     * // Update one TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaeedProgramUpdateArgs>(args: SelectSubset<T, TaeedProgramUpdateArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Delete zero or more TaeedPrograms.
+     * @param {TaeedProgramDeleteManyArgs} args - Arguments to filter TaeedPrograms to delete.
+     * @example
+     * // Delete a few TaeedPrograms
+     * const { count } = await prisma.taeedProgram.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaeedProgramDeleteManyArgs>(args?: SelectSubset<T, TaeedProgramDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaeedPrograms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TaeedPrograms
+     * const taeedProgram = await prisma.taeedProgram.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaeedProgramUpdateManyArgs>(args: SelectSubset<T, TaeedProgramUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TaeedProgram.
+     * @param {TaeedProgramUpsertArgs} args - Arguments to update or create a TaeedProgram.
+     * @example
+     * // Update or create a TaeedProgram
+     * const taeedProgram = await prisma.taeedProgram.upsert({
+     *   create: {
+     *     // ... data to create a TaeedProgram
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TaeedProgram we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaeedProgramUpsertArgs>(args: SelectSubset<T, TaeedProgramUpsertArgs<ExtArgs>>): Prisma__TaeedProgramClient<$Result.GetResult<Prisma.$TaeedProgramPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+
+
+    /**
+     * Count the number of TaeedPrograms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramCountArgs} args - Arguments to filter TaeedPrograms to count.
+     * @example
+     * // Count the number of TaeedPrograms
+     * const count = await prisma.taeedProgram.count({
+     *   where: {
+     *     // ... the filter for the TaeedPrograms we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaeedProgramCountArgs>(
+      args?: Subset<T, TaeedProgramCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaeedProgramCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TaeedProgram.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaeedProgramAggregateArgs>(args: Subset<T, TaeedProgramAggregateArgs>): Prisma.PrismaPromise<GetTaeedProgramAggregateType<T>>
+
+    /**
+     * Group by TaeedProgram.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaeedProgramGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaeedProgramGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaeedProgramGroupByArgs['orderBy'] }
+        : { orderBy?: TaeedProgramGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaeedProgramGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaeedProgramGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TaeedProgram model
+   */
+  readonly fields: TaeedProgramFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TaeedProgram.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaeedProgramClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TaeedProgram model
+   */ 
+  interface TaeedProgramFieldRefs {
+    readonly IdTaeedProgram: FieldRef<"TaeedProgram", 'Int'>
+    readonly FIdPumpSta: FieldRef<"TaeedProgram", 'Int'>
+    readonly FIdSal: FieldRef<"TaeedProgram", 'Int'>
+    readonly FIdDore: FieldRef<"TaeedProgram", 'Int'>
+    readonly Sal: FieldRef<"TaeedProgram", 'Int'>
+    readonly Mah: FieldRef<"TaeedProgram", 'Int'>
+    readonly Dahe: FieldRef<"TaeedProgram", 'Int'>
+    readonly FIdUserErsal: FieldRef<"TaeedProgram", 'Int'>
+    readonly FirstNErsal: FieldRef<"TaeedProgram", 'String'>
+    readonly LastNErsal: FieldRef<"TaeedProgram", 'String'>
+    readonly TozihErsal: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhErsal: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly FIdUserAbMantaghe: FieldRef<"TaeedProgram", 'Int'>
+    readonly FirstNAbMantaghe: FieldRef<"TaeedProgram", 'String'>
+    readonly LastNAbMantaghe: FieldRef<"TaeedProgram", 'String'>
+    readonly TozihAbMantaghe: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhAbMantaghe: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly TaedAbMantaghe: FieldRef<"TaeedProgram", 'Boolean'>
+    readonly FIdUserPeymankar: FieldRef<"TaeedProgram", 'Int'>
+    readonly FirstNPeymankar: FieldRef<"TaeedProgram", 'String'>
+    readonly LastNPeymankar: FieldRef<"TaeedProgram", 'String'>
+    readonly TozihPeymankar: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhPeymankar: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly TaedPeymankar: FieldRef<"TaeedProgram", 'Boolean'>
+    readonly FIdUserAbNiroo: FieldRef<"TaeedProgram", 'Int'>
+    readonly FirstNAbNiroo: FieldRef<"TaeedProgram", 'String'>
+    readonly LastNAbNiroo: FieldRef<"TaeedProgram", 'String'>
+    readonly TozihAbNiroo: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhAbNiroo: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly TaedAbNiroo: FieldRef<"TaeedProgram", 'String'>
+    readonly FileNameNahaee: FieldRef<"TaeedProgram", 'String'>
+    readonly FilePathNahaee: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhFileNahee: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly FIdUserTaeedNahaee: FieldRef<"TaeedProgram", 'Int'>
+    readonly FirstNTaeedNahaee: FieldRef<"TaeedProgram", 'String'>
+    readonly LastNTaeedNahaee: FieldRef<"TaeedProgram", 'String'>
+    readonly TarikhTaeedNahaee: FieldRef<"TaeedProgram", 'DateTime'>
+    readonly TaeedNahaee: FieldRef<"TaeedProgram", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TaeedProgram findUnique
+   */
+  export type TaeedProgramFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter, which TaeedProgram to fetch.
+     */
+    where: TaeedProgramWhereUniqueInput
+  }
+
+  /**
+   * TaeedProgram findUniqueOrThrow
+   */
+  export type TaeedProgramFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter, which TaeedProgram to fetch.
+     */
+    where: TaeedProgramWhereUniqueInput
+  }
+
+  /**
+   * TaeedProgram findFirst
+   */
+  export type TaeedProgramFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter, which TaeedProgram to fetch.
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaeedPrograms to fetch.
+     */
+    orderBy?: TaeedProgramOrderByWithRelationInput | TaeedProgramOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaeedPrograms.
+     */
+    cursor?: TaeedProgramWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaeedPrograms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaeedPrograms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaeedPrograms.
+     */
+    distinct?: TaeedProgramScalarFieldEnum | TaeedProgramScalarFieldEnum[]
+  }
+
+  /**
+   * TaeedProgram findFirstOrThrow
+   */
+  export type TaeedProgramFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter, which TaeedProgram to fetch.
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaeedPrograms to fetch.
+     */
+    orderBy?: TaeedProgramOrderByWithRelationInput | TaeedProgramOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaeedPrograms.
+     */
+    cursor?: TaeedProgramWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaeedPrograms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaeedPrograms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaeedPrograms.
+     */
+    distinct?: TaeedProgramScalarFieldEnum | TaeedProgramScalarFieldEnum[]
+  }
+
+  /**
+   * TaeedProgram findMany
+   */
+  export type TaeedProgramFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter, which TaeedPrograms to fetch.
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaeedPrograms to fetch.
+     */
+    orderBy?: TaeedProgramOrderByWithRelationInput | TaeedProgramOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TaeedPrograms.
+     */
+    cursor?: TaeedProgramWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaeedPrograms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaeedPrograms.
+     */
+    skip?: number
+    distinct?: TaeedProgramScalarFieldEnum | TaeedProgramScalarFieldEnum[]
+  }
+
+  /**
+   * TaeedProgram create
+   */
+  export type TaeedProgramCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TaeedProgram.
+     */
+    data: XOR<TaeedProgramCreateInput, TaeedProgramUncheckedCreateInput>
+  }
+
+  /**
+   * TaeedProgram createMany
+   */
+  export type TaeedProgramCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TaeedPrograms.
+     */
+    data: TaeedProgramCreateManyInput | TaeedProgramCreateManyInput[]
+  }
+
+  /**
+   * TaeedProgram update
+   */
+  export type TaeedProgramUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TaeedProgram.
+     */
+    data: XOR<TaeedProgramUpdateInput, TaeedProgramUncheckedUpdateInput>
+    /**
+     * Choose, which TaeedProgram to update.
+     */
+    where: TaeedProgramWhereUniqueInput
+  }
+
+  /**
+   * TaeedProgram updateMany
+   */
+  export type TaeedProgramUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TaeedPrograms.
+     */
+    data: XOR<TaeedProgramUpdateManyMutationInput, TaeedProgramUncheckedUpdateManyInput>
+    /**
+     * Filter which TaeedPrograms to update
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * Limit how many TaeedPrograms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaeedProgram upsert
+   */
+  export type TaeedProgramUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TaeedProgram to update in case it exists.
+     */
+    where: TaeedProgramWhereUniqueInput
+    /**
+     * In case the TaeedProgram found by the `where` argument doesn't exist, create a new TaeedProgram with this data.
+     */
+    create: XOR<TaeedProgramCreateInput, TaeedProgramUncheckedCreateInput>
+    /**
+     * In case the TaeedProgram was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaeedProgramUpdateInput, TaeedProgramUncheckedUpdateInput>
+  }
+
+  /**
+   * TaeedProgram delete
+   */
+  export type TaeedProgramDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+    /**
+     * Filter which TaeedProgram to delete.
+     */
+    where: TaeedProgramWhereUniqueInput
+  }
+
+  /**
+   * TaeedProgram deleteMany
+   */
+  export type TaeedProgramDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaeedPrograms to delete
+     */
+    where?: TaeedProgramWhereInput
+    /**
+     * Limit how many TaeedPrograms to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaeedProgram without action
+   */
+  export type TaeedProgramDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaeedProgram
+     */
+    select?: TaeedProgramSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaeedProgram
+     */
+    omit?: TaeedProgramOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -45568,6 +46974,50 @@ export namespace Prisma {
   };
 
   export type ShabakeDoreKeshtScalarFieldEnum = (typeof ShabakeDoreKeshtScalarFieldEnum)[keyof typeof ShabakeDoreKeshtScalarFieldEnum]
+
+
+  export const TaeedProgramScalarFieldEnum: {
+    IdTaeedProgram: 'IdTaeedProgram',
+    FIdPumpSta: 'FIdPumpSta',
+    FIdSal: 'FIdSal',
+    FIdDore: 'FIdDore',
+    Sal: 'Sal',
+    Mah: 'Mah',
+    Dahe: 'Dahe',
+    FIdUserErsal: 'FIdUserErsal',
+    FirstNErsal: 'FirstNErsal',
+    LastNErsal: 'LastNErsal',
+    TozihErsal: 'TozihErsal',
+    TarikhErsal: 'TarikhErsal',
+    FIdUserAbMantaghe: 'FIdUserAbMantaghe',
+    FirstNAbMantaghe: 'FirstNAbMantaghe',
+    LastNAbMantaghe: 'LastNAbMantaghe',
+    TozihAbMantaghe: 'TozihAbMantaghe',
+    TarikhAbMantaghe: 'TarikhAbMantaghe',
+    TaedAbMantaghe: 'TaedAbMantaghe',
+    FIdUserPeymankar: 'FIdUserPeymankar',
+    FirstNPeymankar: 'FirstNPeymankar',
+    LastNPeymankar: 'LastNPeymankar',
+    TozihPeymankar: 'TozihPeymankar',
+    TarikhPeymankar: 'TarikhPeymankar',
+    TaedPeymankar: 'TaedPeymankar',
+    FIdUserAbNiroo: 'FIdUserAbNiroo',
+    FirstNAbNiroo: 'FirstNAbNiroo',
+    LastNAbNiroo: 'LastNAbNiroo',
+    TozihAbNiroo: 'TozihAbNiroo',
+    TarikhAbNiroo: 'TarikhAbNiroo',
+    TaedAbNiroo: 'TaedAbNiroo',
+    FileNameNahaee: 'FileNameNahaee',
+    FilePathNahaee: 'FilePathNahaee',
+    TarikhFileNahee: 'TarikhFileNahee',
+    FIdUserTaeedNahaee: 'FIdUserTaeedNahaee',
+    FirstNTaeedNahaee: 'FirstNTaeedNahaee',
+    LastNTaeedNahaee: 'LastNTaeedNahaee',
+    TarikhTaeedNahaee: 'TarikhTaeedNahaee',
+    TaeedNahaee: 'TaeedNahaee'
+  };
+
+  export type TaeedProgramScalarFieldEnum = (typeof TaeedProgramScalarFieldEnum)[keyof typeof TaeedProgramScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -47972,6 +49422,225 @@ export namespace Prisma {
     FIdDore?: IntWithAggregatesFilter<"ShabakeDoreKesht"> | number
   }
 
+  export type TaeedProgramWhereInput = {
+    AND?: TaeedProgramWhereInput | TaeedProgramWhereInput[]
+    OR?: TaeedProgramWhereInput[]
+    NOT?: TaeedProgramWhereInput | TaeedProgramWhereInput[]
+    IdTaeedProgram?: IntFilter<"TaeedProgram"> | number
+    FIdPumpSta?: IntFilter<"TaeedProgram"> | number
+    FIdSal?: IntFilter<"TaeedProgram"> | number
+    FIdDore?: IntFilter<"TaeedProgram"> | number
+    Sal?: IntFilter<"TaeedProgram"> | number
+    Mah?: IntFilter<"TaeedProgram"> | number
+    Dahe?: IntFilter<"TaeedProgram"> | number
+    FIdUserErsal?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhErsal?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    FIdUserAbMantaghe?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhAbMantaghe?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedAbMantaghe?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+    FIdUserPeymankar?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhPeymankar?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedPeymankar?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+    FIdUserAbNiroo?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhAbNiroo?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    FileNameNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    FilePathNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhFileNahee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    FIdUserTaeedNahaee?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNTaeedNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNTaeedNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhTaeedNahaee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaeedNahaee?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+  }
+
+  export type TaeedProgramOrderByWithRelationInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrderInput | SortOrder
+    FirstNErsal?: SortOrderInput | SortOrder
+    LastNErsal?: SortOrderInput | SortOrder
+    TozihErsal?: SortOrderInput | SortOrder
+    TarikhErsal?: SortOrderInput | SortOrder
+    FIdUserAbMantaghe?: SortOrderInput | SortOrder
+    FirstNAbMantaghe?: SortOrderInput | SortOrder
+    LastNAbMantaghe?: SortOrderInput | SortOrder
+    TozihAbMantaghe?: SortOrderInput | SortOrder
+    TarikhAbMantaghe?: SortOrderInput | SortOrder
+    TaedAbMantaghe?: SortOrderInput | SortOrder
+    FIdUserPeymankar?: SortOrderInput | SortOrder
+    FirstNPeymankar?: SortOrderInput | SortOrder
+    LastNPeymankar?: SortOrderInput | SortOrder
+    TozihPeymankar?: SortOrderInput | SortOrder
+    TarikhPeymankar?: SortOrderInput | SortOrder
+    TaedPeymankar?: SortOrderInput | SortOrder
+    FIdUserAbNiroo?: SortOrderInput | SortOrder
+    FirstNAbNiroo?: SortOrderInput | SortOrder
+    LastNAbNiroo?: SortOrderInput | SortOrder
+    TozihAbNiroo?: SortOrderInput | SortOrder
+    TarikhAbNiroo?: SortOrderInput | SortOrder
+    TaedAbNiroo?: SortOrderInput | SortOrder
+    FileNameNahaee?: SortOrderInput | SortOrder
+    FilePathNahaee?: SortOrderInput | SortOrder
+    TarikhFileNahee?: SortOrderInput | SortOrder
+    FIdUserTaeedNahaee?: SortOrderInput | SortOrder
+    FirstNTaeedNahaee?: SortOrderInput | SortOrder
+    LastNTaeedNahaee?: SortOrderInput | SortOrder
+    TarikhTaeedNahaee?: SortOrderInput | SortOrder
+    TaeedNahaee?: SortOrderInput | SortOrder
+  }
+
+  export type TaeedProgramWhereUniqueInput = Prisma.AtLeast<{
+    IdTaeedProgram?: number
+    AND?: TaeedProgramWhereInput | TaeedProgramWhereInput[]
+    OR?: TaeedProgramWhereInput[]
+    NOT?: TaeedProgramWhereInput | TaeedProgramWhereInput[]
+    FIdPumpSta?: IntFilter<"TaeedProgram"> | number
+    FIdSal?: IntFilter<"TaeedProgram"> | number
+    FIdDore?: IntFilter<"TaeedProgram"> | number
+    Sal?: IntFilter<"TaeedProgram"> | number
+    Mah?: IntFilter<"TaeedProgram"> | number
+    Dahe?: IntFilter<"TaeedProgram"> | number
+    FIdUserErsal?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihErsal?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhErsal?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    FIdUserAbMantaghe?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihAbMantaghe?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhAbMantaghe?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedAbMantaghe?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+    FIdUserPeymankar?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihPeymankar?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhPeymankar?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedPeymankar?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+    FIdUserAbNiroo?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TozihAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhAbNiroo?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaedAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    FileNameNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    FilePathNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhFileNahee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    FIdUserTaeedNahaee?: IntNullableFilter<"TaeedProgram"> | number | null
+    FirstNTaeedNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    LastNTaeedNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
+    TarikhTaeedNahaee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
+    TaeedNahaee?: BoolNullableFilter<"TaeedProgram"> | boolean | null
+  }, "IdTaeedProgram">
+
+  export type TaeedProgramOrderByWithAggregationInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrderInput | SortOrder
+    FirstNErsal?: SortOrderInput | SortOrder
+    LastNErsal?: SortOrderInput | SortOrder
+    TozihErsal?: SortOrderInput | SortOrder
+    TarikhErsal?: SortOrderInput | SortOrder
+    FIdUserAbMantaghe?: SortOrderInput | SortOrder
+    FirstNAbMantaghe?: SortOrderInput | SortOrder
+    LastNAbMantaghe?: SortOrderInput | SortOrder
+    TozihAbMantaghe?: SortOrderInput | SortOrder
+    TarikhAbMantaghe?: SortOrderInput | SortOrder
+    TaedAbMantaghe?: SortOrderInput | SortOrder
+    FIdUserPeymankar?: SortOrderInput | SortOrder
+    FirstNPeymankar?: SortOrderInput | SortOrder
+    LastNPeymankar?: SortOrderInput | SortOrder
+    TozihPeymankar?: SortOrderInput | SortOrder
+    TarikhPeymankar?: SortOrderInput | SortOrder
+    TaedPeymankar?: SortOrderInput | SortOrder
+    FIdUserAbNiroo?: SortOrderInput | SortOrder
+    FirstNAbNiroo?: SortOrderInput | SortOrder
+    LastNAbNiroo?: SortOrderInput | SortOrder
+    TozihAbNiroo?: SortOrderInput | SortOrder
+    TarikhAbNiroo?: SortOrderInput | SortOrder
+    TaedAbNiroo?: SortOrderInput | SortOrder
+    FileNameNahaee?: SortOrderInput | SortOrder
+    FilePathNahaee?: SortOrderInput | SortOrder
+    TarikhFileNahee?: SortOrderInput | SortOrder
+    FIdUserTaeedNahaee?: SortOrderInput | SortOrder
+    FirstNTaeedNahaee?: SortOrderInput | SortOrder
+    LastNTaeedNahaee?: SortOrderInput | SortOrder
+    TarikhTaeedNahaee?: SortOrderInput | SortOrder
+    TaeedNahaee?: SortOrderInput | SortOrder
+    _count?: TaeedProgramCountOrderByAggregateInput
+    _avg?: TaeedProgramAvgOrderByAggregateInput
+    _max?: TaeedProgramMaxOrderByAggregateInput
+    _min?: TaeedProgramMinOrderByAggregateInput
+    _sum?: TaeedProgramSumOrderByAggregateInput
+  }
+
+  export type TaeedProgramScalarWhereWithAggregatesInput = {
+    AND?: TaeedProgramScalarWhereWithAggregatesInput | TaeedProgramScalarWhereWithAggregatesInput[]
+    OR?: TaeedProgramScalarWhereWithAggregatesInput[]
+    NOT?: TaeedProgramScalarWhereWithAggregatesInput | TaeedProgramScalarWhereWithAggregatesInput[]
+    IdTaeedProgram?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    FIdPumpSta?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    FIdSal?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    FIdDore?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    Sal?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    Mah?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    Dahe?: IntWithAggregatesFilter<"TaeedProgram"> | number
+    FIdUserErsal?: IntNullableWithAggregatesFilter<"TaeedProgram"> | number | null
+    FirstNErsal?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    LastNErsal?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TozihErsal?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhErsal?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    FIdUserAbMantaghe?: IntNullableWithAggregatesFilter<"TaeedProgram"> | number | null
+    FirstNAbMantaghe?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    LastNAbMantaghe?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TozihAbMantaghe?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhAbMantaghe?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    TaedAbMantaghe?: BoolNullableWithAggregatesFilter<"TaeedProgram"> | boolean | null
+    FIdUserPeymankar?: IntNullableWithAggregatesFilter<"TaeedProgram"> | number | null
+    FirstNPeymankar?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    LastNPeymankar?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TozihPeymankar?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhPeymankar?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    TaedPeymankar?: BoolNullableWithAggregatesFilter<"TaeedProgram"> | boolean | null
+    FIdUserAbNiroo?: IntNullableWithAggregatesFilter<"TaeedProgram"> | number | null
+    FirstNAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    LastNAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TozihAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhAbNiroo?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    TaedAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    FileNameNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    FilePathNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhFileNahee?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    FIdUserTaeedNahaee?: IntNullableWithAggregatesFilter<"TaeedProgram"> | number | null
+    FirstNTaeedNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    LastNTaeedNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TarikhTaeedNahaee?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
+    TaeedNahaee?: BoolNullableWithAggregatesFilter<"TaeedProgram"> | boolean | null
+  }
+
   export type AbadeMakhzanCreateInput = {
     TooleBala?: Decimal | DecimalJsLike | number | string | null
     ArzeBala?: Decimal | DecimalJsLike | number | string | null
@@ -50028,6 +51697,289 @@ export namespace Prisma {
     FIdDore?: IntFieldUpdateOperationsInput | number
   }
 
+  export type TaeedProgramCreateInput = {
+    FIdPumpSta: number
+    FIdSal: number
+    FIdDore: number
+    Sal: number
+    Mah: number
+    Dahe: number
+    FIdUserErsal?: number | null
+    FirstNErsal?: string | null
+    LastNErsal?: string | null
+    TozihErsal?: string | null
+    TarikhErsal?: Date | string | null
+    FIdUserAbMantaghe?: number | null
+    FirstNAbMantaghe?: string | null
+    LastNAbMantaghe?: string | null
+    TozihAbMantaghe?: string | null
+    TarikhAbMantaghe?: Date | string | null
+    TaedAbMantaghe?: boolean | null
+    FIdUserPeymankar?: number | null
+    FirstNPeymankar?: string | null
+    LastNPeymankar?: string | null
+    TozihPeymankar?: string | null
+    TarikhPeymankar?: Date | string | null
+    TaedPeymankar?: boolean | null
+    FIdUserAbNiroo?: number | null
+    FirstNAbNiroo?: string | null
+    LastNAbNiroo?: string | null
+    TozihAbNiroo?: string | null
+    TarikhAbNiroo?: Date | string | null
+    TaedAbNiroo?: string | null
+    FileNameNahaee?: string | null
+    FilePathNahaee?: string | null
+    TarikhFileNahee?: Date | string | null
+    FIdUserTaeedNahaee?: number | null
+    FirstNTaeedNahaee?: string | null
+    LastNTaeedNahaee?: string | null
+    TarikhTaeedNahaee?: Date | string | null
+    TaeedNahaee?: boolean | null
+  }
+
+  export type TaeedProgramUncheckedCreateInput = {
+    IdTaeedProgram?: number
+    FIdPumpSta: number
+    FIdSal: number
+    FIdDore: number
+    Sal: number
+    Mah: number
+    Dahe: number
+    FIdUserErsal?: number | null
+    FirstNErsal?: string | null
+    LastNErsal?: string | null
+    TozihErsal?: string | null
+    TarikhErsal?: Date | string | null
+    FIdUserAbMantaghe?: number | null
+    FirstNAbMantaghe?: string | null
+    LastNAbMantaghe?: string | null
+    TozihAbMantaghe?: string | null
+    TarikhAbMantaghe?: Date | string | null
+    TaedAbMantaghe?: boolean | null
+    FIdUserPeymankar?: number | null
+    FirstNPeymankar?: string | null
+    LastNPeymankar?: string | null
+    TozihPeymankar?: string | null
+    TarikhPeymankar?: Date | string | null
+    TaedPeymankar?: boolean | null
+    FIdUserAbNiroo?: number | null
+    FirstNAbNiroo?: string | null
+    LastNAbNiroo?: string | null
+    TozihAbNiroo?: string | null
+    TarikhAbNiroo?: Date | string | null
+    TaedAbNiroo?: string | null
+    FileNameNahaee?: string | null
+    FilePathNahaee?: string | null
+    TarikhFileNahee?: Date | string | null
+    FIdUserTaeedNahaee?: number | null
+    FirstNTaeedNahaee?: string | null
+    LastNTaeedNahaee?: string | null
+    TarikhTaeedNahaee?: Date | string | null
+    TaeedNahaee?: boolean | null
+  }
+
+  export type TaeedProgramUpdateInput = {
+    FIdPumpSta?: IntFieldUpdateOperationsInput | number
+    FIdSal?: IntFieldUpdateOperationsInput | number
+    FIdDore?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    Mah?: IntFieldUpdateOperationsInput | number
+    Dahe?: IntFieldUpdateOperationsInput | number
+    FIdUserErsal?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhErsal?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserAbMantaghe?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbMantaghe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbMantaghe?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserPeymankar?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhPeymankar?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedPeymankar?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserAbNiroo?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserTaeedNahaee?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhTaeedNahaee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaeedNahaee?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  }
+
+  export type TaeedProgramUncheckedUpdateInput = {
+    IdTaeedProgram?: IntFieldUpdateOperationsInput | number
+    FIdPumpSta?: IntFieldUpdateOperationsInput | number
+    FIdSal?: IntFieldUpdateOperationsInput | number
+    FIdDore?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    Mah?: IntFieldUpdateOperationsInput | number
+    Dahe?: IntFieldUpdateOperationsInput | number
+    FIdUserErsal?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhErsal?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserAbMantaghe?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbMantaghe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbMantaghe?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserPeymankar?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhPeymankar?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedPeymankar?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserAbNiroo?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserTaeedNahaee?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhTaeedNahaee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaeedNahaee?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  }
+
+  export type TaeedProgramCreateManyInput = {
+    FIdPumpSta: number
+    FIdSal: number
+    FIdDore: number
+    Sal: number
+    Mah: number
+    Dahe: number
+    FIdUserErsal?: number | null
+    FirstNErsal?: string | null
+    LastNErsal?: string | null
+    TozihErsal?: string | null
+    TarikhErsal?: Date | string | null
+    FIdUserAbMantaghe?: number | null
+    FirstNAbMantaghe?: string | null
+    LastNAbMantaghe?: string | null
+    TozihAbMantaghe?: string | null
+    TarikhAbMantaghe?: Date | string | null
+    TaedAbMantaghe?: boolean | null
+    FIdUserPeymankar?: number | null
+    FirstNPeymankar?: string | null
+    LastNPeymankar?: string | null
+    TozihPeymankar?: string | null
+    TarikhPeymankar?: Date | string | null
+    TaedPeymankar?: boolean | null
+    FIdUserAbNiroo?: number | null
+    FirstNAbNiroo?: string | null
+    LastNAbNiroo?: string | null
+    TozihAbNiroo?: string | null
+    TarikhAbNiroo?: Date | string | null
+    TaedAbNiroo?: string | null
+    FileNameNahaee?: string | null
+    FilePathNahaee?: string | null
+    TarikhFileNahee?: Date | string | null
+    FIdUserTaeedNahaee?: number | null
+    FirstNTaeedNahaee?: string | null
+    LastNTaeedNahaee?: string | null
+    TarikhTaeedNahaee?: Date | string | null
+    TaeedNahaee?: boolean | null
+  }
+
+  export type TaeedProgramUpdateManyMutationInput = {
+    FIdPumpSta?: IntFieldUpdateOperationsInput | number
+    FIdSal?: IntFieldUpdateOperationsInput | number
+    FIdDore?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    Mah?: IntFieldUpdateOperationsInput | number
+    Dahe?: IntFieldUpdateOperationsInput | number
+    FIdUserErsal?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhErsal?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserAbMantaghe?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbMantaghe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbMantaghe?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserPeymankar?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhPeymankar?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedPeymankar?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserAbNiroo?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserTaeedNahaee?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhTaeedNahaee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaeedNahaee?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  }
+
+  export type TaeedProgramUncheckedUpdateManyInput = {
+    IdTaeedProgram?: IntFieldUpdateOperationsInput | number
+    FIdPumpSta?: IntFieldUpdateOperationsInput | number
+    FIdSal?: IntFieldUpdateOperationsInput | number
+    FIdDore?: IntFieldUpdateOperationsInput | number
+    Sal?: IntFieldUpdateOperationsInput | number
+    Mah?: IntFieldUpdateOperationsInput | number
+    Dahe?: IntFieldUpdateOperationsInput | number
+    FIdUserErsal?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihErsal?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhErsal?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserAbMantaghe?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbMantaghe?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbMantaghe?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbMantaghe?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserPeymankar?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihPeymankar?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhPeymankar?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedPeymankar?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    FIdUserAbNiroo?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    FIdUserTaeedNahaee?: NullableIntFieldUpdateOperationsInput | number | null
+    FirstNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    LastNTaeedNahaee?: NullableStringFieldUpdateOperationsInput | string | null
+    TarikhTaeedNahaee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TaeedNahaee?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -52045,6 +53997,172 @@ export namespace Prisma {
     FIdNet?: SortOrder
     FIdSal?: SortOrder
     FIdDore?: SortOrder
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type TaeedProgramCountOrderByAggregateInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrder
+    FirstNErsal?: SortOrder
+    LastNErsal?: SortOrder
+    TozihErsal?: SortOrder
+    TarikhErsal?: SortOrder
+    FIdUserAbMantaghe?: SortOrder
+    FirstNAbMantaghe?: SortOrder
+    LastNAbMantaghe?: SortOrder
+    TozihAbMantaghe?: SortOrder
+    TarikhAbMantaghe?: SortOrder
+    TaedAbMantaghe?: SortOrder
+    FIdUserPeymankar?: SortOrder
+    FirstNPeymankar?: SortOrder
+    LastNPeymankar?: SortOrder
+    TozihPeymankar?: SortOrder
+    TarikhPeymankar?: SortOrder
+    TaedPeymankar?: SortOrder
+    FIdUserAbNiroo?: SortOrder
+    FirstNAbNiroo?: SortOrder
+    LastNAbNiroo?: SortOrder
+    TozihAbNiroo?: SortOrder
+    TarikhAbNiroo?: SortOrder
+    TaedAbNiroo?: SortOrder
+    FileNameNahaee?: SortOrder
+    FilePathNahaee?: SortOrder
+    TarikhFileNahee?: SortOrder
+    FIdUserTaeedNahaee?: SortOrder
+    FirstNTaeedNahaee?: SortOrder
+    LastNTaeedNahaee?: SortOrder
+    TarikhTaeedNahaee?: SortOrder
+    TaeedNahaee?: SortOrder
+  }
+
+  export type TaeedProgramAvgOrderByAggregateInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrder
+    FIdUserAbMantaghe?: SortOrder
+    FIdUserPeymankar?: SortOrder
+    FIdUserAbNiroo?: SortOrder
+    FIdUserTaeedNahaee?: SortOrder
+  }
+
+  export type TaeedProgramMaxOrderByAggregateInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrder
+    FirstNErsal?: SortOrder
+    LastNErsal?: SortOrder
+    TozihErsal?: SortOrder
+    TarikhErsal?: SortOrder
+    FIdUserAbMantaghe?: SortOrder
+    FirstNAbMantaghe?: SortOrder
+    LastNAbMantaghe?: SortOrder
+    TozihAbMantaghe?: SortOrder
+    TarikhAbMantaghe?: SortOrder
+    TaedAbMantaghe?: SortOrder
+    FIdUserPeymankar?: SortOrder
+    FirstNPeymankar?: SortOrder
+    LastNPeymankar?: SortOrder
+    TozihPeymankar?: SortOrder
+    TarikhPeymankar?: SortOrder
+    TaedPeymankar?: SortOrder
+    FIdUserAbNiroo?: SortOrder
+    FirstNAbNiroo?: SortOrder
+    LastNAbNiroo?: SortOrder
+    TozihAbNiroo?: SortOrder
+    TarikhAbNiroo?: SortOrder
+    TaedAbNiroo?: SortOrder
+    FileNameNahaee?: SortOrder
+    FilePathNahaee?: SortOrder
+    TarikhFileNahee?: SortOrder
+    FIdUserTaeedNahaee?: SortOrder
+    FirstNTaeedNahaee?: SortOrder
+    LastNTaeedNahaee?: SortOrder
+    TarikhTaeedNahaee?: SortOrder
+    TaeedNahaee?: SortOrder
+  }
+
+  export type TaeedProgramMinOrderByAggregateInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrder
+    FirstNErsal?: SortOrder
+    LastNErsal?: SortOrder
+    TozihErsal?: SortOrder
+    TarikhErsal?: SortOrder
+    FIdUserAbMantaghe?: SortOrder
+    FirstNAbMantaghe?: SortOrder
+    LastNAbMantaghe?: SortOrder
+    TozihAbMantaghe?: SortOrder
+    TarikhAbMantaghe?: SortOrder
+    TaedAbMantaghe?: SortOrder
+    FIdUserPeymankar?: SortOrder
+    FirstNPeymankar?: SortOrder
+    LastNPeymankar?: SortOrder
+    TozihPeymankar?: SortOrder
+    TarikhPeymankar?: SortOrder
+    TaedPeymankar?: SortOrder
+    FIdUserAbNiroo?: SortOrder
+    FirstNAbNiroo?: SortOrder
+    LastNAbNiroo?: SortOrder
+    TozihAbNiroo?: SortOrder
+    TarikhAbNiroo?: SortOrder
+    TaedAbNiroo?: SortOrder
+    FileNameNahaee?: SortOrder
+    FilePathNahaee?: SortOrder
+    TarikhFileNahee?: SortOrder
+    FIdUserTaeedNahaee?: SortOrder
+    FirstNTaeedNahaee?: SortOrder
+    LastNTaeedNahaee?: SortOrder
+    TarikhTaeedNahaee?: SortOrder
+    TaeedNahaee?: SortOrder
+  }
+
+  export type TaeedProgramSumOrderByAggregateInput = {
+    IdTaeedProgram?: SortOrder
+    FIdPumpSta?: SortOrder
+    FIdSal?: SortOrder
+    FIdDore?: SortOrder
+    Sal?: SortOrder
+    Mah?: SortOrder
+    Dahe?: SortOrder
+    FIdUserErsal?: SortOrder
+    FIdUserAbMantaghe?: SortOrder
+    FIdUserPeymankar?: SortOrder
+    FIdUserAbNiroo?: SortOrder
+    FIdUserTaeedNahaee?: SortOrder
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type PumpStationCreateNestedManyWithoutAbadeMakhzanInput = {
@@ -55081,6 +57199,10 @@ export namespace Prisma {
     deleteMany?: BahrebardariKeshtDoreScalarWhereInput | BahrebardariKeshtDoreScalarWhereInput[]
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -55367,6 +57489,19 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBytesNullableFilter<$PrismaModel>
     _max?: NestedBytesNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type PumpStationCreateWithoutAbadeMakhzanInput = {

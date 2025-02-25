@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 
 interface HeaderRequestPumpingProps {
   setUserName: (name: string) => void;
-  setUserRole: (role: string) => void;
+  setUserRole: (roles: string[]) => void;
   setFirstName: (role: string) => void;
   setLastName: (role: string) => void;
   setNetworkName: (name: string) => void;
@@ -76,6 +76,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
     if (
       userPositions.some((pos) =>
         [
+          'Website Creator',
           'Website Admin',
           'Operation Manager',
           'Electricity and Pumping Supervisor',

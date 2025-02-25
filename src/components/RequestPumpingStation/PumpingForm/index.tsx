@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {KhatRanesh, PumpingData, RecordType} from '../types';
 import PumpingTable from '../components/PumpingTable';
 
@@ -33,7 +33,6 @@ interface PumpingFormProps {
 
 const PumpingForm: React.FC<PumpingFormProps> = ({
   khatRaneshList,
-  pumpData,
   selectedPumpCounts,
   timeValues,
   handlePumpCountChange,
@@ -44,12 +43,17 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
   finalVolumes,
   isFormDisabled,
 }) => {
+  const [pumpData, setPumpData] = useState<{
+    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+  }>({});
+
   return (
     <div className="max-h-[600px] p-1 bg-gray-100 rounded-lg shadow-md">
       <PumpingTable
         khatRaneshList={khatRaneshList}
         records={records}
         pumpData={pumpData}
+        setPumpData={setPumpData} // اینجا setPumpData به عنوان تابع پاس داده می‌شود
         selectedPumpCounts={selectedPumpCounts}
         timeValues={timeValues}
         handlePumpCountChange={handlePumpCountChange}

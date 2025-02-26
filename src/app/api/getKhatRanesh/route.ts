@@ -2,6 +2,30 @@ import {NextRequest, NextResponse} from 'next/server';
 import {sqlServerClient} from '@prisma/db';
 const prisma = sqlServerClient;
 
+// تعریف اینترفیس برای داده‌های دریافتی از API
+interface ApiKhatRanesh {
+  IdRanesh: number;
+  RaneshName: string;
+  FIdPumpSta: number;
+  FIdDPipe: number;
+  FIdSePu: number;
+  FIdMeasuring: number;
+  Zarfiat?: number;
+  Active?: boolean;
+}
+
+// تابع Type Guard برای بررسی ساختار داده‌ها
+const isKhatRanesh = (data: any): data is ApiKhatRanesh => {
+  return (
+    typeof data.IdRanesh === 'number' &&
+    typeof data.RaneshName === 'string' &&
+    typeof data.FIdPumpSta === 'number' &&
+    typeof data.FIdDPipe === 'number' &&
+    typeof data.FIdSePu === 'number' &&
+    typeof data.FIdMeasuring === 'number'
+  );
+};
+
 export async function GET(req: NextRequest) {
   try {
     const {searchParams} = new URL(req.url);
@@ -17,39 +41,49 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // واکشی داده‌های اولیه از دیتابیس
     const khatRaneshList = await prisma.khatRanesh.findMany({
       where: {FIdPumpSta: idPumpStation},
       select: {
         IdRanesh: true,
         RaneshName: true,
-        FIdSePu: true,
+        FIdPumpSta: true,
         FIdDPipe: true,
-        Active: true,
+        FIdSePu: true,
+        FIdMeasuring: true,
       },
     });
 
+    // پردازش داده‌ها و اضافه کردن مقادیر پیش‌فرض
     const detailedKhatRaneshList = await Promise.all(
       khatRaneshList.map(async (ranesh) => {
-        if (ranesh.Active === false || ranesh.FIdDPipe !== 1) {
-          return ranesh; // اگر غیر فعال باشد یا `FIdDPipe !== 1`، داده‌ای اضافه نشود
+        if (isKhatRanesh(ranesh)) {
+          if (ranesh.FIdSePu === 1) {
+            // واکشی اطلاعات پمپ
+            const pumpRes = await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/getKhatRaneshPump?idRanesh=${ranesh.IdRanesh}`,
+            );
+            const pumpData = await pumpRes.json();
+            return {
+              ...ranesh,
+              ...pumpData,
+              Zarfiat: pumpData.Zarfiat ?? 0, // مقدار پیش‌فرض Zarfiat
+              Active: ranesh.Active ?? true, // مقدار پیش‌فرض Active
+            };
+          } else {
+            // واکشی مقدار Zarfiat برای Segli
+            const segliData = await prisma.khatRaneshSegli.findFirst({
+              where: {FIdRanesh: ranesh.IdRanesh},
+              select: {Zarfiat: true},
+            });
+            return {
+              ...ranesh,
+              Zarfiat: segliData?.Zarfiat ?? 0,
+              Active: ranesh.Active ?? true,
+            };
+          }
         }
-
-        if (ranesh.FIdSePu === 1) {
-          // واکشی از API `getKhatRaneshPump`          
-          const pumpRes = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/getKhatRaneshPump?idRanesh=${ranesh.IdRanesh}`,
-          );
-          
-          const pumpData = await pumpRes.json();         
-          return {...ranesh, ...pumpData};
-        } else {
-          // واکشی مقدار `Zarfiat` از جدول `KhatRaneshSegli`
-          const segliData = await prisma.khatRaneshSegli.findFirst({
-            where: {FIdRanesh: ranesh.IdRanesh},
-            select: {Zarfiat: true},
-          });
-          return {...ranesh, Zarfiat: segliData?.Zarfiat || null};
-        }
+        return ranesh;
       }),
     );
 

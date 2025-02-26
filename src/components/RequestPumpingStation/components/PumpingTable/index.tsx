@@ -9,7 +9,7 @@ interface PumpingTableProps {
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
   setPumpData: (data: {
     [idTarDor: number]: {[idRanesh: number]: PumpingData};
-  }) => void;
+  }) => void; // اضافه کردن setPumpData به props
   selectedPumpCounts: {[key: number]: {[date: string]: number}};
   timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
   handlePumpCountChange: (
@@ -32,7 +32,7 @@ interface PumpingTableProps {
   ) => void;
   message: string | null;
   finalVolumes: {[key: number]: number};
-  isFormDisabled: boolean; // اضافه کردن وضعیت غیرفعال بودن فرم
+  isFormDisabled: boolean;
 }
 
 const PumpingTable: React.FC<PumpingTableProps> = ({
@@ -49,6 +49,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   finalVolumes,
   isFormDisabled,
 }) => {
+  // console.log('pumpData: ', pumpData);
   const isFormFilled = records.some((record) =>
     khatRaneshList.some(
       (ranesh) =>
@@ -56,6 +57,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
         pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Tedad !== null,
     ),
   );
+
   const handleZarfiatChange = (
     IdTarDor: number,
     IdRanesh: number,
@@ -898,7 +900,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                   const totalWaterVolume = records.reduce((sum, record) => {
                     const pumpInfo = pumpData[record.IdTarDor];
                     const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
-
                     if (!raneshInfo) return sum;
 
                     const debi =

@@ -1,17 +1,20 @@
 // src/components/RequestPumpingStation/types.ts
 export interface KhatRanesh {
-  Zarfiat: React.ReactNode;
-  FIdSePu: number;
-  FIdDPipe: number;
-  Active: boolean;
   IdRanesh: number;
   RaneshName: string;
+  FIdPumpSta: number;
+  FIdDPipe: number;
+  FIdSePu: number;
+  FIdMeasuring: number;
+  Zarfiat?: number;  // اختیاری
+  Active?: boolean;  // اختیاری
   DebiPomp?: number;
   TedadPump?: number;
   FesharPump?: number;
   Randeman?: number;
   TavaneNami?: number;
 }
+
 
 export interface RecordType {
   raneshData: any;

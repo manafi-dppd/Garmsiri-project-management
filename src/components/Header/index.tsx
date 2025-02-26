@@ -50,7 +50,6 @@ export default function Header() {
     const fetchUserInfo = async () => {
       try {
         const res = await fetch('/api/get-user-info', {credentials: 'include'});
-        console.log('res: ', res);
         if (!res.ok) throw new Error('Failed to fetch user info');
         const data = await res.json();
         setUserInfo(data);

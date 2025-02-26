@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {validatePumpingData} from '../utils/validationUtils';
+import {KhatRanesh, RecordType, PumpingData} from '../types';
+import {ValidationError} from '../utils/validationUtils'; // ایمپورت تایپ ValidationError
 
 interface PumpingActionsProps {
   onSave: () => void;
@@ -6,15 +9,54 @@ interface PumpingActionsProps {
   disabled?: boolean;
   isFormDisabled: boolean;
   isFormFilled: boolean;
+  khatRaneshList: KhatRanesh[];
+  records: RecordType[];
+  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
+  selectedPumpCounts: {[key: number]: {[date: string]: number}};
+  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
+  setValidationErrors: (
+    errors: {date: string; raneshName: string; message: string}[],
+  ) => void;
 }
 
 const PumpingActions: React.FC<PumpingActionsProps> = ({
   onSave,
   onReset,
   disabled,
+  khatRaneshList,
+  records,
+  pumpData,
+  selectedPumpCounts,
+  timeValues,
+  setValidationErrors,
   isFormDisabled,
   isFormFilled,
 }) => {
+  const [errors, setErrors] = useState<ValidationError[]>([]);
+  const handleSave = () => {
+    setErrors([]);
+    setValidationErrors([]);
+
+    const newErrors = validatePumpingData(
+      records,
+      khatRaneshList,
+      pumpData, // جایگزینی selectedPumpCounts
+      timeValues, // جایگزینی timeValues
+    );
+
+    console.log('📌 مقدار جدید newErrors بعد از اصلاح فرم:', newErrors);
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      setValidationErrors(newErrors);
+    } else {
+      setValidationErrors([]);
+      console.log('✅ خطاها پاک شدند.');
+      onSave();
+    }
+  };
+  console.log('isFormDisabled: ', isFormDisabled);
+  console.log('isFormFilled: ', isFormFilled);
   return (
     <div className="flex flex-row gap-4 mt-4">
       {/* Div 1: درخواست کننده */}
@@ -24,7 +66,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           <button
             className={`px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
               isFormDisabled || !isFormFilled
-                ? 'opacity-50 cursor-not-allowed'
+                ? 'opacity-50 cursor-not-allowed' // اصلاح این خط
                 : ''
             }`}
             disabled={isFormDisabled || !isFormFilled}
@@ -34,12 +76,12 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           </button>
           <button
             className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-              isFormDisabled || !isFormFilled
-                ? 'opacity-50 cursor-not-allowed'
+              isFormDisabled || isFormFilled
+                ? 'opacity-50 cursor-not-allowed' // اصلاح این خط
                 : ''
             }`}
-            disabled={isFormDisabled || !isFormFilled}
-            onClick={() => alert('ذخیره')}
+            disabled={isFormDisabled || isFormFilled}
+            onClick={handleSave}
           >
             ذخیره
           </button>

@@ -8,10 +8,12 @@ import {
   RecordType,
 } from '../types';
 import {getCurrentSalMahDahe} from '@/utils/dateUtils';
+
 interface PageData {
   dahe: number;
   rows: {date: string; day: string}[];
 }
+
 export const usePumpingData = (
   selectedNetworkId: number | null,
   idPumpStation: number,
@@ -20,19 +22,19 @@ export const usePumpingData = (
   mah: number,
   dahe: number,
   selectedDahe: number,
+  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}}, // دریافت pumpData از خارج
+  setPumpData: (data: {[idTarDor: number]: {[idRanesh: number]: PumpingData}}) => void, // دریافت setPumpData از خارج
 ) => {
   const {
     sal: currentSal,
     mah: currentMah,
     dahe: currentDahe,
   } = getCurrentSalMahDahe();
+
   const [taedAbMantaghe, setTaedAbMantaghe] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
   const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
-  const [pumpData, setPumpData] = useState<{
-    [idTarDor: number]: {[idRanesh: number]: PumpingData};
-  }>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
   const [records, setRecords] = useState<RecordType[]>([]);
@@ -49,7 +51,6 @@ export const usePumpingData = (
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json();
         setTaedAbMantaghe(data);
-        console.log('data: ', data);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'An unknown error occurred',
@@ -61,7 +62,6 @@ export const usePumpingData = (
 
     fetchTaedAbMantaghe();
   }, [sal, selectedMah, dahe, idPumpStation]);
-  console.log('TaedAbMantaghe: ', taedAbMantaghe);
   useEffect(() => {
     const fetchMahList = async () => {
       try {
@@ -204,7 +204,7 @@ export const usePumpingData = (
           }
         }
 
-        setPumpData(newPumpData);
+        setPumpData(newPumpData); // استفاده از setPumpData دریافتی از خارج
       } catch (error) {
         console.error('Error fetching pump data:', error);
       } finally {
@@ -213,39 +213,20 @@ export const usePumpingData = (
     };
 
     fetchData();
-  }, [predictedVolumes]);
-  useEffect(() => {
-    if (!predictedVolumes || !khatRaneshList.length) return;
-
-    const summedVolumes: {[key: number]: number} = {};
-
-    Object.values(predictedVolumes).forEach((tarDor) => {
-      Object.entries(tarDor).forEach(([raneshId, volume]) => {
-        const parsedRaneshId = Number(raneshId);
-        const parsedVolume = parseFloat(volume as string); // تبدیل مقدار به عدد
-
-        if (!isNaN(parsedRaneshId) && !isNaN(parsedVolume)) {
-          summedVolumes[parsedRaneshId] =
-            (summedVolumes[parsedRaneshId] || 0) + parsedVolume;
-        }
-      });
-    });
-
-    setFinalVolumes(summedVolumes);
-  }, [predictedVolumes, khatRaneshList]);
+  }, [predictedVolumes, setPumpData]);
 
   return {
     khatRaneshList,
     predictedVolumes,
-    pumpData,
+    pumpData, // بازگرداندن pumpData دریافتی از خارج
     loading,
     mahList,
     selectedMah,
     sal,
     dahe,
-    records, // اضافه کردن records به خروجی
-    message, // اضافه کردن message به خروجی
-    finalVolumes, // اضافه کردن finalVolumes به خروجی
+    records,
+    message,
+    finalVolumes,
     taedAbMantaghe,
     error,
   };

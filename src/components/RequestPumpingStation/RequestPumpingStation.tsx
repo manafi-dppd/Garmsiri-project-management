@@ -16,6 +16,11 @@ const RequestPumpingStation = () => {
   const [saleZeraee, setSaleZeraee] = useState('');
   const [doreKesht, setDoreKesht] = useState('');
   const [idShDo, setIdShDo] = useState<number | null>(null);
+
+  // تعریف state برای currentMah و currentDahe
+  const [currentMah, setCurrentMah] = useState(1); // مقدار پیش‌فرض برای ماه
+  const [currentDahe, setCurrentDahe] = useState(1); // مقدار پیش‌فرض برای دهه
+
   return (
     <div>
       <HeaderRequestPumping
@@ -43,6 +48,8 @@ const RequestPumpingStation = () => {
         saleZeraee={saleZeraee}
         doreKesht={doreKesht}
         idShDo={idShDo ?? 0}
+        mah={currentMah} // پاس دادن mah
+        dahe={currentDahe} // پاس دادن dahe
       />
     </div>
   );

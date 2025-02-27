@@ -6,15 +6,14 @@ export interface KhatRanesh {
   FIdDPipe: number;
   FIdSePu: number;
   FIdMeasuring: number;
-  Zarfiat?: number;  // اختیاری
-  Active?: boolean;  // اختیاری
+  Zarfiat?: number; // اختیاری
+  Active?: boolean; // اختیاری
   DebiPomp?: number;
   TedadPump?: number;
   FesharPump?: number;
   Randeman?: number;
   TavaneNami?: number;
 }
-
 
 export interface RecordType {
   raneshData: any;

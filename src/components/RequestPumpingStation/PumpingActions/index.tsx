@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {validatePumpingData} from '../utils/validationUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../types';
-import {ValidationError} from '../utils/validationUtils'; // ایمپورت تایپ ValidationError
+import {ValidationError} from '../utils/validationUtils';
+import Modal from './Modal';
 
 interface PumpingActionsProps {
   onSave: () => void;
@@ -17,6 +18,10 @@ interface PumpingActionsProps {
   setValidationErrors: (
     errors: {date: string; raneshName: string; message: string}[],
   ) => void;
+  userRole: string[];
+  sal: number; // سال
+  mah: number; // ماه
+  dahe: number; // دهه
 }
 
 const PumpingActions: React.FC<PumpingActionsProps> = ({
@@ -31,8 +36,15 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   setValidationErrors,
   isFormDisabled,
   isFormFilled,
+  userRole,
+  sal,
+  mah,
+  dahe,
 }) => {
   const [errors, setErrors] = useState<ValidationError[]>([]);
+  const [modalContent, setModalContent] = useState<{[key: string]: string}>({});
+  const [openModal, setOpenModal] = useState<string | null>(null);
+
   const handleSave = () => {
     setErrors([]);
     setValidationErrors([]);
@@ -40,23 +52,72 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     const newErrors = validatePumpingData(
       records,
       khatRaneshList,
-      pumpData, // جایگزینی selectedPumpCounts
-      timeValues, // جایگزینی timeValues
+      pumpData,
+      selectedPumpCounts,
+      timeValues,
     );
-
-    console.log('📌 مقدار جدید newErrors بعد از اصلاح فرم:', newErrors);
 
     if (newErrors.length > 0) {
       setErrors(newErrors);
       setValidationErrors(newErrors);
     } else {
       setValidationErrors([]);
-      console.log('✅ خطاها پاک شدند.');
       onSave();
     }
   };
-  console.log('isFormDisabled: ', isFormDisabled);
-  console.log('isFormFilled: ', isFormFilled);
+
+  const handleModalSave = (key: string, content: string) => {
+    setModalContent((prev) => ({...prev, [key]: content}));
+    setOpenModal(null);
+  };
+
+  const getIsReadOnly = (modalKey: string) => {
+    switch (modalKey) {
+      case 'requester':
+        return !userRole.some((role) =>
+          [
+            'Website Creator',
+            'Website Admin',
+            'Ezgele Water Users Representative',
+            'Jegiran Water Users Representative',
+            'Northern Zahab Water Users Representative',
+            'Southern Zahab Water Users Representative',
+            'Hoomeh Qaraviz Water Users Representative',
+            'Beshiveh Water Users Representative',
+            'Ghaleh Shahin Water Users Representative',
+            'Water Users Representative South Jagarlu',
+          ].includes(role),
+        );
+      case 'regionalWater':
+        return !userRole.some((role) =>
+          [
+            'Website Creator',
+            'Website Admin',
+            'Regional Water Representative',
+          ].includes(role),
+        );
+      case 'pumpingContractor':
+        return !userRole.some((role) =>
+          [
+            'Website Creator',
+            'Website Admin',
+            'Supervisor of the First Pumping Set',
+            'Supervisor of the Second Pumping Set',
+          ].includes(role),
+        );
+      case 'waterPower':
+        return !userRole.some((role) =>
+          ['Website Creator', 'Website Admin', 'Operation Manager'].includes(
+            role,
+          ),
+        );
+      default:
+        return true;
+    }
+  };
+  const getModalKey = (modalType: string) => {
+    return `${sal}-${mah}-${dahe}-${modalType}`;
+  };
   return (
     <div className="flex flex-row gap-4 mt-4">
       {/* Div 1: درخواست کننده */}
@@ -64,20 +125,15 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         <div className="font-bold mb-2">درخواست کننده</div>
         <div className="flex gap-2 mb-2">
           <button
-            className={`px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
-              isFormDisabled || !isFormFilled
-                ? 'opacity-50 cursor-not-allowed' // اصلاح این خط
-                : ''
-            }`}
-            disabled={isFormDisabled || !isFormFilled}
-            onClick={() => alert('توضیحات درخواست کننده')}
+            className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            onClick={() => setOpenModal(getModalKey('requester'))}
           >
             توضیحات
           </button>
           <button
             className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
               isFormDisabled || isFormFilled
-                ? 'opacity-50 cursor-not-allowed' // اصلاح این خط
+                ? 'opacity-50 cursor-not-allowed'
                 : ''
             }`}
             disabled={isFormDisabled || isFormFilled}
@@ -94,19 +150,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       <div className="p-4 border border-gray-300 rounded-lg flex-1">
         <div className="font-bold mb-2">آب منطقه‌ای</div>
         <div className="flex gap-2 mb-2">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="region-water" value="approve" />
-            تایید
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="region-water" value="reject" />
-            رد
-          </label>
-        </div>
-        <div className="flex gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            onClick={() => alert('توضیحات آب منطقه‌ای')}
+            onClick={() => setOpenModal(getModalKey('regionalWater'))}
           >
             توضیحات
           </button>
@@ -125,19 +171,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       <div className="p-4 border border-gray-300 rounded-lg flex-1">
         <div className="font-bold mb-2">پیمانکار پمپاژ</div>
         <div className="flex gap-2 mb-2">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="contractor" value="approve" />
-            تایید
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="contractor" value="reject" />
-            رد
-          </label>
-        </div>
-        <div className="flex gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            onClick={() => alert('توضیحات پیمانکار پمپاژ')}
+            onClick={() => setOpenModal(getModalKey('pumpingContractor'))}
           >
             توضیحات
           </button>
@@ -156,19 +192,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       <div className="p-4 border border-gray-300 rounded-lg flex-1">
         <div className="font-bold mb-2">آب نیرو</div>
         <div className="flex gap-2 mb-2">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="water-power" value="approve" />
-            تایید
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="water-power" value="reject" />
-            رد
-          </label>
-        </div>
-        <div className="flex gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-            onClick={() => alert('توضیحات آب نیرو')}
+            onClick={() => setOpenModal(getModalKey('waterPower'))}
           >
             توضیحات
           </button>
@@ -210,6 +236,17 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           <label htmlFor="final-approval">تایید نهایی</label>
         </div>
       </div>
+
+      {/* Modal */}
+      {openModal && (
+        <Modal
+          isOpen={!!openModal}
+          onClose={() => setOpenModal(null)}
+          content={modalContent[openModal] || ''}
+          onSave={(content) => handleModalSave(openModal, content)}
+          isReadOnly={getIsReadOnly(openModal.split('-')[3])} // بررسی modalKey
+        />
+      )}
     </div>
   );
 };

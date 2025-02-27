@@ -20,6 +20,8 @@ interface BodyRequestPumpingProps {
   saleZeraee: string;
   doreKesht: string;
   idShDo: number;
+  mah: number; // اضافه کردن mah به پراپ‌ها
+  dahe: number; // اضافه کردن dahe به پراپ‌ها
 }
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
@@ -51,7 +53,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [validationErrors, setValidationErrors] = useState<
     {date: string; raneshName: string; message: string}[]
   >([]);
-  const [isFormFilled, setIsFormFilled] = useState(false); // اضافه کردن state برای isFormFilled
+  const [isFormFilled, setIsFormFilled] = useState(false);
 
   useEffect(() => {
     if (validationErrors.length === 0) {
@@ -167,64 +169,30 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           message={message}
           finalVolumes={finalVolumes}
           isFormDisabled={isFormDisabled}
-          validationErrors={validationErrors} // ارسال validationErrors به PumpingForm
-          setValidationErrors={setValidationErrors} // ارسال setValidationErrors به PumpingForm
-          handleSave={handleSave} // ارسال handleSave به PumpingForm
-          handleReset={handleReset} // ارسال handleReset به PumpingForm
-          isFormFilled={isFormFilled} // ارسال isFormFilled به PumpingForm
+          validationErrors={validationErrors}
+          setValidationErrors={setValidationErrors}
+          handleSave={handleSave}
+          handleReset={handleReset}
+          isFormFilled={isFormFilled}
+          selectedMah={selectedMah}
+          sal={sal}
+          selectedDahe={selectedDahe}
+          setSelectedDahe={setSelectedDahe}
+          setDahe={setDahe}
+          allDates={allDates}
+          mahList={mahList}
+          currentMah={currentMah}
+          currentSal={currentSal}
+          currentDahe={currentDahe}
+          selectedNetworkId={selectedNetworkId}
+          idPumpStation={idPumpStation}
+          setSelectedMah={setSelectedMah}
+          setSal={setSal}
+          setMah={setMah}
+          userRole={userRole}
+          mah={mah} // پاس دادن mah به PumpingForm
+          dahe={dahe} // پاس دادن dahe به PumpingForm
         />
-      )}
-
-      {selectedMah !== null && sal !== null && (
-        <div>
-          <PaginationForMah
-            selectedMah={selectedMah}
-            sal={sal}
-            selectedDahe={selectedDahe}
-            setSelectedDahe={setSelectedDahe}
-            setDahe={setDahe}
-            allDates={allDates}
-          />
-        </div>
-      )}
-
-      {selectedNetworkId !== null && idPumpStation !== 0 && (
-        <div
-          className="flex border-b border-gray-300"
-          style={{
-            transform: 'scale(0.9)',
-            transformOrigin: 'top right',
-            width: 'max-content',
-          }}
-        >
-          {[...mahList]
-            .sort((a, b) => a.Sal - b.Sal || a.Mah - b.Mah)
-            .map((item) => (
-              <div
-                key={`${item.Mah}-${item.Sal}`}
-                className={`px-6 py-2 text-lg font-semibold cursor-pointer transition-all duration-300 border
-                    border-gray-400 rounded-t-md
-                    ${
-                      selectedMah === item.Mah && sal === item.Sal
-                        ? 'bg-white text-blue-600 shadow-lg scale-105'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                onClick={() => {
-                  setSelectedMah(item.Mah);
-                  setSal(item.Sal);
-                  setMah(item.Mah);
-                  setDahe(dahe);
-                  setSelectedDahe(
-                    item.Mah === currentMah && item.Sal === currentSal
-                      ? currentDahe
-                      : 1,
-                  );
-                }}
-              >
-                {convertMahToPersian(item.Mah)} {item.Sal}
-              </div>
-            ))}
-        </div>
       )}
     </div>
   );

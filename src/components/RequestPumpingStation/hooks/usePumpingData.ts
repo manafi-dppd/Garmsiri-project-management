@@ -23,7 +23,9 @@ export const usePumpingData = (
   dahe: number,
   selectedDahe: number,
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}}, // دریافت pumpData از خارج
-  setPumpData: (data: {[idTarDor: number]: {[idRanesh: number]: PumpingData}}) => void, // دریافت setPumpData از خارج
+  setPumpData: (data: {
+    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+  }) => void, // دریافت setPumpData از خارج
 ) => {
   const {
     sal: currentSal,

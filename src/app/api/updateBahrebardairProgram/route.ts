@@ -6,11 +6,7 @@ const prisma = sqlServerClient;
 export async function PUT(request: Request) {
   try {
     const {IdRanesh, IdTarDor, Tedad, Shorooe, Paian} = await request.json();
-    console.log('IdRanesh: ', IdRanesh);
-    console.log('IdTarDor: ', IdTarDor);
-    console.log('Tedad: ', Tedad);
-    console.log('Shorooe: ', Shorooe);
-    console.log('Paian: ', Paian);
+
     // تابع تبدیل مقدار ورودی به `Date` بدون تغییر منطقه زمانی
     const convertToDate = (timeString: string | undefined | null) => {
       if (!timeString || !timeString.includes(':')) {

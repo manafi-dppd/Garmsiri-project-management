@@ -88,7 +88,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       khatRaneshList,
       pumpData,
       selectedPumpCounts,
-      selectedZarfiat, // اضافه کردن selectedZarfiat
+      selectedZarfiat,
       timeValues,
     );
 
@@ -107,8 +107,24 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             selectedPumpCounts[record.IdTarDor]?.[ranesh.IdRanesh] ?? 0;
           const zarfiatValue =
             selectedZarfiat[record.IdTarDor]?.[ranesh.IdRanesh] ?? 0;
-          console.log('selectedPumpCount: ', selectedPumpCount);
-          console.log('timeValue: ', timeValue);
+
+          // جایگزینی مقادیر ویرایش شده در raneshInfo
+          const updatedRaneshInfo = {
+            ...raneshInfo,
+            Tedad:
+              selectedPumpCount !== undefined
+                ? selectedPumpCount
+                : raneshInfo?.Tedad,
+            Zarfiat:
+              zarfiatValue !== undefined ? zarfiatValue : raneshInfo?.Zarfiat,
+            Shorooe:
+              timeValue?.from !== undefined
+                ? timeValue.from
+                : raneshInfo?.Shorooe,
+            Paian:
+              timeValue?.to !== undefined ? timeValue.to : raneshInfo?.Paian,
+          };
+
           if (ranesh.FIdSePu === 1) {
             await fetch('/api/updateBahrebardairProgram', {
               method: 'PUT',
@@ -116,9 +132,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               body: JSON.stringify({
                 IdRanesh: ranesh.IdRanesh,
                 IdTarDor: record.IdTarDor,
-                Tedad: selectedPumpCount,
-                Shorooe: timeValue?.from,
-                Paian: timeValue?.to,
+                Tedad: updatedRaneshInfo.Tedad,
+                Shorooe: updatedRaneshInfo.Shorooe,
+                Paian: updatedRaneshInfo.Paian,
               }),
             });
           } else if (ranesh.FIdSePu === 2) {
@@ -128,9 +144,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               body: JSON.stringify({
                 IdRanesh: ranesh.IdRanesh,
                 IdTarDor: record.IdTarDor,
-                Zarfiat: zarfiatValue,
-                Shorooe: timeValue?.from,
-                Paian: timeValue?.to,
+                Zarfiat: updatedRaneshInfo.Zarfiat,
+                Shorooe: updatedRaneshInfo.Shorooe,
+                Paian: updatedRaneshInfo.Paian,
               }),
             });
           }

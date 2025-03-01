@@ -38,7 +38,6 @@ export async function GET(req: NextRequest) {
         },
       },
     );
-    // console.log('bahrebardairSeghli: ', bahrebardairSeghli);
     return NextResponse.json({
       Tedad: bahrebardair?.Tedad || 0,
       Zarfiat: bahrebardairSeghli?.Zarfiat || null,

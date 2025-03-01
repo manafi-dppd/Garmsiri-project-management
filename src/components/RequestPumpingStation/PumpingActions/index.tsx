@@ -3,7 +3,7 @@ import {validatePumpingData} from '../utils/validationUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../types';
 import {ValidationError} from '../utils/validationUtils';
 import Modal from './Modal';
-import {formatDateTime} from '@/utils/dateUtils';
+import {formatDateTime, formatLocalDateTime} from '@/utils/dateUtils';
 
 interface TaeedProgramData {
   FirstNErsal: string;
@@ -169,7 +169,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       });
 
       setIsSaved(true);
-      setCurrentDateTime(formatDateTime(new Date().toISOString()));
+      setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       onSave();
 
       alert(`اطلاعات دهه ${dahe} ماه ${mah} با موفقیت ذخیره شد`);
@@ -230,7 +230,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         return true;
     }
   };
-
   const getModalKey = (modalType: string) => {
     return `${sal}-${mah}-${dahe}-${modalType}`;
   };
@@ -457,6 +456,44 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             : ''}
         </div>
       </div>
+      {/* Div 5: دریافت PDF و تایید نهایی */}
+      <div className="p-4 border border-gray-300 rounded-lg flex-1">
+        <div className="flex gap-2 mb-2">
+          <button
+            className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            onClick={() => alert('دریافت PDF')}
+          >
+            دریافت PDF
+          </button>
+          <button
+            className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+            onClick={() => alert('بارگذاری فایل نهایی')}
+          >
+            بارگذاری فایل نهایی
+          </button>
+          <button
+            className="px-4 py-2 text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
+            onClick={() => alert('مشاهده فایل نهایی')}
+          >
+            مشاهده فایل نهایی
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <input type="checkbox" id="final-approval" />
+          <label htmlFor="final-approval">تایید نهایی</label>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {openModal && (
+        <Modal
+          isOpen={!!openModal}
+          onClose={() => setOpenModal(null)}
+          content={modalContent[openModal] || ''}
+          onSave={(content) => handleModalSave(openModal, content)}
+          isReadOnly={getIsReadOnly(openModal.split('-')[3])} // بررسی modalKey
+        />
+      )}
     </div>
   );
 };

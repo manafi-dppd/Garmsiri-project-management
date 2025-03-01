@@ -60,7 +60,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
         pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Tedad !== null,
     ),
   );
-
   const handleZarfiatChange = (
     IdTarDor: number,
     IdRanesh: number,
@@ -240,7 +239,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                   )
                   .map((ranesh) => {
                     const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
-
                     return (
                       <React.Fragment key={ranesh.IdRanesh}>
                         {ranesh.FIdSePu === 1 && (
@@ -279,9 +277,15 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                             <input
                               type="number"
                               value={
-                                raneshInfo?.Zarfiat != null
-                                  ? raneshInfo.Zarfiat.toString()
-                                  : ''
+                                selectedZarfiat[record.IdTarDor]?.[
+                                  ranesh.IdRanesh
+                                ] != null
+                                  ? selectedZarfiat[record.IdTarDor][
+                                      ranesh.IdRanesh
+                                    ].toString()
+                                  : raneshInfo?.Zarfiat != null
+                                    ? raneshInfo.Zarfiat.toString()
+                                    : ''
                               }
                               onChange={(e) => {
                                 const maxZarfiat = Number(
@@ -315,9 +319,9 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                 )?.Zarfiat ?? '',
                               )}
                               className="border border-green-400 bg-white/90 rounded-lg h-8 px-2 py-0.5 
-                      text-gray-700 shadow-sm hover:shadow-md 
-                      focus:ring-2 focus:ring-green-400 focus:outline-none
-                      transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
+        text-gray-700 shadow-sm hover:shadow-md 
+        focus:ring-2 focus:ring-green-400 focus:outline-none
+        transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                               disabled={isFormDisabled}
                             />
                           ) : (

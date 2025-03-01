@@ -36,6 +36,28 @@ export const formatDateTime = (date: string | Date): string => {
   // ترکیب تاریخ شمسی و زمان
   return `${persianDate}-${hours}:${minutes}`;
 };
+export const formatLocalDateTime = (date: string | Date): string => {
+  // ایجاد یک شیء Date از تاریخ ورودی
+  const dateObj = new Date(date);
+
+  // دریافت سال، ماه و روز به‌صورت محلی
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1; // ماه‌ها از ۰ شروع می‌شوند، بنابراین +۱ می‌کنیم
+  const day = dateObj.getDate();
+
+  // ایجاد یک تاریخ جدید بر اساس زمان محلی
+  const localDate = new Date(year, month - 1, day);
+
+  // تبدیل تاریخ به فرمت شمسی
+  const persianDate = toPersianDate(localDate, 'yyyy/MM/dd');
+
+  // دریافت ساعت و دقیقه به‌صورت محلی
+  const hours = dateObj.getHours().toString().padStart(2, '0'); // ساعت با دو رقم
+  const minutes = dateObj.getMinutes().toString().padStart(2, '0'); // دقیقه با دو رقم
+
+  // ترکیب تاریخ شمسی و زمان محلی
+  return `${persianDate}-${hours}:${minutes}`;
+};
 export function getCurrentSalMahDahe(): {
   sal: number;
   mah: number;

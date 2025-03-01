@@ -1,0 +1,40 @@
+import {NextResponse} from 'next/server';
+import {sqlServerClient} from '@prisma/db';
+
+const prisma = sqlServerClient;
+
+export async function PUT(request: Request) {
+  try {
+    const {FIdPumpSta, Sal, Mah, Dahe, FirstNErsal, LastNErsal, TozihErsal} =
+      await request.json();
+
+    // دریافت زمان حال در منطقه زمانی سرور
+    const now = new Date();
+    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+
+    await prisma.taeedProgram.updateMany({
+      where: {
+        FIdPumpSta: FIdPumpSta,
+        Sal: Sal,
+        Mah: Mah,
+        Dahe: Dahe,
+      },
+      data: {
+        FirstNErsal: FirstNErsal,
+        LastNErsal: LastNErsal,
+        TozihErsal: TozihErsal,
+        TarikhErsal: localTime, // مقدار تبدیل‌شده به زمان محلی
+      },
+    });
+
+    return NextResponse.json(
+      {message: 'Data updated successfully'},
+      {status: 200},
+    );
+  } catch (error) {
+    console.error('Failed to update TaeedProgram:', error);
+    return NextResponse.json({error: 'Failed to update data'}, {status: 500});
+  } finally {
+    await prisma.$disconnect();
+  }
+}

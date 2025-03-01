@@ -57,3 +57,23 @@ export interface MahItem {
   Mah: number; // شماره ماه
   Sal: number; // سال زراعی
 }
+
+// src/components/RequestPumpingStation/types.ts
+export interface TaeedProgramData {
+  FirstNErsal: string;
+  LastNErsal: string;
+  TarikhErsal: string;
+  FirstNAbMantaghe: string;
+  LastNAbMantaghe: string;
+  TarikhAbMantaghe: string;
+  FirstNPeymankar: string;
+  LastNPeymankar: string;
+  TarikhPeymankar: string;
+  FirstNAbNiroo: string;
+  LastNAbNiroo: string;
+  TarikhAbNiroo: string;
+  TarikhFileNahee: string;
+  FirstNTaeedNahaee: string;
+  LastNTaeedNahaee: string;
+  TarikhTaeedNahaee: string;
+}

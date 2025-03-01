@@ -14,6 +14,25 @@ interface PageData {
   rows: {date: string; day: string}[];
 }
 
+interface TaeedProgramData {
+  FirstNErsal: string;
+  LastNErsal: string;
+  TarikhErsal: string;
+  FirstNAbMantaghe: string;
+  LastNAbMantaghe: string;
+  TarikhAbMantaghe: string;
+  FirstNPeymankar: string;
+  LastNPeymankar: string;
+  TarikhPeymankar: string;
+  FirstNAbNiroo: string;
+  LastNAbNiroo: string;
+  TarikhAbNiroo: string;
+  TarikhFileNahee: string;
+  FirstNTaeedNahaee: string;
+  LastNTaeedNahaee: string;
+  TarikhTaeedNahaee: string;
+}
+
 export const usePumpingData = (
   selectedNetworkId: number | null,
   idPumpStation: number,
@@ -42,27 +61,61 @@ export const usePumpingData = (
   const [records, setRecords] = useState<RecordType[]>([]);
   const [finalVolumes, setFinalVolumes] = useState<{[key: number]: number}>({});
   const [mahList, setMahList] = useState<MahItem[]>([]);
+  const [taedProgramData, setTaedProgramData] =
+    useState<TaeedProgramData | null>(null);
 
   useEffect(() => {
-    const fetchTaedAbMantaghe = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&FIdPumpSta=${idPumpStation}`,
-        );
-        if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
-        setTaedAbMantaghe(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unknown error occurred',
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (idPumpStation > 0) {
+      const fetchTaedProgramData = async () => {
+        try {
+          const response = await fetch('/api/getTaeedProgramDetails', {
+            method: 'POST', // استفاده از متد POST
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              FIdPumpSta: idPumpStation,
+              Sal: sal,
+              Mah: selectedMah,
+              Dahe: dahe,
+            }),
+          });
 
-    fetchTaedAbMantaghe();
+          if (!response.ok)
+            throw new Error('Failed to fetch TaeedProgram data');
+          const data: TaeedProgramData = await response.json();
+          setTaedProgramData(data);
+        } catch (error) {
+          console.error('Error fetching TaeedProgram data:', error);
+        }
+      };
+
+      fetchTaedProgramData();
+    }
+  }, [idPumpStation, sal, selectedMah, dahe]);
+
+  useEffect(() => {
+    if (idPumpStation > 0) {
+      const fetchTaedAbMantaghe = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&FIdPumpSta=${idPumpStation}`,
+          );
+          if (!response.ok) throw new Error('Failed to fetch data');
+          const data = await response.json();
+          setTaedAbMantaghe(data);
+        } catch (err) {
+          setError(
+            err instanceof Error ? err.message : 'An unknown error occurred',
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchTaedAbMantaghe();
+    }
   }, [sal, selectedMah, dahe, idPumpStation]);
   useEffect(() => {
     const fetchMahList = async () => {
@@ -220,7 +273,7 @@ export const usePumpingData = (
   return {
     khatRaneshList,
     predictedVolumes,
-    pumpData, // بازگرداندن pumpData دریافتی از خارج
+    pumpData,
     loading,
     mahList,
     selectedMah,
@@ -231,6 +284,7 @@ export const usePumpingData = (
     finalVolumes,
     taedAbMantaghe,
     error,
+    taedProgramData, // اضافه کردن داده‌های TaeedProgram به خروجی
   };
 };
 

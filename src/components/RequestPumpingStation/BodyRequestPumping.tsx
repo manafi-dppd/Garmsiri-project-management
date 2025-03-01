@@ -37,6 +37,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   doreKesht,
   idShDo,
 }) => {
+  // console.log('idPumpStation: ', idPumpStation);
   const {
     sal: currentSal,
     mah: currentMah,
@@ -54,19 +55,11 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     {date: string; raneshName: string; message: string}[]
   >([]);
   const [isFormFilled, setIsFormFilled] = useState(false);
-
-  useEffect(() => {
-    if (validationErrors.length === 0) {
-      console.log('تمام خطاها رفع شده‌اند، پیام خطا نباید نمایش داده شود.');
-    }
-  }, [validationErrors]);
-
-  useEffect(() => {
-    console.log('بعد از به‌روزرسانی مقدار validationErrors:', validationErrors);
-  }, [validationErrors]);
-
   const [pumpData, setPumpData] = useState<{
     [idTarDor: number]: {[idRanesh: number]: PumpingData};
+  }>({});
+  const [selectedZarfiat, setSelectedZarfiat] = useState<{
+    [key: number]: {[key: number]: number};
   }>({});
 
   const {
@@ -78,6 +71,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     finalVolumes,
     mahList,
     taedAbMantaghe,
+    taedProgramData,
   } = usePumpingData(
     selectedNetworkId,
     idPumpStation,
@@ -192,6 +186,11 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           userRole={userRole}
           mah={mah} // پاس دادن mah به PumpingForm
           dahe={dahe} // پاس دادن dahe به PumpingForm
+          firstName={firstName} // پاس دادن firstName به PumpingForm
+          lastName={lastName}
+          taedProgramData={taedProgramData}
+          selectedZarfiat={selectedZarfiat}
+          setSelectedZarfiat={setSelectedZarfiat}
         />
       )}
     </div>

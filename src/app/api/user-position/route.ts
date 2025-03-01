@@ -29,8 +29,6 @@ export async function GET(req: Request) {
 
     const userId = decoded.userId;
 
-    console.log('Decoded User ID:', userId); // لاگ برای بررسی مقدار userId
-
     const user = await prisma.user.findUnique({
       where: {id: userId},
       include: {

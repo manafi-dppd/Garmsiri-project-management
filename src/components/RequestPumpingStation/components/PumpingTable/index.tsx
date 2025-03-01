@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {toPersianDate, getCurrentSalMahDahe} from '@/utils/dateUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../../types';
 import {usePumpingLogic} from './usePumpingLogic';
-
+type SelectedZarfiatType = {[key: number]: {[key: number]: number}};
 interface PumpingTableProps {
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
@@ -33,6 +33,8 @@ interface PumpingTableProps {
   message: string | null;
   finalVolumes: {[key: number]: number};
   isFormDisabled: boolean;
+  selectedZarfiat: {[key: number]: {[key: number]: number}};
+  setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
 }
 
 const PumpingTable: React.FC<PumpingTableProps> = ({
@@ -48,8 +50,9 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   message,
   finalVolumes,
   isFormDisabled,
+  selectedZarfiat,
+  setSelectedZarfiat,
 }) => {
-  console.log('selectedPumpCounts: ', selectedPumpCounts);
   const isFormFilled = records.some((record) =>
     khatRaneshList.some(
       (ranesh) =>
@@ -66,28 +69,20 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
     const numericValue = Number(newValue);
 
     if (!isNaN(numericValue)) {
-      setPumpData({
-        ...pumpData, // مقدار قبلی را نگه می‌دارد
-        [IdTarDor]: {
-          ...pumpData[IdTarDor],
-          [IdRanesh]: {
-            ...pumpData[IdTarDor]?.[IdRanesh],
-            Zarfiat: numericValue,
+      setSelectedZarfiat((prev: any[]) => {
+        const updatedData = {
+          ...prev,
+          [IdTarDor]: {
+            ...prev[IdTarDor],
+            [IdRanesh]: numericValue,
           },
-        },
+        };
+        return updatedData;
       });
     }
   };
 
   return (
-    // <div
-    //   className="max-h-[800px] overflow-auto border border-gray-300"
-    //   style={{
-    //     transform: 'scale(0.70)',
-    //     transformOrigin: 'top right',
-    //     width: 'max-content',
-    //   }}
-    // >
     <table
       className="w-full border-collapse border border-orange-500"
       style={{

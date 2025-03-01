@@ -11,7 +11,8 @@ export const validatePumpingData = (
   records: RecordType[],
   khatRaneshList: KhatRanesh[],
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}},
-  selectedPumpCounts: {[key: number]: {[date: string]: number}}, // اضافه کردن selectedPumpCounts
+  selectedPumpCounts: {[key: number]: {[date: string]: number}},
+  selectedZarfiat: {[key: number]: {[key: number]: number}}, // اضافه کردن selectedZarfiat
   timeValues: {[key: number]: {[key: number]: {from: string; to: string}}},
 ): ValidationError[] => {
   const errors: ValidationError[] = [];
@@ -21,7 +22,9 @@ export const validatePumpingData = (
       const raneshInfo = pumpData[record.IdTarDor]?.[ranesh.IdRanesh];
       const timeValue = timeValues[record.IdTarDor]?.[ranesh.IdRanesh];
       const selectedPumpCount =
-        selectedPumpCounts[record.IdTarDor]?.[ranesh.IdRanesh] ?? 0; // تعداد پمپ انتخاب شده
+        selectedPumpCounts[record.IdTarDor]?.[ranesh.IdRanesh] ?? 0;
+      const zarfiatValue =
+        selectedZarfiat[record.IdTarDor]?.[ranesh.IdRanesh] ?? 0;
 
       // بررسی کامل بودن یا خالی بودن تمام فیلدها
       const isAllFieldsEmpty =
@@ -31,9 +34,9 @@ export const validatePumpingData = (
               selectedPumpCount === 0) &&
             (!timeValue?.from || timeValue.from === '') &&
             (!timeValue?.to || timeValue.to === '')
-          : (raneshInfo?.Zarfiat === null ||
-              raneshInfo?.Zarfiat === undefined ||
-              raneshInfo?.Zarfiat === 0) &&
+          : (zarfiatValue === null ||
+              zarfiatValue === undefined ||
+              zarfiatValue === 0) &&
             (!timeValue?.from || timeValue.from === '') &&
             (!timeValue?.to || timeValue.to === '');
 
@@ -43,8 +46,8 @@ export const validatePumpingData = (
             selectedPumpCount !== undefined &&
             timeValue?.from &&
             timeValue?.to
-          : raneshInfo?.Zarfiat !== null &&
-            raneshInfo?.Zarfiat !== undefined &&
+          : zarfiatValue !== null &&
+            zarfiatValue !== undefined &&
             timeValue?.from &&
             timeValue?.to;
 
@@ -62,7 +65,7 @@ export const validatePumpingData = (
         selectedPumpCount !== null &&
         selectedPumpCount !== undefined
       ) {
-        const maxTedad = ranesh.TedadPump || 0; // حداکثر تعداد پمپ مجاز
+        const maxTedad = ranesh.TedadPump || 0;
         if (selectedPumpCount < 0 || selectedPumpCount > maxTedad) {
           errors.push({
             date: toPersianDate(record.Trikh, 'YYYY/MM/DD'),
@@ -75,11 +78,11 @@ export const validatePumpingData = (
       // بررسی دبی L/S برای ranesh.FIdSePu === 2
       if (
         ranesh.FIdSePu === 2 &&
-        raneshInfo?.Zarfiat !== null &&
-        raneshInfo?.Zarfiat !== undefined
+        zarfiatValue !== null &&
+        zarfiatValue !== undefined
       ) {
-        const maxZarfiat = ranesh.Zarfiat || 0; // حداکثر دبی مجاز
-        if (raneshInfo.Zarfiat < 0 || raneshInfo.Zarfiat > maxZarfiat) {
+        const maxZarfiat = ranesh.Zarfiat || 0;
+        if (zarfiatValue < 0 || zarfiatValue > maxZarfiat) {
           errors.push({
             date: toPersianDate(record.Trikh, 'YYYY/MM/DD'),
             raneshName: ranesh.RaneshName,

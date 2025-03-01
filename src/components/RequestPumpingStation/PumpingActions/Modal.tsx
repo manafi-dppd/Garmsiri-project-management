@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,6 +16,10 @@ const Modal: React.FC<ModalProps> = ({
   isReadOnly,
 }) => {
   const [text, setText] = useState(content);
+
+  useEffect(() => {
+    setText(content); // مقدار جدید را تنظیم کنید
+  }, [content]);
 
   if (!isOpen) return null;
 

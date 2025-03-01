@@ -20,7 +20,7 @@ const RequestPumpingStation = () => {
   // تعریف state برای currentMah و currentDahe
   const [currentMah, setCurrentMah] = useState(1); // مقدار پیش‌فرض برای ماه
   const [currentDahe, setCurrentDahe] = useState(1); // مقدار پیش‌فرض برای دهه
-
+  // console.log('idPumpStation: ', idPumpStation);
   return (
     <div>
       <HeaderRequestPumping

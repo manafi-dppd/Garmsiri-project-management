@@ -4,7 +4,7 @@ import {PumpingData, RecordType} from '../types';
 import PumpingTable from '../components/PumpingTable';
 import PumpingActions from '../PumpingActions';
 import PaginationForMah, {convertMahToPersian} from '../PaginationForMah'; // اضافه کردن import برای PaginationForMah
-
+import {TaeedProgramData} from '../types'; // فرض بر این است که اینترفیس در فایل types.ts تعریف شده است
 interface PumpingFormProps {
   setSelectedMah: (value: number) => void;
   khatRaneshList: KhatRanesh[];
@@ -60,6 +60,11 @@ interface PumpingFormProps {
   sal: number;
   dahe: number; // اضافه کردن dahe به props
   mah: number; // اضافه کردن mah به پراپ‌ها
+  firstName: string; // اضافه کردن firstName به پراپ‌ها
+  lastName: string;
+  taedProgramData: TaeedProgramData | null;
+  selectedZarfiat: {[key: number]: {[key: number]: number}};
+  setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
 }
 const PumpingForm: React.FC<PumpingFormProps> = ({
   khatRaneshList,
@@ -97,6 +102,11 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
   userRole,
   mah, // دریافت mah از پراپ‌ها
   dahe, //
+  firstName, // دریافت firstName از پراپ‌ها
+  lastName, // دریافت lastName از پراپ‌ها
+  taedProgramData,
+  selectedZarfiat,
+  setSelectedZarfiat,
 }) => {
   return (
     <div className="max-h-[800px] p-1 bg-gray-100 rounded-lg shadow-md">
@@ -113,6 +123,8 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
         message={message}
         finalVolumes={finalVolumes}
         isFormDisabled={isFormDisabled}
+        selectedZarfiat={selectedZarfiat}
+        setSelectedZarfiat={setSelectedZarfiat}
       />
       {validationErrors.length > 0 && (
         <div className="mt-4 text-red-600">
@@ -137,9 +149,15 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
         timeValues={timeValues}
         setValidationErrors={setValidationErrors}
         userRole={userRole}
+        idPumpStation={idPumpStation}
         sal={sal} // پاس دادن سال
         mah={mah} // پاس دادن ماه
         dahe={dahe} // پاس دادن دهه
+        firstName={firstName} // پاس دادن firstName
+        lastName={lastName} // پاس دادن lastName
+        taedProgramData={taedProgramData}
+        selectedZarfiat={selectedZarfiat} // اضافه کردن selectedZarfiat
+        setSelectedZarfiat={setSelectedZarfiat}
       />
       {selectedMah !== null && sal !== null && (
         <div>

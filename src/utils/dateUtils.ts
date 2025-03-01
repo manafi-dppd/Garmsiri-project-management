@@ -14,6 +14,28 @@ export const toPersianDate = (date: string | Date, format: string): string => {
   // تبدیل تاریخ به فرمت شمسی
   return new Date(date).toLocaleDateString('fa-IR', options);
 };
+export const formatDateTime = (date: string | Date): string => {
+  // ایجاد یک شیء Date از تاریخ ورودی
+  const dateObj = new Date(date);
+
+  // دریافت سال، ماه و روز به‌صورت UTC
+  const year = dateObj.getUTCFullYear();
+  const month = dateObj.getUTCMonth() + 1; // ماه‌ها از ۰ شروع می‌شوند، بنابراین +۱ می‌کنیم
+  const day = dateObj.getUTCDate();
+
+  // ایجاد یک تاریخ جدید بر اساس UTC
+  const utcDate = new Date(Date.UTC(year, month - 1, day));
+
+  // تبدیل تاریخ به فرمت شمسی
+  const persianDate = toPersianDate(utcDate, 'yyyy/MM/dd');
+
+  // دریافت ساعت و دقیقه به‌صورت UTC
+  const hours = dateObj.getUTCHours().toString().padStart(2, '0'); // ساعت با دو رقم
+  const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0'); // دقیقه با دو رقم
+
+  // ترکیب تاریخ شمسی و زمان
+  return `${persianDate}-${hours}:${minutes}`;
+};
 export function getCurrentSalMahDahe(): {
   sal: number;
   mah: number;

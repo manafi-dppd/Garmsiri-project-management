@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {validatePumpingData} from '../utils/validationUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../types';
 import {ValidationError} from '../utils/validationUtils';
@@ -9,6 +9,10 @@ interface TaeedProgramData {
   FirstNErsal: string;
   LastNErsal: string;
   TarikhErsal: string;
+  TaedAbMantaghe: boolean;
+  TaedPeymankar: boolean;
+  TaedAbNiroo: boolean;
+  FileNameNahaee: boolean;
   FirstNAbMantaghe: string;
   LastNAbMantaghe: string;
   TarikhAbMantaghe: string;
@@ -78,6 +82,56 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false); // State برای مدیریت وضعیت ذخیره‌سازی
   const [currentDateTime, setCurrentDateTime] = useState<string>(''); // State برای تاریخ و زمان فعلی
+  // State برای مدیریت وضعیت دکمه‌های رادیویی
+  const [taedAbMantaghe, setTaedAbMantaghe] = useState<boolean | null>(
+    taedProgramData?.TaedAbMantaghe ?? null,
+  );
+  const [taedPeymankar, setTaedPeymankar] = useState<boolean | null>(
+    taedProgramData?.TaedPeymankar ?? null,
+  );
+  const [taedAbNiroo, setTaedAbNiroo] = useState<boolean | null>(
+    taedProgramData?.TaedAbNiroo ?? null,
+  );
+
+  // توابع onChange برای به‌روزرسانی state
+  const handleTaedAbMantagheChange = (value: boolean) => {
+    setTaedAbMantaghe(value);
+  };
+
+  const handleTaedPeymankarChange = (value: boolean) => {
+    setTaedPeymankar(value);
+  };
+
+  const handleTaedAbNirooChange = (value: boolean) => {
+    setTaedAbNiroo(value);
+  };
+
+  // Effect برای به‌روزرسانی state در صورت تغییر taedProgramData
+  useEffect(() => {
+    setTaedAbMantaghe(taedProgramData?.TaedAbMantaghe ?? null);
+    setTaedPeymankar(taedProgramData?.TaedPeymankar ?? null);
+    setTaedAbNiroo(taedProgramData?.TaedAbNiroo ?? null);
+  }, [taedProgramData]);
+  // بررسی وضعیت TarikhErsal
+  const isTarikhErsalNull = taedProgramData?.TarikhErsal === null;
+
+  // بررسی وضعیت TaedAbMantaghe
+  const isTaedAbMantagheTrue = taedProgramData?.TaedAbMantaghe === true;
+  const isTaedAbMantagheFalse = taedProgramData?.TaedAbMantaghe === false;
+  const isTaedAbMantagheNull = taedProgramData?.TaedAbMantaghe === null;
+
+  // بررسی وضعیت TaedPeymankar
+  const isTaedPeymankarTrue = taedProgramData?.TaedPeymankar === true;
+  const isTaedPeymankarFalse = taedProgramData?.TaedPeymankar === false;
+  const isTaedPeymankarNull = taedProgramData?.TaedPeymankar === null;
+
+  // بررسی وضعیت TaedAbNiroo
+  const isTaedAbNirooTrue = taedProgramData?.TaedAbNiroo === true;
+  const isTaedAbNirooFalse = taedProgramData?.TaedAbNiroo === false;
+  const isTaedAbNirooNull = taedProgramData?.TaedAbNiroo === null;
+
+  // بررسی وضعیت FileNameNahaee
+  const isFileNameNahaeeNull = taedProgramData?.FileNameNahaee === null;
 
   const handleSave = async () => {
     setErrors([]);
@@ -312,17 +366,19 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           >
             توضیحات
           </button>
-          <button
-            className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-              isFormDisabled || isFormFilled
-                ? 'opacity-50 cursor-not-allowed'
-                : ''
-            }`}
-            disabled={isFormDisabled || isFormFilled}
-            onClick={handleSave}
-          >
-            ذخیره
-          </button>
+          {!getIsReadOnly('requester') && (
+            <button
+              className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                isFormDisabled || isFormFilled || !isTarikhErsalNull
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={isFormDisabled || isFormFilled || !isTarikhErsalNull}
+              onClick={handleSave}
+            >
+              ذخیره
+            </button>
+          )}
         </div>
         {/* نام */}
         <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
@@ -345,11 +401,25 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         <div className="font-bold mb-2">آب منطقه‌ای</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
-            <input type="radio" name="region-water" value="approve" />
+            <input
+              type="radio"
+              name="region-water"
+              value="approve"
+              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              checked={taedAbMantaghe === true}
+              onChange={() => handleTaedAbMantagheChange(true)}
+            />
             تایید
           </label>
           <label className="flex items-center gap-2">
-            <input type="radio" name="region-water" value="reject" />
+            <input
+              type="radio"
+              name="region-water"
+              value="reject"
+              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              checked={taedAbMantaghe === false}
+              onChange={() => handleTaedAbMantagheChange(false)}
+            />
             رد
           </label>
         </div>
@@ -360,12 +430,19 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           >
             توضیحات
           </button>
-          <button
-            className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
-            onClick={() => alert('ارسال آب منطقه‌ای')}
-          >
-            ارسال
-          </button>
+          {!getIsReadOnly('regionalWater') && (
+            <button
+              className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                taedProgramData?.TaedAbMantaghe !== null
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              onClick={() => alert('ارسال آب منطقه‌ای')}
+            >
+              ارسال
+            </button>
+          )}
         </div>
         {/* نام */}
         <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
@@ -384,11 +461,25 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         <div className="font-bold mb-2">پیمانکار پمپاژ</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
-            <input type="radio" name="contractor" value="approve" />
+            <input
+              type="radio"
+              name="contractor"
+              value="approve"
+              disabled={taedProgramData?.TaedPeymankar !== null}
+              checked={taedPeymankar === true}
+              onChange={() => handleTaedPeymankarChange(true)}
+            />
             تایید
           </label>
           <label className="flex items-center gap-2">
-            <input type="radio" name="contractor" value="reject" />
+            <input
+              type="radio"
+              name="contractor"
+              value="reject"
+              disabled={taedProgramData?.TaedPeymankar !== null}
+              checked={taedPeymankar === false}
+              onChange={() => handleTaedPeymankarChange(false)}
+            />
             رد
           </label>
         </div>
@@ -399,12 +490,19 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           >
             توضیحات
           </button>
-          <button
-            className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
-            onClick={() => alert('ارسال پیمانکار پمپاژ')}
-          >
-            ارسال
-          </button>
+          {!getIsReadOnly('pumpingContractor') && (
+            <button
+              className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                taedProgramData?.TaedPeymankar !== null
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={taedProgramData?.TaedPeymankar !== null}
+              onClick={() => alert('ارسال پیمانکار پمپاژ')}
+            >
+              ارسال
+            </button>
+          )}
         </div>
         {/* نام */}
         <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
@@ -423,11 +521,25 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         <div className="font-bold mb-2">آب نیرو</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
-            <input type="radio" name="water-power" value="approve" />
+            <input
+              type="radio"
+              name="water-power"
+              value="approve"
+              disabled={taedProgramData?.TaedAbNiroo !== null}
+              checked={taedAbNiroo === true}
+              onChange={() => handleTaedAbNirooChange(true)}
+            />
             تایید
           </label>
           <label className="flex items-center gap-2">
-            <input type="radio" name="water-power" value="reject" />
+            <input
+              type="radio"
+              name="water-power"
+              value="reject"
+              disabled={taedProgramData?.TaedAbNiroo !== null}
+              checked={taedAbNiroo === false}
+              onChange={() => handleTaedAbNirooChange(false)}
+            />
             رد
           </label>
         </div>
@@ -438,12 +550,19 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           >
             توضیحات
           </button>
-          <button
-            className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
-            onClick={() => alert('ارسال آب نیرو')}
-          >
-            ارسال
-          </button>
+          {!getIsReadOnly('waterPower') && (
+            <button
+              className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                taedProgramData?.TaedAbNiroo !== null
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={taedProgramData?.TaedAbNiroo !== null}
+              onClick={() => alert('ارسال آب نیرو')}
+            >
+              ارسال
+            </button>
+          )}
         </div>
         {/* نام */}
         <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
@@ -456,30 +575,44 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             : ''}
         </div>
       </div>
+
       {/* Div 5: دریافت PDF و تایید نهایی */}
       <div className="p-4 border border-gray-300 rounded-lg flex-1">
         <div className="flex gap-2 mb-2">
           <button
-            className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className={`px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
+              isTaedAbNirooTrue ? '' : 'opacity-50 cursor-not-allowed'
+            }`}
+            disabled={!isTaedAbNirooTrue}
             onClick={() => alert('دریافت PDF')}
           >
             دریافت PDF
           </button>
           <button
-            className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+            className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+              isTaedAbNirooTrue ? '' : 'opacity-50 cursor-not-allowed'
+            }`}
+            disabled={!isTaedAbNirooTrue}
             onClick={() => alert('بارگذاری فایل نهایی')}
           >
             بارگذاری فایل نهایی
           </button>
           <button
-            className="px-4 py-2 text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
+            className={`px-4 py-2 text-white bg-yellow-500 rounded-md hover:bg-yellow-600 ${
+              isFileNameNahaeeNull ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isFileNameNahaeeNull}
             onClick={() => alert('مشاهده فایل نهایی')}
           >
             مشاهده فایل نهایی
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" id="final-approval" />
+          <input
+            type="checkbox"
+            id="final-approval"
+            disabled={isFileNameNahaeeNull}
+          />
           <label htmlFor="final-approval">تایید نهایی</label>
         </div>
       </div>

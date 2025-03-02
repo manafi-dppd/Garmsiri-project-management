@@ -13,6 +13,7 @@ export async function POST(request: Request) {
         {status: 400},
       );
     }
+
     // دریافت داده‌های موردنظر از پایگاه داده
     const result = await prisma.taeedProgram.findFirst({
       where: {FIdPumpSta, Sal, Mah, Dahe},
@@ -23,16 +24,21 @@ export async function POST(request: Request) {
         FirstNAbMantaghe: true,
         LastNAbMantaghe: true,
         TarikhAbMantaghe: true,
+        TaedAbMantaghe: true,
         FirstNPeymankar: true,
         LastNPeymankar: true,
         TarikhPeymankar: true,
+        TaedPeymankar: true,
         FirstNAbNiroo: true,
         LastNAbNiroo: true,
         TarikhAbNiroo: true,
+        TaedAbNiroo: true,
+        FileNameNahaee: true,
         TarikhFileNahee: true,
         FirstNTaeedNahaee: true,
         LastNTaeedNahaee: true,
         TarikhTaeedNahaee: true,
+        TaeedNahaee: true,
       },
     });
 

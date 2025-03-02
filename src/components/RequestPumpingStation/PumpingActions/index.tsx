@@ -133,6 +133,92 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   // بررسی وضعیت FileNameNahaee
   const isFileNameNahaeeNull = taedProgramData?.FileNameNahaee === null;
 
+  // تابع برای ارسال درخواست به API
+  const updateTaeedProgram = async (endpoint: string, data: any) => {
+    try {
+      const response = await fetch(`/api/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        alert('اطلاعات با موفقیت ذخیره شد');
+      } else {
+        alert('خطا در ذخیره‌سازی اطلاعات');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  // توابع برای ارسال درخواست‌های مختلف
+  // const handleRequesterSubmit = async () => {
+  //   await updateTaeedProgram('updateRequester', {
+  //     idPumpStation,
+  //     sal,
+  //     mah,
+  //     dahe,
+  //     firstName,
+  //     lastName,
+  //     tozihErsal: modalContent[`${sal}-${mah}-${dahe}-requester`],
+  //     taedAbMantaghe,
+  //   });
+  // };
+
+  const handleRegionalWaterSubmit = async () => {
+    await updateTaeedProgram('updateRegionalWater', {
+      idPumpStation,
+      sal,
+      mah,
+      dahe,
+      firstName,
+      lastName,
+      tozihAbMantaghe: modalContent[`${sal}-${mah}-${dahe}-regionalWater`],
+      taedAbMantaghe,
+    });
+  };
+
+  const handlePumpingContractorSubmit = async () => {
+    await updateTaeedProgram('updatePumpingContractor', {
+      idPumpStation,
+      sal,
+      mah,
+      dahe,
+      firstName,
+      lastName,
+      tozihPeymankar: modalContent[`${sal}-${mah}-${dahe}-pumpingContractor`],
+      taedPeymankar,
+    });
+  };
+
+  const handleWaterPowerSubmit = async () => {
+    await updateTaeedProgram('updateWaterPower', {
+      idPumpStation,
+      sal,
+      mah,
+      dahe,
+      firstName,
+      lastName,
+      tozihAbNiroo: modalContent[`${sal}-${mah}-${dahe}-waterPower`],
+      taedAbNiroo,
+    });
+  };
+
+  const handleFinalApprovalSubmit = async () => {
+    await updateTaeedProgram('updateFinalApproval', {
+      idPumpStation,
+      sal,
+      mah,
+      dahe,
+      firstName,
+      lastName,
+      tozihAbNiroo: modalContent[`${sal}-${mah}-${dahe}-waterPower`],
+    });
+  };
+
   const handleSave = async () => {
     setErrors([]);
     setValidationErrors([]);
@@ -355,9 +441,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   };
 
   return (
-    <div className="flex flex-row gap-4 mt-4">
+    <div className="flex flex-row gap-4 mt-4 overflow-x-auto">
       {/* Div 1: درخواست کننده */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative">
+      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
         <div className="font-bold mb-2">درخواست کننده</div>
         <div className="flex gap-2 mb-2">
           <button
@@ -404,7 +490,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 2: آب منطقه‌ای */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative">
+      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
         <div className="font-bold mb-2">آب منطقه‌ای</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -448,12 +534,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('regionalWater') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isTaedAbMantagheTrue || isTarikhErsalNull
+                isTaedAbMantagheTrue ||
+                isTarikhErsalNull ||
+                taedAbMantaghe === null
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={isTaedAbMantagheTrue || isTarikhErsalNull}
-              onClick={() => alert('ارسال آب منطقه‌ای')}
+              disabled={
+                isTaedAbMantagheTrue ||
+                isTarikhErsalNull ||
+                taedAbMantaghe === null
+              }
+              onClick={handleRegionalWaterSubmit}
             >
               ارسال
             </button>
@@ -475,7 +567,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 3: پیمانکار پمپاژ */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative">
+      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
         <div className="font-bold mb-2">پیمانکار پمپاژ</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -519,12 +611,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('pumpingContractor') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isTaedPeymankarTrue || !isTaedAbMantagheTrue
+                isTaedPeymankarTrue ||
+                !isTaedAbMantagheTrue ||
+                taedPeymankar === null
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={isTaedPeymankarTrue || !isTaedAbMantagheTrue}
-              onClick={() => alert('ارسال پیمانکار پمپاژ')}
+              disabled={
+                isTaedPeymankarTrue ||
+                !isTaedAbMantagheTrue ||
+                taedPeymankar === null
+              }
+              onClick={handlePumpingContractorSubmit}
             >
               ارسال
             </button>
@@ -545,7 +643,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 4: آب نیرو */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative">
+      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
         <div className="font-bold mb-2">آب نیرو</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -589,12 +687,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('waterPower') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isTaedAbNirooTrue || !isTaedPeymankarTrue
+                isTaedAbNirooTrue ||
+                !isTaedPeymankarTrue ||
+                taedAbNiroo === null
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={isTaedAbNirooTrue || !isTaedPeymankarTrue}
-              onClick={() => alert('ارسال آب نیرو')}
+              disabled={
+                isTaedAbNirooTrue ||
+                !isTaedPeymankarTrue ||
+                taedAbNiroo === null
+              }
+              onClick={handleWaterPowerSubmit}
             >
               ارسال
             </button>
@@ -613,8 +717,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         )}
       </div>
 
-      {/* Div 5: دریافت PDF و تایید نهایی */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1">
+      {/* Div 5: دریافت PDF و بارگذاری فایل نهایی */}
+      <div className="p-4 border border-gray-300 rounded-lg flex-[1.6] min-w-[290px]">
+        <div className="font-bold mb-2">فایل‌های نهایی</div>
         <div className="flex gap-2 mb-2">
           <button
             className={`px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
@@ -644,13 +749,29 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             مشاهده فایل نهایی
           </button>
         </div>
-        <div className="flex items-center gap-2">
+      </div>
+
+      {/* Div 6: تایید نهایی و ارسال */}
+      <div className="p-4 border border-gray-300 rounded-lg flex-[0.4] min-w-[110px]">
+        <div className="font-bold mb-2">تایید نهایی</div>
+        <div className="flex items-center gap-2 mb-2">
           <input
             type="checkbox"
             id="final-approval"
             disabled={isFileNameNahaeeNull}
           />
           <label htmlFor="final-approval">تایید نهایی</label>
+        </div>
+        <div className="flex gap-2">
+          <button
+            className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+              isFileNameNahaeeNull ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isFileNameNahaeeNull}
+            onClick={handleFinalApprovalSubmit}
+          >
+            ارسال
+          </button>
         </div>
       </div>
 

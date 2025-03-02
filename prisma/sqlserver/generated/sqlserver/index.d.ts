@@ -238,7 +238,6 @@ export class PrismaClient<
   U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
-  someTable: any;
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
 
     /**
@@ -45301,7 +45300,7 @@ export namespace Prisma {
     LastNAbNiroo: string | null
     TozihAbNiroo: string | null
     TarikhAbNiroo: Date | null
-    TaedAbNiroo: string | null
+    TaedAbNiroo: boolean | null
     FileNameNahaee: string | null
     FilePathNahaee: string | null
     TarikhFileNahee: Date | null
@@ -45342,7 +45341,7 @@ export namespace Prisma {
     LastNAbNiroo: string | null
     TozihAbNiroo: string | null
     TarikhAbNiroo: Date | null
-    TaedAbNiroo: string | null
+    TaedAbNiroo: boolean | null
     FileNameNahaee: string | null
     FilePathNahaee: string | null
     TarikhFileNahee: Date | null
@@ -45666,7 +45665,7 @@ export namespace Prisma {
     LastNAbNiroo: string | null
     TozihAbNiroo: string | null
     TarikhAbNiroo: Date | null
-    TaedAbNiroo: string | null
+    TaedAbNiroo: boolean | null
     FileNameNahaee: string | null
     FilePathNahaee: string | null
     TarikhFileNahee: Date | null
@@ -45815,7 +45814,7 @@ export namespace Prisma {
       LastNAbNiroo: string | null
       TozihAbNiroo: string | null
       TarikhAbNiroo: Date | null
-      TaedAbNiroo: string | null
+      TaedAbNiroo: boolean | null
       FileNameNahaee: string | null
       FilePathNahaee: string | null
       TarikhFileNahee: Date | null
@@ -46222,7 +46221,7 @@ export namespace Prisma {
     readonly LastNAbNiroo: FieldRef<"TaeedProgram", 'String'>
     readonly TozihAbNiroo: FieldRef<"TaeedProgram", 'String'>
     readonly TarikhAbNiroo: FieldRef<"TaeedProgram", 'DateTime'>
-    readonly TaedAbNiroo: FieldRef<"TaeedProgram", 'String'>
+    readonly TaedAbNiroo: FieldRef<"TaeedProgram", 'Boolean'>
     readonly FileNameNahaee: FieldRef<"TaeedProgram", 'String'>
     readonly FilePathNahaee: FieldRef<"TaeedProgram", 'String'>
     readonly TarikhFileNahee: FieldRef<"TaeedProgram", 'DateTime'>
@@ -49455,7 +49454,7 @@ export namespace Prisma {
     LastNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
     TozihAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
     TarikhAbNiroo?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
-    TaedAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TaedAbNiroo?: BoolNullableFilter<"TaeedProgram"> | boolean | null
     FileNameNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
     FilePathNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
     TarikhFileNahee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
@@ -49540,7 +49539,7 @@ export namespace Prisma {
     LastNAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
     TozihAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
     TarikhAbNiroo?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
-    TaedAbNiroo?: StringNullableFilter<"TaeedProgram"> | string | null
+    TaedAbNiroo?: BoolNullableFilter<"TaeedProgram"> | boolean | null
     FileNameNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
     FilePathNahaee?: StringNullableFilter<"TaeedProgram"> | string | null
     TarikhFileNahee?: DateTimeNullableFilter<"TaeedProgram"> | Date | string | null
@@ -49630,7 +49629,7 @@ export namespace Prisma {
     LastNAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
     TozihAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
     TarikhAbNiroo?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
-    TaedAbNiroo?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
+    TaedAbNiroo?: BoolNullableWithAggregatesFilter<"TaeedProgram"> | boolean | null
     FileNameNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
     FilePathNahaee?: StringNullableWithAggregatesFilter<"TaeedProgram"> | string | null
     TarikhFileNahee?: DateTimeNullableWithAggregatesFilter<"TaeedProgram"> | Date | string | null
@@ -51726,7 +51725,7 @@ export namespace Prisma {
     LastNAbNiroo?: string | null
     TozihAbNiroo?: string | null
     TarikhAbNiroo?: Date | string | null
-    TaedAbNiroo?: string | null
+    TaedAbNiroo?: boolean | null
     FileNameNahaee?: string | null
     FilePathNahaee?: string | null
     TarikhFileNahee?: Date | string | null
@@ -51767,7 +51766,7 @@ export namespace Prisma {
     LastNAbNiroo?: string | null
     TozihAbNiroo?: string | null
     TarikhAbNiroo?: Date | string | null
-    TaedAbNiroo?: string | null
+    TaedAbNiroo?: boolean | null
     FileNameNahaee?: string | null
     FilePathNahaee?: string | null
     TarikhFileNahee?: Date | string | null
@@ -51807,7 +51806,7 @@ export namespace Prisma {
     LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TaedAbNiroo?: NullableBoolFieldUpdateOperationsInput | boolean | null
     FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51848,7 +51847,7 @@ export namespace Prisma {
     LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TaedAbNiroo?: NullableBoolFieldUpdateOperationsInput | boolean | null
     FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51888,7 +51887,7 @@ export namespace Prisma {
     LastNAbNiroo?: string | null
     TozihAbNiroo?: string | null
     TarikhAbNiroo?: Date | string | null
-    TaedAbNiroo?: string | null
+    TaedAbNiroo?: boolean | null
     FileNameNahaee?: string | null
     FilePathNahaee?: string | null
     TarikhFileNahee?: Date | string | null
@@ -51928,7 +51927,7 @@ export namespace Prisma {
     LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TaedAbNiroo?: NullableBoolFieldUpdateOperationsInput | boolean | null
     FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51969,7 +51968,7 @@ export namespace Prisma {
     LastNAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TozihAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhAbNiroo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    TaedAbNiroo?: NullableStringFieldUpdateOperationsInput | string | null
+    TaedAbNiroo?: NullableBoolFieldUpdateOperationsInput | boolean | null
     FileNameNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     FilePathNahaee?: NullableStringFieldUpdateOperationsInput | string | null
     TarikhFileNahee?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

@@ -63,6 +63,10 @@ export interface TaeedProgramData {
   FirstNErsal: string;
   LastNErsal: string;
   TarikhErsal: string;
+  TaedAbMantaghe: boolean;
+  TaedPeymankar: boolean;
+  TaedAbNiroo: boolean;
+  FileNameNahaee: boolean;
   FirstNAbMantaghe: string;
   LastNAbMantaghe: string;
   TarikhAbMantaghe: string;

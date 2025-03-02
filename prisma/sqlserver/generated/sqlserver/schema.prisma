@@ -451,7 +451,7 @@ model TaeedProgram {
   LastNAbNiroo       String?   @db.NVarChar(20)
   TozihAbNiroo       String?   @db.NVarChar(Max)
   TarikhAbNiroo      DateTime? @db.SmallDateTime
-  TaedAbNiroo        String?   @db.NChar(10)
+  TaedAbNiroo        Boolean?
   FileNameNahaee     String?   @db.NVarChar(255)
   FilePathNahaee     String?
   TarikhFileNahee    DateTime? @db.SmallDateTime

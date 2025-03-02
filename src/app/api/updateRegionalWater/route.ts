@@ -5,31 +5,33 @@ const prisma = sqlServerClient;
 
 export async function PUT(request: Request) {
   try {
-    const {FIdPumpSta, Sal, Mah, Dahe, FirstNErsal, LastNErsal, TozihErsal} =
-      await request.json();
-    console.log('FIdPumpSta: ', FIdPumpSta);
-    console.log('Sal: ', Sal);
-    console.log('Mah: ', Mah);
-    console.log('Dahe: ', Dahe);
-    console.log('FirstNErsal: ', FirstNErsal);
-    console.log('LastNErsal: ', LastNErsal);
-    console.log('TozihErsal: ', TozihErsal);
+    const {
+      idPumpStation,
+      sal,
+      mah,
+      dahe,
+      firstName,
+      lastName,
+      tozihAbMantaghe,
+      taedAbMantaghe,
+    } = await request.json();
     // دریافت زمان حال در منطقه زمانی سرور
     const now = new Date();
     const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
 
     await prisma.taeedProgram.updateMany({
       where: {
-        FIdPumpSta: FIdPumpSta,
-        Sal: Sal,
-        Mah: Mah,
-        Dahe: Dahe,
+        FIdPumpSta: idPumpStation,
+        Sal: sal,
+        Mah: mah,
+        Dahe: dahe,
       },
       data: {
-        FirstNErsal: FirstNErsal,
-        LastNErsal: LastNErsal,
-        TozihErsal: TozihErsal,
-        TarikhErsal: localTime, // مقدار تبدیل‌شده به زمان محلی
+        FirstNAbMantaghe: firstName,
+        LastNAbMantaghe: lastName,
+        TozihAbMantaghe: tozihAbMantaghe,
+        TarikhAbMantaghe: localTime,
+        TaedAbMantaghe: taedAbMantaghe,
       },
     });
 

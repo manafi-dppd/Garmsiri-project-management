@@ -5,7 +5,7 @@ import PumpingForm from './PumpingForm';
 import {usePumpingData} from './hooks/usePumpingData';
 import {usePumpingTime} from './hooks/usePumpingTime';
 import PaginationForMah, {convertMahToPersian} from './PaginationForMah';
-
+import {TaeedProgramData} from './types';
 import {KhatRanesh, PredictedVolume, PumpingData, RecordType} from './types';
 
 interface BodyRequestPumpingProps {
@@ -188,7 +188,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           dahe={dahe} // پاس دادن dahe به PumpingForm
           firstName={firstName} // پاس دادن firstName به PumpingForm
           lastName={lastName}
-          taedProgramData={taedProgramData}
+          taedProgramData={taedProgramData as TaeedProgramData | null}
           selectedZarfiat={selectedZarfiat}
           setSelectedZarfiat={setSelectedZarfiat}
         />

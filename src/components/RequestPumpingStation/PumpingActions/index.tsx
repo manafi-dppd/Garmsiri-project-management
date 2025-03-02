@@ -369,31 +369,38 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('requester') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isFormDisabled || isFormFilled || !isTarikhErsalNull
+                isFormDisabled ||
+                isFormFilled ||
+                (!isTarikhErsalNull && isTaedAbMantagheTrue)
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={isFormDisabled || isFormFilled || !isTarikhErsalNull}
+              disabled={
+                isFormDisabled ||
+                isFormFilled ||
+                (!isTarikhErsalNull && isTaedAbMantagheTrue)
+              }
               onClick={handleSave}
             >
               ذخیره
             </button>
           )}
         </div>
-        {/* نام */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-          {isSaved
-            ? `${firstName} ${lastName}`
-            : `${taedProgramData?.FirstNErsal} ${taedProgramData?.LastNErsal}`}
-        </div>
-        {/* زمان */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-          {isSaved
-            ? currentDateTime
-            : taedProgramData?.TarikhErsal
-              ? formatDateTime(taedProgramData.TarikhErsal)
-              : ''}
-        </div>
+        {/* نام و زمان درخواست کننده */}
+        {taedProgramData?.FirstNErsal && taedProgramData?.LastNErsal && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+            {isSaved
+              ? `${firstName} ${lastName}`
+              : `${taedProgramData.FirstNErsal} ${taedProgramData.LastNErsal}`}
+          </div>
+        )}
+        {taedProgramData?.TarikhErsal && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {isSaved
+              ? currentDateTime
+              : formatDateTime(taedProgramData.TarikhErsal)}
+          </div>
+        )}
       </div>
 
       {/* Div 2: آب منطقه‌ای */}
@@ -405,7 +412,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="region-water"
               value="approve"
-              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              disabled={
+                getIsReadOnly('regionalWater') ||
+                isTaedAbMantagheTrue ||
+                isTarikhErsalNull
+              }
               checked={taedAbMantaghe === true}
               onChange={() => handleTaedAbMantagheChange(true)}
             />
@@ -416,7 +427,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="region-water"
               value="reject"
-              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              disabled={
+                getIsReadOnly('regionalWater') ||
+                isTaedAbMantagheTrue ||
+                isTarikhErsalNull
+              }
               checked={taedAbMantaghe === false}
               onChange={() => handleTaedAbMantagheChange(false)}
             />
@@ -433,27 +448,30 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('regionalWater') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                taedProgramData?.TaedAbMantaghe !== null
+                isTaedAbMantagheTrue || isTarikhErsalNull
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={taedProgramData?.TaedAbMantaghe !== null}
+              disabled={isTaedAbMantagheTrue || isTarikhErsalNull}
               onClick={() => alert('ارسال آب منطقه‌ای')}
             >
               ارسال
             </button>
           )}
         </div>
-        {/* نام */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-          {taedProgramData?.FirstNAbMantaghe} {taedProgramData?.LastNAbMantaghe}
-        </div>
-        {/* زمان */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-          {taedProgramData?.TarikhAbMantaghe
-            ? formatDateTime(taedProgramData.TarikhAbMantaghe)
-            : ''}
-        </div>
+        {/* نام و زمان آب منطقه‌ای */}
+        {taedProgramData?.FirstNAbMantaghe &&
+          taedProgramData?.LastNAbMantaghe && (
+            <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+              {taedProgramData.FirstNAbMantaghe}{' '}
+              {taedProgramData.LastNAbMantaghe}
+            </div>
+          )}
+        {taedProgramData?.TarikhAbMantaghe && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {formatDateTime(taedProgramData.TarikhAbMantaghe)}
+          </div>
+        )}
       </div>
 
       {/* Div 3: پیمانکار پمپاژ */}
@@ -465,7 +483,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="contractor"
               value="approve"
-              disabled={taedProgramData?.TaedPeymankar !== null}
+              disabled={
+                getIsReadOnly('pumpingContractor') ||
+                isTaedPeymankarTrue ||
+                !isTaedAbMantagheTrue
+              }
               checked={taedPeymankar === true}
               onChange={() => handleTaedPeymankarChange(true)}
             />
@@ -476,7 +498,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="contractor"
               value="reject"
-              disabled={taedProgramData?.TaedPeymankar !== null}
+              disabled={
+                getIsReadOnly('pumpingContractor') ||
+                isTaedPeymankarTrue ||
+                !isTaedAbMantagheTrue
+              }
               checked={taedPeymankar === false}
               onChange={() => handleTaedPeymankarChange(false)}
             />
@@ -493,27 +519,29 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('pumpingContractor') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                taedProgramData?.TaedPeymankar !== null
+                isTaedPeymankarTrue || !isTaedAbMantagheTrue
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={taedProgramData?.TaedPeymankar !== null}
+              disabled={isTaedPeymankarTrue || !isTaedAbMantagheTrue}
               onClick={() => alert('ارسال پیمانکار پمپاژ')}
             >
               ارسال
             </button>
           )}
         </div>
-        {/* نام */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-          {taedProgramData?.FirstNPeymankar} {taedProgramData?.LastNPeymankar}
-        </div>
-        {/* زمان */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-          {taedProgramData?.TarikhPeymankar
-            ? formatDateTime(taedProgramData.TarikhPeymankar)
-            : ''}
-        </div>
+        {/* نام و زمان پیمانکار پمپاژ */}
+        {taedProgramData?.FirstNPeymankar &&
+          taedProgramData?.LastNPeymankar && (
+            <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+              {taedProgramData.FirstNPeymankar} {taedProgramData.LastNPeymankar}
+            </div>
+          )}
+        {taedProgramData?.TarikhPeymankar && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {formatDateTime(taedProgramData.TarikhPeymankar)}
+          </div>
+        )}
       </div>
 
       {/* Div 4: آب نیرو */}
@@ -525,7 +553,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="water-power"
               value="approve"
-              disabled={taedProgramData?.TaedAbNiroo !== null}
+              disabled={
+                getIsReadOnly('waterPower') ||
+                isTaedAbNirooTrue ||
+                !isTaedPeymankarTrue
+              }
               checked={taedAbNiroo === true}
               onChange={() => handleTaedAbNirooChange(true)}
             />
@@ -536,7 +568,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               type="radio"
               name="water-power"
               value="reject"
-              disabled={taedProgramData?.TaedAbNiroo !== null}
+              disabled={
+                getIsReadOnly('waterPower') ||
+                isTaedAbNirooTrue ||
+                !isTaedPeymankarTrue
+              }
               checked={taedAbNiroo === false}
               onChange={() => handleTaedAbNirooChange(false)}
             />
@@ -553,27 +589,28 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('waterPower') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                taedProgramData?.TaedAbNiroo !== null
+                isTaedAbNirooTrue || !isTaedPeymankarTrue
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
-              disabled={taedProgramData?.TaedAbNiroo !== null}
+              disabled={isTaedAbNirooTrue || !isTaedPeymankarTrue}
               onClick={() => alert('ارسال آب نیرو')}
             >
               ارسال
             </button>
           )}
         </div>
-        {/* نام */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-          {taedProgramData?.FirstNAbNiroo} {taedProgramData?.LastNAbNiroo}
-        </div>
-        {/* زمان */}
-        <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-          {taedProgramData?.TarikhAbNiroo
-            ? formatDateTime(taedProgramData.TarikhAbNiroo)
-            : ''}
-        </div>
+        {/* نام و زمان آب نیرو */}
+        {taedProgramData?.FirstNAbNiroo && taedProgramData?.LastNAbNiroo && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+            {taedProgramData.FirstNAbNiroo} {taedProgramData.LastNAbNiroo}
+          </div>
+        )}
+        {taedProgramData?.TarikhAbNiroo && (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {formatDateTime(taedProgramData.TarikhAbNiroo)}
+          </div>
+        )}
       </div>
 
       {/* Div 5: دریافت PDF و تایید نهایی */}

@@ -62,6 +62,10 @@ interface PumpingFormProps {
   mah: number; // اضافه کردن mah به پراپ‌ها
   firstName: string; // اضافه کردن firstName به پراپ‌ها
   lastName: string;
+  networkName: string;
+  pumpStationName: string;
+  saleZeraee: string;
+  doreKesht: string;
   taedProgramData: TaeedProgramData | null;
   selectedZarfiat: {[key: number]: {[key: number]: number}};
   setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
@@ -104,6 +108,10 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
   dahe, //
   firstName, // دریافت firstName از پراپ‌ها
   lastName, // دریافت lastName از پراپ‌ها
+  networkName,
+  pumpStationName,
+  saleZeraee,
+  doreKesht,
   taedProgramData,
   selectedZarfiat,
   setSelectedZarfiat,
@@ -158,6 +166,14 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
         taedProgramData={taedProgramData}
         selectedZarfiat={selectedZarfiat} // اضافه کردن selectedZarfiat
         setSelectedZarfiat={setSelectedZarfiat}
+        userName={''}
+        networkName={networkName}
+        pumpStationName={pumpStationName}
+        selectedNetworkId={null}
+        saleZeraee={saleZeraee}
+        doreKesht={doreKesht}
+        idShDo={0}
+        finalVolumes={finalVolumes}
       />
       {selectedMah !== null && sal !== null && (
         <div>

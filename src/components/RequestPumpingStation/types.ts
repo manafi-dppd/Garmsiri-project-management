@@ -81,3 +81,33 @@ export interface TaeedProgramData {
   LastNTaeedNahaee: string;
   TarikhTaeedNahaee: string;
 }
+
+export interface PumpingActionsProps {
+  onSave: () => void;
+  onReset: () => void;
+  disabled?: boolean;
+  isFormDisabled: boolean;
+  isFormFilled: boolean;
+  khatRaneshList: KhatRanesh[];
+  records: RecordType[];
+  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
+  selectedPumpCounts: {[key: number]: {[date: string]: number}};
+  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
+  finalVolumes: {[key: number]: number};
+  selectedZarfiat: {[key: number]: {[key: number]: number}};
+}
+
+export interface PumpingActionsProps {
+  onSave: () => void;
+  onReset: () => void;
+  disabled?: boolean;
+  isFormDisabled: boolean;
+  isFormFilled: boolean;
+  khatRaneshList: KhatRanesh[];
+  records: RecordType[];
+  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
+  selectedPumpCounts: {[key: number]: {[date: string]: number}};
+  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
+  finalVolumes: {[key: number]: number};
+  selectedZarfiat: {[key: number]: {[key: number]: number}};
+}

@@ -3,13 +3,13 @@ import {toPersianDate, getCurrentSalMahDahe} from '@/utils/dateUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../../types';
 import {usePumpingLogic} from './usePumpingLogic';
 type SelectedZarfiatType = {[key: number]: {[key: number]: number}};
-interface PumpingTableProps {
+export interface PumpingTableProps {
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
   setPumpData: (data: {
     [idTarDor: number]: {[idRanesh: number]: PumpingData};
-  }) => void; // اضافه کردن setPumpData به props
+  }) => void;
   selectedPumpCounts: {[key: number]: {[date: string]: number}};
   timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
   handlePumpCountChange: (
@@ -30,11 +30,12 @@ interface PumpingTableProps {
     type: 'hour' | 'minute',
     increment: number,
   ) => void;
-  message: string | null;
-  finalVolumes: {[key: number]: number};
+  message: string | null; // اضافه کردن این خط
+  finalVolumes: {[key: number]: number}; // اضافه کردن این خط
   isFormDisabled: boolean;
   selectedZarfiat: {[key: number]: {[key: number]: number}};
   setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
+  isReadOnly?: boolean;
 }
 
 const PumpingTable: React.FC<PumpingTableProps> = ({
@@ -52,7 +53,9 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   isFormDisabled,
   selectedZarfiat,
   setSelectedZarfiat,
+  isReadOnly,
 }) => {
+  console.log('finalVolumes: ', finalVolumes);
   const isFormFilled = records.some((record) =>
     khatRaneshList.some(
       (ranesh) =>
@@ -80,16 +83,48 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
       });
     }
   };
+  // تنظیم عرض ستون‌ها
+  const columnWidths = {
+    pumpCount: '40px', // عرض ستون "تعداد پمپ"
+    debi: '50px', // عرض ستون "دبی L/S"
+    start: '80px', // عرض ستون "شروع"
+    end: '80px', // عرض ستون "پایان"
+    duration: '50px', // عرض ستون "مدت"
+  };
 
+  // محاسبه عرض ستون‌ها بر اساس تعداد ستون‌ها
+  const calculateColumnWidth = (
+    columnType: keyof typeof columnWidths,
+    ranesh?: KhatRanesh,
+  ) => {
+    const baseWidth = columnWidths[columnType];
+    const columnCount = khatRaneshList.filter(
+      (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+    ).length;
+
+    // کاهش عرض ستون‌ها در صورت افزایش تعداد ستون‌ها
+    let calculatedWidth = baseWidth;
+    if (columnCount > 2) {
+      calculatedWidth = `calc(${baseWidth} / ${columnCount})`;
+    }
+
+    // اگر ستون "دبی" و ranesh.FIdSePu === 2 باشد، عرض را سه برابر کنید
+    if (columnType === 'debi' && ranesh?.FIdSePu === 2) {
+      calculatedWidth = `calc(${calculatedWidth} * 3)`;
+    }
+
+    return calculatedWidth;
+  };
   return (
     <table
+      id="pumping-table"
       className="w-full border-collapse border border-orange-500"
       style={{
         transformOrigin: 'top right',
         width: 'max-content',
       }}
     >
-      <thead className="bg-blue-100 sticky top-0 z-10">
+      <thead className="bg-blue-100">
         <tr>
           <th
             className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
@@ -126,7 +161,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
             .map((ranesh) => (
               <th
                 key={ranesh.IdRanesh}
-                className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+                className="border border-gray-300 px-4 border-l-4 border-l-green-400"
                 colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                 dir="ltr"
               >
@@ -139,13 +174,13 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
         <tr>
           <th
-            className="border border-gray-300 px-4 py-2 font-bold"
+            className="border border-gray-300 px-1 py-0.3 font-bold"
             style={{width: '64px', minWidth: '64px', whiteSpace: 'nowrap'}}
           >
             روز
           </th>
           <th
-            className="border border-gray-300 px-4 py-2 font-bold border-l-4 border-l-green-400"
+            className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400"
             style={{width: '73px', minWidth: '73px', whiteSpace: 'nowrap'}}
           >
             تاریخ
@@ -158,51 +193,51 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               <React.Fragment key={ranesh.IdRanesh}>
                 {ranesh.FIdSePu === 1 && (
                   <th
-                    className="border border-gray-300 px-4 py-2 font-bold border-r-4 border-r-green-400"
+                    className="border border-gray-300 px-1 py-0.3 border-r-4 border-r-green-400"
                     style={{
-                      width: '40px',
-                      minWidth: '40px',
+                      width: calculateColumnWidth('pumpCount'),
+                      minWidth: calculateColumnWidth('pumpCount'),
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    تعداد پمپ
+                    تعداد
                   </th>
                 )}
                 <th
-                  className="border border-gray-300 px-4 py-2 font-bold"
+                  className="border border-gray-300 px-0.5 py-0.3 font-bold"
                   style={{
-                    width: ranesh.FIdSePu === 2 ? '110px' : '55px',
-                    minWidth: ranesh.FIdSePu === 2 ? '110px' : '55px',
+                    width: calculateColumnWidth('debi', ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                    minWidth: calculateColumnWidth('debi', ranesh),
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  دبی L/S
+                  دبی
                 </th>
                 <th
-                  className="border border-gray-300 px-4 py-2 font-bold"
+                  className="border border-gray-300 px-6 py-0.3 font-bold"
                   style={{
-                    width: '135px',
-                    minWidth: '135px',
+                    width: calculateColumnWidth('pumpCount'),
+                    minWidth: calculateColumnWidth('pumpCount'),
                     whiteSpace: 'nowrap',
                   }}
                 >
                   شروع
                 </th>
                 <th
-                  className="border border-gray-300 px-4 py-2 font-bold"
+                  className="border border-gray-300 px-6 py-0.3 font-bold"
                   style={{
-                    width: '135px',
-                    minWidth: '135px',
+                    width: calculateColumnWidth('pumpCount'),
+                    minWidth: calculateColumnWidth('pumpCount'),
                     whiteSpace: 'nowrap',
                   }}
                 >
                   پایان
                 </th>
                 <th
-                  className="border border-gray-300 px-4 py-2 font-bold border-l-4 border-l-green-400"
+                  className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400"
                   style={{
-                    width: '60px',
-                    minWidth: '60px',
+                    width: calculateColumnWidth('duration'),
+                    minWidth: calculateColumnWidth('duration'),
                     whiteSpace: 'nowrap',
                   }}
                 >
@@ -226,10 +261,10 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 key={record.IdTarDor}
                 className={`${rowColor} hover:bg-green-200 whitespace-nowrap`}
               >
-                <td className="border border-gray-300 px-2 py-1">
+                <td className="border border-gray-300 px-1 py-0.3">
                   {toPersianDate(record.Trikh, 'dddd')}
                 </td>
-                <td className="border border-gray-300 px-2 py-1 font-bold border-l-4 border-l-green-400">
+                <td className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
                   {toPersianDate(record.Trikh, 'YYYY/MM/DD')}
                 </td>
                 {khatRaneshList
@@ -242,7 +277,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     return (
                       <React.Fragment key={ranesh.IdRanesh}>
                         {ranesh.FIdSePu === 1 && (
-                          <td className="border border-gray-300 px-2 py-1">
+                          <td className="border border-gray-300 px-1 py-0.3">
                             <select
                               value={
                                 selectedPumpCounts[record.IdTarDor]?.[
@@ -272,7 +307,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                             </select>
                           </td>
                         )}
-                        <td className="border border-gray-300 px-2 py-1">
+                        <td className="border border-gray-300 px-1 py-0.3">
                           {ranesh.FIdSePu === 2 ? (
                             <input
                               type="number"
@@ -318,11 +353,14 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   (khat) => khat.IdRanesh === ranesh.IdRanesh,
                                 )?.Zarfiat ?? '',
                               )}
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-2 py-0.5 
+                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
         text-gray-700 shadow-sm hover:shadow-md 
         focus:ring-2 focus:ring-green-400 focus:outline-none
         transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                               disabled={isFormDisabled}
+                              style={{
+                                width: calculateColumnWidth('debi', ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                              }}
                             />
                           ) : (
                             (() => {
@@ -343,7 +381,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                           )}
                         </td>
 
-                        <td className="border border-gray-300 px-2 py-1 relative">
+                        <td className="border border-gray-300 px-1 py-0.3 relative">
                           <div className="relative w-full">
                             <input
                               type="text"
@@ -419,16 +457,16 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     raneshInfo?.Zarfiat <= 0)) ||
                                 isFormDisabled
                               }
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-2 py-0.5 
+                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
                       text-gray-700 shadow-sm hover:shadow-md 
                       focus:ring-2 focus:ring-green-400 focus:outline-none
                       transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                             />
 
-                            <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -453,7 +491,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -478,10 +516,10 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                             </div>
 
-                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -506,7 +544,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -533,7 +571,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                           </div>
                         </td>
 
-                        <td className="border border-gray-300 px-2 py-1 relative">
+                        <td className="border border-gray-300 px-1 py-0.3 relative">
                           <div className="relative w-full">
                             <input
                               type="text"
@@ -610,16 +648,16 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                     raneshInfo?.Zarfiat <= 0)) ||
                                 isFormDisabled
                               }
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-2 py-0.5 
+                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
                       text-gray-700 shadow-sm hover:shadow-md 
                       focus:ring-2 focus:ring-green-400 focus:outline-none
                       transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                             />
 
-                            <div className="absolute left-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -644,7 +682,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -672,7 +710,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                             <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -697,7 +735,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-600 hover:text-black text-xs p-0.5"
+                                className="text-gray-400 hover:text-black text-xs p-0"
                                 onClick={() =>
                                   updateTime(
                                     record.IdTarDor,
@@ -724,7 +762,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                           </div>
                         </td>
 
-                        <td className="border border-gray-300 px-2 py-1 font-bold border-l-4 border-l-green-400">
+                        <td className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400">
                           {(() => {
                             const fromValue =
                               timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
@@ -780,7 +818,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
           })}
           <tr>
             <td
-              className="border border-gray-300 px-4 py-1 font-bold border-l-4 border-l-green-400 text-xs"
+              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
               colSpan={2}
             >
               حجم درخواستی
@@ -841,7 +879,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 return (
                   <td
                     key={ranesh.IdRanesh}
-                    className="border border-gray-300 px-4 py-1 text-center font-bold border-l-4 border-l-green-400 text-xs"
+                    className="border border-gray-300 px-4 py-0.3 text-center font-bold border-l-4 border-l-green-400 text-xs"
                     colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                   >
                     {totalWaterVolume
@@ -854,7 +892,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
           <tr className="bg-yellow-100 font-semibold">
             <td
-              className="border border-gray-300 px-4 py-1 font-bold border-l-4 border-l-green-400 text-xs"
+              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
               colSpan={2}
             >
               حجم پیش بینی
@@ -866,7 +904,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               .map((ranesh) => (
                 <td
                   key={ranesh.IdRanesh}
-                  className="border border-gray-300 px-4 py-1 text-center font-semibold border-l-4 border-l-green-400 text-xs"
+                  className="border border-gray-300 px-4 py-0.3 text-center font-semibold border-l-4 border-l-green-400 text-xs"
                   colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                 >
                   {finalVolumes[ranesh.IdRanesh] !== undefined
@@ -879,7 +917,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
           </tr>
           <tr className="bg-gray-200 font-bold">
             <td
-              className="border border-gray-300 px-4 py-1 font-bold border-l-4 border-l-green-400 text-xs"
+              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
               colSpan={2}
             >
               اضافه درخواست
@@ -946,7 +984,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 return (
                   <td
                     key={ranesh.IdRanesh}
-                    className={`border border-gray-300 px-4 py-1 text-center ${textColor} ${bgColor}  border-l-4 border-l-green-400 text-xs`}
+                    className={`border border-gray-300 px-4 py-0.3 text-center ${textColor} ${bgColor}  border-l-4 border-l-green-400 text-xs`}
                     colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                   >
                     {extraRequest

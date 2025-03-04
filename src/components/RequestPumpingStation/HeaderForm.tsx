@@ -14,6 +14,7 @@ interface HeaderRequestPumpingProps {
   setSaleZeraee: (year: string) => void;
   setDoreKesht: (season: string) => void;
   setIdShDo: (Id: number) => void;
+  isReadOnly?: boolean;
 }
 const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   setUserName,
@@ -27,6 +28,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   setSaleZeraee,
   setDoreKesht,
   setIdShDo,
+  isReadOnly,
 }) => {
   const [userPositions, setUserPositions] = useState<string[]>([]);
   const [networks, setNetworks] = useState<{IdNet: number; Network: string}[]>(
@@ -47,7 +49,7 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
     number | null
   >(null);
   const [selectedPumpStation, setSelectedPumpStation] = useState<string>('');
-
+  const inputStyle = 'w-16 px-1 py-0.5 text-xs border rounded';
   useEffect(() => {
     fetch('/api/user-position')
       .then((res) => res.json())
@@ -246,10 +248,13 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
   }, [selectedNetworkId, setDoreKesht, setIdShDo, setSaleZeraee]);
 
   return (
-    <div className="container justify-center flex flex-wrap items-center gap-4 px-2 bg-blue-100 rounded-lg shadow-md">
+    <div
+      id="header-form"
+      className="container justify-center flex flex-wrap items-center gap-2 px-2 bg-blue-100 rounded-lg shadow-md"
+    >
       {/* شبکه آبیاری */}
-      <div className="flex items-center gap-2">
-        <label className="font-semibold" htmlFor="network">
+      <div className="flex items-center gap-1">
+        <label className="font-semibold text-sm" htmlFor="network">
           شبکه آبیاری
         </label>
         {filteredNetworks.length === 1 ? (
@@ -257,46 +262,44 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
             type="text"
             value={filteredNetworks[0].Network}
             readOnly
-            className="border p-2 rounded-lg bg-gray-200"
+            className="border p-1 rounded-lg bg-gray-200 w-32 text-sm"
           />
         ) : (
           <select
             id="network"
-            className="border p-2 rounded-lg"
+            className="border p-1 rounded-lg w-32 text-sm"
             value={selectedNetwork || ''}
             onChange={handleNetworkChange}
           >
             <option value="" disabled hidden>
               انتخاب کنید
             </option>
-            {filteredNetworks
-              .sort((a, b) => a.IdNet - b.IdNet)
-              .map((network) => (
-                <option key={network.IdNet} value={network.Network}>
-                  {network.Network}
-                </option>
-              ))}
+            {filteredNetworks.map((network) => (
+              <option key={network.IdNet} value={network.Network}>
+                {network.Network}
+              </option>
+            ))}
           </select>
         )}
       </div>
 
       {/* ایستگاه پمپاژ */}
-      <div className="flex items-center gap-2">
-        <label className="font-semibold" htmlFor="pumpStation">
+      <div className="flex items-center gap-1">
+        <label className="font-semibold text-sm" htmlFor="pumpStation">
           ایستگاه
         </label>
         {pumpStations.length === 1 ? (
           <input
             type="text"
             id="pumpStation"
-            className="border p-2 rounded-lg bg-gray-200"
+            className="border p-1 rounded-lg bg-gray-200 w-32 text-sm"
             value={pumpStations[0].NameStation}
             readOnly
           />
         ) : (
           <select
             id="pumpStation"
-            className="border p-2 rounded-lg"
+            className="border p-1 rounded-lg w-32 text-sm"
             value={selectedPumpStation}
             onChange={handlePumpStationChange}
             disabled={!selectedNetwork}
@@ -312,23 +315,24 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
           </select>
         )}
       </div>
+
       {/* سال زراعی */}
-      <div className="flex items-center gap-2">
-        <label className="font-semibold" htmlFor="saleZeraee">
+      <div className="flex items-center gap-1">
+        <label className="font-semibold text-sm" htmlFor="saleZeraee">
           سال زراعی
         </label>
         {Array.isArray(localSaleZeraee) && localSaleZeraee.length === 1 ? (
           <input
             type="text"
             id="saleZeraee"
-            className="border p-2 rounded-lg bg-gray-200"
+            className="border p-1 rounded-lg bg-gray-200 w-24 text-sm"
             value={localSaleZeraee[0]}
             readOnly
           />
         ) : (
           <select
             id="saleZeraee"
-            className="border p-2 rounded-lg"
+            className="border p-1 rounded-lg w-24 text-sm"
             value={selectedSaleZeraee}
             onChange={(e) => setSelectedSaleZeraee(e.target.value)}
             disabled={!selectedNetwork}
@@ -347,22 +351,22 @@ const HeaderRequestPumping: React.FC<HeaderRequestPumpingProps> = ({
       </div>
 
       {/* دوره کشت */}
-      <div className="flex items-center gap-2">
-        <label className="font-semibold" htmlFor="dore">
+      <div className="flex items-center gap-1">
+        <label className="font-semibold text-sm" htmlFor="dore">
           دوره کشت
         </label>
         {Array.isArray(localDore) && localDore.length === 1 ? (
           <input
             type="text"
             id="dore"
-            className="border p-2 rounded-lg bg-gray-200"
+            className="border p-1 rounded-lg bg-gray-200 w-24 text-sm"
             value={localDore[0]}
             readOnly
           />
         ) : (
           <select
             id="dore"
-            className="border p-2 rounded-lg"
+            className="border p-1 rounded-lg w-24 text-sm"
             value={selectedDore}
             onChange={(e) => setSelectedDore(e.target.value)}
             disabled={!selectedNetwork}

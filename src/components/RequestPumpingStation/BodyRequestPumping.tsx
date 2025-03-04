@@ -37,7 +37,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   doreKesht,
   idShDo,
 }) => {
-  // console.log('idPumpStation: ', idPumpStation);
+  console.log('networkName: ', networkName);
   const {
     sal: currentSal,
     mah: currentMah,
@@ -191,6 +191,10 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           taedProgramData={taedProgramData as TaeedProgramData | null}
           selectedZarfiat={selectedZarfiat}
           setSelectedZarfiat={setSelectedZarfiat}
+          networkName={networkName}
+          pumpStationName={pumpStationName}
+          saleZeraee={saleZeraee}
+          doreKesht={doreKesht}
         />
       )}
     </div>

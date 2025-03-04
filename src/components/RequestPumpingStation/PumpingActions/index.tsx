@@ -2,8 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {validatePumpingData} from '../utils/validationUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../types';
 import {ValidationError} from '../utils/validationUtils';
+import {toPersianDate} from '@/utils/dateUtils';
 import Modal from './Modal';
+import ModalPDF from './ModalPDF';
+import HeaderRequestPumping from '../HeaderForm';
+import PumpingTable from '../components/PumpingTable';
+import {convertMahToPersian} from '../PaginationForMah';
 import {formatDateTime, formatLocalDateTime} from '@/utils/dateUtils';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface TaeedProgramData {
   FirstNErsal: string;
@@ -32,56 +39,81 @@ interface PumpingActionsProps {
   onSave: () => void;
   onReset: () => void;
   disabled?: boolean;
-  isFormDisabled: boolean;
   isFormFilled: boolean;
+  setValidationErrors: (
+    errors: {date: string; raneshName: string; message: string}[],
+  ) => void;
+  sal: number; // سال
+  mah: number; // ماه
+  dahe: number; // دهه
+  taedProgramData: TaeedProgramData | null;
+  setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
+  userName: string;
+  userRole: string[];
+  firstName: string;
+  lastName: string;
+  networkName: string;
+  pumpStationName: string;
+  selectedNetworkId: number | null;
+  idPumpStation: number;
+  saleZeraee: string;
+  doreKesht: string;
+  idShDo: number;
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
   pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
   selectedPumpCounts: {[key: number]: {[date: string]: number}};
   timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
-  setValidationErrors: (
-    errors: {date: string; raneshName: string; message: string}[],
-  ) => void;
-  userRole: string[];
-  idPumpStation: number;
-  sal: number; // سال
-  mah: number; // ماه
-  dahe: number; // دهه
-  firstName: string; // اضافه کردن firstName به پراپ‌ها
-  lastName: string; // اضافه کردن lastName به پراپ‌ها
-  taedProgramData: TaeedProgramData | null;
+  finalVolumes: {[key: number]: number};
+  isFormDisabled: boolean;
   selectedZarfiat: {[key: number]: {[key: number]: number}};
-  setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
 }
 
 const PumpingActions: React.FC<PumpingActionsProps> = ({
   onSave,
   onReset,
   disabled,
+  setValidationErrors,
+  isFormFilled,
+  sal,
+  mah,
+  dahe,
+  taedProgramData,
+  setSelectedZarfiat,
+  userName,
+  userRole,
+  firstName,
+  lastName,
+  networkName,
+  pumpStationName,
+  selectedNetworkId,
+  idPumpStation,
+  saleZeraee,
+  doreKesht,
+  idShDo,
   khatRaneshList,
   records,
   pumpData,
   selectedPumpCounts,
   timeValues,
-  setValidationErrors,
+  finalVolumes,
   isFormDisabled,
-  isFormFilled,
-  userRole,
-  idPumpStation,
-  sal,
-  mah,
-  dahe,
-  firstName,
-  lastName,
-  taedProgramData,
   selectedZarfiat,
-  setSelectedZarfiat,
 }) => {
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [modalContent, setModalContent] = useState<{[key: string]: string}>({});
   const [openModal, setOpenModal] = useState<string | null>(null);
-  const [isSaved, setIsSaved] = useState(false); // State برای مدیریت وضعیت ذخیره‌سازی
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSavedRegionalWater, setIsSavedRegionalWater] = useState(false);
+  const [isSavedPumpingContractor, setIsSavedPumpingContractor] =
+    useState(false);
+  const [isSavedWaterPower, setIsSavedWaterPower] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>(''); // State برای تاریخ و زمان فعلی
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+
+  const handleGeneratePDF = () => {
+    setIsPdfModalOpen(true);
+  };
   // State برای مدیریت وضعیت دکمه‌های رادیویی
   const [taedAbMantaghe, setTaedAbMantaghe] = useState<boolean | null>(
     taedProgramData?.TaedAbMantaghe ?? null,
@@ -133,6 +165,15 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   // بررسی وضعیت FileNameNahaee
   const isFileNameNahaeeNull = taedProgramData?.FileNameNahaee === null;
 
+  const [isRegionalWaterSubmitDisabled, setIsRegionalWaterSubmitDisabled] =
+    useState(false);
+  const [
+    isPumpingContractorSubmitDisabled,
+    setIsPumpingContractorSubmitDisabled,
+  ] = useState(false);
+  const [isWaterPowerSubmitDisabled, setIsWaterPowerSubmitDisabled] =
+    useState(false);
+
   // تابع برای ارسال درخواست به API
   const updateTaeedProgram = async (endpoint: string, data: any) => {
     try {
@@ -169,42 +210,99 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   // };
 
   const handleRegionalWaterSubmit = async () => {
-    await updateTaeedProgram('updateRegionalWater', {
-      idPumpStation,
-      sal,
-      mah,
-      dahe,
-      firstName,
-      lastName,
-      tozihAbMantaghe: modalContent[`${sal}-${mah}-${dahe}-regionalWater`],
-      taedAbMantaghe,
-    });
+    if (
+      taedAbMantaghe === false &&
+      !modalContent[`${sal}-${mah}-${dahe}-regionalWater`]
+    ) {
+      alert('در صورت رد برنامه ارائه توضیحات الزامی است');
+      return;
+    }
+
+    try {
+      await updateTaeedProgram('updateRegionalWater', {
+        idPumpStation,
+        sal,
+        mah,
+        dahe,
+        firstName,
+        lastName,
+        tozihAbMantaghe: modalContent[`${sal}-${mah}-${dahe}-regionalWater`],
+        taedAbMantaghe,
+      });
+
+      // اگر دکمه رادیویی "تایید" انتخاب شده باشد، دکمه "ارسال" را disable کنید
+      if (taedAbMantaghe === true) {
+        setIsRegionalWaterSubmitDisabled(true);
+      }
+      setIsSavedRegionalWater(true);
+      setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
+    } catch (error) {
+      console.error('Error updating TaeedProgram:', error);
+    }
   };
 
   const handlePumpingContractorSubmit = async () => {
-    await updateTaeedProgram('updatePumpingContractor', {
-      idPumpStation,
-      sal,
-      mah,
-      dahe,
-      firstName,
-      lastName,
-      tozihPeymankar: modalContent[`${sal}-${mah}-${dahe}-pumpingContractor`],
-      taedPeymankar,
-    });
+    if (
+      taedPeymankar === false &&
+      !modalContent[`${sal}-${mah}-${dahe}-pumpingContractor`]
+    ) {
+      alert('در صورت رد برنامه ارائه توضیحات الزامی است');
+      return;
+    }
+
+    try {
+      await updateTaeedProgram('updatePumpingContractor', {
+        idPumpStation,
+        sal,
+        mah,
+        dahe,
+        firstName,
+        lastName,
+        tozihPeymankar: modalContent[`${sal}-${mah}-${dahe}-pumpingContractor`],
+        taedPeymankar,
+      });
+
+      // اگر دکمه رادیویی "تایید" انتخاب شده باشد، دکمه "ارسال" را disable کنید
+      if (taedPeymankar === true) {
+        setIsPumpingContractorSubmitDisabled(true);
+      }
+      setIsSavedPumpingContractor(true);
+      setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
+    } catch (error) {
+      console.error('Error updating TaeedProgram:', error);
+    }
   };
 
   const handleWaterPowerSubmit = async () => {
-    await updateTaeedProgram('updateWaterPower', {
-      idPumpStation,
-      sal,
-      mah,
-      dahe,
-      firstName,
-      lastName,
-      tozihAbNiroo: modalContent[`${sal}-${mah}-${dahe}-waterPower`],
-      taedAbNiroo,
-    });
+    if (
+      taedAbNiroo === false &&
+      !modalContent[`${sal}-${mah}-${dahe}-waterPower`]
+    ) {
+      alert('در صورت رد برنامه ارائه توضیحات الزامی است');
+      return;
+    }
+
+    try {
+      await updateTaeedProgram('updateWaterPower', {
+        idPumpStation,
+        sal,
+        mah,
+        dahe,
+        firstName,
+        lastName,
+        tozihAbNiroo: modalContent[`${sal}-${mah}-${dahe}-waterPower`],
+        taedAbNiroo,
+      });
+
+      // اگر دکمه رادیویی "تایید" انتخاب شده باشد، دکمه "ارسال" را disable کنید
+      if (taedAbNiroo === true) {
+        setIsWaterPowerSubmitDisabled(true);
+      }
+      setIsSavedWaterPower(true);
+      setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
+    } catch (error) {
+      console.error('Error updating TaeedProgram:', error);
+    }
   };
 
   const handleFinalApprovalSubmit = async () => {
@@ -440,6 +538,37 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     setOpenModal(modalKey);
   };
 
+  const generatePDF = async () => {
+    // انتخاب عناصر HTML مربوط به PumpingTable و HeaderForm
+    const pumpingTableElement = document.getElementById('pumping-table');
+    const headerFormElement = document.getElementById('header-form');
+
+    if (!pumpingTableElement || !headerFormElement) {
+      alert('عناصر مورد نظر برای تولید PDF یافت نشدند.');
+      return;
+    }
+
+    // ایجاد یک PDF جدید با اندازه A4 و حالت landscape
+    const pdf = new jsPDF('landscape', 'mm', 'a4');
+
+    // تبدیل محتوای HeaderForm به تصویر
+    const headerCanvas = await html2canvas(headerFormElement);
+    const headerImgData = headerCanvas.toDataURL('image/png');
+
+    // تبدیل محتوای PumpingTable به تصویر
+    const tableCanvas = await html2canvas(pumpingTableElement);
+    const tableImgData = tableCanvas.toDataURL('image/png');
+
+    // اضافه کردن تصویر HeaderForm به PDF
+    pdf.addImage(headerImgData, 'PNG', 10, 10, 280, 50); // تنظیم موقعیت و اندازه تصویر
+
+    // اضافه کردن تصویر PumpingTable به PDF
+    pdf.addImage(tableImgData, 'PNG', 10, 70, 280, 150); // تنظیم موقعیت و اندازه تصویر
+
+    // ذخیره PDF
+    pdf.save('pumping-report.pdf');
+  };
+
   return (
     <div className="flex flex-row gap-4 mt-4 overflow-x-auto">
       {/* Div 1: درخواست کننده */}
@@ -473,20 +602,22 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           )}
         </div>
         {/* نام و زمان درخواست کننده */}
-        {taedProgramData?.FirstNErsal && taedProgramData?.LastNErsal && (
+        {(taedProgramData?.FirstNErsal && taedProgramData?.LastNErsal) ||
+        isSaved ? (
           <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
             {isSaved
               ? `${firstName} ${lastName}`
-              : `${taedProgramData.FirstNErsal} ${taedProgramData.LastNErsal}`}
+              : `${taedProgramData?.FirstNErsal} ${taedProgramData?.LastNErsal}`}
           </div>
-        )}
-        {taedProgramData?.TarikhErsal && (
+        ) : null}
+        {taedProgramData?.TarikhErsal || isSaved ? (
           <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
             {isSaved
               ? currentDateTime
-              : formatDateTime(taedProgramData.TarikhErsal)}
+              : taedProgramData?.TarikhErsal &&
+                formatDateTime(taedProgramData.TarikhErsal)}
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Div 2: آب منطقه‌ای */}
@@ -501,7 +632,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('regionalWater') ||
                 isTaedAbMantagheTrue ||
-                isTarikhErsalNull
+                isTarikhErsalNull ||
+                isRegionalWaterSubmitDisabled
               }
               checked={taedAbMantaghe === true}
               onChange={() => handleTaedAbMantagheChange(true)}
@@ -516,7 +648,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('regionalWater') ||
                 isTaedAbMantagheTrue ||
-                isTarikhErsalNull
+                isTarikhErsalNull ||
+                isRegionalWaterSubmitDisabled
               }
               checked={taedAbMantaghe === false}
               onChange={() => handleTaedAbMantagheChange(false)}
@@ -536,14 +669,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
                 isTaedAbMantagheTrue ||
                 isTarikhErsalNull ||
-                taedAbMantaghe === null
+                taedAbMantaghe === null ||
+                isRegionalWaterSubmitDisabled
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
               disabled={
                 isTaedAbMantagheTrue ||
                 isTarikhErsalNull ||
-                taedAbMantaghe === null
+                taedAbMantaghe === null ||
+                isRegionalWaterSubmitDisabled
               }
               onClick={handleRegionalWaterSubmit}
             >
@@ -552,18 +687,23 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           )}
         </div>
         {/* نام و زمان آب منطقه‌ای */}
-        {taedProgramData?.FirstNAbMantaghe &&
-          taedProgramData?.LastNAbMantaghe && (
-            <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-              {taedProgramData.FirstNAbMantaghe}{' '}
-              {taedProgramData.LastNAbMantaghe}
-            </div>
-          )}
-        {taedProgramData?.TarikhAbMantaghe && (
-          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-            {formatDateTime(taedProgramData.TarikhAbMantaghe)}
+        {(taedProgramData?.FirstNAbMantaghe &&
+          taedProgramData?.LastNAbMantaghe) ||
+        isSavedRegionalWater ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+            {isSavedRegionalWater
+              ? `${firstName} ${lastName}`
+              : `${taedProgramData?.FirstNAbMantaghe} ${taedProgramData?.LastNAbMantaghe}`}
           </div>
-        )}
+        ) : null}
+        {taedProgramData?.TarikhAbMantaghe || isSavedRegionalWater ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {isSavedRegionalWater
+              ? currentDateTime
+              : taedProgramData?.TarikhAbMantaghe &&
+                formatDateTime(taedProgramData.TarikhAbMantaghe)}
+          </div>
+        ) : null}
       </div>
 
       {/* Div 3: پیمانکار پمپاژ */}
@@ -578,7 +718,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('pumpingContractor') ||
                 isTaedPeymankarTrue ||
-                !isTaedAbMantagheTrue
+                !isTaedAbMantagheTrue ||
+                isPumpingContractorSubmitDisabled
               }
               checked={taedPeymankar === true}
               onChange={() => handleTaedPeymankarChange(true)}
@@ -593,7 +734,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('pumpingContractor') ||
                 isTaedPeymankarTrue ||
-                !isTaedAbMantagheTrue
+                !isTaedAbMantagheTrue ||
+                isPumpingContractorSubmitDisabled
               }
               checked={taedPeymankar === false}
               onChange={() => handleTaedPeymankarChange(false)}
@@ -613,14 +755,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
                 isTaedPeymankarTrue ||
                 !isTaedAbMantagheTrue ||
-                taedPeymankar === null
+                taedPeymankar === null ||
+                isPumpingContractorSubmitDisabled
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
               disabled={
                 isTaedPeymankarTrue ||
                 !isTaedAbMantagheTrue ||
-                taedPeymankar === null
+                taedPeymankar === null ||
+                isPumpingContractorSubmitDisabled
               }
               onClick={handlePumpingContractorSubmit}
             >
@@ -629,17 +773,31 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           )}
         </div>
         {/* نام و زمان پیمانکار پمپاژ */}
-        {taedProgramData?.FirstNPeymankar &&
-          taedProgramData?.LastNPeymankar && (
-            <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-              {taedProgramData.FirstNPeymankar} {taedProgramData.LastNPeymankar}
-            </div>
-          )}
-        {taedProgramData?.TarikhPeymankar && (
-          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-            {formatDateTime(taedProgramData.TarikhPeymankar)}
+        {(taedProgramData?.FirstNPeymankar &&
+          taedProgramData?.LastNPeymankar) ||
+        isSavedPumpingContractor ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+            {isSavedPumpingContractor
+              ? `${firstName} ${lastName}`
+              : `${taedProgramData?.FirstNPeymankar} ${taedProgramData?.LastNPeymankar}`}
           </div>
-        )}
+        ) : null}
+        {taedProgramData?.TarikhPeymankar || isSavedPumpingContractor ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {isSavedPumpingContractor
+              ? currentDateTime
+              : taedProgramData?.TarikhPeymankar &&
+                formatDateTime(taedProgramData?.TarikhPeymankar)}
+          </div>
+        ) : null}
+        {taedProgramData?.TarikhPeymankar || isSavedPumpingContractor ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {isSavedPumpingContractor
+              ? currentDateTime
+              : taedProgramData?.TarikhPeymankar &&
+                formatDateTime(taedProgramData?.TarikhPeymankar)}
+          </div>
+        ) : null}
       </div>
 
       {/* Div 4: آب نیرو */}
@@ -654,7 +812,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('waterPower') ||
                 isTaedAbNirooTrue ||
-                !isTaedPeymankarTrue
+                !isTaedPeymankarTrue ||
+                isWaterPowerSubmitDisabled
               }
               checked={taedAbNiroo === true}
               onChange={() => handleTaedAbNirooChange(true)}
@@ -669,7 +828,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               disabled={
                 getIsReadOnly('waterPower') ||
                 isTaedAbNirooTrue ||
-                !isTaedPeymankarTrue
+                !isTaedPeymankarTrue ||
+                isWaterPowerSubmitDisabled
               }
               checked={taedAbNiroo === false}
               onChange={() => handleTaedAbNirooChange(false)}
@@ -689,14 +849,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
                 isTaedAbNirooTrue ||
                 !isTaedPeymankarTrue ||
-                taedAbNiroo === null
+                taedAbNiroo === null ||
+                isWaterPowerSubmitDisabled
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
               disabled={
                 isTaedAbNirooTrue ||
                 !isTaedPeymankarTrue ||
-                taedAbNiroo === null
+                taedAbNiroo === null ||
+                isWaterPowerSubmitDisabled
               }
               onClick={handleWaterPowerSubmit}
             >
@@ -705,16 +867,22 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           )}
         </div>
         {/* نام و زمان آب نیرو */}
-        {taedProgramData?.FirstNAbNiroo && taedProgramData?.LastNAbNiroo && (
+        {(taedProgramData?.FirstNAbNiroo && taedProgramData?.LastNAbNiroo) ||
+        isSavedWaterPower ? (
           <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
-            {taedProgramData.FirstNAbNiroo} {taedProgramData.LastNAbNiroo}
+            {isSavedWaterPower
+              ? `${firstName} ${lastName}`
+              : `${taedProgramData?.FirstNAbNiroo} ${taedProgramData?.LastNAbNiroo}`}
           </div>
-        )}
-        {taedProgramData?.TarikhAbNiroo && (
+        ) : null}
+        {taedProgramData?.TarikhAbNiroo || isSavedWaterPower ? (
           <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-            {formatDateTime(taedProgramData.TarikhAbNiroo)}
+            {isSavedWaterPower
+              ? currentDateTime
+              : taedProgramData?.TarikhAbNiroo &&
+                formatDateTime(taedProgramData.TarikhAbNiroo)}
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Div 5: دریافت PDF و بارگذاری فایل نهایی */}
@@ -726,7 +894,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               isTaedAbNirooTrue ? '' : 'opacity-50 cursor-not-allowed'
             }`}
             disabled={!isTaedAbNirooTrue}
-            onClick={() => alert('دریافت PDF')}
+            onClick={handleGeneratePDF}
           >
             دریافت PDF
           </button>
@@ -750,6 +918,425 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           </button>
         </div>
       </div>
+      {/* مودال برای نمایش PDF */}
+      {isPdfModalOpen && (
+        <ModalPDF
+          isOpen={isPdfModalOpen}
+          onClose={() => setIsPdfModalOpen(false)}
+        >
+          <div className="p-4 bg-white w-[297mm] max-h-[80vh] overflow-auto landscape">
+            {/* نمایش مقادیر HeaderForm */}
+            <div className="flex flex-wrap gap-4 mb-4">
+              {/* <div className="flex items-center gap-1">
+                <label className="font-semibold text-sm">شبکه آبیاری:</label>
+                <span>{networkName}</span>
+              </div> */}
+              <div className="flex items-center gap-1">
+                {/* <label className="font-semibold text-sm">ایستگاه پمپاژ:</label> */}
+                <span>برنامه آبیاری</span>
+                <span>
+                  دهه {dahe === 1 ? 'اول ' : dahe === 2 ? 'دوم ' : 'سوم '}
+                </span>
+                <span>{convertMahToPersian(mah)}</span>
+                <span>{pumpStationName}</span>
+              </div>
+              {/* <div className="flex items-center gap-1">
+                <label className="font-semibold text-sm">سال زراعی:</label>
+                <span>{saleZeraee}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <label className="font-semibold text-sm">دوره کشت:</label>
+                <span>{doreKesht}</span>
+              </div> */}
+            </div>
+
+            {/* نمایش مقادیر PumpingTable */}
+            <table className="w-full border-collapse border border-orange-500">
+              <thead className="bg-blue-100">
+                <tr>
+                  <th
+                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+                    colSpan={2}
+                  >
+                    خط رانش
+                  </th>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => (
+                      <th
+                        key={ranesh.IdRanesh}
+                        className="border border-gray-300 px-4 font-normal border-l-4 border-l-green-400"
+                        colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                      >
+                        {ranesh.RaneshName}
+                      </th>
+                    ))}
+                </tr>
+                {/* سطر "دبی پمپ" */}
+                <tr>
+                  <th
+                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+                    colSpan={2}
+                  >
+                    دبی پمپ
+                  </th>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => (
+                      <th
+                        key={ranesh.IdRanesh}
+                        className="border border-gray-300 px-4 font-normal border-l-4 border-l-green-400"
+                        style={{fontWeight: 300}}
+                        colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        dir="ltr"
+                      >
+                        {ranesh.FIdSePu === 1
+                          ? `${ranesh.DebiPomp} L/S`
+                          : `${ranesh.Zarfiat} L/S`}
+                      </th>
+                    ))}
+                </tr>
+                <tr>
+                  <th className="border border-gray-300 px-1 py-0.3 font-bold">
+                    روز
+                  </th>
+                  <th className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                    تاریخ
+                  </th>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => (
+                      <React.Fragment key={ranesh.IdRanesh}>
+                        {ranesh.FIdSePu === 1 && (
+                          <th className="border border-gray-300 px-1 py-0.3 font-bold border-r-4 border-r-green-400">
+                            تعداد
+                          </th>
+                        )}
+                        <th className="border border-gray-300 px-0.5 py-0.3 font-bold">
+                          دبی
+                        </th>
+                        <th className="border border-gray-300 px-4 py-0.3 font-bold">
+                          شروع
+                        </th>
+                        <th className="border border-gray-300 px-4 py-0.3 font-bold">
+                          پایان
+                        </th>
+                        <th className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                          مدت
+                        </th>
+                      </React.Fragment>
+                    ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 text-sm">
+                {records.map((record, index) => (
+                  <tr
+                    key={record.IdTarDor}
+                    className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}
+                  >
+                    <td className="border border-gray-300 px-1 py-0.3">
+                      {toPersianDate(record.Trikh, 'dddd')}
+                    </td>
+                    <td className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                      {toPersianDate(record.Trikh, 'YYYY/MM/DD')}
+                    </td>
+                    {khatRaneshList
+                      .filter(
+                        (ranesh) =>
+                          ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                      )
+                      .map((ranesh) => {
+                        const raneshInfo =
+                          pumpData[record.IdTarDor]?.[ranesh.IdRanesh];
+                        const fromValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                            ?.from ||
+                          (raneshInfo?.Shorooe
+                            ? new Date(raneshInfo.Shorooe)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+                        const toValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ||
+                          (raneshInfo?.Paian
+                            ? new Date(raneshInfo.Paian)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        const durationMinutes =
+                          fromValue && toValue
+                            ? (() => {
+                                const [fromHours, fromMinutes] = fromValue
+                                  .split(':')
+                                  .map(Number);
+                                const [toHours, toMinutes] = toValue
+                                  .split(':')
+                                  .map(Number);
+                                let duration =
+                                  toHours * 60 +
+                                  toMinutes -
+                                  (fromHours * 60 + fromMinutes);
+                                if (duration <= 0) duration += 1440;
+                                return duration;
+                              })()
+                            : null;
+
+                        return (
+                          <React.Fragment key={ranesh.IdRanesh}>
+                            {ranesh.FIdSePu === 1 && (
+                              <td className="border border-gray-300 px-1 py-0.3">
+                                {selectedPumpCounts[record.IdTarDor]?.[
+                                  ranesh.IdRanesh
+                                ] ||
+                                  raneshInfo?.Tedad ||
+                                  0}
+                              </td>
+                            )}
+                            <td className="border border-gray-300 px-1 py-0.3">
+                              {ranesh.FIdSePu === 2
+                                ? selectedZarfiat[record.IdTarDor]?.[
+                                    ranesh.IdRanesh
+                                  ] ||
+                                  raneshInfo?.Zarfiat ||
+                                  0
+                                : (raneshInfo?.Tedad || 0) *
+                                  (khatRaneshList.find(
+                                    (khat) => khat.IdRanesh === ranesh.IdRanesh,
+                                  )?.DebiPomp || 0)}
+                            </td>
+                            <td className="border border-gray-300 px-1 py-0.3">
+                              {fromValue || '-'}
+                            </td>
+                            <td className="border border-gray-300 px-1 py-0.3">
+                              {toValue || '-'}
+                            </td>
+                            <td className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400">
+                              {durationMinutes
+                                ? `${Math.floor(durationMinutes / 60)
+                                    .toString()
+                                    .padStart(2, '0')}:${(durationMinutes % 60)
+                                    .toString()
+                                    .padStart(2, '0')}`
+                                : '-'}
+                            </td>
+                          </React.Fragment>
+                        );
+                      })}
+                  </tr>
+                ))}
+                {/* سطرهای "حجم درخواستی"، "حجم پیش‌بینی" و "اضافه درخواست" */}
+                <tr className="bg-yellow-100 font-semibold">
+                  <td
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    colSpan={2}
+                  >
+                    حجم درخواستی
+                  </td>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => {
+                      const totalWaterVolume = records.reduce((sum, record) => {
+                        const pumpInfo = pumpData[record.IdTarDor];
+                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+
+                        if (!raneshInfo) return sum;
+
+                        const debi =
+                          ranesh.FIdSePu === 2
+                            ? Number(raneshInfo?.Zarfiat ?? 0)
+                            : (raneshInfo?.Tedad ?? 0) *
+                              (khatRaneshList.find(
+                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
+                              )?.DebiPomp ?? 0);
+
+                        const fromValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                            ?.from ||
+                          (raneshInfo.Shorooe
+                            ? new Date(raneshInfo.Shorooe)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+                        const toValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ||
+                          (raneshInfo.Paian
+                            ? new Date(raneshInfo.Paian)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        if (fromValue && toValue) {
+                          const [fromHours, fromMinutes] = fromValue
+                            .split(':')
+                            .map(Number);
+                          const [toHours, toMinutes] = toValue
+                            .split(':')
+                            .map(Number);
+                          let durationMinutes =
+                            toHours * 60 +
+                            toMinutes -
+                            (fromHours * 60 + fromMinutes);
+                          if (durationMinutes <= 0) durationMinutes += 1440;
+                          const durationHours = durationMinutes / 60;
+                          return sum + debi * durationHours * 3.6;
+                        }
+                        return sum;
+                      }, 0);
+
+                      return (
+                        <td
+                          key={ranesh.IdRanesh}
+                          className="border border-gray-300 px-4 py-0.3 text-center font-bold border-l-4 border-l-green-400 text-xs"
+                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        >
+                          {totalWaterVolume
+                            .toFixed(1)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                      );
+                    })}
+                </tr>
+                <tr className="bg-gray-200 font-bold">
+                  <td
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    colSpan={2}
+                  >
+                    حجم پیش‌بینی
+                  </td>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => (
+                      <td
+                        key={ranesh.IdRanesh}
+                        className="border border-gray-300 px-4 py-0.3 text-center font-semibold border-l-4 border-l-green-400 text-xs"
+                        colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                      >
+                        {finalVolumes[ranesh.IdRanesh] !== undefined
+                          ? finalVolumes[ranesh.IdRanesh]
+                              .toFixed(1)
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                          : '-'}
+                      </td>
+                    ))}
+                </tr>
+                <tr className="bg-gray-100 font-bold">
+                  <td
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    colSpan={2}
+                  >
+                    اضافه درخواست
+                  </td>
+                  {khatRaneshList
+                    .filter(
+                      (ranesh) =>
+                        ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    )
+                    .map((ranesh) => {
+                      const totalWaterVolume = records.reduce((sum, record) => {
+                        const pumpInfo = pumpData[record.IdTarDor];
+                        const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+
+                        if (!raneshInfo) return sum;
+
+                        const debi =
+                          ranesh.FIdSePu === 2
+                            ? Number(raneshInfo?.Zarfiat ?? 0)
+                            : (raneshInfo?.Tedad ?? 0) *
+                              (khatRaneshList.find(
+                                (khat) => khat.IdRanesh === ranesh.IdRanesh,
+                              )?.DebiPomp ?? 0);
+
+                        const fromValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                            ?.from ||
+                          (raneshInfo.Shorooe
+                            ? new Date(raneshInfo.Shorooe)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+                        const toValue =
+                          timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ||
+                          (raneshInfo.Paian
+                            ? new Date(raneshInfo.Paian)
+                                .toISOString()
+                                .slice(11, 16)
+                            : '');
+
+                        if (fromValue && toValue) {
+                          const [fromHours, fromMinutes] = fromValue
+                            .split(':')
+                            .map(Number);
+                          const [toHours, toMinutes] = toValue
+                            .split(':')
+                            .map(Number);
+                          let durationMinutes =
+                            toHours * 60 +
+                            toMinutes -
+                            (fromHours * 60 + fromMinutes);
+                          if (durationMinutes <= 0) durationMinutes += 1440;
+                          const durationHours = durationMinutes / 60;
+                          return sum + debi * durationHours * 3.6;
+                        }
+                        return sum;
+                      }, 0);
+
+                      const predictedVolume =
+                        finalVolumes[ranesh.IdRanesh] ?? 0;
+                      const extraRequest = totalWaterVolume - predictedVolume;
+                      const bgColor =
+                        extraRequest > 0 ? 'bg-red-100' : 'bg-gray-100';
+                      const textColor =
+                        extraRequest > 0 ? 'text-red-700' : 'text-black';
+
+                      return (
+                        <td
+                          key={ranesh.IdRanesh}
+                          className={`border border-gray-300 px-4 py-0.3 text-center ${bgColor} ${textColor} border-l-4 border-l-green-400 text-xs`}
+                          colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        >
+                          {extraRequest
+                            .toFixed(1)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        </td>
+                      );
+                    })}
+                </tr>
+              </tbody>
+            </table>
+            <div className="flex mt-4">
+              {/* کادر سمت راست */}
+              <div className="flex-1 border border-gray-300 p-4 relative h-32">
+                <div className="absolute top-2 right-2 text-sm text-gray-600">
+                  نماینده شرکت آب منطقه ای/ تعاونی روستایی :
+                </div>
+              </div>
+
+              {/* کادر سمت چپ */}
+              <div className="flex-1 border border-gray-300 p-4 relative h-32">
+                <div className="absolute top-2 right-2 text-sm text-gray-600">
+                  نماینده دستگاه اجرایی (آب نیرو/ عمراب) :
+                </div>
+              </div>
+            </div>
+          </div>
+        </ModalPDF>
+      )}
 
       {/* Div 6: تایید نهایی و ارسال */}
       <div className="p-4 border border-gray-300 rounded-lg flex-[0.4] min-w-[110px]">

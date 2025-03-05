@@ -30,6 +30,7 @@
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
     "date-fns-jalali": "^4.1.0-0",
+    "dom-to-image": "^2.6.0",
     "dotenv": "^16.4.7",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -47,6 +48,7 @@
     "nanoid": "^5.0.9",
     "next": "15.0.3",
     "next-auth": "^4.24.11",
+    "pdf-lib": "^1.17.1",
     "prettier": "^3.4.1",
     "prisma": "^6.3.1",
     "react": "^18.3.1",
@@ -54,11 +56,13 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "sqlite3": "^5.1.7",
-    "uuid": "^11.0.4"
+    "uuid": "^11.0.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
+    "@types/dom-to-image": "^2.6.7",
     "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/jwt-decode": "^2.2.1",
@@ -67,6 +71,7 @@
     "@types/react": "^18.3.12",
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^18.3.1",
+    "@types/xlsx": "^0.0.35",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.49",

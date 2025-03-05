@@ -37,7 +37,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   doreKesht,
   idShDo,
 }) => {
-  console.log('networkName: ', networkName);
   const {
     sal: currentSal,
     mah: currentMah,

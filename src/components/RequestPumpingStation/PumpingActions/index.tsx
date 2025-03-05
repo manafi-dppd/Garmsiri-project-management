@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, {useEffect, useState} from 'react';
 import {validatePumpingData} from '../utils/validationUtils';
 import {KhatRanesh, RecordType, PumpingData} from '../types';
@@ -11,6 +12,7 @@ import {convertMahToPersian} from '../PaginationForMah';
 import {formatDateTime, formatLocalDateTime} from '@/utils/dateUtils';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import Image from 'next/image';
 
 interface TaeedProgramData {
   FirstNErsal: string;
@@ -896,7 +898,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             disabled={!isTaedAbNirooTrue}
             onClick={handleGeneratePDF}
           >
-            دریافت PDF
+            پیش نمایش
           </button>
           <button
             className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
@@ -925,21 +927,57 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           onClose={() => setIsPdfModalOpen(false)}
         >
           <div className="p-4 bg-white w-[297mm] max-h-[80vh] overflow-auto landscape">
+            <div className="relative">
+              {/* لوگو */}
+              <Image
+                src="/Untitled.png"
+                alt="Logo"
+                width={64}
+                height={64}
+                className="absolute top-2 left-2"
+              />
+              {/* تاریخ در کنار لوگو و هم‌تراز با لبه پایینی آن */}
+              <div className="absolute top-11 left-20 flex items-center gap-2 pl-6">
+                {' '}
+                {/* left-20 برای فاصله از لوگو */}
+                <span className="text-sm text-gray-600">تاریخ:</span>
+                <span className="text-sm text-gray-600">
+                  {toPersianDate(new Date().toISOString(), 'YYYY/MM/DD')}
+                </span>
+              </div>
+            </div>
+            <div className="top-2 right-2 font-IranNastaliq text-2xl text-gray-600 pb-2 pr-2">
+              شرکت سهامی آب منطقه ای کرمانشاه
+            </div>
+
             {/* نمایش مقادیر HeaderForm */}
-            <div className="flex flex-wrap gap-4 mb-4">
+            <div className="flex flex-wrap gap-4 mb-1">
               {/* <div className="flex items-center gap-1">
                 <label className="font-semibold text-sm">شبکه آبیاری:</label>
                 <span>{networkName}</span>
               </div> */}
-              <div className="flex items-center gap-1">
-                {/* <label className="font-semibold text-sm">ایستگاه پمپاژ:</label> */}
+              <div
+                className="flex items-center gap-1 text-lg font-b-zar font-bold mb-2"
+                style={{textRendering: 'optimizeLegibility'}}
+              >
                 <span>برنامه آبیاری</span>
                 <span>
                   دهه {dahe === 1 ? 'اول ' : dahe === 2 ? 'دوم ' : 'سوم '}
                 </span>
                 <span>{convertMahToPersian(mah)}</span>
-                <span>{pumpStationName}</span>
+                {(() => {
+                  const isLastCharNumber = /\d$/.test(pumpStationName);
+                  return isLastCharNumber ? (
+                    <span>
+                      <span>{pumpStationName.slice(0, -1)}</span>
+                      <span className="ml-1">{pumpStationName.slice(-1)}</span>
+                    </span>
+                  ) : (
+                    <span>{pumpStationName}</span>
+                  );
+                })()}
               </div>
+
               {/* <div className="flex items-center gap-1">
                 <label className="font-semibold text-sm">سال زراعی:</label>
                 <span>{saleZeraee}</span>
@@ -951,11 +989,14 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             </div>
 
             {/* نمایش مقادیر PumpingTable */}
-            <table className="w-full border-collapse border border-orange-500">
+            <table
+              className="w-full border-collapse border border-orange-500"
+              style={{fontSize: '12px'}}
+            >
               <thead className="bg-blue-100">
                 <tr>
                   <th
-                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400 align-top h-6"
                     colSpan={2}
                   >
                     خط رانش
@@ -968,8 +1009,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     .map((ranesh) => (
                       <th
                         key={ranesh.IdRanesh}
-                        className="border border-gray-300 px-4 font-normal border-l-4 border-l-green-400"
+                        className="border border-gray-300 px-4 border-l-4 border-l-green-400 align-top h-6 text-center"
                         colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                        style={{direction: 'ltr'}}
                       >
                         {ranesh.RaneshName}
                       </th>
@@ -978,7 +1020,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {/* سطر "دبی پمپ" */}
                 <tr>
                   <th
-                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+                    className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400 align-top h-6"
                     colSpan={2}
                   >
                     دبی پمپ
@@ -991,8 +1033,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     .map((ranesh) => (
                       <th
                         key={ranesh.IdRanesh}
-                        className="border border-gray-300 px-4 font-normal border-l-4 border-l-green-400"
-                        style={{fontWeight: 300}}
+                        className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400 text-center align-top h-6"
+                        // style={{fontWeight: 300}}
                         colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                         dir="ltr"
                       >
@@ -1003,10 +1045,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     ))}
                 </tr>
                 <tr>
-                  <th className="border border-gray-300 px-1 py-0.3 font-bold">
+                  <th className="border border-gray-300 px-1 py-0.3 font-bold align-top h-6">
                     روز
                   </th>
-                  <th className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                  <th className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400 text-center align-top h-6">
                     تاریخ
                   </th>
                   {khatRaneshList
@@ -1017,20 +1059,20 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     .map((ranesh) => (
                       <React.Fragment key={ranesh.IdRanesh}>
                         {ranesh.FIdSePu === 1 && (
-                          <th className="border border-gray-300 px-1 py-0.3 font-bold border-r-4 border-r-green-400">
+                          <th className="border px-1 py-0.3 font-bold border-r-4 text-center align-top h-6">
                             تعداد
                           </th>
                         )}
-                        <th className="border border-gray-300 px-0.5 py-0.3 font-bold">
+                        <th className="border border-gray-300 px-0.5 py-0.3 font-bold text-center align-top h-6">
                           دبی
                         </th>
-                        <th className="border border-gray-300 px-4 py-0.3 font-bold">
+                        <th className="border border-gray-300 px-4 py-0.3 font-bold text-center align-top h-6">
                           شروع
                         </th>
-                        <th className="border border-gray-300 px-4 py-0.3 font-bold">
+                        <th className="border border-gray-300 px-4 py-0.3 font-bold text-center align-top h-6">
                           پایان
                         </th>
-                        <th className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                        <th className="border px-1 py-0.3 font-bold border-l-4 border-l-green-400 text-center align-top h-7">
                           مدت
                         </th>
                       </React.Fragment>
@@ -1041,12 +1083,12 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {records.map((record, index) => (
                   <tr
                     key={record.IdTarDor}
-                    className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}
+                    className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'} h-7`}
                   >
-                    <td className="border border-gray-300 px-1 py-0.3">
+                    <td className="border border-gray-300 px-1 py-0.3 align-top">
                       {toPersianDate(record.Trikh, 'dddd')}
                     </td>
-                    <td className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
+                    <td className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400 text-center align-top">
                       {toPersianDate(record.Trikh, 'YYYY/MM/DD')}
                     </td>
                     {khatRaneshList
@@ -1094,7 +1136,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                         return (
                           <React.Fragment key={ranesh.IdRanesh}>
                             {ranesh.FIdSePu === 1 && (
-                              <td className="border border-gray-300 px-1 py-0.3">
+                              <td className="border border-gray-300 px-1 py-0.3 text-center align-top">
                                 {selectedPumpCounts[record.IdTarDor]?.[
                                   ranesh.IdRanesh
                                 ] ||
@@ -1102,25 +1144,28 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                                   0}
                               </td>
                             )}
-                            <td className="border border-gray-300 px-1 py-0.3">
+                            <td className="border border-gray-300 px-1 py-0.3 text-center align-top">
                               {ranesh.FIdSePu === 2
                                 ? selectedZarfiat[record.IdTarDor]?.[
                                     ranesh.IdRanesh
                                   ] ||
                                   raneshInfo?.Zarfiat ||
                                   0
-                                : (raneshInfo?.Tedad || 0) *
-                                  (khatRaneshList.find(
-                                    (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                                  )?.DebiPomp || 0)}
+                                : (
+                                    (raneshInfo?.Tedad || 0) *
+                                    (khatRaneshList.find(
+                                      (khat) =>
+                                        khat.IdRanesh === ranesh.IdRanesh,
+                                    )?.DebiPomp || 0)
+                                  ).toFixed(1)}
                             </td>
-                            <td className="border border-gray-300 px-1 py-0.3">
+                            <td className="border border-gray-300 px-1 py-0.3 text-center align-top">
                               {fromValue || '-'}
                             </td>
-                            <td className="border border-gray-300 px-1 py-0.3">
+                            <td className="border border-gray-300 px-1 py-0.3 text-center align-top">
                               {toValue || '-'}
                             </td>
-                            <td className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400">
+                            <td className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400 text-center align-top">
                               {durationMinutes
                                 ? `${Math.floor(durationMinutes / 60)
                                     .toString()
@@ -1137,7 +1182,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {/* سطرهای "حجم درخواستی"، "حجم پیش‌بینی" و "اضافه درخواست" */}
                 <tr className="bg-yellow-100 font-semibold">
                   <td
-                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs h-6 align-top"
                     colSpan={2}
                   >
                     حجم درخواستی
@@ -1199,7 +1244,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                       return (
                         <td
                           key={ranesh.IdRanesh}
-                          className="border border-gray-300 px-4 py-0.3 text-center font-bold border-l-4 border-l-green-400 text-xs"
+                          className="border border-gray-300 px-4 py-0.3 text-center font-bold border-l-4 border-l-green-400 text-xs align-top h-6"
                           colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                         >
                           {totalWaterVolume
@@ -1211,7 +1256,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 </tr>
                 <tr className="bg-gray-200 font-bold">
                   <td
-                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs align-top h-6"
                     colSpan={2}
                   >
                     حجم پیش‌بینی
@@ -1224,7 +1269,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     .map((ranesh) => (
                       <td
                         key={ranesh.IdRanesh}
-                        className="border border-gray-300 px-4 py-0.3 text-center font-semibold border-l-4 border-l-green-400 text-xs"
+                        className="border border-gray-300 px-4 py-0.3 text-center font-semibold border-l-4 border-l-green-400 text-xs h-6 align-top"
                         colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                       >
                         {finalVolumes[ranesh.IdRanesh] !== undefined
@@ -1237,7 +1282,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 </tr>
                 <tr className="bg-gray-100 font-bold">
                   <td
-                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+                    className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs h-6 align-top"
                     colSpan={2}
                   >
                     اضافه درخواست
@@ -1307,7 +1352,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                       return (
                         <td
                           key={ranesh.IdRanesh}
-                          className={`border border-gray-300 px-4 py-0.3 text-center ${bgColor} ${textColor} border-l-4 border-l-green-400 text-xs`}
+                          className={`border border-gray-300 px-4 py-0.3 text-center ${bgColor} ${textColor} border-l-4 border-l-green-400 text-xs align-top h-6`}
                           colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
                         >
                           {extraRequest
@@ -1321,15 +1366,21 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             </table>
             <div className="flex mt-4">
               {/* کادر سمت راست */}
-              <div className="flex-1 border border-gray-300 p-4 relative h-32">
-                <div className="absolute top-2 right-2 text-sm text-gray-600">
+              <div
+                className="flex-1 border border-gray-300 p-3 relative"
+                style={{height: '10vh'}}
+              >
+                <div className="absolute top-0 right-2 text-xs text-gray-600">
                   نماینده شرکت آب منطقه ای/ تعاونی روستایی :
                 </div>
               </div>
 
               {/* کادر سمت چپ */}
-              <div className="flex-1 border border-gray-300 p-4 relative h-32">
-                <div className="absolute top-2 right-2 text-sm text-gray-600">
+              <div
+                className="flex-1 border border-gray-300 p-3 relative"
+                style={{height: '10vh'}}
+              >
+                <div className="absolute top-0 right-2 text-xs text-gray-600">
                   نماینده دستگاه اجرایی (آب نیرو/ عمراب) :
                 </div>
               </div>

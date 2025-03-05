@@ -55,7 +55,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   setSelectedZarfiat,
   isReadOnly,
 }) => {
-  console.log('finalVolumes: ', finalVolumes);
   const isFormFilled = records.some((record) =>
     khatRaneshList.some(
       (ranesh) =>

@@ -10,6 +10,7 @@ export default {
     extend: {
       fontFamily: {
         custom: ['iranyekanwebbold'], // نام فونت و فونت جایگزین
+        'b-zar': ['B Zar', 'serif'],
       },
 
       direction: {

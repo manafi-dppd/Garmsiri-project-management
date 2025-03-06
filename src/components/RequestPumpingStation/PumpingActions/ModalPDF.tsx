@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-const XLSX = require('xlsx');
+import * as XLSX from 'xlsx';
 
 interface ModalProps {
   isOpen: boolean;

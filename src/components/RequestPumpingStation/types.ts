@@ -80,6 +80,7 @@ export interface TaeedProgramData {
   FirstNTaeedNahaee: string;
   LastNTaeedNahaee: string;
   TarikhTaeedNahaee: string;
+  TaeedNahaee: boolean;
 }
 
 export interface PumpingActionsProps {

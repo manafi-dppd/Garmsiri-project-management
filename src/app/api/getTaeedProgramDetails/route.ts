@@ -43,10 +43,6 @@ export async function POST(request: Request) {
     });
 
     if (!result) {
-      console.log('FIdPumpSta: ', FIdPumpSta);
-      console.log('Sal: ', Sal);
-      console.log('Mah: ', Mah);
-      console.log('Dahe: ', Dahe);
       return NextResponse.json(
         {error: 'No matching record found'},
         {status: 404},

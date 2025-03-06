@@ -35,6 +35,7 @@ interface TaeedProgramData {
   FirstNTaeedNahaee: string;
   LastNTaeedNahaee: string;
   TarikhTaeedNahaee: string;
+  TaeedNahaee: boolean;
 }
 
 interface PumpingActionsProps {
@@ -112,6 +113,12 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   const [isSavedWaterPower, setIsSavedWaterPower] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>(''); // State برای تاریخ و زمان فعلی
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [isWaterPowerSubmitted, setIsWaterPowerSubmitted] = useState(false); // وضعیت ارسال "آب نیرو"
+  const [isFinalFileUploaded, setIsFinalFileUploaded] = useState(false); // وضعیت بارگذاری فایل نهایی
+  const [isFinalApprovalSubmitted, setIsFinalApprovalSubmitted] =
+    useState(false); // وضعیت ارسال "تایید نهایی"
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
+  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
 
   const handleGeneratePDF = () => {
     setIsPdfModalOpen(true);
@@ -178,6 +185,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
   // تابع برای ارسال درخواست به API
   const updateTaeedProgram = async (endpoint: string, data: any) => {
+    setIsSubmitButtonDisabled(true);
     try {
       const response = await fetch(`/api/${endpoint}`, {
         method: 'PUT',
@@ -194,6 +202,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       }
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setIsSubmitButtonDisabled(false);
     }
   };
 
@@ -301,6 +311,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         setIsWaterPowerSubmitDisabled(true);
       }
       setIsSavedWaterPower(true);
+      setIsWaterPowerSubmitted(true);
+      setIsWaterPowerSubmitDisabled(true);
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
     } catch (error) {
       console.error('Error updating TaeedProgram:', error);
@@ -308,18 +320,24 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   };
 
   const handleFinalApprovalSubmit = async () => {
-    await updateTaeedProgram('updateFinalApproval', {
-      idPumpStation,
-      sal,
-      mah,
-      dahe,
-      firstName,
-      lastName,
-      tozihAbNiroo: modalContent[`${sal}-${mah}-${dahe}-waterPower`],
-    });
+    try {
+      await updateTaeedProgram('updateFinalApproval', {
+        idPumpStation,
+        sal,
+        mah,
+        dahe,
+        firstName,
+        lastName,
+      });
+      setIsFinalApprovalSubmitted(true);
+      setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
+    } catch (error) {
+      console.error('Error updating TaeedProgram:', error);
+    }
   };
 
   const handleSave = async () => {
+    setIsSaveButtonDisabled(true);
     setErrors([]);
     setValidationErrors([]);
 
@@ -335,6 +353,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (newErrors.length > 0) {
       setErrors(newErrors);
       setValidationErrors(newErrors);
+      setIsSaveButtonDisabled(false);
       return;
     }
 
@@ -418,6 +437,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setErrors([
         {date: '', raneshName: '', message: 'خطا در ذخیره‌سازی داده‌ها'},
       ]);
+    } finally {
+      setIsSaveButtonDisabled(false);
     }
   };
 
@@ -570,11 +591,111 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     // ذخیره PDF
     pdf.save('pumping-report.pdf');
   };
+  // تابع برای مدیریت آپلود فایل
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/bmp',
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      alert(
+        'فرمت فایل مجاز نیست. لطفا یک فایل با فرمت PDF، JPG، JPEG، PNG یا BMP انتخاب کنید.',
+      );
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('idPumpStation', idPumpStation.toString());
+    formData.append('sal', sal.toString());
+    formData.append('mah', mah.toString());
+    formData.append('dahe', dahe.toString());
+    try {
+      const response = await fetch('/api/uploadFinalFile', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert('فایل با موفقیت آپلود شد.');
+        setIsFinalFileUploaded(true);
+        // بروزرسانی وضعیت UI یا انجام عملیات دیگر پس از آپلود موفق
+      } else {
+        alert('خطا در آپلود فایل.');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('خطا در آپلود فایل.');
+    }
+  };
+
+  const handleDownloadFile = async () => {
+    try {
+      // ایجاد URL برای درخواست دانلود فایل
+      const url = `/api/downloadFinalFile?idPumpStation=${idPumpStation}&sal=${sal}&mah=${mah}&dahe=${dahe}`;
+
+      // ارسال درخواست GET به API
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+
+      // دریافت فایل به صورت blob
+      const blob = await response.blob();
+
+      // دریافت نام فایل از هدر Content-Disposition
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let fileName = `final_file_${sal}_${mah}_${dahe}`; // نام پیش‌فرض
+
+      if (contentDisposition && contentDisposition.includes('filename=')) {
+        // استخراج نام فایل از هدر Content-Disposition
+        fileName = contentDisposition
+          .split('filename=')[1]
+          .split(';')[0]
+          .replace(/['"]/g, ''); // حذف کوتیشن‌ها
+      }
+
+      // ایجاد لینک دانلود
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', fileName); // استفاده از نام فایل استخراج شده
+      document.body.appendChild(link);
+      link.click();
+
+      // حذف لینک از DOM
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('خطا در دانلود فایل.');
+    }
+  };
+
+  const [isFinalApprovalChecked, setIsFinalApprovalChecked] = useState(
+    taedProgramData?.TaeedNahaee ?? false,
+  );
+
+  useEffect(() => {
+    setIsFinalApprovalChecked(taedProgramData?.TaeedNahaee ?? false);
+  }, [taedProgramData]);
+  // تابع برای تغییر وضعیت چک‌باکس
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFinalApprovalChecked(event.target.checked);
+  };
 
   return (
     <div className="flex flex-row gap-4 mt-4 overflow-x-auto">
       {/* Div 1: درخواست کننده */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
+      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
         <div className="font-bold mb-2">درخواست کننده</div>
         <div className="flex gap-2 mb-2">
           <button
@@ -586,20 +707,20 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('requester') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isFormDisabled ||
+                isSaveButtonDisabled || isFormDisabled ||
                 isFormFilled ||
                 (!isTarikhErsalNull && isTaedAbMantagheTrue)
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
               disabled={
-                isFormDisabled ||
+                isSaveButtonDisabled || isFormDisabled ||
                 isFormFilled ||
                 (!isTarikhErsalNull && isTaedAbMantagheTrue)
               }
               onClick={handleSave}
             >
-              ذخیره
+              {isSaveButtonDisabled ? 'در حال ذخیره...' : 'ذخیره'}
             </button>
           )}
         </div>
@@ -623,7 +744,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 2: آب منطقه‌ای */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
+      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
         <div className="font-bold mb-2">آب منطقه‌ای</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -709,7 +830,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 3: پیمانکار پمپاژ */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
+      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
         <div className="font-bold mb-2">پیمانکار پمپاژ</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -803,7 +924,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 4: آب نیرو */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-1 relative min-w-[200px]">
+      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
         <div className="font-bold mb-2">آب نیرو</div>
         <div className="flex gap-2 mb-2">
           <label className="flex items-center gap-2">
@@ -888,45 +1009,71 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 5: دریافت PDF و بارگذاری فایل نهایی */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-[1.6] min-w-[290px]">
-        <div className="font-bold mb-2">فایل‌های نهایی</div>
-        <div className="flex gap-2 mb-2">
-          <button
-            className={`px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
-              isTaedAbNirooTrue ? '' : 'opacity-50 cursor-not-allowed'
-            }`}
-            disabled={!isTaedAbNirooTrue}
-            onClick={handleGeneratePDF}
-          >
-            پیش نمایش
-          </button>
-          <button
-            className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-              isTaedAbNirooTrue ? '' : 'opacity-50 cursor-not-allowed'
-            }`}
-            disabled={!isTaedAbNirooTrue}
-            onClick={() => alert('بارگذاری فایل نهایی')}
-          >
-            بارگذاری فایل نهایی
-          </button>
-          <button
-            className={`px-4 py-2 text-white bg-yellow-500 rounded-md hover:bg-yellow-600 ${
-              isFileNameNahaeeNull ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={isFileNameNahaeeNull}
-            onClick={() => alert('مشاهده فایل نهایی')}
-          >
-            مشاهده فایل نهایی
-          </button>
+      <div className="px-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] flex items-center justify-center h-full">
+        <div className="w-full text-center">
+          <div className="font-bold mb-2">فایل‌های نهایی</div>
+          <div className="flex flex-col gap-2">
+            <button
+              className={`w-full px-4 py-1.5 text-white bg-blue-500 rounded-md hover:bg-blue-600 ${
+                isTaedAbNirooTrue || isWaterPowerSubmitted
+                  ? ''
+                  : 'opacity-50 cursor-not-allowed'
+              }`}
+              disabled={!isTaedAbNirooTrue && !isWaterPowerSubmitted}
+              onClick={handleGeneratePDF}
+            >
+              پیش نمایش
+            </button>
+            <button
+              className={`w-full px-4 py-1.5 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                (isTaedAbNirooTrue || isWaterPowerSubmitted) &&
+                !isFinalApprovalSubmitted &&
+                !taedProgramData?.TaeedNahaee
+                  ? ''
+                  : 'opacity-50 cursor-not-allowed'
+              }`}
+              disabled={
+                (!isTaedAbNirooTrue && !isWaterPowerSubmitted) ||
+                isFinalApprovalSubmitted ||
+                taedProgramData?.TaeedNahaee
+              }
+              onClick={() => {
+                document.getElementById('file-input')?.click();
+              }}
+            >
+              بارگذاری فایل نهایی
+            </button>
+            <input
+              id="file-input"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.bmp"
+              style={{display: 'none'}}
+              onChange={handleFileUpload}
+            />
+            <button
+              className={`w-full px-4 py-1.5 text-white bg-yellow-500 rounded-md hover:bg-yellow-600 ${
+                isFileNameNahaeeNull && !isFinalFileUploaded
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={isFileNameNahaeeNull && !isFinalFileUploaded}
+              onClick={() => {
+                handleDownloadFile();
+              }}
+            >
+              دریافت فایل نهایی
+            </button>
+          </div>
         </div>
       </div>
+
       {/* مودال برای نمایش PDF */}
       {isPdfModalOpen && (
         <ModalPDF
           isOpen={isPdfModalOpen}
           onClose={() => setIsPdfModalOpen(false)}
         >
-          <div className="p-4 bg-white w-[297mm] max-h-[80vh] overflow-auto landscape">
+          <div className="px-4 bg-white w-[297mm] max-h-[80vh] overflow-auto landscape">
             <div className="relative">
               {/* لوگو */}
               <Image
@@ -957,7 +1104,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 <span>{networkName}</span>
               </div> */}
               <div
-                className="flex items-center gap-1 text-lg font-b-zar font-bold mb-2"
+                className="flex items-center gap-1 text-lg font-b-zar font-bold mb-1"
                 style={{textRendering: 'optimizeLegibility'}}
               >
                 <span>برنامه آبیاری</span>
@@ -1072,7 +1219,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                         <th className="border border-gray-300 px-4 py-0.3 font-bold text-center align-top h-6">
                           پایان
                         </th>
-                        <th className="border px-1 py-0.3 font-bold border-l-4 border-l-green-400 text-center align-top h-7">
+                        <th className="border px-1 py-0.3 font-bold border-l-4 border-l-green-400 text-center align-top h-6">
                           مدت
                         </th>
                       </React.Fragment>
@@ -1390,27 +1537,67 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       )}
 
       {/* Div 6: تایید نهایی و ارسال */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-[0.4] min-w-[110px]">
+      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
         <div className="font-bold mb-2">تایید نهایی</div>
         <div className="flex items-center gap-2 mb-2">
           <input
             type="checkbox"
             id="final-approval"
-            disabled={isFileNameNahaeeNull}
+            disabled={
+              (!isFinalFileUploaded && isFileNameNahaeeNull) ||
+              isFinalApprovalSubmitted ||
+              taedProgramData?.TaeedNahaee
+            }
+            checked={
+              isFinalApprovalChecked || (taedProgramData?.TaeedNahaee ?? false)
+            }
+            onChange={handleCheckboxChange}
           />
           <label htmlFor="final-approval">تایید نهایی</label>
         </div>
-        <div className="flex gap-2">
-          <button
-            className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-              isFileNameNahaeeNull ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={isFileNameNahaeeNull}
-            onClick={handleFinalApprovalSubmit}
-          >
-            ارسال
-          </button>
-        </div>
+        {!getIsReadOnly('waterPower') && (
+          <div className="flex gap-2">
+            <button
+              className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
+                (!isFinalFileUploaded && isFileNameNahaeeNull) ||
+                isFinalApprovalSubmitted ||
+                !isFinalApprovalChecked ||
+                taedProgramData?.TaeedNahaee
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+              disabled={
+                (!isFinalFileUploaded && isFileNameNahaeeNull) ||
+                isFinalApprovalSubmitted ||
+                !isFinalApprovalChecked ||
+                taedProgramData?.TaeedNahaee
+              }
+              onClick={handleFinalApprovalSubmit}
+            >
+              ارسال
+            </button>
+          </div>
+        )}
+        {/* نام در گوشه سمت راست پایین */}
+        {(taedProgramData?.FirstNTaeedNahaee &&
+          taedProgramData?.LastNTaeedNahaee) ||
+        isFinalApprovalSubmitted ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 right-2">
+            {isFinalApprovalSubmitted
+              ? `${firstName} ${lastName}`
+              : `${taedProgramData?.FirstNTaeedNahaee} ${taedProgramData?.LastNTaeedNahaee}`}
+          </div>
+        ) : null}
+
+        {/* تاریخ در گوشه سمت چپ پایین */}
+        {taedProgramData?.TarikhTaeedNahaee || isFinalApprovalSubmitted ? (
+          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
+            {isFinalApprovalSubmitted
+              ? currentDateTime
+              : taedProgramData?.TarikhTaeedNahaee &&
+                formatDateTime(taedProgramData.TarikhTaeedNahaee)}
+          </div>
+        ) : null}
       </div>
 
       {/* Modal */}

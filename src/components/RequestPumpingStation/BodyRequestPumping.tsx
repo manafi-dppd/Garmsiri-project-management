@@ -7,6 +7,7 @@ import {usePumpingTime} from './hooks/usePumpingTime';
 import PaginationForMah, {convertMahToPersian} from './PaginationForMah';
 import {TaeedProgramData} from './types';
 import {KhatRanesh, PredictedVolume, PumpingData, RecordType} from './types';
+import BodySkeletonLoading from './BodySkeletonLoading';
 
 interface BodyRequestPumpingProps {
   userName: string;
@@ -60,6 +61,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [selectedZarfiat, setSelectedZarfiat] = useState<{
     [key: number]: {[key: number]: number};
   }>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     khatRaneshList,
@@ -90,6 +92,13 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     selectedPumpCounts,
     handlePumpCountChange,
   } = usePumpingTime();
+
+  useEffect(() => {
+    // Simulate loading delay for the body
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); // Adjust the delay as needed
+  }, []);
 
   useEffect(() => {
     const isPastOrCurrentMonth =
@@ -144,7 +153,9 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      {selectedNetworkId === null ? (
+      {isLoading ? (
+        <BodySkeletonLoading />
+      ) : selectedNetworkId === null ? (
         <h2>شبکه مورد نظر خود را انتخاب کنید</h2>
       ) : idPumpStation === 0 ? (
         <h2>ایستگاه پمپاژ مورد نظر خود را انتخاب کنید</h2>

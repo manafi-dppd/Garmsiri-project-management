@@ -5,15 +5,8 @@ const prisma = sqlServerClient;
 
 export async function PUT(request: Request) {
   try {
-    const {
-      FIdPumpSta,
-      Sal,
-      Mah,
-      Dahe,
-      FirstNTaeedNahaee,
-      LastNTaeedNahaee,
-      TozihAbNiroo,
-    } = await request.json();
+    const {idPumpStation, sal, mah, dahe, firstName, lastName} =
+      await request.json();
 
     // دریافت زمان حال در منطقه زمانی سرور
     const now = new Date();
@@ -21,15 +14,14 @@ export async function PUT(request: Request) {
 
     await prisma.taeedProgram.updateMany({
       where: {
-        FIdPumpSta: FIdPumpSta,
-        Sal: Sal,
-        Mah: Mah,
-        Dahe: Dahe,
+        FIdPumpSta: idPumpStation,
+        Sal: sal,
+        Mah: mah,
+        Dahe: dahe,
       },
       data: {
-        FirstNTaeedNahaee: FirstNTaeedNahaee,
-        LastNTaeedNahaee: LastNTaeedNahaee,
-        TozihAbNiroo: TozihAbNiroo,
+        FirstNTaeedNahaee: firstName,
+        LastNTaeedNahaee: lastName,
         TarikhTaeedNahaee: localTime,
         TaeedNahaee: true,
       },

@@ -998,7 +998,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
         <tbody>
           <tr>
             <td colSpan={100} className="text-center">
-              داده‌ای برای نمایش وجود ندارد
+              لطفا منتظر بمانید
             </td>
           </tr>
         </tbody>

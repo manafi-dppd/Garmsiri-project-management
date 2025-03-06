@@ -33,6 +33,8 @@ export async function PUT(request: Request) {
         TozihAbNiroo: tozihAbNiroo,
         TarikhAbNiroo: localTime,
         TaedAbNiroo: taedAbNiroo,
+        TaedPeymankar: taedAbNiroo === false ? null : undefined,
+        TaedAbMantaghe: taedAbNiroo === false ? null : undefined,
       },
     });
 

@@ -33,6 +33,7 @@ export async function PUT(request: Request) {
         TozihPeymankar: tozihPeymankar,
         TarikhPeymankar: localTime,
         TaedPeymankar: taedPeymankar,
+        TaedAbMantaghe: taedPeymankar === false ? null : undefined,
       },
     });
 

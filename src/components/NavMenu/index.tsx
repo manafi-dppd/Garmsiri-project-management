@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {
@@ -30,8 +30,34 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
   const [openSubSubMenu, setOpenSubSubMenu] = useState<number | null>(null);
+  const [localMenus, setLocalMenus] = useState<Menu[]>(menus);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchMenus = async () => {
+      try {
+        const response = await fetch('/api/menus', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        console.log('Fetched menus:', response);
+        if (!response.ok) {
+          if (response.status === 401) {
+            router.push('/login');
+          }
+          return;
+        }
+        const data: Menu[] = await response.json();
+
+        setLocalMenus(data);
+      } catch (error) {
+        console.error('Error fetching menus:', error);
+      }
+    };
+
+    fetchMenus();
+  }, [router]);
 
   const buildPath = (menu: Menu): string => {
     let path = `/${menu.slug}`;
@@ -39,7 +65,7 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
       path = `/${menu.parentSlug}/${menu.slug}`;
     }
     if (menu.parentId) {
-      const parentMenu = menus.find((m) => m.id === menu.parentId);
+      const parentMenu = localMenus.find((m) => m.id === menu.parentId);
       if (parentMenu && parentMenu.parentSlug) {
         path = `/${parentMenu.parentSlug}/${menu.parentSlug}/${menu.slug}`;
       }
@@ -48,40 +74,9 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
   };
 
   const handleMenuClick = (menu: Menu, e: React.MouseEvent) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-      const fetchMenus = async () => {
-        try {
-          const response = await fetch('/api/menus', {
-            method: 'GET',
-            credentials: 'include', // ارسال کوکی
-          });
-          console.log('response: ', response);
-          if (!response.ok) {
-            try {
-              const errorData = await response.json();
-              console.error('Error:', errorData.error || 'Unknown error');
-            } catch {
-              console.error('An unknown error occurred.');
-            }
-            return;
-          }
-
-          if (response.status === 401) {
-            console.log('Going to login4');
-            router.push('/login'); // هدایت به صفحه لاگین
-            return;
-          }
-          const data: Menu[] = await response.json();
-          setMenus(data);
-        } catch (error) {
-          // console.error('Error fetching menus:', error);
-        }
-      };
-
-      fetchMenus();
-    }, []);
-    const childMenus = menus.filter((m) => m.parentId === menu.id && m.active);
+    const childMenus = localMenus.filter(
+      (m) => m.parentId === menu.id && m.active,
+    );
     if (childMenus.length > 0) {
       e.preventDefault();
       setOpenMenu(menu.id === openMenu ? null : menu.id);
@@ -91,7 +86,7 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
   };
 
   const handleSubMenuClick = (submenu: Menu, e: React.MouseEvent) => {
-    const subChildMenus = menus.filter(
+    const subChildMenus = localMenus.filter(
       (m) => m.parentId === submenu.id && m.active,
     );
     if (subChildMenus.length > 0) {
@@ -112,8 +107,8 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
     router.push(buildPath(subSubMenu));
   };
 
-  const parentMenus = Array.isArray(menus)
-    ? menus.filter((menu) => menu.parentId === null && menu.active)
+  const parentMenus = Array.isArray(localMenus)
+    ? localMenus.filter((menu) => menu.parentId === null && menu.active)
     : [];
 
   return (
@@ -136,7 +131,7 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
           }}
         >
           {parentMenus.map((menu) => {
-            const childMenus = menus.filter(
+            const childMenus = localMenus.filter(
               (submenu) => submenu.parentId === menu.id && submenu.active,
             );
             return (
@@ -181,7 +176,7 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
                 {childMenus.length > 0 && openMenu === menu.id && (
                   <ul className="absolute flex flex-col bg-gray-600 text-sm right-0 mt-2 p-2 rounded shadow-lg z-20 min-w-[200px]">
                     {childMenus.map((submenu) => {
-                      const subChildMenus = menus.filter(
+                      const subChildMenus = localMenus.filter(
                         (subSubMenu) =>
                           subSubMenu.parentId === submenu.id &&
                           subSubMenu.active,
@@ -244,10 +239,3 @@ const NavMenu: React.FC<NavMenuProps> = ({menus = []}) => {
 };
 
 export default NavMenu;
-function useEffect(arg0: () => void, arg1: never[]) {
-  throw new Error('Function not implemented.');
-}
-
-function setMenus(data: Menu[]) {
-  throw new Error('Function not implemented.');
-}

@@ -74,12 +74,14 @@ export default function UserTable() {
                   {user.mobile}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  {toPersianDate(user.registrationTime)}
+                  {toPersianDate(user.registrationTime, 'yyyy/MM/dd')}
                   {' -'}
                   {format(new Date(user.registrationTime), 'HH:mm')}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  {user.endDate ? toPersianDate(user.endDate) : 'نامشخص'}
+                  {user.endDate
+                    ? toPersianDate(user.endDate, 'yyyy/MM/dd')
+                    : 'نامشخص'}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
                   {user.active ? 'بله' : 'خیر'}

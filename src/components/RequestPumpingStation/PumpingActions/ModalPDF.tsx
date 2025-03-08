@@ -80,7 +80,7 @@ const ModalPDF: React.FC<ModalProps> = ({isOpen, onClose, children}) => {
             onClick={() => setIsFormatMenuOpen(!isFormatMenuOpen)}
             className="font-bold bg-blue-500 text-white px-3 py-1 rounded print:hidden"
           >
-            خروجی
+            دریافت فایل
           </button>
           {isFormatMenuOpen && (
             <div className="absolute bottom-10 left-0 bg-white border border-gray-300 rounded-lg shadow-lg">

@@ -77,9 +77,7 @@ function Footer() {
           </a> */}
         </div>
         <div className="mt-0 order-0">
-          <p className="text-gray-400">
-            تمامی حقوق این وبسایت برای دارندگان محفوظ است. ©
-          </p>
+          <p className="text-gray-400">تمامی حقوق این مرورگر محفوظ است. ©</p>
         </div>
       </div>
     </footer>

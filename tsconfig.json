@@ -26,7 +26,7 @@
         "name": "next"
       }
     ],
-    "types": ["next-auth"],
+    // "types": ["next-auth"],
     "paths": {
       "@/*": ["./src/*"],
       "@prisma/*": ["./prisma/*"]

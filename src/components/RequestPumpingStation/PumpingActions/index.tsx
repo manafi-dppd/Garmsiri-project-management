@@ -693,11 +693,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   };
 
   return (
-    <div className="flex flex-row gap-4 mt-4 overflow-x-auto">
+    <div className="flex flex-col sm:flex-row gap-4 mt-4 overflow-x-auto">
       {/* Div 1: درخواست کننده */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
+      <div className="w-full sm:w-auto p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative mb-4 sm:mb-0">
         <div className="font-bold mb-2">درخواست کننده</div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             onClick={() => handleOpenModal('requester')}
@@ -707,20 +707,22 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           {!getIsReadOnly('requester') && (
             <button
               className={`px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 ${
-                isSaveButtonDisabled || isFormDisabled ||
+                isSaveButtonDisabled ||
+                isFormDisabled ||
                 isFormFilled ||
                 (!isTarikhErsalNull && isTaedAbMantagheTrue)
                   ? 'opacity-50 cursor-not-allowed'
                   : ''
               }`}
               disabled={
-                isSaveButtonDisabled || isFormDisabled ||
+                isSaveButtonDisabled ||
+                isFormDisabled ||
                 isFormFilled ||
                 (!isTarikhErsalNull && isTaedAbMantagheTrue)
               }
               onClick={handleSave}
             >
-              {isSaveButtonDisabled ? 'در حال ذخیره...' : 'ذخیره'}
+              {isSaveButtonDisabled ? 'ذخیره...' : 'ذخیره'}
             </button>
           )}
         </div>
@@ -744,9 +746,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 2: آب منطقه‌ای */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
+      <div className="w-full sm:w-auto p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative mb-4 sm:mb-0">
         <div className="font-bold mb-2">آب منطقه‌ای</div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -780,7 +782,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             رد
           </label>
         </div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             onClick={() => handleOpenModal('regionalWater')}
@@ -830,9 +832,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 3: پیمانکار پمپاژ */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
+      <div className="w-full sm:w-auto p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative mb-4 sm:mb-0">
         <div className="font-bold mb-2">پیمانکار پمپاژ</div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -866,7 +868,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             رد
           </label>
         </div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             onClick={() => handleOpenModal('pumpingContractor')}
@@ -913,20 +915,12 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 formatDateTime(taedProgramData?.TarikhPeymankar)}
           </div>
         ) : null}
-        {taedProgramData?.TarikhPeymankar || isSavedPumpingContractor ? (
-          <div className="text-xs italic text-gray-500 absolute bottom-1 left-2">
-            {isSavedPumpingContractor
-              ? currentDateTime
-              : taedProgramData?.TarikhPeymankar &&
-                formatDateTime(taedProgramData?.TarikhPeymankar)}
-          </div>
-        ) : null}
       </div>
 
       {/* Div 4: آب نیرو */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
+      <div className="w-full sm:w-auto p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative mb-4 sm:mb-0">
         <div className="font-bold mb-2">آب نیرو</div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -960,7 +954,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             رد
           </label>
         </div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex flex-col xl:flex-row gap-2 mb-2">
           <button
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             onClick={() => handleOpenModal('waterPower')}
@@ -1009,7 +1003,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
 
       {/* Div 5: دریافت PDF و بارگذاری فایل نهایی */}
-      <div className="px-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] flex items-center justify-center h-full">
+      <div className="w-full sm:w-auto px-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] flex items-center justify-center h-full mb-4 sm:mb-0">
         <div className="w-full text-center">
           <div className="font-bold mb-2">فایل‌های نهایی</div>
           <div className="flex flex-col gap-2">
@@ -1537,7 +1531,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       )}
 
       {/* Div 6: تایید نهایی و ارسال */}
-      <div className="p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative">
+      <div className="w-full sm:w-auto p-4 border border-gray-300 rounded-lg flex-grow min-w-[150px] max-w-[200px] relative mb-4 sm:mb-0">
         <div className="font-bold mb-2">تایید نهایی</div>
         <div className="flex items-center gap-2 mb-2">
           <input

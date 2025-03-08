@@ -150,6 +150,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
             );
 
             const accessLevels = accessLevelResponse.data;
+
             menuData = menuData.filter(
               (menu) =>
                 !menu.general &&
@@ -196,6 +197,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
 
             setMenuTree(updatedMenuTree);
           } else if (mode === 'menuManagement') {
+            console.log('menuData: ', menuData);
             menuData = menuData.filter(
               (menu) =>
                 menu.title !== 'Browser Management' && menu.title !== 'home',
@@ -362,6 +364,7 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
   };
 
   const renderTableHeader = (menus: MenuItem[]): JSX.Element[] => {
+    console.log('menus: ', menus);
     return menus.map((menu) => (
       <th key={menu.id} className="text-center border border-gray-300">
         <label>

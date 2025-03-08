@@ -352,7 +352,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   (khat) => khat.IdRanesh === ranesh.IdRanesh,
                                 )?.Zarfiat ?? '',
                               )}
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
+                              className="border border-green-400 bg-white/90 h-7 px-1 py-0.5 
         text-gray-700 shadow-sm hover:shadow-md 
         focus:ring-2 focus:ring-green-400 focus:outline-none
         transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
@@ -452,17 +452,16 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                 ] ||
                                   raneshInfo?.Tedad ||
                                   0) === 0 &&
-                                  (raneshInfo?.Zarfiat == null ||
-                                    raneshInfo?.Zarfiat <= 0)) ||
+                                  raneshInfo?.Zarfiat <= 0) ||
                                 isFormDisabled
                               }
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
+                              className="border border-green-400 bg-white/90 rounded-lg h-7 px-1 py-0.5 
                       text-gray-700 shadow-sm hover:shadow-md 
                       focus:ring-2 focus:ring-green-400 focus:outline-none
                       transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                             />
 
-                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
+                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
                               <button
                                 type="button"
                                 className="text-gray-400 hover:text-black text-xs p-0"
@@ -481,8 +480,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -506,8 +504,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -515,7 +512,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               </button>
                             </div>
 
-                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
+                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
                               <button
                                 type="button"
                                 className="text-gray-400 hover:text-black text-xs p-0"
@@ -534,8 +531,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -559,8 +555,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -643,17 +638,16 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                 ] ||
                                   raneshInfo?.Tedad ||
                                   0) === 0 &&
-                                  (raneshInfo?.Zarfiat == null ||
-                                    raneshInfo?.Zarfiat <= 0)) ||
+                                  raneshInfo?.Zarfiat <= 0) ||
                                 isFormDisabled
                               }
-                              className="border border-green-400 bg-white/90 rounded-lg h-8 px-1 py-0.5 
+                              className="border border-green-400 bg-white/90 rounded-lg h-7 px-1 py-0.5 
                       text-gray-700 shadow-sm hover:shadow-md 
                       focus:ring-2 focus:ring-green-400 focus:outline-none
                       transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
                             />
 
-                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.5">
+                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
                               <button
                                 type="button"
                                 className="text-gray-400 hover:text-black text-xs p-0"
@@ -672,8 +666,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -697,8 +690,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -725,8 +717,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >
@@ -750,8 +741,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   ] ||
                                     raneshInfo?.Tedad ||
                                     0) === 0 &&
-                                    (raneshInfo?.Zarfiat == null ||
-                                      raneshInfo?.Zarfiat <= 0)) ||
+                                    raneshInfo?.Zarfiat <= 0) ||
                                   isFormDisabled
                                 }
                               >

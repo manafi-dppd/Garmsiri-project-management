@@ -83,10 +83,12 @@ export default function InvitationsTable() {
                 <td className="px-6 py-4 text-center">{invitation.lastName}</td>
                 <td className="px-6 py-4 text-center">{invitation.mobile}</td>
                 <td className="px-6 py-4 text-center">
-                  {toPersianDate(invitation.createdAt)}
+                  {toPersianDate(invitation.createdAt, 'yyyy/MM/dd')}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  {invitation.endDate ? toPersianDate(invitation.endDate) : '-'}
+                  {invitation.endDate
+                    ? toPersianDate(invitation.endDate, 'yyyy/MM/dd')
+                    : '-'}
                 </td>
                 <td className="px-6 py-4 text-center">
                   {invitation.isRegistered ? 'بله' : 'خیر'}

@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
   try {
     // تایید صحت توکن
     decodedToken = jwt.verify(token, SECRET_KEY) as jwt.JwtPayload;
-    // console.log('Decoded token:', decodedToken);
     const userId = decodedToken.userId;
 
     if (!userId) {
@@ -43,7 +42,6 @@ export async function GET(req: NextRequest) {
 
   const {searchParams} = new URL(req.url);
   const hierarchical = searchParams.get('hierarchical') === 'true';
-  // console.log('hierarchical:', hierarchical);
   try {
     if (hierarchical) {
       console.log('Fetching hierarchical menus...');
@@ -52,7 +50,7 @@ export async function GET(req: NextRequest) {
         await prisma.menu.findMany({
           where: {
             parentId: null,
-            active: true,
+            // active: true,
             userAccess: {
               some: {
                 userId: userId,
@@ -64,7 +62,7 @@ export async function GET(req: NextRequest) {
           include: {
             children: {
               where: {
-                active: true,
+                // active: true,
                 userAccess: {
                   some: {
                     userId: userId,
@@ -75,7 +73,7 @@ export async function GET(req: NextRequest) {
               include: {
                 children: {
                   where: {
-                    active: true,
+                    // active: true,
                     userAccess: {
                       some: {
                         userId: userId,
@@ -88,8 +86,6 @@ export async function GET(req: NextRequest) {
             },
           },
         });
-      // console.log('Menus with children:', JSON.stringify(menus, null, 2));
-      // console.log('Fetched hierarchical menus:', menus);
 
       if (!menus || menus.length === 0) {
         console.log('No hierarchical menus found for user:', userId);
@@ -104,7 +100,7 @@ export async function GET(req: NextRequest) {
       // دریافت منوها به صورت ساده
       const menus = await prisma.menu.findMany({
         where: {
-          active: true,
+          // active: true,
           userAccess: {
             some: {
               userId: userId,
@@ -121,8 +117,6 @@ export async function GET(req: NextRequest) {
           parentId: true,
         },
       });
-
-      // console.log('Fetched flat menus:', menus);
 
       if (!menus || menus.length === 0) {
         console.log('Fetched flat menus:', menus);

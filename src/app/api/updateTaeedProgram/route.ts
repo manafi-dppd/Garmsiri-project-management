@@ -1,38 +1,54 @@
-import {NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function PUT(request: Request) {
   try {
-    const {FIdPumpSta, Sal, Mah, Dahe, FirstNErsal, LastNErsal, TozihErsal} =
-      await request.json();
-    // دریافت زمان حال در منطقه زمانی سرور
-    const now = new Date();
-    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    const body = await request.json();
 
-    await prisma.taeedProgram.updateMany({
+    if (
+      typeof body?.fidpumpsta !== "number" ||
+      typeof body?.sal !== "number" ||
+      typeof body?.mah !== "number" ||
+      typeof body?.dahe !== "number" ||
+      typeof body?.firstnersal !== "string" ||
+      typeof body?.lastnersal !== "string" ||
+      (typeof body?.tozihersal !== "string" && body?.tozihersal !== null)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid request body format" },
+        { status: 400 }
+      );
+    }
+
+    const { fidpumpsta, sal, mah, dahe, firstnersal, lastnersal, tozihersal } =
+      body;
+    const now = new Date();
+
+    await prisma.taeedprogram.updateMany({
       where: {
-        FIdPumpSta: FIdPumpSta,
-        Sal: Sal,
-        Mah: Mah,
-        Dahe: Dahe,
+        fidpumpsta: fidpumpsta,
+        sal: sal,
+        mah: mah,
+        dahe: dahe,
       },
       data: {
-        FirstNErsal: FirstNErsal,
-        LastNErsal: LastNErsal,
-        TozihErsal: TozihErsal,
-        TarikhErsal: localTime, // مقدار تبدیل‌شده به زمان محلی
+        firstnersal: firstnersal,
+        lastnersal: lastnersal,
+        tozihersal: tozihersal,
+        tarikhersal: now,
       },
     });
 
     return NextResponse.json(
-      {message: 'Data updated successfully'},
-      {status: 200},
+      { message: "Data updated successfully" },
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Failed to update TaeedProgram:', error);
-    return NextResponse.json({error: 'Failed to update data'}, {status: 500});
+    console.error("Failed to update TaeedProgram:", error);
+    return NextResponse.json(
+      { error: "Failed to update data" },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

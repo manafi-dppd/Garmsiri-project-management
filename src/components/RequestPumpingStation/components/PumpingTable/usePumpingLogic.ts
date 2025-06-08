@@ -1,22 +1,18 @@
 // src/components/RequestPumpingStation/components/PumpingTable/usePumpingLogic.ts
-import {useState, useEffect} from 'react';
-import {KhatRanesh, PredictedVolume, PumpingData} from '../../types';
+import { useState } from "react";
 
 export const usePumpingLogic = () => {
-  const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
-  const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
   const [selectedPumpCounts, setSelectedPumpCounts] = useState<{
-    [key: number]: {[date: string]: number};
+    [key: number]: { [date: string]: number };
   }>({});
   const [timeValues, setTimeValues] = useState<{
-    [key: number]: {[key: number]: {from: string; to: string}};
+    [key: number]: { [key: number]: { from: string; to: string } };
   }>({});
 
-  // توابع و منطق مربوط به پمپاژ
   const handlePumpCountChange = (
     recordId: number,
     raneshId: number,
-    value: number,
+    value: number
   ) => {
     setSelectedPumpCounts((prev) => ({
       ...prev,
@@ -30,13 +26,10 @@ export const usePumpingLogic = () => {
       ...prev,
       [recordId]: {
         ...prev[recordId],
-        [raneshId]:
-          value > 0
-            ? {
-                from: prev[recordId]?.[raneshId]?.from || '08:00', // مقدار قبلی را نگه‌می‌دارد مگر اینکه خالی باشد
-                to: prev[recordId]?.[raneshId]?.to ?? '', // مقدار قبلی را نگه‌می‌دارد
-              }
-            : {from: '', to: ''}, // مقدار `from` و `to` را در صورت مقدار `0` شدن پاک می‌کند
+        [raneshId]: {
+          from: prev[recordId]?.[raneshId]?.from || "08:00",
+          to: prev[recordId]?.[raneshId]?.to || "",
+        },
       },
     }));
   };
@@ -44,8 +37,8 @@ export const usePumpingLogic = () => {
   const handleTimeChange = (
     recordId: number,
     raneshId: number,
-    field: 'from' | 'to',
-    value: string,
+    field: "from" | "to",
+    value: string
   ) => {
     setTimeValues((prev) => ({
       ...prev,
@@ -62,18 +55,18 @@ export const usePumpingLogic = () => {
   const updateTime = (
     idTarDor: number,
     idRanesh: number,
-    field: 'from' | 'to',
-    type: 'hour' | 'minute',
-    increment: number,
+    field: "from" | "to",
+    type: "hour" | "minute",
+    increment: number
   ) => {
     setTimeValues((prev) => {
-      const currentTime = prev[idTarDor]?.[idRanesh]?.[field] || '08:00';
-      const [hours, minutes] = currentTime.split(':').map(Number);
+      const currentTime = prev[idTarDor]?.[idRanesh]?.[field] || "08:00";
+      const [hours, minutes] = currentTime.split(":").map(Number);
 
       let newHours = hours;
       let newMinutes = minutes;
 
-      if (type === 'hour') {
+      if (type === "hour") {
         newHours = Math.min(Math.max(hours + increment, 0), 23);
       } else {
         newMinutes = Math.round((minutes + increment) / 5) * 5;
@@ -81,9 +74,9 @@ export const usePumpingLogic = () => {
         if (newMinutes < 0) newMinutes = 0;
       }
 
-      const formattedTime = `${newHours.toString().padStart(2, '0')}:${newMinutes
+      const formattedTime = `${newHours.toString().padStart(2, "0")}:${newMinutes
         .toString()
-        .padStart(2, '0')}`;
+        .padStart(2, "0")}`;
 
       return {
         ...prev,
@@ -99,8 +92,6 @@ export const usePumpingLogic = () => {
   };
 
   return {
-    khatRaneshList,
-    predictedVolumes,
     selectedPumpCounts,
     timeValues,
     handlePumpCountChange,

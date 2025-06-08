@@ -1,51 +1,103 @@
 /* eslint-disable @next/next/no-img-element */
-// app/login/page.tsx
-'use client';
-import React, {useState, useEffect} from 'react';
-import {useRouter} from 'next/navigation';
+"use client";
+import * as React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface LoginSuccessResponse {
+  message: string;
+  token?: string;
+}
+
+interface RegisterRedirectResponse {
+  first_name: string;
+  last_name: string;
+  mobile: string;
+  id: string;
+  enable: boolean;
+}
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       const response = await fetch(
-        `/api/login?username=${username}&password=${password}`,
+        `/api/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+          },
+        }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Invalid credentials');
+        throw new Error(
+          errorData.error || errorData.message || "Invalid credentials"
+        );
       }
 
       const data = await response.json();
-      console.log('Login Response Data:', data);
 
-      // بررسی موفقیت ورود
-      if (data.message === 'Login successful') {
-        // هدایت به صفحه اصلی (Home)
-        router.push('/');
-      } else {
-        // هدایت به ثبت‌نام (در صورت نیاز)
+      if (isRegisterRedirectResponse(data)) {
         router.push(
-          `/register?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}&mobile=${encodeURIComponent(data.mobile)}&id=${encodeURIComponent(data.id)}&enable=true`,
+          `/register?first_name=${encodeURIComponent(data.first_name)}&last_name=${encodeURIComponent(data.last_name)}&mobile=${encodeURIComponent(data.mobile)}&id=${encodeURIComponent(data.id)}&enable=${data.enable}`
         );
+      } else if (isLoginSuccessResponse(data)) {
+        window.location.href = "/";
+      } else {
+        throw new Error("Unexpected response format");
       }
     } catch (error) {
+      console.error("Login error:", error);
       if (error instanceof Error) {
-        setError(error.message);
+        setError(
+          error.message === "Unexpected response format"
+            ? "خطایی در پردازش پاسخ سرور رخ داد"
+            : error.message === "Invalid credentials"
+              ? "نام کاربری یا رمز عبور نادرست است"
+              : error.message
+        );
       } else {
-        setError('An unknown error occurred');
+        setError("خطای ناشناخته ای رخ داده است");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // توابع type guard با انواع مشخص
+  function isLoginSuccessResponse(data: unknown): data is LoginSuccessResponse {
+    return typeof data === "object" && data !== null && "message" in data;
+  }
+
+  function isRegisterRedirectResponse(
+    data: unknown
+  ): data is RegisterRedirectResponse {
+    const potentialResponse = data as RegisterRedirectResponse;
+    return (
+      typeof data === "object" &&
+      data !== null &&
+      "first_name" in potentialResponse &&
+      "last_name" in potentialResponse &&
+      "mobile" in potentialResponse &&
+      "id" in potentialResponse &&
+      "enable" in potentialResponse
+    );
+  }
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -56,19 +108,19 @@ export default function LoginPage() {
           alt="Login Icon"
         />
 
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
           وارد حساب کاربری خود شوید
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" onSubmit={handleLogin}>
           <div>
             <label
               htmlFor="username"
-              className="block text-sm/6 font-medium text-gray-900"
+              className="block text-sm font-medium text-gray-900"
             >
-              کلمه عبور
+              نام کاربری
             </label>
             <div className="mt-2">
               <input
@@ -77,9 +129,11 @@ export default function LoginPage() {
                 id="username"
                 placeholder="نام کاربری خود را وارد کنید"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername((e.target as HTMLInputElement).value);
+                }}
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -88,57 +142,64 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password"
-                className="block text-sm/6 font-medium text-gray-900"
+                className="block text-sm font-medium text-gray-900"
               >
                 رمز عبور
               </label>
             </div>
-            <div className="mt-2 relative">
+            <div className="relative mt-2">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const target = e.target as HTMLInputElement;
+                  setPassword(target.value);
+                }}
                 autoComplete="current-password"
                 required
                 placeholder="رمز عبور خود را وارد کنید"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onKeyDown={(event) => {
                   if (!/^[a-zA-Z0-9]*$/.test(event.key)) {
                     event.preventDefault();
                     setShowTooltip(true);
-                    setTimeout(() => setShowTooltip(false), 3000); // تولتیپ پس از 2 ثانیه مخفی می‌شود
+                    setTimeout(() => setShowTooltip(false), 3000);
                   }
                 }}
               />
               {showTooltip && (
-                <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded shadow">
+                <div className="absolute left-0 top-full mt-1 rounded bg-red-500 px-2 py-1 text-sm text-white shadow">
                   صفحه کلید انگلیسی شود و کاراکتر فاصله وارد نکنید
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 left-0 pr-3 flex items-center text-sm text-gray-500 hover:text-indigo-600"
+                className="absolute inset-y-0 left-0 flex items-center pl-3 text-sm leading-5"
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
           </div>
 
           <div>
             <button
-              onClick={handleLogin}
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={isLoading}
+              className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+                isLoading ? "cursor-not-allowed opacity-50" : ""
+              }`}
             >
-              ادامه
+              {isLoading ? "در حال ورود..." : "ورود"}
             </button>
           </div>
           {error && (
-            <p className="mt-4 text-red-500 text-sm">
-              اطلاعات وارد شده نامعتبر است
+            <p className="mt-2 text-center text-sm text-red-600">
+              {error === "Invalid credentials"
+                ? "نام کاربری یا رمز عبور نادرست است"
+                : error}
             </p>
           )}
         </form>

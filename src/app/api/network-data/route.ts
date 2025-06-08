@@ -1,122 +1,155 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+
+interface ShabakeRecord {
+  fidnet: number;
+  trikhshorooe: Date;
+  trikhpayan: Date;
+  fidsal: number;
+  fiddore: number;
+}
+
+interface SaleZeraee {
+  salezeraee: string;
+}
+
+interface DoreKesht {
+  dore: string;
+}
+
+interface IdShDo {
+  idshdo: number;
+}
 
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
-    const selectedNetworkId = Number(url.searchParams.get('networkId'));
+    const selectedNetworkId = Number(url.searchParams.get("networkId"));
     const currentDate = new Date();
 
     if (!selectedNetworkId) {
-      return NextResponse.json({error: 'شبکه انتخاب نشده است.'}, {status: 400});
+      return NextResponse.json(
+        { error: "شبکه انتخاب نشده است." },
+        { status: 400 }
+      );
     }
 
-    // دریافت رکوردهای مربوط به شبکه مورد نظر
-    const shabakeRecords = await sqlServerClient.shabakeDoreKesht.findMany({
-      where: {
-        FIdNet: selectedNetworkId,
-      },
-      orderBy: {TrikhShorooe: 'asc'},
+    const shabakeRecords = await prisma.shabakedorekesht.findMany({
+      where: { fidnet: selectedNetworkId },
+      orderBy: { trikhshorooe: "asc" },
     });
 
     if (!shabakeRecords.length) {
       return NextResponse.json(
-        {error: 'تقویم آبیاری در سامانه بارگذاری نشده است.'},
-        {status: 404},
+        { error: "تقویم آبیاری در سامانه بارگذاری نشده است." },
+        { status: 404 }
       );
     }
 
     let finalFIdSal: number | number[] = [];
     let finalFIdDore: number | number[] = [];
-    let matchedRecord: any = null;
+    let matchedRecord: ShabakeRecord | null = null;
 
-    // بررسی شرط 2
-    matchedRecord = shabakeRecords.find((record) => {
-      const startDate = new Date(record.TrikhShorooe);
-      const endDate = new Date(record.TrikhPayan);
+    matchedRecord =
+      shabakeRecords.find(
+        (record: {
+          trikhshorooe: string | number | Date;
+          trikhpayan: string | number | Date;
+        }) => {
+          const startDate = new Date(record.trikhshorooe);
+          const endDate = new Date(record.trikhpayan);
 
-      return (
-        currentDate >= new Date(startDate.setDate(startDate.getDate() + 10)) &&
-        currentDate <= new Date(endDate.setDate(endDate.getDate() - 10))
-      );
-    });
+          const adjustedStart = new Date(startDate);
+          adjustedStart.setDate(startDate.getDate() + 10);
+
+          const adjustedEnd = new Date(endDate);
+          adjustedEnd.setDate(endDate.getDate() - 10);
+
+          return currentDate >= adjustedStart && currentDate <= adjustedEnd;
+        }
+      ) || null;
 
     if (matchedRecord) {
-      finalFIdSal = matchedRecord.FIdSal;
-      finalFIdDore = matchedRecord.FIdDore;
+      finalFIdSal = matchedRecord.fidsal;
+      finalFIdDore = matchedRecord.fiddore;
     } else {
-      // بررسی شرط 3
-      matchedRecord = shabakeRecords.find((record) => {
-        const startDate = new Date(record.TrikhShorooe);
-        return (
-          currentDate >=
-            new Date(startDate.setDate(startDate.getDate() - 10)) &&
-          currentDate <= new Date(startDate.setDate(startDate.getDate() + 20))
-        );
-      });
+      matchedRecord =
+        shabakeRecords.find(
+          (record: { trikhshorooe: string | number | Date }) => {
+            const startDate = new Date(record.trikhshorooe);
+            const windowStart = new Date(startDate);
+            const windowEnd = new Date(startDate);
+
+            windowStart.setDate(startDate.getDate() - 10);
+            windowEnd.setDate(startDate.getDate() + 20);
+
+            return currentDate >= windowStart && currentDate <= windowEnd;
+          }
+        ) || null;
 
       if (matchedRecord) {
         const prevRecord = shabakeRecords.find(
-          (record) =>
-            new Date(record.TrikhPayan).getTime() ===
-            new Date(matchedRecord.TrikhShorooe).getTime() - 86400000,
+          (record: { trikhpayan: string | number | Date }) => {
+            const recordEnd = new Date(record.trikhpayan);
+            const matchedStart = new Date(matchedRecord!.trikhshorooe);
+            return recordEnd.getTime() === matchedStart.getTime() - 86400000;
+          }
         );
 
         if (prevRecord) {
-          finalFIdDore = [prevRecord.FIdDore, matchedRecord.FIdDore];
-
+          finalFIdDore = [prevRecord.fiddore, matchedRecord.fiddore];
           finalFIdSal =
-            prevRecord.FIdSal === matchedRecord.FIdSal
-              ? prevRecord.FIdSal
-              : [prevRecord.FIdSal, matchedRecord.FIdSal];
+            prevRecord.fidsal === matchedRecord.fidsal
+              ? prevRecord.fidsal
+              : [prevRecord.fidsal, matchedRecord.fidsal];
         } else {
-          finalFIdDore = matchedRecord.FIdDore;
-          finalFIdSal = matchedRecord.FIdSal;
+          finalFIdDore = matchedRecord.fiddore;
+          finalFIdSal = matchedRecord.fidsal;
         }
       } else {
         return NextResponse.json(
-          {error: 'تقویم آبیاری در سامانه بارگذاری نشده است.'},
-          {status: 404},
+          { error: "تقویم آبیاری در سامانه بارگذاری نشده است." },
+          { status: 404 }
         );
       }
     }
 
-    // دریافت SaleZeraee و Dore
-    const saleZeraee = await sqlServerClient.saleZeraee.findMany({
+    const saleZeraee = await prisma.salezeraee.findMany({
       where: {
-        IdSal: {in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal]},
+        idsal: { in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal] },
       },
-      select: {SaleZeraee: true},
+      select: { salezeraee: true },
     });
 
-    const doreKesht = await sqlServerClient.doreKesht.findMany({
+    const doreKesht = await prisma.dorekesht.findMany({
       where: {
-        IdDore: {
+        iddore: {
           in: Array.isArray(finalFIdDore) ? finalFIdDore : [finalFIdDore],
         },
       },
-      select: {Dore: true},
+      select: { dore: true },
     });
 
-    // دریافت IdShDo از ShabakeDoreKesht
-    const idShDoRecords = await sqlServerClient.shabakeDoreKesht.findMany({
+    const idShDoRecords = await prisma.shabakedorekesht.findMany({
       where: {
-        FIdNet: selectedNetworkId,
-        FIdSal: {in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal]},
-        FIdDore: {
+        fidnet: selectedNetworkId,
+        fidsal: {
+          in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal],
+        },
+        fiddore: {
           in: Array.isArray(finalFIdDore) ? finalFIdDore : [finalFIdDore],
         },
       },
-      select: {IdShDo: true},
+      select: { idshdo: true },
     });
 
     return NextResponse.json({
-      SaleZeraee: saleZeraee.map((s) => s.SaleZeraee),
-      Dore: doreKesht.map((d) => d.Dore),
-      IdShDo: idShDoRecords.map((i) => i.IdShDo), // اضافه کردن IdShDo به خروجی
+      SaleZeraee: saleZeraee.map((s: SaleZeraee) => s.salezeraee),
+      Dore: doreKesht.map((d: DoreKesht) => d.dore),
+      IdShDo: idShDoRecords.map((i: IdShDo) => i.idshdo),
     });
   } catch (error) {
-    console.error('خطا در دریافت داده‌های شبکه:', error);
-    return NextResponse.json({error: 'خطای داخلی سرور'}, {status: 500});
+    console.error("خطا در دریافت داده‌های شبکه:", error);
+    return NextResponse.json({ error: "خطای داخلی سرور" }, { status: 500 });
   }
 }

@@ -1,8 +1,8 @@
-import {NextResponse} from 'next/server';
-import type {NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const {pathname} = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   // اجازه دسترسی به /register فقط در صورت وجود پارامترهای مورد نظر
   if (pathname.startsWith('/register')) {
@@ -11,7 +11,6 @@ export function middleware(request: NextRequest) {
     const mobile = request.nextUrl.searchParams.get('mobile');
 
     if (!firstName || !lastName || !mobile) {
-      console.log('/login2');
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

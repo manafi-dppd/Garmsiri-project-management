@@ -1,90 +1,131 @@
-import {useEffect} from 'react';
-import AdditionalFormFields from './AdditionalFormFields';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from "react-datepicker";
+import { faIR as fa } from "date-fns/locale";
+import { format, parse } from "date-fns";
+import { useEffect, useState } from "react";
+import AdditionalFormFields from "./AdditionalFormFields";
+
+registerLocale("fa", fa);
 
 interface FormSectionProps {
-  showAdditionalInputs: boolean;
-  formData: any;
+  formData: {
+    attachment: File | null;
+    letter_date: string;
+    letter_approver: string;
+    letter_number: string;
+    letter_issuer: string;
+    introductionLetter: string;
+    first_name: string;
+    last_name: string;
+    mobile: string;
+    endDate?: string;
+    gender: string;
+    showAdditionalInputs: boolean;
+  };
   handleChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   toPersianDate: (date: string | undefined) => string;
   today: string;
   selectedPositions: number[];
-  positions: {id: number; title_fa: string}[];
+  positions: { id: number; title_fa: string }[];
   handlePositionChange: (positions: number[]) => void;
   requiresLicense: boolean;
-  hasLicenseRequirement: boolean;
   openAccessLevelModal: () => void;
   resetEditedAccessLevel: () => void;
   onFormValidation: (isValid: boolean) => void;
-  onPositionChange: (selectedIds: number[]) => void;
-  // isAccessLevelButtonDisabled: boolean;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({
-  showAdditionalInputs,
   formData,
   positions,
   selectedPositions,
   requiresLicense,
-  hasLicenseRequirement,
-  // isAccessLevelButtonDisabled,
   handleChange,
   handleSubmit,
   handlePositionChange,
   openAccessLevelModal,
-  toPersianDate,
   today,
   resetEditedAccessLevel,
   onFormValidation,
-  onPositionChange,
 }) => {
+  const [displayDate, setDisplayDate] = useState<string>("-");
+  const [endDate, setEndDate] = useState<Date | null>(
+    formData.endDate ? parse(formData.endDate, "yyyy-MM-dd", new Date()) : null
+  );
   useEffect(() => {
-    // اعتبارسنجی فرم
     const isValid =
-      formData.lastName.trim() !== '' &&
-      formData.mobile.trim() !== '' &&
+      formData.last_name.trim() !== "" &&
+      formData.mobile.trim() !== "" &&
       selectedPositions.length > 0;
     onFormValidation(isValid);
-  }, [formData.lastName, formData.mobile, selectedPositions, onFormValidation]);
+  }, [
+    formData.last_name,
+    formData.mobile,
+    selectedPositions,
+    onFormValidation,
+  ]);
   // Check if at least one non-"ادمین وبسایت" position is selected
-  const isAccessLevelButtonDisabled = !selectedPositions.some((positionId) => {
-    const position = positions.find((pos) => pos.id === positionId);
-    return position && position.title_fa !== 'ادمین وبسایت';
+  const isAccessLevelButtonDisabled = !selectedPositions.some((position_id) => {
+    const position = positions.find((pos) => pos.id === position_id);
+    return position && position.title_fa !== "ادمین وبسایت";
   });
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(e.target.selectedOptions, (option) =>
-      Number(option.value),
-    );
-    onPositionChange(selected);
-    resetEditedAccessLevel(); // ریست کردن دسترسی‌ها
-    handlePositionChange(selected);
-  };
+  const { showAdditionalInputs } = formData;
 
+  const displayPersianDate = (date: string | undefined): string => {
+    if (!date) return "-";
+    try {
+      const dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) return "-";
+
+      return new Intl.DateTimeFormat("fa-IR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        calendar: "persian",
+      }).format(dateObj);
+    } catch {
+      return "-";
+    }
+  };
+  const handleDateChange = (date: Date | null) => {
+    setEndDate(date);
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+
+    setDisplayDate(displayPersianDate(formattedDate)); // ذخیره تاریخ نمایشی
+
+    handleChange({
+      target: {
+        name: "endDate",
+        value: formattedDate,
+      },
+    } as React.ChangeEvent<HTMLInputElement>);
+  };
   return (
-    <div className="modal-body bg-gray-50 p-2 rounded-md">
+    <div className="modal-body rounded-md bg-gray-50 p-2">
       <span>تکمیل موارد ستاره‌دار الزامیست</span>
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div
-            className={`col-span-1 ${showAdditionalInputs ? 'md:col-span-1' : 'md:col-span-2'}`}
+            className={`col-span-1 ${showAdditionalInputs ? "md:col-span-1" : "md:col-span-2"}`}
           >
-            <form onSubmit={handleSubmit} className="text-right space-y-4">
-              <div className="flex flex-col md:flex-row justify-between gap-4 md:space-x-4 overflow-auto md:overflow-visible max-h-screen md:max-h-none">
-                <div className="bg-white rounded-lg shadow-lg p-2 w-full">
+            <form onSubmit={handleSubmit} className="space-y-4 text-right">
+              <div className="flex max-h-screen flex-col justify-between gap-4 overflow-auto md:max-h-none md:flex-row md:space-x-4 md:overflow-visible">
+                <div className="w-full rounded-lg bg-white p-2 shadow-lg">
                   <div>
                     <label
-                      htmlFor="firstName"
+                      htmlFor="first_name"
                       className="block text-sm font-medium text-gray-700"
                     >
                       نام
                     </label>
                     <input
                       type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
+                      id="first_name"
+                      name="first_name"
+                      value={formData.first_name}
                       onChange={handleChange}
                       onKeyDown={(event) => {
                         // فقط اجازه ورود اعداد را بدهید
@@ -93,22 +134,22 @@ const FormSection: React.FC<FormSectionProps> = ({
                         }
                       }}
                       required
-                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 text-right shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     />
                   </div>
 
                   <div>
                     <label
-                      htmlFor="lastName"
+                      htmlFor="last_name"
                       className="block text-sm font-medium text-gray-700"
                     >
                       *نام خانوادگی
                     </label>
                     <input
                       type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
+                      id="last_name"
+                      name="last_name"
+                      value={formData.last_name}
                       onChange={handleChange}
                       onKeyDown={(event) => {
                         // فقط اجازه ورود اعداد را بدهید
@@ -117,7 +158,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                         }
                       }}
                       required
-                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 text-right shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     />
                   </div>
 
@@ -138,7 +179,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                         // فقط اجازه ورود اعداد را بدهید
                         if (
                           !/[0-9]/.test(event.key) &&
-                          event.key !== 'Backspace'
+                          event.key !== "Backspace"
                         ) {
                           event.preventDefault();
                         }
@@ -147,7 +188,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                       pattern="09[0-9]{9}"
                       maxLength={11}
                       placeholder="09XXXXXXXXX"
-                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 text-right shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     />
                   </div>
 
@@ -156,21 +197,21 @@ const FormSection: React.FC<FormSectionProps> = ({
                       htmlFor="endDate"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      تاریخ پایان عضویت: {toPersianDate(formData.endDate) || ''}
+                      تاریخ پایان عضویت: {displayDate}
                     </label>
-                    <input
-                      type="date"
-                      id="endDate"
-                      name="endDate"
-                      value={formData.endDate || ''}
-                      onChange={handleChange}
-                      min={today}
-                      className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+                    <DatePicker
+                      selected={endDate}
+                      onChange={handleDateChange}
+                      minDate={new Date(today)}
+                      locale="fa"
+                      dateFormat="yyyy/MM/dd"
+                      className="mt-1 block w-full rounded-md border-2 border-gray-300 text-right shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      placeholderText="انتخاب تاریخ"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
                       جنسیت:
                     </label>
                     <div className="flex items-center space-x-4">
@@ -180,10 +221,10 @@ const FormSection: React.FC<FormSectionProps> = ({
                           name="gender"
                           value="مرد"
                           type="radio"
-                          checked={formData.gender === 'مرد'}
+                          checked={formData.gender === "مرد"}
                           onChange={handleChange}
                           required
-                          className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label
                           htmlFor="male"
@@ -198,10 +239,10 @@ const FormSection: React.FC<FormSectionProps> = ({
                           name="gender"
                           value="زن"
                           type="radio"
-                          checked={formData.gender === 'زن'}
+                          checked={formData.gender === "زن"}
                           onChange={handleChange}
                           required
-                          className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label
                           htmlFor="female"
@@ -212,7 +253,7 @@ const FormSection: React.FC<FormSectionProps> = ({
                       </div>
                     </div>
                   </div>
-                  <div className={`p-2 bg-white rounded-lg shadow-lg`}>
+                  <div className={`rounded-lg bg-white p-2 shadow-lg`}>
                     <div className="space-y-1">
                       <div className="invitation-modal">
                         <label
@@ -228,12 +269,12 @@ const FormSection: React.FC<FormSectionProps> = ({
                           onChange={(e) => {
                             const selected = Array.from(
                               e.target.selectedOptions,
-                              (option) => Number(option.value),
+                              (option) => Number(option.value)
                             );
                             handlePositionChange(selected);
                             resetEditedAccessLevel();
                           }}
-                          className="block w-full rounded-md shadow-sm border-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                          className="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
                           {positions.length > 0 ? (
                             positions.map((position) => (
@@ -251,11 +292,11 @@ const FormSection: React.FC<FormSectionProps> = ({
                           type="button"
                           onClick={openAccessLevelModal}
                           disabled={isAccessLevelButtonDisabled}
-                          className={`w-full py-2 px-4 ${
+                          className={`w-full px-4 py-2 ${
                             isAccessLevelButtonDisabled
-                              ? 'bg-gray-400 cursor-not-allowed'
-                              : 'bg-indigo-600 hover:bg-indigo-700'
-                          } text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                              ? "cursor-not-allowed bg-gray-400"
+                              : "bg-indigo-600 hover:bg-indigo-700"
+                          } rounded-md text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
                         >
                           ویرایش سطح دسترسی
                         </button>
@@ -265,10 +306,17 @@ const FormSection: React.FC<FormSectionProps> = ({
                 </div>
 
                 {requiresLicense && (
-                  <div className="w-full md:w-[80%] mt-4 md:mt-0">
+                  <div className="mt-4 w-full md:mt-0 md:w-[80%]">
                     <AdditionalFormFields
                       onChange={handleChange}
-                      formData={formData}
+                      formData={{
+                        introductionLetter: formData.introductionLetter || "",
+                        letterIssuer: formData.letter_issuer,
+                        letterNumber: formData.letter_number,
+                        letterDate: formData.letter_date,
+                        letterApprover: formData.letter_approver,
+                        attachment: formData.attachment,
+                      }}
                     />
                   </div>
                 )}

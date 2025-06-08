@@ -1,85 +1,93 @@
-'use client';
+"use client";
 
-import React, {useState, useEffect} from 'react';
-import NavMenu from '../NavMenu';
-import Link from 'next/link';
-import router from 'next/router';
+import * as React from "react";
+import { useState, useEffect } from "react";
+import NavMenu from "../NavMenu";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // اضافه کردن این import
 
-interface Menu {
+interface menu {
   id: number;
   title: string;
   title_fa: string;
   active: boolean;
-  parentId: number | null;
+  parent_id: number | null;
   slug: string;
   parentSlug: string | null;
 }
 
 interface UserInfo {
-  first_name: string;
-  last_name: string;
+  firstname: string;
+  lastname: string;
   positions: string[];
 }
 
 export default function Header() {
-  const [menus, setMenus] = useState<Menu[]>([]);
+  const [menus, setMenus] = useState<menu[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const pathname = usePathname(); // دریافت مسیر فعلی
+
+  // لیست مسیرهایی که نباید NavMenu نمایش داده شود
+  const excludedPaths = ["/login", "/register", "/update-credentials"];
+
+  // بررسی آیا مسیر فعلی در لیست مسیرهای مستثنی شده است
+  const shouldShowNavMenu = pathname
+    ? !excludedPaths.some((path) => pathname.startsWith(path))
+    : false;
 
   useEffect(() => {
     const fetchMenus = async () => {
       try {
-        const response = await fetch('/api/menus', {
-          method: 'GET',
-          credentials: 'include',
+        const response = await fetch("/api/menus", {
+          method: "GET",
+          credentials: "include",
         });
-
         if (!response.ok) {
           if (response.status === 401) {
-            router.push('/login');
+            window.location.href = "/login"; // تغییر به window.location برای خارج از کامپوننت
           }
           return;
         }
-
-        const data: Menu[] = await response.json();
+        const data: menu[] = await response.json();
         setMenus(data);
-      } catch (error) {
-        // console.error('Error fetching menus:', error);
-      }
+      } catch {}
     };
 
     const fetchUserInfo = async () => {
       try {
-        const res = await fetch('/api/get-user-info', {credentials: 'include'});
-        if (!res.ok) throw new Error('Failed to fetch user info');
+        const res = await fetch("/api/get-user-info", {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch user info");
         const data = await res.json();
         setUserInfo(data);
-      } catch (error) {
-        // console.error('Error fetching user info:', error);
-      }
+      } catch {}
     };
 
-    fetchUserInfo();
+    // فقط اگر نیاز به نمایش NavMenu باشد، منوها را فراخوانی کنیم
+    if (shouldShowNavMenu) {
+      fetchMenus();
+    }
 
-    fetchMenus();
-  }, []);
+    fetchUserInfo();
+  }, [shouldShowNavMenu]);
+
   return (
     <>
-      <header className="p-4 bg-green-800 text-white text-center">
-        <div className="container mx-auto flex justify-between items-center">
+      <header className="bg-green-800 p-4 text-center text-white">
+        <div className="container mx-auto flex items-center justify-between">
           <Link href="/" passHref>
-            <div style={{fontFamily: 'b titr', cursor: 'pointer'}}>
-              <h1 className="text-lg border-b">سامانه جامع مدیریت یکپارچه</h1>
+            <div style={{ fontFamily: "b titr", cursor: "pointer" }}>
+              <h1 className="border-b text-lg">سامانه جامع مدیریت یکپارچه</h1>
               <h4 className="text-2xl">طــرح گرمسـیـری</h4>
             </div>
           </Link>
           <div>
             {userInfo && (
               <div className="text-right text-sm text-white">
-                {/* متن بالایی bold و underline */}
                 <p className="font-bold underline">
-                  {`${userInfo.first_name} ${userInfo.last_name}`}
+                  {`${userInfo.firstname} ${userInfo.lastname}`}
                 </p>
-                {/* متن‌های پایین نازک و فاقد underline */}
                 {userInfo.positions.map((pos, index) => (
                   <p key={index} className="font-light no-underline">
                     {pos}
@@ -90,7 +98,7 @@ export default function Header() {
           </div>
         </div>
       </header>
-      <NavMenu menus={menus} />
+      {shouldShowNavMenu && <NavMenu menus={menus} />}
     </>
   );
 }

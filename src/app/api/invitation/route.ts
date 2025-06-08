@@ -1,225 +1,120 @@
-import {NextResponse} from 'next/server';
-import {sqliteClient, sqlServerClient} from '@prisma/db';
-import bcrypt from 'bcryptjs';
-import {v4 as uuidv4} from 'uuid';
-import {nanoid} from 'nanoid';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { nanoid } from "nanoid";
 
-const prisma = sqliteClient;
-
-// تابع صحت‌سنجی اطلاعات
-const validateInvitationServer = (data: {
-  firstName: string;
-  lastName: string;
+interface InvitationRequest {
+  first_name?: string;
+  last_name: string;
   mobile: string;
-  endDate: string;
+  end_date?: string;
+  gender?: string;
+  letter_issuer?: string;
+  letter_number?: string;
+  letter_date?: string;
+  letter_approver?: string;
   selectedPositions: number[];
-}): string[] => {
-  const errors: string[] = [];
+  editedAccessLevel?: { menu_id: number; has_access: boolean }[];
+}
 
-  // Regex to allow only Persian characters and spaces
-  const persianRegex = /^[\u0600-\u06FF\s]{0,20}$/;
+interface Menu {
+  id: number;
+}
 
-  // Validate firstName (optional)
-  if (
-    data.firstName &&
-    (!persianRegex.test(data.firstName) || data.firstName.length > 20)
-  ) {
-    errors.push(
-      'نام باید حداکثر 20 کاراکتر و تنها شامل حروف فارسی یا فاصله باشد.',
-    );
-  }
-
-  // Validate lastName (mandatory)
-  if (
-    !data.lastName ||
-    !persianRegex.test(data.lastName) ||
-    data.lastName.length > 20
-  ) {
-    errors.push(
-      'نام خانوادگی الزامی است و باید حداکثر 20 کاراکتر و تنها شامل حروف فارسی یا فاصله باشد.',
-    );
-  }
-
-  const phoneRegex = /^09\d{9}$/;
-  if (!phoneRegex.test(data.mobile)) {
-    errors.push('شماره تلفن وارد شده معتبر نیست.');
-  }
-
-  const today = new Date().toISOString().split('T')[0];
-  if (new Date(data.endDate) < new Date(today)) {
-    errors.push('تاریخ پایان عضویت نباید قبل از تاریخ امروز باشد.');
-  }
-
-  if (!data.selectedPositions || data.selectedPositions.length === 0) {
-    errors.push('انتخاب حداقل یک سمت الزامی است.');
-  }
-
-  return errors;
-};
+interface AccessLevel {
+  menu_id: number;
+  has_access: boolean;
+}
 
 export async function POST(req: Request) {
   try {
-    const {
-      firstName,
-      lastName,
-      mobile,
-      endDate,
-      gender,
-      letterIssuer,
-      letterNumber,
-      letterDate,
-      letterApprover,
-      selectedPositions,
-      editedAccessLevel,
-    } = await req.json();
+    const body = (await req.json()) as InvitationRequest;
+    const { mobile, selectedPositions, editedAccessLevel, ...rest } = body;
 
-    // بررسی فیلدهای ضروری
-    if (!lastName || !mobile || !selectedPositions) {
+    const existing = await prisma.invitation.findUnique({ where: { mobile } });
+    if (existing) {
       return NextResponse.json(
-        {message: 'تمام فیلدهای ضروری باید پر شوند.'},
-        {status: 400},
+        { message: "این کاربر قبلاً دعوت شده است." },
+        { status: 409 }
       );
     }
 
-    // بررسی تکراری بودن شماره موبایل
-    const existingInvitation = await prisma.invitation.findUnique({
-      where: {mobile},
-    });
-
-    if (existingInvitation) {
-      return NextResponse.json(
-        {message: 'این کاربر قبلاً دعوت شده است.'},
-        {status: 409}, // وضعیت 409 برای تضاد داده‌ها
-      );
-    }
-
-    // تولید username و password
     const username = nanoid(6);
     const rawPassword = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
-    console.log('username: ', username);
-    console.log('Password: ', rawPassword);
-
-    // ذخیره دعوت‌نامه
+    console.log("username: ", username);
+    console.log("Password: ", rawPassword);
     const newInvitation = await prisma.invitation.create({
       data: {
-        firstName,
-        lastName,
+        ...rest,
         mobile,
         username,
         password: hashedPassword,
-        endDate: endDate ? new Date(endDate) : null,
-        gender,
-        letterIssuer,
-        letterNumber,
-        letterDate,
-        letterApprover,
-        isRegistered: false,
+        end_date: rest.end_date ? new Date(rest.end_date) : null,
+        is_registered: false,
       },
     });
 
-    // ذخیره دسترسی‌ها
-    if (editedAccessLevel && Array.isArray(editedAccessLevel)) {
-      // حذف عضو اول آرایه
-      const filteredAccessLevel = editedAccessLevel.slice(1);
+    if (editedAccessLevel) {
+      const allMenus = await prisma.menu.findMany({ select: { id: true } });
+      const menuIds = allMenus.map((m: Menu) => m.id);
 
-      // ذخیره داده‌ها در جدول
-      // دریافت تمام رکوردهای جدول Menu
-      const allMenuIds = await prisma.menu.findMany({
-        select: {id: true},
-      });
+      const invalidMenuIds = editedAccessLevel
+        .map((a) => a.menu_id)
+        .filter((id) => !menuIds.includes(id));
 
-      // استخراج فقط idها از رکوردهای Menu
-      const menuIds = allMenuIds.map((menu) => menu.id);
-
-      // پیدا کردن idهای گم‌شده
-      const existingMenuIds = filteredAccessLevel.map(
-        (access) => access.menuId,
-      );
-      const missingMenuIds = menuIds.filter(
-        (menuId) => !existingMenuIds.includes(menuId),
-      );
-
-      // اضافه کردن موارد گم‌شده به filteredAccessLevel با مقدار hasAccess برابر با true
-      const completedAccessLevel = [
-        ...filteredAccessLevel,
-        ...missingMenuIds.map((menuId) => ({
-          menuId,
-          hasAccess: true, // مقدار پیش‌فرض
-        })),
-      ];
-
-      // ذخیره داده‌ها در جدول InvitationAccess
-      if (completedAccessLevel.length > 0) {
-        await prisma.invitationAccess.createMany({
-          data: completedAccessLevel.map((access) => ({
-            invitationId: newInvitation.id,
-            menuId: access.menuId,
-            hasAccess: access.hasAccess,
-          })),
-        });
+      if (invalidMenuIds.length > 0) {
+        throw new Error(`منوهای نامعتبر: ${invalidMenuIds.join(", ")}`);
       }
+
+      await prisma.invitation_access.createMany({
+        data: editedAccessLevel.map((a) => ({
+          invitation_id: newInvitation.id,
+          menu_id: a.menu_id,
+          has_access: a.has_access,
+        })),
+        skipDuplicates: true,
+      });
     } else {
-      // در صورت تهی بودن editedAccessLevel، انتقال داده‌ها از AccessLevel
-      const relatedAccessLevels = await prisma.accessLevel.findMany({
-        where: {
-          positionId: {
-            in: selectedPositions,
-          },
-        },
-        select: {
-          menuId: true,
-          hasAccess: true,
-        },
+      const defaults = await prisma.access_level.findMany({
+        where: { position_id: { in: selectedPositions } },
+        select: { menu_id: true, has_access: true },
       });
 
-      if (relatedAccessLevels.length > 0) {
-        await prisma.invitationAccess.createMany({
-          data: relatedAccessLevels.map((access) => ({
-            invitationId: newInvitation.id,
-            menuId: access.menuId,
-            hasAccess: access.hasAccess,
+      if (defaults.length > 0) {
+        await prisma.invitation_access.createMany({
+          data: defaults.map((a: AccessLevel) => ({
+            invitation_id: newInvitation.id,
+            menu_id: a.menu_id,
+            has_access: a.has_access,
           })),
         });
       }
     }
 
-    // ذخیره سمت‌ها در جدول PositionOnInvitation
-    if (selectedPositions && selectedPositions.length > 0) {
-      await prisma.positionOnInvitation.createMany({
-        data: selectedPositions.map((positionId: any) => ({
-          invitationId: newInvitation.id,
-          positionId,
-        })),
-      });
-    }
+    await prisma.position_on_invitation.createMany({
+      data: selectedPositions.map((position_id) => ({
+        invitation_id: newInvitation.id,
+        position_id,
+      })),
+    });
 
-    // بازگشت پاسخ موفقیت
     return NextResponse.json(
       {
-        message: 'دعوت‌نامه با موفقیت ثبت شد.',
+        message: "دعوت‌نامه با موفقیت ثبت شد.",
         invitation: newInvitation,
-        rawPassword, // ارسال رمز عبور تصادفی در پاسخ برای نمایش به کاربر (در صورت نیاز)
+        rawPassword,
       },
-      {status: 201},
+      { status: 201 }
     );
-  } catch (error: any) {
-    if (error.code === 'P2002') {
-      // خطای یکتا بودن شماره موبایل در Prisma
-      return NextResponse.json(
-        {
-          message: 'این کاربر قبلاً دعوت شده است.',
-        },
-        {status: 400},
-      );
-    }
-    console.error('Error creating invitation:', error);
+  } catch (error: unknown) {
+    console.error("خطا در ثبت دعوت‌نامه:", error);
     return NextResponse.json(
       {
-        message: 'خطایی در سرور رخ داده است.',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        message:
+          error instanceof Error ? error.message : "خطایی در سرور رخ داده است.",
       },
-      {status: 500},
+      { status: 500 }
     );
   }
 }
@@ -229,17 +124,20 @@ export async function GET() {
     const invitations = await prisma.invitation.findMany({
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
+        first_name: true,
+        last_name: true,
         mobile: true,
-        createdAt: true,
-        endDate: true,
-        isRegistered: true,
+        created_at: true,
+        end_date: true,
+        is_registered: true,
       },
     });
     return NextResponse.json(invitations);
   } catch (error) {
-    console.error('Error fetching invitations:', error);
-    return NextResponse.json({message: 'خطا در دریافت داده‌ها'}, {status: 500});
+    console.error("Error fetching invitations:", error);
+    return NextResponse.json(
+      { message: "خطا در دریافت داده‌ها" },
+      { status: 500 }
+    );
   }
 }

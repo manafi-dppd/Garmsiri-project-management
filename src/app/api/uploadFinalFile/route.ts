@@ -1,66 +1,74 @@
-import {NextResponse} from 'next/server';
+import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
-    // خواندن داده‌های فرم از درخواست
     const formData = await req.formData();
 
-    // دریافت فایل و سایر فیلدها
     const file = formData.get('file') as File | null;
     const idPumpStation = formData.get('idPumpStation') as string | null;
     const sal = formData.get('sal') as string | null;
     const mah = formData.get('mah') as string | null;
     const dahe = formData.get('dahe') as string | null;
-    // بررسی وجود تمام فیلدهای لازم
+
     if (!file || !idPumpStation || !sal || !mah || !dahe) {
-      return NextResponse.json(
-        {message: 'Missing required fields'},
-        {status: 400},
-      );
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
-    // ایجاد پوشه‌ی uploads در صورت عدم وجود
+    // Validate numeric fields
+    const pumpStationId = parseInt(idPumpStation);
+    const year = parseInt(sal);
+    const month = parseInt(mah);
+    const decade = parseInt(dahe);
+
+    if (isNaN(pumpStationId) || isNaN(year) || isNaN(month) || isNaN(decade)) {
+      return NextResponse.json({ message: 'Invalid numeric values' }, { status: 400 });
+    }
+
     const uploadDir = path.join(process.cwd(), 'public/uploads');
     if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, {recursive: true});
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    // ایجاد نام فایل و مسیر ذخیره‌سازی
-    const fileName = `${Date.now()}_${file.name}`;
-    const filePath = path.join(uploadDir, fileName);
+    // ساخت نام فایل ایمن
+    const originalName = file.name;
+    const fileExtension = originalName.split('.').pop();
+    const safeFilename = `${Date.now()}_${pumpStationId}_${year}_${month}_${decade}.${fileExtension}`;
+    const filePath = path.join(uploadDir, safeFilename);
     const now = new Date();
-    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
 
-    // تبدیل فایل به بافر و ذخیره‌سازی آن
     const fileBuffer = await file.arrayBuffer();
     fs.writeFileSync(filePath, Buffer.from(fileBuffer));
 
-    // بروزرسانی رکورد در جدول TaeedProgram
-    await prisma.taeedProgram.updateMany({
+    const result = await prisma.taeedprogram.updateMany({
       where: {
-        FIdPumpSta: parseInt(idPumpStation),
-        Sal: parseInt(sal),
-        Mah: parseInt(mah),
-        Dahe: parseInt(dahe),
+        fidpumpsta: pumpStationId,
+        sal: year,
+        mah: month,
+        dahe: decade
       },
       data: {
-        FileNameNahaee: fileName,
-        FilePathNahaee: `/uploads/${fileName}`,
-        TarikhFileNahee: localTime,
-      },
+        filenamenahaee: originalName, // ذخیره نام اصلی فایل
+        filepathnahaee: `/uploads/${safeFilename}`, // ذخیره مسیر فایل ایمن
+        tarikhfilenahee: now
+      }
     });
 
-    // پاسخ موفقیت‌آمیز
+    if (result.count === 0) {
+      return NextResponse.json({ message: 'No matching record found to update' }, { status: 404 });
+    }
+
     return NextResponse.json({
-      message: 'File uploaded and database updated successfully',
+      message: 'File uploaded and database updated successfully'
     });
   } catch (error) {
     console.error('Error uploading file:', error);
-    return NextResponse.json({message: 'Error uploading file'}, {status: 500});
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { message: 'Error uploading file', error: errorMessage },
+      { status: 500 }
+    );
   }
 }

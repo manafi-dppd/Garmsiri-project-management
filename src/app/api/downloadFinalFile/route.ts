@@ -1,69 +1,74 @@
-import {NextResponse} from 'next/server';
+// src/app/api/downloadFinalFile/route.ts
+import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import prisma from '@/lib/prisma';
 
 export async function GET(req: Request) {
-  const {searchParams} = new URL(req.url);
+  const { searchParams } = new URL(req.url);
   const idPumpStation = searchParams.get('idPumpStation');
   const sal = searchParams.get('sal');
   const mah = searchParams.get('mah');
   const dahe = searchParams.get('dahe');
+  const preview = searchParams.get('preview') === 'true';
 
   if (!idPumpStation || !sal || !mah || !dahe) {
-    return NextResponse.json(
-      {message: 'Missing required parameters'},
-      {status: 400},
-    );
+    return NextResponse.json({ message: 'پارامترهای ضروری وجود ندارد' }, { status: 400 });
   }
 
   try {
-    // واکشی اطلاعات فایل از جدول TaeedProgram
-    const record = await prisma.taeedProgram.findFirst({
+    const record = await prisma.taeedprogram.findFirst({
       where: {
-        FIdPumpSta: parseInt(idPumpStation),
-        Sal: parseInt(sal),
-        Mah: parseInt(mah),
-        Dahe: parseInt(dahe),
+        fidpumpsta: parseInt(idPumpStation),
+        sal: parseInt(sal),
+        mah: parseInt(mah),
+        dahe: parseInt(dahe)
       },
       select: {
-        FileNameNahaee: true,
-        FilePathNahaee: true,
-      },
+        filenamenahaee: true,
+        filepathnahaee: true
+      }
     });
 
-    if (!record || !record.FileNameNahaee || !record.FilePathNahaee) {
-      return NextResponse.json({message: 'File not found'}, {status: 404});
+    if (!record?.filenamenahaee || !record?.filepathnahaee) {
+      return NextResponse.json({ message: 'فایل یافت نشد' }, { status: 404 });
     }
 
-    // مسیر کامل فایل
-    const filePath = path.join(process.cwd(), 'public', record.FilePathNahaee);
+    const filePath = path.join(process.cwd(), 'public', record.filepathnahaee);
 
-    // بررسی وجود فایل
     if (!fs.existsSync(filePath)) {
+      return NextResponse.json({ message: 'فایل در سرور وجود ندارد' }, { status: 404 });
+    }
+
+    const fileBuffer = fs.readFileSync(filePath);
+    const fileExtension = path.extname(record.filenamenahaee).toLowerCase();
+
+    // برای حالت پیش نمایش
+    if (preview) {
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+      if (imageExtensions.includes(fileExtension)) {
+        return new NextResponse(fileBuffer, {
+          headers: {
+            'Content-Type': `image/${fileExtension.slice(1)}`,
+            'Cache-Control': 'public, max-age=3600'
+          }
+        });
+      }
       return NextResponse.json(
-        {message: 'File not found on server'},
-        {status: 404},
+        { message: 'پیش نمایش فقط برای تصاویر قابل نمایش است' },
+        { status: 400 }
       );
     }
 
-    // خواندن فایل و ارسال آن به عنوان پاسخ
-    const fileBuffer = fs.readFileSync(filePath);
-    const response = new NextResponse(fileBuffer, {
+    // برای حالت دانلود
+    return new NextResponse(fileBuffer, {
       headers: {
-        'Content-Disposition': `attachment; filename="${record.FileNameNahaee}"`, // ارسال نام فایل با پسوند
-        'Content-Type': 'application/octet-stream',
-      },
+        'Content-Disposition': `attachment; filename="${encodeURIComponent(record.filenamenahaee)}"`,
+        'Content-Type': 'application/octet-stream'
+      }
     });
-
-    return response;
   } catch (error) {
-    console.error('Error downloading file:', error);
-    return NextResponse.json(
-      {message: 'Error downloading file'},
-      {status: 500},
-    );
+    console.error('خطا در دریافت فایل:', error);
+    return NextResponse.json({ message: 'خطا در دریافت فایل' }, { status: 500 });
   }
 }

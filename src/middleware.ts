@@ -1,58 +1,60 @@
-// فایل: src/middleware.ts
-import {NextResponse} from 'next/server';
-import type {NextRequest} from 'next/server';
-import jwtDecode from 'jwt-decode';
+// src/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 interface DecodedToken {
   userId: number;
   username: string;
-  exp?: number; // زمان انقضا (اختیاری)
-  iss?: string; // صادرکننده (اختیاری)
+  exp?: number;
+  iss?: string;
+}
+
+// تابع decode بدون نیاز به jwt-decode
+function decodeToken(token: string): DecodedToken | null {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded;
+  } catch (error) {
+    console.error('Failed to manually decode token:', error);
+    return null;
+  }
 }
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
 
-  // مسیرهای مجاز بدون احراز هویت
-  const publicRoutes = ['/login', '/register', '/update-credentials'];
+  const publicRoutes = ['/login', '/register', '/update-credentials', '/api/login'];
 
-  // بررسی اگر مسیر فعلی از مسیرهای مجاز باشد
-  if (
-    publicRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
-  ) {
+  if (publicRoutes.some((route) => request.nextUrl.pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
   if (!token) {
-    console.log('No token found.');
+    console.warn('❌ [Middleware] No token found');
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  try {
-    const decoded = jwtDecode<DecodedToken>(token);
-
-    // بررسی تاریخ انقضا
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (decoded.exp && decoded.exp < currentTime) {
-      console.log('Token has expired.');
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // بررسی صادرکننده
-    if (decoded.iss !== 'garmsiri') {
-      console.log('Invalid token issuer.');
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // اگر همه چیز درست بود، ادامه دهید
-    return NextResponse.next();
-  } catch (err) {
-    console.error('Failed to decode token:', err);
+  const decoded = decodeToken(token);
+  if (!decoded) {
+    console.warn('❌ [Middleware] Failed to decode token');
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
+  const currentTime = Math.floor(Date.now() / 1000);
+  if (decoded.exp && decoded.exp < currentTime) {
+    console.warn('❌ [Middleware] Token expired');
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  if (decoded.iss !== 'garmsiri') {
+    console.warn('❌ [Middleware] Invalid issuer');
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  return NextResponse.next();
 }
 
-// تعیین مسیرهایی که Middleware باید اجرا شود
 export const config = {
-  matcher: ['/((?!api|_next).*)'], // مستثنی کردن مسیرهای خاص و اعمال Middleware روی باقی مسیرها
+  matcher: ['/((?!api|_next|static|favicon.ico).*)']
 };

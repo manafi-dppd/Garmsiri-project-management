@@ -1,45 +1,46 @@
 // src/components/RequestPumpingStation/types.ts
 export interface KhatRanesh {
-  IdRanesh: number;
-  RaneshName: string;
-  FIdPumpSta: number;
-  FIdDPipe: number;
-  FIdSePu: number;
-  FIdMeasuring: number;
-  Zarfiat?: number; // اختیاری
-  Active?: boolean; // اختیاری
-  DebiPomp?: number;
-  TedadPump?: number;
-  FesharPump?: number;
-  Randeman?: number;
-  TavaneNami?: number;
+  idranesh: number;
+  raneshname: string;
+  fidpumpsta: number;
+  fiddpipe: number;
+  fidsepu: number;
+  fidmeasuring: number;
+  zarfiat?: number;
+  active?: boolean;
+  debipomp?: number;
+  tedadpump?: number;
+  fesharpump?: number;
+  randeman?: number;
+  tavanenami?: number;
+  fiddahe?: number;
 }
 
 export interface RecordType {
-  raneshData: any;
-  Zarfit: string;
+  raneshdata: Record<string, unknown>;
+  zarfit: string;
   name: React.ReactNode;
-  IdTarDor: number;
-  Trikh: string;
-  Dahe: number;
+  idtardor: number;
+  trikh: string;
+  dahe: number;
 }
 
 export interface PumpingData {
-  Tedad: number;
-  Zarfiat: number | null;
-  Shorooe: string | null;
-  Paian: string | null;
+  tedad: number;
+  zarfiat: number | null;
+  shorooe: string | null;
+  paian: string | null;
 }
 
 export interface PredictedVolume {
-  [IdTarDor: number]: {
-    [IdRanesh: number]: number;
+  [idtardor: number]: {
+    [idranesh: number]: number;
   };
 }
 
 export interface BodyRequestPumpingProps {
-  userName: string;
-  userRole: string;
+  userName?: string;
+  userRole: string[];
   firstName: string;
   lastName: string;
   networkName: string;
@@ -49,38 +50,42 @@ export interface BodyRequestPumpingProps {
   saleZeraee: string;
   doreKesht: string;
   idShDo: number;
+  mah: number;
+  dahe: number;
 }
 
 export interface MahItem {
-  dahe(dahe: any): unknown;
-  Msh(Msh: any): unknown;
-  Mah: number; // شماره ماه
-  Sal: number; // سال زراعی
+  dahe: (dahe: number) => void;
+  Msh: (Msh: string) => void;
+  mah: number;
+  sal: number;
 }
 
-// src/components/RequestPumpingStation/types.ts
 export interface TaeedProgramData {
-  FirstNErsal: string;
-  LastNErsal: string;
-  TarikhErsal: string;
-  TaedAbMantaghe: boolean;
-  TaedPeymankar: boolean;
-  TaedAbNiroo: boolean;
-  FileNameNahaee: boolean;
-  FirstNAbMantaghe: string;
-  LastNAbMantaghe: string;
-  TarikhAbMantaghe: string;
-  FirstNPeymankar: string;
-  LastNPeymankar: string;
-  TarikhPeymankar: string;
-  FirstNAbNiroo: string;
-  LastNAbNiroo: string;
-  TarikhAbNiroo: string;
-  TarikhFileNahee: string;
-  FirstNTaeedNahaee: string;
-  LastNTaeedNahaee: string;
-  TarikhTaeedNahaee: string;
-  TaeedNahaee: boolean;
+  fiddahe: number;
+  firstnersal: string;
+  lastnersal: string;
+  tarikhersal: string;
+  taedabmantaghe: boolean;
+  taedpeymankar: boolean;
+  taedabniroo: boolean;
+  filenamenahaee: boolean;
+  firstnabmantaghe: string;
+  lastnabmantaghe: string;
+  tarikhabmantaghe: string;
+  firstnpeymankar: string;
+  lastnpeymankar: string;
+  tarikhpeymankar: string;
+  firstnabniroo: string;
+  lastnabniroo: string;
+  tarikhabniroo: string;
+  tarikhfilenahee: string;
+  firstntaeednahaee: string;
+  lastntaeednahaee: string;
+  tarikhtaeednahaee: string;
+  taeednahaee: boolean;
+  fiddore?: number;
+  toziheslah: string;
 }
 
 export interface PumpingActionsProps {
@@ -91,24 +96,11 @@ export interface PumpingActionsProps {
   isFormFilled: boolean;
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
-  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
-  selectedPumpCounts: {[key: number]: {[date: string]: number}};
-  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
-  finalVolumes: {[key: number]: number};
-  selectedZarfiat: {[key: number]: {[key: number]: number}};
-}
-
-export interface PumpingActionsProps {
-  onSave: () => void;
-  onReset: () => void;
-  disabled?: boolean;
-  isFormDisabled: boolean;
-  isFormFilled: boolean;
-  khatRaneshList: KhatRanesh[];
-  records: RecordType[];
-  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
-  selectedPumpCounts: {[key: number]: {[date: string]: number}};
-  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
-  finalVolumes: {[key: number]: number};
-  selectedZarfiat: {[key: number]: {[key: number]: number}};
+  pumpData: { [idTarDor: number]: { [idRanesh: number]: PumpingData } };
+  selectedPumpCounts: { [key: number]: { [date: string]: number } };
+  timeValues: {
+    [key: number]: { [key: number]: { from: string; to: string } };
+  };
+  finalVolumes: { [key: number]: number };
+  selectedZarfiat: { [key: number]: { [key: number]: number } };
 }

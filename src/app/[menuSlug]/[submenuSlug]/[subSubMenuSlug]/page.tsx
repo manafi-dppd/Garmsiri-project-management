@@ -1,15 +1,15 @@
 'use client';
 
 import {useParams} from 'next/navigation';
-import RequestPumpingStation from '@/components/RequestPumpingStation/RequestPumpingStation';
+import RequestPumpingStation from '../../../../components/RequestPumpingStation/RequestPumpingStation';
 
 export default function Page() {
   const params = useParams();
 
   // استخراج مسیرهای پویا
-  const menuSlug = params.menuSlug;
-  const submenuSlug = params.submenuSlug;
-  const subSubMenuSlug = params.subSubMenuSlug;
+  const menuSlug = params?.menuSlug;
+  const submenuSlug = params?.submenuSlug;
+  const subSubMenuSlug = params?.subSubMenuSlug;
 
   const isRequestPumpingStation =
     menuSlug === 'current-affairs' &&
@@ -26,9 +26,9 @@ export default function Page() {
       ) : (
         <>
           <h1>صفحه زیر زیرمنو</h1>
-          <p>شناسه منو: {params.menuSlug}</p>
-          <p>شناسه زیرمنو: {params.submenuSlug}</p>
-          <p>شناسه زیر زیرمنو: {params.subSubMenuSlug}</p>
+          <p>شناسه منو: {params?.menuSlug}</p>
+          <p>شناسه زیرمنو: {params?.submenuSlug}</p>
+          <p>شناسه زیر زیرمنو: {params?.subSubMenuSlug}</p>
         </>
       )}
     </div>

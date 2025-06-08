@@ -5,19 +5,11 @@
  * @returns آرایه‌ای از پیام‌های خطا
  */
 
-export const validateFileFormat = (
-  file: File | null,
-  fieldName: string,
-): string[] => {
+export const validateFileFormat = (file: File | null, fieldName: string): string[] => {
   const errors: string[] = [];
 
   if (file) {
-    const allowedFormats = [
-      'image/png',
-      'image/jpeg',
-      'image/jpg',
-      'application/pdf',
-    ];
+    const allowedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
     if (!allowedFormats.includes(file.type)) {
       errors.push(`${fieldName} باید تصویر (PNG, JPG, JPEG) یا PDF باشد.`);
     }
@@ -44,7 +36,7 @@ export const validateInvitation = (
   endDate: string,
   today: string,
   selectedPositions: number[],
-  file: File | null,
+  file: File | null
 ): string[] => {
   let errors: string[] = [];
 
@@ -72,7 +64,7 @@ function validateField(
   value: string,
   fieldName: string,
   isRequired: boolean,
-  maxLength: number,
+  maxLength: number
 ): string[] {
   const errors: string[] = [];
   const persianRegex = /^[آ-ی\s]*$/; // حروف فارسی و فضای خالی

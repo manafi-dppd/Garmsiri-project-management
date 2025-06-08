@@ -1,51 +1,61 @@
-import {NextApiRequest, NextApiResponse} from 'next';
-import {sqlServerClient} from '@prisma/db';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-const prisma = sqlServerClient;
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method === 'PUT') {
+    if (
+      !body ||
+      typeof body.idpumpstation !== "number" ||
+      typeof body.sal !== "number" ||
+      typeof body.mah !== "number" ||
+      typeof body.dahe !== "number" ||
+      typeof body.firstname !== "string" ||
+      typeof body.lastname !== "string" ||
+      (typeof body.tozihersal !== "string" && body.tozihersal !== null) ||
+      typeof body.taedabmantaghe !== "boolean"
+    ) {
+      return NextResponse.json(
+        { error: "Invalid request body format" },
+        { status: 400 }
+      );
+    }
+
     const {
-      idPumpStation,
+      idpumpstation,
       sal,
       mah,
       dahe,
-      firstName,
-      lastName,
-      tozihErsal,
-      taedAbMantaghe,
-    } = req.body;
+      firstname,
+      lastname,
+      tozihersal,
+      taedabmantaghe,
+    } = body;
+    const now = new Date();
 
-    try {
-      const now = new Date();
-      const localDate = new Date(
-        now.getTime() - now.getTimezoneOffset() * 60000,
-      );
+    const updatedProgram = await prisma.taeedprogram.updateMany({
+      where: {
+        fidpumpsta: idpumpstation,
+        sal: sal,
+        mah: mah,
+        dahe: dahe,
+      },
+      data: {
+        firstnersal: firstname,
+        lastnersal: lastname,
+        tozihersal: tozihersal,
+        tarikhersal: now,
+        taedabmantaghe: taedabmantaghe,
+      },
+    });
 
-      const updatedProgram = await prisma.taeedProgram.updateMany({
-        where: {
-          FIdPumpSta: idPumpStation,
-          Sal: sal,
-          Mah: mah,
-          Dahe: dahe,
-        },
-        data: {
-          FirstNErsal: firstName,
-          LastNErsal: lastName,
-          TozihErsal: tozihErsal,
-          TarikhErsal: localDate,
-          TaedAbMantaghe: taedAbMantaghe,
-        },
-      });
-
-      res.status(200).json(updatedProgram);
-    } catch (error) {
-      res.status(500).json({error: 'Failed to update TaeedProgram'});
-    }
-  } else {
-    res.status(405).json({error: 'Method not allowed'});
+    return NextResponse.json(updatedProgram, { status: 200 });
+  } catch (error) {
+    console.error("Update error:", error);
+    return NextResponse.json(
+      { error: "Failed to update TaeedProgram" },
+      { status: 500 }
+    );
   }
 }

@@ -1,22 +1,24 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {format} from 'date-fns'; // برای فرمت‌دهی تاریخ
-import {Button} from '@/components/ui/button'; // استفاده از کامپوننت Button در صورت نیاز
-import {toPersianDate} from '@/utils/dateUtils';
+import { useEffect, useState } from 'react';
+import { Button } from '../../../components/ui/button'; // استفاده از کامپوننت Button در صورت نیاز
+import { formatLocalDateTime} from '../../../utils/dateUtils';
+import * as React from "react";
 
 interface User {
   id: number;
   first_name: string;
   last_name: string;
   mobile: string;
-  registrationTime: string;
+  registration_time: string;
   endDate: string | null;
   active: boolean;
   positions: {
-    Position: {
-      title_fa: string;
-    };
+    title_fa: string; // تغییر از Position.title_fa به title_fa
+    // یا اگر ساختار قبلی را حفظ می‌کنید:
+    // Position: {
+    //   title_fa: string;
+    // };
   }[];
 }
 
@@ -39,16 +41,15 @@ export default function UserTable() {
 
     fetchUsers();
   }, []);
-
   if (loading) {
-    return <div className="text-center mt-4">در حال بارگذاری...</div>;
+    return <div className="mt-4 text-center">در حال بارگذاری...</div>;
   }
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold my-6 text-center">کاربران</h1>
+      <h1 className="my-6 text-center text-2xl font-bold">کاربران</h1>
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border-collapse border border-gray-300">
+        <table className="w-full table-auto border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-gray-300 p-2">نام</th>
@@ -64,31 +65,21 @@ export default function UserTable() {
           <tbody>
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-gray-100">
+                <td className="border border-gray-300 p-2 text-center">{user.first_name}</td>
+                <td className="border border-gray-300 p-2 text-center">{user.last_name}</td>
+                <td className="border border-gray-300 p-2 text-center">{user.mobile}</td>
                 <td className="border border-gray-300 p-2 text-center">
-                  {user.first_name}
+                  {formatLocalDateTime(user.registration_time)}{' '}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  {user.last_name}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {user.mobile}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {toPersianDate(user.registrationTime, 'yyyy/MM/dd')}
-                  {' -'}
-                  {format(new Date(user.registrationTime), 'HH:mm')}
-                </td>
-                <td className="border border-gray-300 p-2 text-center">
-                  {user.endDate
-                    ? toPersianDate(user.endDate, 'yyyy/MM/dd')
-                    : 'نامشخص'}
+                  {user.endDate ? formatLocalDateTime(user.endDate) : 'نامشخص'}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
                   {user.active ? 'بله' : 'خیر'}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
                   {user.positions.length > 0
-                    ? user.positions.map((p) => p.Position.title_fa).join(', ')
+                    ? user.positions.map((p) => p.title_fa).join(', ')
                     : 'بدون سمت'}
                 </td>
                 <td className="border border-gray-300 p-2 text-center">

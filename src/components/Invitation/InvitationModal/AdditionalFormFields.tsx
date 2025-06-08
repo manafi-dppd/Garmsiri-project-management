@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import * as React from "react";
+import { useState } from "react";
 
 interface AdditionalFormFieldsProps {
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
   formData: {
     introductionLetter: string;
@@ -24,21 +25,21 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const months = [
-    'فروردین',
-    'اردیبهشت',
-    'خرداد',
-    'تیر',
-    'مرداد',
-    'شهریور',
-    'مهر',
-    'آبان',
-    'آذر',
-    'دی',
-    'بهمن',
-    'اسفند',
+    "فروردین",
+    "اردیبهشت",
+    "خرداد",
+    "تیر",
+    "مرداد",
+    "شهریور",
+    "مهر",
+    "آبان",
+    "آذر",
+    "دی",
+    "بهمن",
+    "اسفند",
   ];
 
-  const daysInMonth = (month: number, year: any) => {
+  const daysInMonth = (month: number, year: number) => {
     // چک کردن سال کبیسه در تقویم جلالی
     if (month <= 6) return 31;
     if (month <= 11) return 30;
@@ -49,8 +50,8 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
     return ((year + 38) * 31) % 128 < 31;
   };
 
-  const generateCalendar = (month: number, year: number) => {
-    const days = [];
+  const generateCalendar = (month: number, year: number): number[] => {
+    const days: number[] = [];
     const totalDays = daysInMonth(month, year);
 
     for (let day = 1; day <= totalDays; day++) {
@@ -61,23 +62,23 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
 
   const handleDateSelect = (day: number) => {
     setSelectedDate(
-      `${selectedYear}/${selectedMonth.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}`,
+      `${selectedYear}/${selectedMonth.toString().padStart(2, "0")}/${day.toString().padStart(2, "0")}`
     );
     setIsCalendarOpen(false);
   };
 
-  const handleYearChange = (event: {target: {value: any}}) => {
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedYear(Number(event.target.value));
   };
 
-  const handleMonthChange = (event: {target: {value: any}}) => {
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedMonth(Number(event.target.value));
   };
 
   const days = generateCalendar(selectedMonth, selectedYear);
 
   return (
-    <div className="bg-gray-100 p-1 rounded-md shadow-md space-y-4">
+    <div className="space-y-4 rounded-md bg-gray-100 p-1 shadow-md">
       <div>
         <label
           htmlFor="introductionLetter"
@@ -91,7 +92,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           name="introductionLetter"
           accept="image/*,.pdf"
           onChange={onChange}
-          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+          className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none"
         />
       </div>
       <div>
@@ -137,14 +138,14 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
       </div>
-      <div className="border rounded shadow-md">
+      <div className="rounded border shadow-md">
         <span className="text-sm font-medium text-gray-700">
           تاریخ معرفی‌نامه
         </span>
-        <div className="items-center justify-between mb-2">
+        <div className="mb-2 items-center justify-between">
           <button
             type="button"
-            className="px-3 py-1 text-sm text-white bg-blue-500 rounded shadow hover:bg-blue-600"
+            className="rounded bg-blue-500 px-3 py-1 text-sm text-white shadow hover:bg-blue-600"
             onClick={() => setIsCalendarOpen(!isCalendarOpen)}
           >
             انتخاب
@@ -153,10 +154,10 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
             type="button"
             onClick={() => setSelectedDate(null)} // مقدار تاریخ را پاک می‌کند
             disabled={!selectedDate}
-            className={`px-3 py-1 text-sm text-white rounded ${
+            className={`rounded px-3 py-1 text-sm text-white ${
               selectedDate
-                ? 'bg-red-500 hover:bg-red-600' // حالت فعال
-                : 'bg-gray-400 cursor-not-allowed' // حالت غیرفعال
+                ? "bg-red-500 hover:bg-red-600" // حالت فعال
+                : "cursor-not-allowed bg-gray-400" // حالت غیرفعال
             }`}
           >
             حذف
@@ -168,21 +169,21 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
           </div>
         )}
         {isCalendarOpen && (
-          <div className="border mt-2 rounded-md shadow-md bg-white p-2">
-            <div className="flex justify-between items-center mb-3">
+          <div className="mt-2 rounded-md border bg-white p-2 shadow-md">
+            <div className="mb-3 flex items-center justify-between">
               <select
-                className="border rounded px-2 py-1 text-sm"
+                className="rounded border px-2 py-1 text-sm"
                 value={selectedYear}
                 onChange={handleYearChange}
               >
-                {Array.from({length: 9}, (_, i) => 1402 + i).map((year) => (
+                {Array.from({ length: 9 }, (_, i) => 1402 + i).map((year) => (
                   <option key={year} value={year}>
                     {year}
                   </option>
                 ))}
               </select>
               <select
-                className="border rounded px-2 py-1 text-sm"
+                className="rounded border px-2 py-1 text-sm"
                 value={selectedMonth}
                 onChange={handleMonthChange}
               >
@@ -193,7 +194,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
                 ))}
               </select>
             </div>
-            <div className="text-center text-gray-800 font-bold mb-2">
+            <div className="mb-2 text-center font-bold text-gray-800">
               {`${months[selectedMonth - 1]} - ${selectedYear}`}
             </div>
             <div className="grid grid-cols-7 gap-1 text-sm">
@@ -201,7 +202,7 @@ const AdditionalFormFields: React.FC<AdditionalFormFieldsProps> = ({
                 <button
                   key={day}
                   type="button"
-                  className="w-8 h-8 rounded hover:bg-blue-100 bg-gray-50 border border-gray-200"
+                  className="h-8 w-8 rounded border border-gray-200 bg-gray-50 hover:bg-blue-100"
                   onClick={() => handleDateSelect(day)}
                 >
                   {day}

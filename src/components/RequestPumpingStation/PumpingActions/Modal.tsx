@@ -1,56 +1,39 @@
-import React, {useState, useEffect} from 'react';
+import { ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  content: string;
-  onSave: (content: string) => void;
-  isReadOnly: boolean;
+  children: ReactNode;
+  title?: string;
+  size?: "sm" | "md" | "lg" | "xl";
+  footer?: ReactNode;
+  center?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
-  onClose,
-  content,
-  onSave,
-  isReadOnly,
+  children,
+  title = "",
+  size = "lg",
+  footer,
 }) => {
-  const [text, setText] = useState(content);
-
-  useEffect(() => {
-    setText(content); // مقدار جدید را تنظیم کنید
-  }, [content]);
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg" style={{width: '600px'}}>
-        {' '}
-        {/* افزایش عرض مودال */}
-        <textarea
-          className="w-full p-2 border border-gray-300 rounded-md"
-          style={{height: '200px'}} // افزایش ارتفاع textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          readOnly={isReadOnly}
-        />
-        <div className="flex justify-end mt-4">
-          <button
-            className="px-4 py-2 bg-gray-300 rounded-md mr-2"
-            onClick={onClose}
-          >
-            بستن
-          </button>
-          {!isReadOnly && (
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-md"
-              onClick={() => onSave(text)}
-            >
-              ذخیره
-            </button>
-          )}
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto ${center ? 'flex items-center justify-center' : ''}">
+      <div
+        className="flex flex-col rounded-lg bg-white p-6"
+        style={{
+          width: size === "md" ? "400px" : size === "lg" ? "600px" : "800px",
+          maxWidth: "90vw",
+          maxHeight: "90vh",
+        }}
+      >
+        {title && <h2 className="mb-4 text-xl font-bold">{title}</h2>}
+
+        <div className="flex-grow overflow-auto">{children}</div>
+
+        {footer}
       </div>
     </div>
   );

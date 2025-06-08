@@ -1,10 +1,17 @@
-import {NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function PUT(request: Request) {
   try {
+    const body = await request.json();
+
+    if (!body || typeof body !== "object") {
+      return NextResponse.json(
+        { error: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
     const {
       idPumpStation,
       sal,
@@ -12,38 +19,56 @@ export async function PUT(request: Request) {
       dahe,
       firstName,
       lastName,
-      tozihPeymankar,
+      tozihPeymankar = null,
       taedPeymankar,
-    } = await request.json();
+    } = body;
 
-    // دریافت زمان حال در منطقه زمانی سرور
+    if (
+      typeof idPumpStation !== "number" ||
+      typeof sal !== "number" ||
+      typeof mah !== "number" ||
+      typeof dahe !== "number" ||
+      typeof firstName !== "string" ||
+      typeof lastName !== "string" ||
+      typeof taedPeymankar !== "boolean"
+    ) {
+      return NextResponse.json(
+        { error: "Missing or invalid required fields" },
+        { status: 400 }
+      );
+    }
+
     const now = new Date();
-    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
 
-    await prisma.taeedProgram.updateMany({
+    const result = await prisma.taeedprogram.updateMany({
       where: {
-        FIdPumpSta: idPumpStation,
-        Sal: sal,
-        Mah: mah,
-        Dahe: dahe,
+        fidpumpsta: idPumpStation,
+        sal: sal,
+        mah: mah,
+        dahe: dahe,
       },
       data: {
-        FirstNPeymankar: firstName,
-        LastNPeymankar: lastName,
-        TozihPeymankar: tozihPeymankar,
-        TarikhPeymankar: localTime,
-        TaedPeymankar: taedPeymankar,
-        TaedAbMantaghe: taedPeymankar === false ? null : undefined,
+        firstnpeymankar: firstName,
+        lastnpeymankar: lastName,
+        tozihpeymankar: tozihPeymankar,
+        tarikhpeymankar: now,
+        taedpeymankar: taedPeymankar,
       },
     });
 
     return NextResponse.json(
-      {message: 'Data updated successfully'},
-      {status: 200},
+      { message: "Data updated successfully", count: result.count },
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Failed to update TaeedProgram:', error);
-    return NextResponse.json({error: 'Failed to update data'}, {status: 500});
+    console.error("Failed to update TaeedProgram:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to update data",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

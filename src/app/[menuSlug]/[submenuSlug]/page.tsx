@@ -1,27 +1,24 @@
-'use client';
+"use client";
 
-import {useParams} from 'next/navigation';
-import AdminMenuForm from '@/components/AdminMenuForm'; // ایمپورت کامپوننت
-import Invitation from '@/components/Invitation';
+import { useParams } from "next/navigation";
+import AdminMenuForm from "../../../components/AdminMenuForm";
+import Invitation from "../../../components/Invitation";
 
 export default function Page() {
   const params = useParams();
 
-  // استخراج مسیرهای پویا
-  const menuSlug = params.menuSlug;
-  const submenuSlug = params.submenuSlug;
-
-  console.log({menuSlug, submenuSlug}); // برای اشکال‌زدایی
+  // استخراج مسیرهای پویا با مقدار پیش‌فرض
+  const menuSlug = params?.menuSlug?.toString() || "";
+  const submenuSlug = params?.submenuSlug?.toString() || "";
 
   // چک کردن مسیر خاص برای صفحه مدیریت مرورگر
   const isBrowserManagementPage =
-    menuSlug === 'current-affairs' && submenuSlug === 'browser-management';
+    menuSlug === "current-affairs" && submenuSlug === "browser-management";
 
   return (
     <div>
       {isBrowserManagementPage ? (
         <div>
-          {/* <h1>مدیریت مرورگر</h1> */}
           <AdminMenuForm />
           <Invitation />
         </div>

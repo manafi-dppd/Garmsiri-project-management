@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 function Footer() {
   return (
     <footer className="bg-gray-800">
-      <div className="px-8 justify-between items-center flex py-12 max-w-7xl mx-auto">
-        <div className="flex justify-center order-1 gap-2">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-12">
+        <div className="order-1 flex justify-center gap-2">
           {/* <a href="#" className="flex-col text-gray-400">
             <span className="sr-only">Facebook</span>
             <svg
@@ -76,7 +76,7 @@ function Footer() {
             </svg>
           </a> */}
         </div>
-        <div className="mt-0 order-0">
+        <div className="order-0 mt-0">
           <p className="text-gray-400">تمامی حقوق این مرورگر محفوظ است. ©</p>
         </div>
       </div>

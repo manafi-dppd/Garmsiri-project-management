@@ -1,51 +1,40 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
-const prisma = sqlServerClient;
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const {searchParams} = new URL(req.url);
-    const idRanesh = Number(searchParams.get('idRanesh'));
-    const idTarDor = Number(searchParams.get('idTarDor'));
-
-    if (!idRanesh || !idTarDor) {
-      return NextResponse.json({error: 'Invalid parameters'}, {status: 400});
-    }
-
-    // دریافت اطلاعات از دو جدول با توجه به شرایط خواسته‌شده
-    const bahrebardair = await prisma.bahrebardairProgram.findFirst({
-      where: {
-        FIdRanesh: idRanesh,
-        FIdTarDor: idTarDor,
-        Tedad: {gt: 0},
-      },
+    const bahrebardairData = await prisma.bahrebardairprogram.findMany({
+      where: { tedad: { gt: 0 } },
       select: {
-        Tedad: true,
-        Shorooe: true,
-        Paian: true,
+        fidranesh: true,
+        fidtardor: true,
+        tedad: true,
+        shorooe: true,
+        paian: true,
       },
     });
 
-    const bahrebardairSeghli = await prisma.bahrebardairProgramSeghli.findFirst(
-      {
-        where: {
-          FIdRanesh: idRanesh,
-          FIdTarDor: idTarDor,
-          Zarfiat: {not: null},
-        },
+    const bahrebardairSeghliData =
+      await prisma.bahrebardairprogramseghli.findMany({
+        where: { zarfiat: { not: null } },
         select: {
-          Zarfiat: true,
+          fidranesh: true,
+          fidtardor: true,
+          zarfiat: true,
+          shorooe: true,
+          paian: true,
         },
-      },
-    );
+      });
+
     return NextResponse.json({
-      Tedad: bahrebardair?.Tedad || 0,
-      Zarfiat: bahrebardairSeghli?.Zarfiat || null,
-      Shorooe: bahrebardair?.Shorooe || null,
-      Paian: bahrebardair?.Paian || null,
+      bahrebardair: bahrebardairData,
+      bahrebardairSeghli: bahrebardairSeghliData,
     });
   } catch (error) {
-    console.error('Error fetching data:', error);
-    return NextResponse.json({error: 'Internal Server Error'}, {status: 500});
+    console.error("Error fetching all pump data:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

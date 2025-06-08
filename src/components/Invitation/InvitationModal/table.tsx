@@ -1,16 +1,16 @@
-import {useEffect, useState} from 'react';
-import {format} from 'date-fns';
+import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
-import {toPersianDate} from '@/utils/dateUtils';
+import { toPersianDate } from '../../../utils/dateUtils';
+import * as React from "react";
 
 interface Invitation {
   id: number;
-  firstName: string | null;
-  lastName: string;
+  first_name: string | null;
+  last_name: string;
   mobile: string;
-  createdAt: string;
-  endDate: string | null;
-  isRegistered: boolean;
+  created_at: string;
+  end_date: string | null;
+  is_registered: boolean;
 }
 
 export default function InvitationsTable() {
@@ -34,35 +34,23 @@ export default function InvitationsTable() {
   }, []);
 
   if (loading) {
-    return <div className="text-center mt-10">در حال بارگذاری...</div>;
+    return <div className="mt-10 text-center">در حال بارگذاری...</div>;
   }
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold my-6 text-center">دعوت شدگان</h1>
+      <h1 className="my-6 text-center text-2xl font-bold">دعوت شدگان</h1>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <table className="min-w-full rounded-lg border border-gray-300 bg-white shadow-md">
           <thead>
             <tr className="bg-gray-100 text-gray-800">
               <th className="px-6 py-3 text-center text-sm font-medium">نام</th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                نام خانوادگی
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                تلفن همراه
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                تاریخ دعوت
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                تاریخ انقضا
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                ثبت‌نام
-              </th>
-              <th className="px-6 py-3 text-center text-sm font-medium">
-                جزئیات
-              </th>
+              <th className="px-6 py-3 text-center text-sm font-medium">نام خانوادگی</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">تلفن همراه</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">تاریخ دعوت</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">تاریخ انقضا</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">ثبت‌نام</th>
+              <th className="px-6 py-3 text-center text-sm font-medium">جزئیات</th>
             </tr>
           </thead>
           <tbody>
@@ -70,31 +58,27 @@ export default function InvitationsTable() {
               <tr
                 key={invitation.id}
                 className={`${
-                  !invitation.isRegistered
+                  !invitation.is_registered
                     ? 'bg-red-100'
                     : index % 2 === 0
                       ? 'bg-gray-50'
                       : 'bg-white'
                 }`}
               >
-                <td className="px-6 py-4 text-center">
-                  {invitation.firstName || '-'}
-                </td>
-                <td className="px-6 py-4 text-center">{invitation.lastName}</td>
+                <td className="px-6 py-4 text-center">{invitation.first_name || '-'}</td>
+                <td className="px-6 py-4 text-center">{invitation.last_name}</td>
                 <td className="px-6 py-4 text-center">{invitation.mobile}</td>
                 <td className="px-6 py-4 text-center">
-                  {toPersianDate(invitation.createdAt, 'yyyy/MM/dd')}
+                  {toPersianDate(invitation.created_at, 'yyyy/MM/dd')}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  {invitation.endDate
-                    ? toPersianDate(invitation.endDate, 'yyyy/MM/dd')
-                    : '-'}
+                  {invitation.end_date ? toPersianDate(invitation.end_date, 'yyyy/MM/dd') : '-'}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  {invitation.isRegistered ? 'بله' : 'خیر'}
+                  {invitation.is_registered ? 'بله' : 'خیر'}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                  <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
                     مشاهده
                   </button>
                 </td>

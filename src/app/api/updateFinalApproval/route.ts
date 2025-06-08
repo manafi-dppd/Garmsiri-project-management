@@ -1,39 +1,60 @@
-import {NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function PUT(request: Request) {
   try {
-    const {idPumpStation, sal, mah, dahe, firstName, lastName} =
-      await request.json();
+    const body = await request.json();
 
-    // دریافت زمان حال در منطقه زمانی سرور
+    if (!body || typeof body.idpumpstation !== "number") {
+      console.error("Validation failed:", body);
+      return NextResponse.json(
+        {
+          error: "Invalid request body - idpumpstation is required",
+          details: body,
+        },
+        { status: 400 }
+      );
+    }
+
+    const { idpumpstation, sal, mah, dahe, firstname, lastname } = body;
     const now = new Date();
-    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
 
-    await prisma.taeedProgram.updateMany({
+    const updateResult = await prisma.taeedprogram.updateMany({
       where: {
-        FIdPumpSta: idPumpStation,
-        Sal: sal,
-        Mah: mah,
-        Dahe: dahe,
+        fidpumpsta: idpumpstation,
+        sal: sal,
+        mah: mah,
+        dahe: dahe,
       },
       data: {
-        FirstNTaeedNahaee: firstName,
-        LastNTaeedNahaee: lastName,
-        TarikhTaeedNahaee: localTime,
-        TaeedNahaee: true,
+        firstntaeednahaee: firstname || null,
+        lastntaeednahaee: lastname || null,
+        tarikhtaeednahaee: now,
+        taeednahaee: true,
+        toziheslah: null,
       },
     });
 
+    if (updateResult.count === 0) {
+      return NextResponse.json(
+        { error: "No matching record found" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json(
-      {message: 'Data updated successfully'},
-      {status: 200},
+      { message: "Data updated successfully", count: updateResult.count },
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Failed to update TaeedProgram:', error);
-    return NextResponse.json({error: 'Failed to update data'}, {status: 500});
+    console.error("Update error:", error);
+    return NextResponse.json(
+      {
+        error: "Database update failed",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

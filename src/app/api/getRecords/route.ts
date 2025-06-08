@@ -1,88 +1,86 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { Decimal } from '@prisma/client/runtime/library';
 
-const prisma = sqlServerClient; // تنظیمات Prisma
+interface Record {
+  idtardor: number;
+  trikh: Date;
+  dahe: number;
+  sal: number;
+  mah: number;
+}
+
+interface VolumeResult {
+  fidranesh: number;
+  _sum: { taghvim: Decimal | null };
+}
 
 export async function GET(req: NextRequest) {
-  const {searchParams} = new URL(req.url);
-  const networkId = searchParams.get('networkId');
-  const dahe = searchParams.get('dahe'); // مقدار دهه مورد نظر
-  const sal = searchParams.get('sal'); // مقدار سال مورد نظر
-  const mah = searchParams.get('mah'); // مقدار ماه مورد نظر
+  const { searchParams } = new URL(req.url);
+  const networkId = searchParams.get("networkId");
+  const dahe = searchParams.get("dahe");
+  const sal = searchParams.get("sal");
+  const mah = searchParams.get("mah");
 
   if (!networkId) {
-    return NextResponse.json({error: 'Network ID is required'}, {status: 400});
+    return NextResponse.json(
+      { error: "Network ID is required" },
+      { status: 400 }
+    );
   }
 
   try {
-    const currentDate = new Date(); // تاریخ فعلی
-
-    // پیدا کردن بازه‌ای که تاریخ فعلی در آن قرار دارد
-    const shabake = await prisma.shabakeDoreKesht.findFirst({
+    const currentDate = new Date();
+    const shabake = await prisma.shabakedorekesht.findFirst({
       where: {
-        FIdNet: Number(networkId),
-        TrikhShorooe: {lte: currentDate},
-        TrikhPayan: {gte: currentDate},
+        fidnet: Number(networkId),
+        trikhshorooe: { lte: currentDate },
+        trikhpayan: { gte: currentDate },
       },
-      select: {TrikhShorooe: true, TrikhPayan: true},
+      select: { trikhshorooe: true, trikhpayan: true },
     });
 
     if (!shabake) {
       return NextResponse.json(
-        {message: 'تقویم آبیاری در سامانه بارگذاری نشده است'},
-        {status: 404},
+        { message: "تقویم آبیاری در سامانه بارگذاری نشده است" },
+        { status: 404 }
       );
     }
 
-    // فیلتر کردن رکوردها بر اساس سال، ماه و دهه
-    const records = await prisma.trikhDoreKesht.findMany({
+    const records = await prisma.trikhdorekesht.findMany({
       where: {
-        Trikh: {
-          gte: shabake.TrikhShorooe,
-          lte: shabake.TrikhPayan,
-        },
-        Sal: Number(sal), // فقط رکوردهای سال مشخص را بگیر
-        Mah: Number(mah), // فقط رکوردهای ماه مشخص را بگیر
-        Dahe: Number(dahe), // فقط رکوردهای دهه مشخص را بگیر
+        trikh: { gte: shabake.trikhshorooe, lte: shabake.trikhpayan },
+        sal: sal ? Number(sal) : undefined,
+        mah: mah ? Number(mah) : undefined,
+        dahe: dahe ? Number(dahe) : undefined,
       },
-      select: {
-        IdTarDor: true,
-        Trikh: true,
-        Dahe: true,
-        Sal: true,
-        Mah: true,
-      },
-      orderBy: {Trikh: 'asc'},
+      select: { idtardor: true, trikh: true, dahe: true, sal: true, mah: true },
+      orderBy: { trikh: "asc" },
     });
 
-    // دریافت مقادیر حجم پیش‌بینی‌شده
     const predictedVolumes = await Promise.all(
-      records.map(async (record) => {
-        const raneshVolumes = await prisma.bahrebardariTaghvim.groupBy({
-          by: ['FIdRanesh'],
-          where: {
-            FIdTarDor: record.IdTarDor,
-          },
-          _sum: {
-            Taghvim: true,
-          },
+      records.map(async (record: Record) => {
+        const raneshVolumes = await prisma.bahrebardaritaghvim.groupBy({
+          by: ["fidranesh"],
+          where: { fidtardor: record.idtardor },
+          _sum: { taghvim: true },
         });
         return {
-          IdTarDor: record.IdTarDor,
-          volumes: raneshVolumes.map((rv) => ({
-            FIdRanesh: rv.FIdRanesh,
-            TotalTaghvim: rv._sum.Taghvim || 0,
+          idtardor: record.idtardor,
+          volumes: raneshVolumes.map((rv: VolumeResult) => ({
+            fidranesh: rv.fidranesh,
+            totaltaghvim: rv._sum.taghvim || 0,
           })),
         };
-      }),
+      })
     );
-    // console.log('predictedVolumes,', predictedVolumes);
-    return NextResponse.json({
-      records,
-      predictedVolumes,
-    });
+
+    return NextResponse.json({ records, predictedVolumes });
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({error: 'Internal Server Error'}, {status: 500});
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

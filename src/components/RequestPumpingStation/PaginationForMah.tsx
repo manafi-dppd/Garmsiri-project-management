@@ -1,95 +1,92 @@
-import React from 'react';
+import * as React from "react";
 
 export function convertMahToPersian(mah: number): string {
   const months = [
-    'فروردین',
-    'اردیبهشت',
-    'خرداد',
-    'تیر',
-    'مرداد',
-    'شهریور',
-    'مهر',
-    'آبان',
-    'آذر',
-    'دی',
-    'بهمن',
-    'اسفند',
+    "فروردین",
+    "اردیبهشت",
+    "خرداد",
+    "تیر",
+    "مرداد",
+    "شهریور",
+    "مهر",
+    "آبان",
+    "آذر",
+    "دی",
+    "بهمن",
+    "اسفند",
   ];
-  return months[mah - 1] || 'نامعتبر';
-}
-
-interface DateRecord {
-  Mah: number;
-  Dahe: number;
+  return months[mah - 1] || "نامعتبر";
 }
 
 interface PaginationForMahProps {
   selectedMah: number;
   sal: number;
-  selectedDahe: number; // دریافت selectedDahe به عنوان prop
-  setSelectedDahe: (value: number) => void; // دریافت تابع setSelectedDahe
-  setDahe: (value: number) => void; // دریافت تابع setDahe
-  allDates: {Mah: number; Dahe: number}[];
+  selectedDahe: number;
+  dahe: number;
+  setSelectedDahe: (value: number) => void;
+  setDahe: (value: number) => void;
+  allDates: { mah: number; dahe: number }[];
+  onDaheChange?: () => void;
 }
 
 const PaginationForMah: React.FC<PaginationForMahProps> = ({
-  selectedMah,
-  sal,
-  selectedDahe, // استفاده از selectedDahe
-  setSelectedDahe, // استفاده از setSelectedDahe
-  setDahe, // استفاده از setDahe
-  allDates,
+  dahe,
+  setSelectedDahe,
+  setDahe,
+  onDaheChange,
 }) => {
   const handlePrevDahe = () => {
-    if (selectedDahe > 1) {
-      setSelectedDahe(selectedDahe - 1);
-      setDahe(selectedDahe - 1); // به‌روزرسانی دهه در BodyRequestPumping.tsx
+    if (dahe > 1) {
+      const newDahe = dahe - 1;
+      setSelectedDahe(newDahe);
+      setDahe(newDahe);
+      onDaheChange?.();
     }
   };
 
   const handleNextDahe = () => {
-    if (selectedDahe < 3) {
-      setSelectedDahe(selectedDahe + 1);
-      setDahe(selectedDahe + 1); // به‌روزرسانی دهه در BodyRequestPumping.tsx
+    if (dahe < 3) {
+      const newDahe = dahe + 1;
+      setSelectedDahe(newDahe);
+      setDahe(newDahe);
+      onDaheChange?.();
     }
   };
 
   return (
     <div
-      className="flex items-center justify-right gap-4 mt-4"
+      className="justify-right flex items-center gap-4"
       style={{
-        transform: 'scale(0.70)',
+        transform: "scale(0.70)",
       }}
     >
       {/* دکمه "دهه قبل" */}
       <button
         onClick={handlePrevDahe}
-        disabled={selectedDahe === 1}
-        className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-          ${
-            selectedDahe === 1
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-700'
-          }`}
+        disabled={dahe === 1}
+        className={`flex items-center gap-2 rounded-md px-3 py-1 text-lg font-semibold transition-all duration-300 ${
+          dahe === 1
+            ? "cursor-not-allowed bg-gray-300 text-gray-500"
+            : "bg-blue-500 text-white hover:bg-blue-700"
+        }`}
       >
         <span className="text-xl">&lt;</span>
       </button>
 
       {/* نمایش دهه فعلی */}
-      <span className="text-lg font-bold text-gray-900 bg-yellow-300 px-4 py-2 rounded-md shadow-lg ring-2 ring-yellow-400">
-        دهه {selectedDahe === 1 ? 'اول' : selectedDahe === 2 ? 'دوم' : 'سوم'}
+      <span className="rounded-md bg-yellow-300 px-4 py-1 text-lg font-bold text-gray-900 shadow-lg ring-2 ring-yellow-400">
+        دهه {dahe === 1 ? "اول" : dahe === 2 ? "دوم" : "سوم"}
       </span>
 
       {/* دکمه "دهه بعد" */}
       <button
         onClick={handleNextDahe}
-        disabled={selectedDahe === 3}
-        className={`px-3 py-2 text-lg font-semibold rounded-md transition-all duration-300 flex items-center gap-2
-          ${
-            selectedDahe === 3
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-700'
-          }`}
+        disabled={dahe === 3}
+        className={`flex items-center gap-2 rounded-md px-3 py-1 text-lg font-semibold transition-all duration-300 ${
+          dahe === 3
+            ? "cursor-not-allowed bg-gray-300 text-gray-500"
+            : "bg-blue-500 text-white hover:bg-blue-700"
+        }`}
       >
         <span className="text-xl">&gt;</span>
       </button>

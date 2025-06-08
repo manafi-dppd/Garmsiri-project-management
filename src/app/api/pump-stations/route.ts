@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { sqlServerClient } from '@prisma/db';
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const networkId = Number(url.searchParams.get('networkId'));
   const FIdDP = Number(url.searchParams.get('FIdDP'));
@@ -11,13 +11,17 @@ export async function GET(req: Request) {
   }
 
   try {
-    const pumpStations = await sqlServerClient.$queryRaw`
-      SELECT IdPumpSta, NameStation
-      FROM PumpStation
-      WHERE FIdNet = ${networkId} 
-        AND FIdDP = ${FIdDP} 
-        AND Ready = 1;  -- فیلتر کردن بر اساس مقدار Ready
-    `;
+    const pumpStations = await prisma.pumpstation.findMany({
+      where: {
+        fidnet: networkId,
+        fiddp: FIdDP,
+        ready: true
+      },
+      select: {
+        idpumpsta: true,
+        namestation: true
+      }
+    });
 
     return NextResponse.json({ pumpStations });
   } catch (error) {

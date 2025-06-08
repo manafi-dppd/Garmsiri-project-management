@@ -1,56 +1,70 @@
-import {NextResponse} from 'next/server';
-import {cookies} from 'next/headers';
-import jwtDecode from 'jwt-decode';
-import {sqliteClient} from '@prisma/db';
-const prisma = sqliteClient;
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import prisma from "@/lib/prisma";
 
 interface DecodedToken {
   userId: number;
   username: string;
-  exp?: number;
-  iss?: string;
 }
 
-export async function GET(req: Request) {
+interface Position {
+  position: {
+    title: string;
+  };
+}
+
+export async function GET() {
   try {
-    const token = (await cookies()).get('auth_token')?.value;
-
+    const token = (await cookies()).get("auth_token")?.value;
     if (!token) {
-      console.error('Unauthorized: No token found');
-      return NextResponse.json({error: 'Unauthorized'}, {status: 401});
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const decoded = jwtDecode<DecodedToken>(token);
+    const secretKey = process.env.SECRET_KEY || 'development-secret-key';
+    if (!secretKey) {
+      return NextResponse.json({ error: "Server error" }, { status: 500 });
+    }
 
+    const decoded = jwt.verify(token, secretKey) as DecodedToken;
     if (!decoded.userId) {
-      console.error('Unauthorized: Invalid token');
-      return NextResponse.json({error: 'Unauthorized'}, {status: 401});
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const userId = decoded.userId;
-
-    const user = await prisma.user.findUnique({
-      where: {id: userId},
+    const userWithPositions = await prisma.user.findUnique({
+      where: { id: decoded.userId },
       include: {
-        positions: {include: {Position: true}},
+        position_on_user: {
+          include: {
+            position: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    if (!user) {
-      return NextResponse.json({error: 'User not found'}, {status: 404});
+    if (!userWithPositions) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const positions = user.positions.map((p) => p.Position.title);
-    const username = user.userName;
-    const firstname = user.first_name;
-    const lastname = user.last_name;
-
-    return NextResponse.json(
-      {username, positions, firstname, lastname},
-      {status: 200},
+    const positions = userWithPositions.position_on_user.map(
+      (pu: Position) => pu.position.title
     );
+
+    return NextResponse.json({
+      username: userWithPositions.user_name,
+      positions,
+      firstname: userWithPositions.first_name,
+      lastname: userWithPositions.last_name,
+    });
   } catch (error) {
-    console.error('Error fetching positions:', error);
-    return NextResponse.json({error: 'Internal server error'}, {status: 500});
+    console.error("Error in user-position route:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

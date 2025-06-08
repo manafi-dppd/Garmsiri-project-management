@@ -1,65 +1,94 @@
-import {NextResponse} from 'next/server';
-import {sqliteClient, sqlServerClient} from '@prisma/db';
-// import {sqliteClient, sqlServerClient} from '@prisma/db';
-import jwt from 'jsonwebtoken';
-import {cookies} from 'next/headers';
-const prisma = sqliteClient; // 🔹 مقداردهی صحیح کلاینت SQLite
-// const prisma = sqliteClient;
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import prisma from "@/lib/prisma";
 
-export async function GET(req: Request) {
+interface DecodedToken {
+  userId: number;
+  username: string;
+  exp?: number;
+  iss?: string;
+}
+
+interface Position {
+  position: {
+    title_fa: string;
+  };
+}
+
+interface UserWithPositions {
+  id: number;
+  user_name: string;
+  first_name: string;
+  last_name: string;
+  position_on_user: Position[];
+}
+
+export async function GET() {
   try {
-    // console.log('🚀 درخواست GET دریافت شد');
-
-    // استخراج توکن از کوکی
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
-    // console.log('🔍 توکن دریافت شد:', token);
+    // 1. بررسی وجود کوکی auth_token
+    const cookieStore = cookies();
+    const token = (await cookieStore).get("auth_token")?.value;
 
     if (!token) {
-      // console.log('❌ توکن موجود نیست، ارسال خطای 401');
-      return NextResponse.json({error: 'Unauthorized'}, {status: 401});
+      console.error("No auth token found");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    // 2. اعتبارسنجی توکن
+    const secretKey = process.env.SECRET_KEY;
+    if (!secretKey) {
+      console.error("SECRET_KEY is not defined");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
     }
 
-    // بررسی و اعتبارسنجی توکن
-    const secretKey = process.env.SECRET_KEY || 'default-secret-key';
-    const decoded = jwt.verify(token, secretKey) as {userId: number};
-    // console.log('✅ توکن تأیید شد، userId:', decoded.userId);
-    const userId = decoded.userId;
+    const decoded = jwt.verify(token, secretKey) as DecodedToken;
 
-    // دریافت اطلاعات کاربر از دیتابیس
-    const user = await prisma.user.findUnique({
-      where: {id: userId},
+    // 3. بررسی وجود userId در توکن
+    if (!decoded.userId) {
+      console.error("No userId in token");
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    // 4. جستجوی کاربر با روابط
+    const user = (await prisma.user.findUnique({
+      where: { id: decoded.userId },
       include: {
-        positions: {
+        position_on_user: {
           include: {
-            Position: true,
+            position: {
+              select: {
+                title: true,
+                title_fa: true,
+              },
+            },
           },
         },
       },
-    });
+    })) as UserWithPositions | null;
 
     if (!user) {
-      // console.log('❌ کاربر پیدا نشد، ارسال خطای 404');
-      return NextResponse.json({error: 'User not found'}, {status: 404});
+      console.error("User not found for id:", decoded.userId);
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // دریافت موقعیت‌های کاربر
-    const positions = user.positions.map(
-      (pos: {Position: {title_fa: string}}) => pos.Position.title_fa,
+    // 5. پردازش نتایج
+    const positions = user.position_on_user.map((pos) => pos.position.title_fa);
+    const username = user.user_name;
+    const firstname = user.first_name;
+    const lastname = user.last_name;
+
+    return NextResponse.json(
+      { username, positions, firstname, lastname },
+      { status: 200 }
     );
-    // console.log('✅ اطلاعات کاربر:', {
-    //   first_name: user.first_name,
-    //   last_name: user.last_name,
-    //   positions,
-    // });
-    // بازگشت اطلاعات کاربر
-    return NextResponse.json({
-      first_name: user.first_name,
-      last_name: user.last_name,
-      positions,
-    });
   } catch (error) {
-    console.error('🔥 خطای داخلی سرور در API:', error);
-    return NextResponse.json({error: 'Internal Server Error'}, {status: 500});
+    console.error("JWT Verification Error:", error);
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 401 }
+    );
   }
 }

@@ -1,17 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {toPersianDate, getCurrentSalMahDahe} from '@/utils/dateUtils';
-import PumpingTable from './components/PumpingTable';
-import PumpingForm from './PumpingForm';
-import {usePumpingData} from './hooks/usePumpingData';
-import {usePumpingTime} from './hooks/usePumpingTime';
-import PaginationForMah, {convertMahToPersian} from './PaginationForMah';
-import {TaeedProgramData} from './types';
-import {KhatRanesh, PredictedVolume, PumpingData, RecordType} from './types';
-import BodySkeletonLoading from './BodySkeletonLoading';
+import * as React from "react";
+import { useState, useEffect } from "react";
+import { getCurrentSalMahDahe } from "../../utils/dateUtils";
+import PumpingForm from "./PumpingForm";
+import { usePumpingData } from "./hooks/usePumpingData";
+import { usePumpingTime } from "./hooks/usePumpingTime";
+import type { TaeedProgramData } from "./types";
+import { PumpingData } from "./types";
 
 interface BodyRequestPumpingProps {
   userName: string;
-  userRole: string[];
   firstName: string;
   lastName: string;
   networkName: string;
@@ -20,23 +17,28 @@ interface BodyRequestPumpingProps {
   idPumpStation: number;
   saleZeraee: string;
   doreKesht: string;
+  networkTrustee: string | null;
+  isSaving: boolean;
+  setIsSaving: (value: boolean) => void;
+  userRole: string[];
   idShDo: number;
-  mah: number; // اضافه کردن mah به پراپ‌ها
-  dahe: number; // اضافه کردن dahe به پراپ‌ها
+  mah: number;
+  dahe: number;
 }
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
-  userName,
-  userRole,
   firstName,
   lastName,
   networkName,
   pumpStationName,
-  idPumpStation,
   selectedNetworkId,
+  idPumpStation,
   saleZeraee,
   doreKesht,
-  idShDo,
+  networkTrustee,
+  isSaving,
+  setIsSaving,
+  userRole,
 }) => {
   const {
     sal: currentSal,
@@ -49,30 +51,29 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [dahe, setDahe] = useState(currentDahe);
   const [selectedMah, setSelectedMah] = useState(currentMah);
   const [selectedDahe, setSelectedDahe] = useState(currentDahe);
-  const [allDates, setAllDates] = useState<{Mah: number; Dahe: number}[]>([]);
-  const [isFormDisabled, setIsFormDisabled] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<
-    {date: string; raneshName: string; message: string}[]
-  >([]);
-  const [isFormFilled, setIsFormFilled] = useState(false);
   const [pumpData, setPumpData] = useState<{
-    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+    [idTarDor: number]: { [idRanesh: number]: PumpingData };
   }>({});
   const [selectedZarfiat, setSelectedZarfiat] = useState<{
-    [key: number]: {[key: number]: number};
+    [key: number]: { [key: number]: number };
   }>({});
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [isFormFilled] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    { date: string; raneshName: string; message: string }[]
+  >([]);
+  const [allDates] = useState<{ mah: number; dahe: number }[]>([]);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [isStationLoaded, setIsStationLoaded] = useState(false);
+  const [prevPumpStation, setPrevPumpStation] = useState<number | null>(null);
   const {
     khatRaneshList,
-    predictedVolumes,
-    loading,
     records,
     message,
     finalVolumes,
     mahList,
     taedAbMantaghe,
     taedProgramData,
+    currentFiddahe,
   } = usePumpingData(
     selectedNetworkId,
     idPumpStation,
@@ -82,8 +83,16 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     dahe,
     selectedDahe,
     pumpData,
-    setPumpData,
+    setPumpData
   );
+
+  type ExtendedTaeedProgramData = TaeedProgramData & {
+    fiddahe?: number;
+  };
+
+  const isFiddaheValid =
+    ((taedProgramData as unknown as ExtendedTaeedProgramData)?.fiddahe ?? 0) >
+    (currentFiddahe || 0) - 2;
 
   const {
     timeValues,
@@ -94,43 +103,34 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   } = usePumpingTime();
 
   useEffect(() => {
-    // Simulate loading delay for the body
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000); // Adjust the delay as needed
-  }, []);
-
-  useEffect(() => {
     const isPastOrCurrentMonth =
       sal < currentSal || (sal === currentSal && mah < currentMah);
-
     const isPastOrCurrentDahe =
       sal === currentSal && mah === currentMah && dahe <= currentDahe;
-
     const isUserRoleAllowed = userRole.some((role) =>
       [
-        'Website Creator',
-        'Website Admin',
-        'Ezgele Water Users Representative',
-        'Jegiran Water Users Representative',
-        'Northern Zahab Water Users Representative',
-        'Southern Zahab Water Users Representative',
-        'Hoomeh Qaraviz Water Users Representative',
-        'Beshiveh Water Users Representative',
-        'Ghaleh Shahin Water Users Representative',
-        'Water Users Representative South Jagarlu',
-      ].includes(role),
+        "Website Creator",
+        "Website Admin",
+        "Ezgele Water Users Representative",
+        "Jegiran Water Users Representative",
+        "Northern Zahab Water Users Representative",
+        "Southern Zahab Water Users Representative",
+        "Hoomeh Qaraviz Water Users Representative",
+        "Beshiveh Water Users Representative",
+        "Ghaleh Shahin Water Users Representative",
+        "Water Users Representative South Jagarlu",
+      ].includes(role)
     );
 
     const isTaedAbMantagheTrue = taedAbMantaghe.some(
-      (record) => record.TaedAbMantaghe === true,
+      (record) => record.TaedAbMantaghe === true
     );
 
     setIsFormDisabled(
       isPastOrCurrentMonth ||
         isPastOrCurrentDahe ||
         !isUserRoleAllowed ||
-        isTaedAbMantagheTrue,
+        isTaedAbMantagheTrue
     );
   }, [
     sal,
@@ -144,6 +144,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   ]);
 
   const handleSave = () => {
+    setIsSaving(true);
     // منطق ذخیره‌سازی
   };
 
@@ -151,14 +152,36 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     // منطق بازنشانی فرم
   };
 
+  useEffect(() => {
+    // فقط زمانی که ماه جاری را انتخاب می‌کنیم، دهه را به دهه جاری تنظیم کنیم
+    if (selectedMah === currentMah && sal === currentSal) {
+      setSelectedDahe(currentDahe);
+      setDahe(currentDahe);
+    }
+  }, [selectedMah, sal, currentMah, currentSal, currentDahe, setDahe]);
+
+  useEffect(() => {
+    setIsStationLoaded(false);
+    setPrevPumpStation(null);
+  }, [idPumpStation]);
+
+  useEffect(() => {
+  if (idPumpStation > 0) {
+    setIsStationLoaded(false);
+    setPrevPumpStation(idPumpStation);
+  }
+}, [idPumpStation, setIsStationLoaded, setPrevPumpStation]);
+
   return (
     <div className="overflow-x-auto">
-      {isLoading ? (
-        <BodySkeletonLoading />
-      ) : selectedNetworkId === null ? (
-        <h2>شبکه مورد نظر خود را انتخاب کنید</h2>
-      ) : idPumpStation === 0 ? (
-        <h2>ایستگاه پمپاژ مورد نظر خود را انتخاب کنید</h2>
+      {selectedNetworkId === null ? (
+        <h2 className="py-4 text-center text-gray-600">
+          لطفاً شبکه آبیاری مورد نظر را انتخاب کنید
+        </h2>
+      ) : idPumpStation <= 0 ? (
+        <h2 className="py-4 text-center text-gray-600">
+          لطفاً ایستگاه پمپاژ مورد نظر را انتخاب کنید
+        </h2>
       ) : (
         <PumpingForm
           khatRaneshList={khatRaneshList}
@@ -198,13 +221,24 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           dahe={dahe} // پاس دادن dahe به PumpingForm
           firstName={firstName} // پاس دادن firstName به PumpingForm
           lastName={lastName}
-          taedProgramData={taedProgramData as TaeedProgramData | null}
+          taedProgramData={
+            taedProgramData as unknown as TaeedProgramData | null
+          }
           selectedZarfiat={selectedZarfiat}
           setSelectedZarfiat={setSelectedZarfiat}
           networkName={networkName}
           pumpStationName={pumpStationName}
           saleZeraee={saleZeraee}
           doreKesht={doreKesht}
+          currentFiddahe={currentFiddahe}
+          networkTrustee={networkTrustee}
+          isSaving={isSaving}
+          setIsSaving={setIsSaving}
+          isFiddaheValid={isFiddaheValid}
+          isStationLoaded={isStationLoaded}
+          setIsStationLoaded={setIsStationLoaded}
+          prevPumpStation={prevPumpStation}
+          setPrevPumpStation={setPrevPumpStation}
         />
       )}
     </div>

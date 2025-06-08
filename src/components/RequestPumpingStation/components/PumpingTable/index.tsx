@@ -1,48 +1,44 @@
-import React, {useState} from 'react';
-import {toPersianDate, getCurrentSalMahDahe} from '@/utils/dateUtils';
-import {KhatRanesh, RecordType, PumpingData} from '../../types';
-import {usePumpingLogic} from './usePumpingLogic';
-type SelectedZarfiatType = {[key: number]: {[key: number]: number}};
+import * as React from "react";
+import { toPersianDate } from "../../../../utils/dateUtils";
+import { KhatRanesh, RecordType, PumpingData } from "../../types";
+
 export interface PumpingTableProps {
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
-  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
-  setPumpData: (data: {
-    [idTarDor: number]: {[idRanesh: number]: PumpingData};
-  }) => void;
-  selectedPumpCounts: {[key: number]: {[date: string]: number}};
-  timeValues: {[key: number]: {[key: number]: {from: string; to: string}}};
+  pumpData: { [idTarDor: number]: { [idRanesh: number]: PumpingData } };
+  selectedPumpCounts: { [key: number]: { [date: string]: number } };
+  timeValues: { [key: number]: { [key: number]: { from: string; to: string } } };
   handlePumpCountChange: (
     recordId: number,
     raneshId: number,
-    value: number,
+    value: number
   ) => void;
   handleTimeChange: (
     recordId: number,
     raneshId: number,
-    field: 'from' | 'to',
-    value: string,
+    field: "from" | "to",
+    value: string
   ) => void;
   updateTime: (
     idTarDor: number,
     idRanesh: number,
-    field: 'from' | 'to',
-    type: 'hour' | 'minute',
-    increment: number,
+    field: "from" | "to",
+    type: "hour" | "minute",
+    increment: number
   ) => void;
-  message: string | null; // اضافه کردن این خط
-  finalVolumes: {[key: number]: number}; // اضافه کردن این خط
-  isFormDisabled: boolean;
-  selectedZarfiat: {[key: number]: {[key: number]: number}};
-  setSelectedZarfiat: (data: {[key: number]: {[key: number]: number}}) => void;
-  isReadOnly?: boolean;
+  message: string | null;
+  finalVolumes: { [key: number]: number };
+  selectedZarfiat: { [key: number]: { [key: number]: number } };
+  setSelectedZarfiat: React.Dispatch<
+    React.SetStateAction<{ [key: number]: { [key: number]: number } }>
+  >;
+  setPumpData: (data: { [idTarDor: number]: { [idRanesh: number]: PumpingData } }) => void;
 }
 
 const PumpingTable: React.FC<PumpingTableProps> = ({
   khatRaneshList,
   records,
   pumpData,
-  setPumpData,
   selectedPumpCounts,
   timeValues,
   handlePumpCountChange,
@@ -50,27 +46,18 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   updateTime,
   message,
   finalVolumes,
-  isFormDisabled,
   selectedZarfiat,
   setSelectedZarfiat,
-  isReadOnly,
 }) => {
-  const isFormFilled = records.some((record) =>
-    khatRaneshList.some(
-      (ranesh) =>
-        pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Zarfiat !== null ||
-        pumpData[record.IdTarDor]?.[ranesh.IdRanesh]?.Tedad !== null,
-    ),
-  );
   const handleZarfiatChange = (
     IdTarDor: number,
     IdRanesh: number,
-    newValue: string,
+    newValue: string
   ) => {
     const numericValue = Number(newValue);
 
     if (!isNaN(numericValue)) {
-      setSelectedZarfiat((prev: any[]) => {
+      setSelectedZarfiat((prev) => {
         const updatedData = {
           ...prev,
           [IdTarDor]: {
@@ -84,31 +71,29 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   };
   // تنظیم عرض ستون‌ها
   const columnWidths = {
-    pumpCount: '40px', // عرض ستون "تعداد پمپ"
-    debi: '50px', // عرض ستون "دبی L/S"
-    start: '80px', // عرض ستون "شروع"
-    end: '80px', // عرض ستون "پایان"
-    duration: '50px', // عرض ستون "مدت"
+    pumpCount: "40px",
+    debi: "50px",
+    start: "80px",
+    end: "80px",
+    duration: "50px",
   };
 
   // محاسبه عرض ستون‌ها بر اساس تعداد ستون‌ها
   const calculateColumnWidth = (
     columnType: keyof typeof columnWidths,
-    ranesh?: KhatRanesh,
+    ranesh?: KhatRanesh
   ) => {
     const baseWidth = columnWidths[columnType];
     const columnCount = khatRaneshList.filter(
-      (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+      (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
     ).length;
 
-    // کاهش عرض ستون‌ها در صورت افزایش تعداد ستون‌ها
     let calculatedWidth = baseWidth;
     if (columnCount > 2) {
       calculatedWidth = `calc(${baseWidth} / ${columnCount})`;
     }
 
-    // اگر ستون "دبی" و ranesh.FIdSePu === 2 باشد، عرض را سه برابر کنید
-    if (columnType === 'debi' && ranesh?.FIdSePu === 2) {
+    if (columnType === "debi" && ranesh?.fidsepu === 2) {
       calculatedWidth = `calc(${calculatedWidth} * 3)`;
     }
 
@@ -118,126 +103,126 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
     <table
       id="pumping-table"
       className="w-full border-collapse border border-orange-500"
-      style={{
-        transformOrigin: 'top right',
-        width: 'max-content',
-      }}
+      // style={{
+      //   transformOrigin: "top right",
+      //   width: "max-content",
+      // }}
     >
       <thead className="bg-blue-100">
         <tr>
           <th
-            className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+            className="border border-l-4 border-gray-300 border-l-green-400 px-4 font-bold"
             colSpan={2}
           >
             خط رانش
           </th>
           {khatRaneshList
             .filter(
-              (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+              (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
             )
             .map((ranesh) => (
               <th
-                key={ranesh.IdRanesh}
-                className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
-                colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                key={ranesh.idranesh}
+                className="border border-l-4 border-gray-300 border-l-green-400 px-4 font-bold"
+                colSpan={ranesh.fidsepu === 1 ? 5 : 4}
               >
-                {ranesh.RaneshName}
+                {ranesh.raneshname}
               </th>
             ))}
         </tr>
 
         <tr>
           <th
-            className="border border-gray-300 px-4 font-bold border-l-4 border-l-green-400"
+            className="border border-l-4 border-gray-300 border-l-green-400 px-4 font-bold"
             colSpan={2}
           >
             دبی پمپ
           </th>
           {khatRaneshList
             .filter(
-              (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+              (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
             )
             .map((ranesh) => (
               <th
-                key={ranesh.IdRanesh}
-                className="border border-gray-300 px-4 border-l-4 border-l-green-400"
-                colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                key={ranesh.idranesh}
+                className="border border-l-4 border-gray-300 border-l-green-400 px-4"
+                colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 dir="ltr"
               >
-                {ranesh.FIdSePu === 1
-                  ? `${ranesh.DebiPomp} L/S`
-                  : `${ranesh.Zarfiat} L/S`}
+                {ranesh.fidsepu === 1
+                  ? `${ranesh.debipomp} L/S`
+                  : `${ranesh.zarfiat} L/S`}
               </th>
             ))}
         </tr>
 
         <tr>
           <th
-            className="border border-gray-300 px-1 py-0.3 font-bold"
-            style={{width: '64px', minWidth: '64px', whiteSpace: 'nowrap'}}
+            className="py-0.3 border border-gray-300 px-1 font-bold"
+            style={{ width: "64px", minWidth: "64px", whiteSpace: "nowrap" }}
           >
             روز
           </th>
           <th
-            className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400"
-            style={{width: '73px', minWidth: '73px', whiteSpace: 'nowrap'}}
+            className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1 font-bold"
+            style={{ width: "73px", minWidth: "73px", whiteSpace: "nowrap" }}
           >
             تاریخ
           </th>
           {khatRaneshList
             .filter(
-              (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+              (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
             )
             .map((ranesh) => (
-              <React.Fragment key={ranesh.IdRanesh}>
-                {ranesh.FIdSePu === 1 && (
+              <React.Fragment key={ranesh.idranesh}>
+                {ranesh.fidsepu === 1 && (
                   <th
-                    className="border border-gray-300 px-1 py-0.3 border-r-4 border-r-green-400"
+                    className="py-0.3 border border-r-4 border-gray-300 border-r-green-400 px-1"
                     style={{
-                      width: calculateColumnWidth('pumpCount'),
-                      minWidth: calculateColumnWidth('pumpCount'),
-                      whiteSpace: 'nowrap',
+                      width: calculateColumnWidth("pumpCount"),
+                      minWidth: calculateColumnWidth("pumpCount"),
+                      whiteSpace: "nowrap",
                     }}
                   >
                     تعداد
                   </th>
                 )}
                 <th
-                  className="border border-gray-300 px-0.5 py-0.3 font-bold"
+                  className="py-0.3 border border-gray-300 px-0.5 font-bold"
                   style={{
-                    width: calculateColumnWidth('debi', ranesh), // اضافه کردن ranesh به عنوان پارامتر
-                    minWidth: calculateColumnWidth('debi', ranesh),
-                    whiteSpace: 'nowrap',
+                    width: calculateColumnWidth("debi", ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                    minWidth: calculateColumnWidth("debi", ranesh),
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  دبی
+                  دبی پمپ
                 </th>
                 <th
-                  className="border border-gray-300 px-6 py-0.3 font-bold"
+                  className="py-0.3 border border-gray-300 px-6 font-bold"
                   style={{
-                    width: calculateColumnWidth('pumpCount'),
-                    minWidth: calculateColumnWidth('pumpCount'),
-                    whiteSpace: 'nowrap',
+                    width: calculateColumnWidth("pumpCount"),
+                    minWidth: calculateColumnWidth("pumpCount"),
+                    whiteSpace: "nowrap",
                   }}
                 >
                   شروع
                 </th>
                 <th
-                  className="border border-gray-300 px-6 py-0.3 font-bold"
+                  className="py-0.3 border border-gray-300 px-6 font-bold"
                   style={{
-                    width: calculateColumnWidth('pumpCount'),
-                    minWidth: calculateColumnWidth('pumpCount'),
-                    whiteSpace: 'nowrap',
+                    width: calculateColumnWidth("pumpCount"),
+                    minWidth: calculateColumnWidth("pumpCount"),
+                    whiteSpace: "nowrap",
                   }}
                 >
                   پایان
                 </th>
                 <th
-                  className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400"
+                  className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1"
                   style={{
-                    width: calculateColumnWidth('duration'),
-                    minWidth: calculateColumnWidth('duration'),
-                    whiteSpace: 'nowrap',
+                    width: calculateColumnWidth("duration"),
+                    minWidth: calculateColumnWidth("duration"),
+                    whiteSpace: "nowrap",
                   }}
                 >
                   مدت
@@ -252,80 +237,80 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
       ) : records && Array.isArray(records) && records.length > 0 ? (
         <tbody className="divide-y divide-gray-200 text-sm">
           {records.map((record, index) => {
-            const pumpInfo = pumpData[record.IdTarDor];
-            const rowColor = index % 2 === 0 ? 'bg-green-100' : 'bg-white';
+            const pumpInfo = pumpData[record.idtardor];
+            const rowColor = index % 2 === 0 ? "bg-green-100" : "bg-white";
 
             return (
               <tr
-                key={record.IdTarDor}
-                className={`${rowColor} hover:bg-green-200 whitespace-nowrap`}
+                key={record.idtardor}
+                className={`${rowColor} whitespace-nowrap hover:bg-green-200`}
               >
-                <td className="border border-gray-300 px-1 py-0.3">
-                  {toPersianDate(record.Trikh, 'dddd')}
+                <td className="py-0.3 border border-gray-300 px-1">
+                  {toPersianDate(record.trikh, "dddd")}
                 </td>
-                <td className="border border-gray-300 px-1 py-0.3 font-bold border-l-4 border-l-green-400">
-                  {toPersianDate(record.Trikh, 'YYYY/MM/DD')}
+                <td className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1 font-bold">
+                  {toPersianDate(record.trikh, "YYYY/MM/DD")}
                 </td>
                 {khatRaneshList
                   .filter(
-                    (ranesh) =>
-                      ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                    (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
                   )
                   .map((ranesh) => {
-                    const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+                    const raneshInfo = pumpInfo?.[ranesh.idranesh];
                     return (
-                      <React.Fragment key={ranesh.IdRanesh}>
-                        {ranesh.FIdSePu === 1 && (
-                          <td className="border border-gray-300 px-1 py-0.3">
+                      <React.Fragment key={ranesh.idranesh}>
+                        {ranesh.fidsepu === 1 && (
+                          <td className="py-0.3 border border-gray-300 px-1">
                             <select
                               value={
-                                selectedPumpCounts[record.IdTarDor]?.[
-                                  ranesh.IdRanesh
-                                ] ||
-                                raneshInfo?.Tedad ||
+                                selectedPumpCounts[record.idtardor]?.[
+                                  ranesh.idranesh
+                                ] ??
+                                pumpData[record.idtardor]?.[ranesh.idranesh]
+                                  ?.tedad ??
                                 0
                               }
                               onChange={(e) =>
                                 handlePumpCountChange(
-                                  record.IdTarDor,
-                                  ranesh.IdRanesh,
-                                  Number(e.target.value),
+                                  record.idtardor,
+                                  ranesh.idranesh,
+                                  Number(e.target.value)
                                 )
                               }
-                              className="border rounded px-1 py-0.5 text-xs"
-                              disabled={isFormDisabled}
+                              className="rounded border px-1 py-0.5 text-xs"
+                              
                             >
                               {Array.from(
-                                {length: (ranesh.TedadPump || 0) + 1},
+                                { length: (ranesh.tedadpump || 0) + 1 },
                                 (_, i) => (
                                   <option key={i} value={i}>
                                     {i}
                                   </option>
-                                ),
+                                )
                               )}
                             </select>
                           </td>
                         )}
-                        <td className="border border-gray-300 px-1 py-0.3">
-                          {ranesh.FIdSePu === 2 ? (
+                        <td className="py-0.3 border border-gray-300 px-1">
+                          {ranesh.fidsepu === 2 ? (
                             <input
                               type="number"
                               value={
-                                selectedZarfiat[record.IdTarDor]?.[
-                                  ranesh.IdRanesh
+                                selectedZarfiat[record.idtardor]?.[
+                                  ranesh.idranesh
                                 ] != null
-                                  ? selectedZarfiat[record.IdTarDor][
-                                      ranesh.IdRanesh
+                                  ? selectedZarfiat[record.idtardor][
+                                      ranesh.idranesh
                                     ].toString()
-                                  : raneshInfo?.Zarfiat != null
-                                    ? raneshInfo.Zarfiat.toString()
-                                    : ''
+                                  : raneshInfo?.zarfiat != null
+                                    ? raneshInfo.zarfiat.toString()
+                                    : ""
                               }
                               onChange={(e) => {
                                 const maxZarfiat = Number(
                                   khatRaneshList.find(
-                                    (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                                  )?.Zarfiat ?? Infinity,
+                                    (khat) => khat.idranesh === ranesh.idranesh
+                                  )?.zarfiat ?? Infinity
                                 );
 
                                 const newValue = e.target.value;
@@ -335,98 +320,95 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                   Number(newValue) <= maxZarfiat
                                 ) {
                                   handleZarfiatChange(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    newValue,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    newValue
                                   );
                                 }
                               }}
                               min="0"
                               max={String(
                                 khatRaneshList.find(
-                                  (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                                )?.Zarfiat ?? '',
+                                  (khat) => khat.idranesh === ranesh.idranesh
+                                )?.zarfiat ?? ""
                               )}
-                              placeholder={String(
+                              placeholder={`max${String(
                                 khatRaneshList.find(
-                                  (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                                )?.Zarfiat ?? '',
-                              )}
-                              className="border border-green-400 bg-white/90 h-7 px-1 py-0.5 
-        text-gray-700 shadow-sm hover:shadow-md 
-        focus:ring-2 focus:ring-green-400 focus:outline-none
-        transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
-                              disabled={isFormDisabled}
+                                  (khat) => khat.idranesh === ranesh.idranesh
+                                )?.zarfiat ?? ""
+                              )}`}
+                              className="h-7 w-full cursor-pointer border border-green-400 bg-white/90 px-1 py-0.5 text-center text-xs text-gray-700 shadow-sm transition-all duration-300 hover:bg-green-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                              
                               style={{
-                                width: calculateColumnWidth('debi', ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                                width: calculateColumnWidth("debi", ranesh), // اضافه کردن ranesh به عنوان پارامتر
                               }}
                             />
                           ) : (
                             (() => {
                               const selectedTedad =
-                                selectedPumpCounts[record.IdTarDor]?.[
-                                  ranesh.IdRanesh
+                                selectedPumpCounts[record.idtardor]?.[
+                                  ranesh.idranesh
                                 ] ??
-                                raneshInfo?.Tedad ??
+                                raneshInfo?.tedad ??
                                 0;
 
                               const debiPomp =
                                 khatRaneshList.find(
-                                  (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                                )?.DebiPomp ?? 0;
+                                  (khat) => khat.idranesh === ranesh.idranesh
+                                )?.debipomp ?? 0;
 
                               return (selectedTedad * debiPomp).toFixed(1);
                             })()
                           )}
                         </td>
 
-                        <td className="border border-gray-300 px-1 py-0.3 relative">
+                        <td className="py-0.3 relative border border-gray-300 px-1">
                           <div className="relative w-full">
                             <input
                               type="text"
                               value={
-                                timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                                timeValues[record.idtardor]?.[ranesh.idranesh]
                                   ?.from ??
-                                (raneshInfo?.Shorooe
-                                  ? new Date(raneshInfo.Shorooe)
+                                (raneshInfo?.shorooe
+                                  ? new Date(raneshInfo.shorooe)
                                       .toISOString()
                                       .slice(11, 16)
-                                  : '')
+                                  : "")
                               }
                               onChange={(e) => {
                                 let newValue = e.target.value.replace(
                                   /[^0-9:]/g,
-                                  '',
+                                  ""
                                 );
                                 if (newValue.length > 5) return;
 
-                                const parts = newValue.split(':');
+                                const parts = newValue.split(":");
                                 if (parts.length > 2) return;
 
                                 if (parts[0]?.length > 2)
                                   newValue =
                                     newValue.slice(0, 2) +
-                                    ':' +
+                                    ":" +
                                     newValue.slice(2, 4);
 
                                 handleTimeChange(
-                                  record.IdTarDor,
-                                  ranesh.IdRanesh,
-                                  'from',
-                                  newValue,
+                                  record.idtardor,
+                                  ranesh.idranesh,
+                                  "from",
+                                  newValue
                                 );
                               }}
                               onBlur={(e) => {
                                 let [hours, minutes] = e.target.value
-                                  .split(':')
+                                  .split(":")
                                   .map(Number);
 
                                 if (isNaN(hours) || isNaN(minutes)) {
                                   handleTimeChange(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'from',
-                                    '',
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "from",
+                                    ""
                                   );
                                   return;
                                 }
@@ -434,130 +416,87 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                 hours = Math.min(Math.max(hours, 0), 23);
                                 minutes = Math.min(Math.max(minutes, 0), 59);
 
-                                const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes
+                                const formattedValue = `${hours.toString().padStart(2, "0")}:${minutes
                                   .toString()
-                                  .padStart(2, '0')}`;
+                                  .padStart(2, "0")}`;
 
                                 handleTimeChange(
-                                  record.IdTarDor,
-                                  ranesh.IdRanesh,
-                                  'from',
-                                  formattedValue,
+                                  record.idtardor,
+                                  ranesh.idranesh,
+                                  "from",
+                                  formattedValue
                                 );
                               }}
                               placeholder="HH:MM"
-                              disabled={
-                                ((selectedPumpCounts[record.IdTarDor]?.[
-                                  ranesh.IdRanesh
-                                ] ||
-                                  raneshInfo?.Tedad ||
-                                  0) === 0 &&
-                                  raneshInfo?.Zarfiat <= 0) ||
-                                isFormDisabled
-                              }
-                              className="border border-green-400 bg-white/90 rounded-lg h-7 px-1 py-0.5 
-                      text-gray-700 shadow-sm hover:shadow-md 
-                      focus:ring-2 focus:ring-green-400 focus:outline-none
-                      transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
+                              
+                              className="h-7 w-full cursor-pointer rounded-lg border border-green-400 bg-white/90 px-1 py-0.5 text-center text-xs text-gray-700 shadow-sm transition-all duration-300 hover:bg-green-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
 
-                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
+                            <div className="gap-0.2 absolute left-0.5 top-1/2 flex -translate-y-1/2 transform flex-col">
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'from',
-                                    'hour',
-                                    1,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "from",
+                                    "hour",
+                                    1
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▲
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'from',
-                                    'hour',
-                                    -1,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "from",
+                                    "hour",
+                                    -1
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▼
                               </button>
                             </div>
 
-                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
+                            <div className="gap-0.2 absolute right-1 top-1/2 flex -translate-y-1/2 transform flex-col">
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'from',
-                                    'minute',
-                                    5,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "from",
+                                    "minute",
+                                    5
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▲
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'from',
-                                    'minute',
-                                    -5,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "from",
+                                    "minute",
+                                    -5
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▼
                               </button>
@@ -565,54 +504,54 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                           </div>
                         </td>
 
-                        <td className="border border-gray-300 px-1 py-0.3 relative">
+                        <td className="py-0.3 relative border border-gray-300 px-1">
                           <div className="relative w-full">
                             <input
                               type="text"
                               step="300"
                               value={
-                                timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                                timeValues[record.idtardor]?.[ranesh.idranesh]
                                   ?.to ??
-                                (raneshInfo?.Paian
-                                  ? new Date(raneshInfo.Paian)
+                                (raneshInfo?.paian
+                                  ? new Date(raneshInfo.paian)
                                       .toISOString()
                                       .slice(11, 16)
-                                  : '')
+                                  : "")
                               }
                               onChange={(e) => {
                                 let newValue = e.target.value.replace(
                                   /[^0-9:]/g,
-                                  '',
+                                  ""
                                 );
                                 if (newValue.length > 5) return;
 
-                                const parts = newValue.split(':');
+                                const parts = newValue.split(":");
                                 if (parts.length > 2) return;
 
                                 if (parts[0]?.length > 2)
                                   newValue =
                                     newValue.slice(0, 2) +
-                                    ':' +
+                                    ":" +
                                     newValue.slice(2, 4);
 
                                 handleTimeChange(
-                                  record.IdTarDor,
-                                  ranesh.IdRanesh,
-                                  'to',
-                                  newValue,
+                                  record.idtardor,
+                                  ranesh.idranesh,
+                                  "to",
+                                  newValue
                                 );
                               }}
                               onBlur={(e) => {
                                 let [hours, minutes] = e.target.value
-                                  .split(':')
+                                  .split(":")
                                   .map(Number);
 
                                 if (isNaN(hours) || isNaN(minutes)) {
                                   handleTimeChange(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'to',
-                                    '',
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "to",
+                                    ""
                                   );
                                   return;
                                 }
@@ -620,130 +559,87 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                                 hours = Math.min(Math.max(hours, 0), 23);
                                 minutes = Math.min(Math.max(minutes, 0), 59);
 
-                                const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes
+                                const formattedValue = `${hours.toString().padStart(2, "0")}:${minutes
                                   .toString()
-                                  .padStart(2, '0')}`;
+                                  .padStart(2, "0")}`;
 
                                 handleTimeChange(
-                                  record.IdTarDor,
-                                  ranesh.IdRanesh,
-                                  'to',
-                                  formattedValue,
+                                  record.idtardor,
+                                  ranesh.idranesh,
+                                  "to",
+                                  formattedValue
                                 );
                               }}
                               placeholder="HH:MM"
-                              disabled={
-                                ((selectedPumpCounts[record.IdTarDor]?.[
-                                  ranesh.IdRanesh
-                                ] ||
-                                  raneshInfo?.Tedad ||
-                                  0) === 0 &&
-                                  raneshInfo?.Zarfiat <= 0) ||
-                                isFormDisabled
-                              }
-                              className="border border-green-400 bg-white/90 rounded-lg h-7 px-1 py-0.5 
-                      text-gray-700 shadow-sm hover:shadow-md 
-                      focus:ring-2 focus:ring-green-400 focus:outline-none
-                      transition-all duration-300 hover:bg-green-50 cursor-pointer w-full text-center text-xs"
+                              
+                              className="h-7 w-full cursor-pointer rounded-lg border border-green-400 bg-white/90 px-1 py-0.5 text-center text-xs text-gray-700 shadow-sm transition-all duration-300 hover:bg-green-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
                             />
 
-                            <div className="absolute left-0.5 top-1/2 transform -translate-y-1/2 flex flex-col gap-0.2">
+                            <div className="gap-0.2 absolute left-0.5 top-1/2 flex -translate-y-1/2 transform flex-col">
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'to',
-                                    'hour',
-                                    1,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "to",
+                                    "hour",
+                                    1
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▲
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'to',
-                                    'hour',
-                                    -1,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "to",
+                                    "hour",
+                                    -1
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▼
                               </button>
                             </div>
 
-                            <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col">
+                            <div className="absolute right-1 top-1/2 flex -translate-y-1/2 transform flex-col">
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'to',
-                                    'minute',
-                                    5,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "to",
+                                    "minute",
+                                    5
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▲
                               </button>
                               <button
                                 type="button"
-                                className="text-gray-400 hover:text-black text-xs p-0"
+                                className="p-0 text-xs text-gray-400 hover:text-black"
                                 onClick={() =>
                                   updateTime(
-                                    record.IdTarDor,
-                                    ranesh.IdRanesh,
-                                    'to',
-                                    'minute',
-                                    -5,
+                                    record.idtardor,
+                                    ranesh.idranesh,
+                                    "to",
+                                    "minute",
+                                    -5
                                   )
                                 }
-                                disabled={
-                                  ((selectedPumpCounts[record.IdTarDor]?.[
-                                    ranesh.IdRanesh
-                                  ] ||
-                                    raneshInfo?.Tedad ||
-                                    0) === 0 &&
-                                    raneshInfo?.Zarfiat <= 0) ||
-                                  isFormDisabled
-                                }
+                                
                               >
                                 ▼
                               </button>
@@ -751,32 +647,32 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                           </div>
                         </td>
 
-                        <td className="border border-gray-300 px-1 py-0.3 border-l-4 border-l-green-400">
+                        <td className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1">
                           {(() => {
                             const fromValue =
-                              timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                              timeValues[record.idtardor]?.[ranesh.idranesh]
                                 ?.from ??
-                              (raneshInfo?.Shorooe
-                                ? new Date(raneshInfo.Shorooe)
+                              (raneshInfo?.shorooe
+                                ? new Date(raneshInfo.shorooe)
                                     .toISOString()
                                     .slice(11, 16)
-                                : '');
+                                : "");
 
                             const toValue =
-                              timeValues[record.IdTarDor]?.[ranesh.IdRanesh]
+                              timeValues[record.idtardor]?.[ranesh.idranesh]
                                 ?.to ??
-                              (raneshInfo?.Paian
-                                ? new Date(raneshInfo.Paian)
+                              (raneshInfo?.paian
+                                ? new Date(raneshInfo.paian)
                                     .toISOString()
                                     .slice(11, 16)
-                                : '');
+                                : "");
 
                             if (fromValue && toValue) {
                               const [fromHours, fromMinutes] = fromValue
-                                .split(':')
+                                .split(":")
                                 .map(Number);
                               const [toHours, toMinutes] = toValue
-                                .split(':')
+                                .split(":")
                                 .map(Number);
 
                               const fromTotalMinutes =
@@ -792,11 +688,11 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
                               const hours = Math.floor(durationMinutes / 60);
                               const minutes = durationMinutes % 60;
-                              return `${hours.toString().padStart(2, '0')}:${minutes
+                              return `${hours.toString().padStart(2, "0")}:${minutes
                                 .toString()
-                                .padStart(2, '0')}`;
+                                .padStart(2, "0")}`;
                             }
-                            return '-';
+                            return "-";
                           })()}
                         </td>
                       </React.Fragment>
@@ -807,51 +703,55 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
           })}
           <tr>
             <td
-              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+              className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-4 text-xs font-bold"
               colSpan={2}
             >
               حجم درخواستی
             </td>
             {khatRaneshList
               .filter(
-                (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
               )
               .map((ranesh) => {
                 const totalWaterVolume = records.reduce((sum, record) => {
-                  const pumpInfo = pumpData[record.IdTarDor];
-                  const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+                  const pumpInfo = pumpData[record.idtardor];
+                  const raneshInfo = pumpInfo?.[ranesh.idranesh];
 
                   if (!raneshInfo) return sum;
 
                   const debi =
-                    ranesh.FIdSePu === 2
-                      ? Number(raneshInfo?.Zarfiat ?? 0)
-                      : (selectedPumpCounts[record.IdTarDor]?.[
-                          ranesh.IdRanesh
+                    ranesh.fidsepu === 2
+                      ? Number(
+                          selectedZarfiat[record.idtardor]?.[ranesh.idranesh] ?? // استفاده از selectedZarfiat
+                            raneshInfo?.zarfiat ??
+                            0
+                        )
+                      : (selectedPumpCounts[record.idtardor]?.[
+                          ranesh.idranesh
                         ] ??
-                          raneshInfo.Tedad ??
+                          raneshInfo.tedad ??
                           0) *
                         (khatRaneshList.find(
-                          (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                        )?.DebiPomp ?? 0);
+                          (khat) => khat.idranesh === ranesh.idranesh
+                        )?.debipomp ?? 0);
 
                   const fromValue =
-                    timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.from ??
-                    (raneshInfo.Shorooe
-                      ? new Date(raneshInfo.Shorooe).toISOString().slice(11, 16)
-                      : '');
+                    timeValues[record.idtardor]?.[ranesh.idranesh]?.from ??
+                    (raneshInfo.shorooe
+                      ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
+                      : "");
 
                   const toValue =
-                    timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
-                    (raneshInfo.Paian
-                      ? new Date(raneshInfo.Paian).toISOString().slice(11, 16)
-                      : '');
+                    timeValues[record.idtardor]?.[ranesh.idranesh]?.to ??
+                    (raneshInfo.paian
+                      ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
+                      : "");
 
                   if (fromValue && toValue) {
                     const [fromHours, fromMinutes] = fromValue
-                      .split(':')
+                      .split(":")
                       .map(Number);
-                    const [toHours, toMinutes] = toValue.split(':').map(Number);
+                    const [toHours, toMinutes] = toValue.split(":").map(Number);
 
                     let durationMinutes =
                       toHours * 60 + toMinutes - (fromHours * 60 + fromMinutes);
@@ -867,13 +767,13 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
                 return (
                   <td
-                    key={ranesh.IdRanesh}
-                    className="border border-gray-300 px-4 py-0.3 text-center font-bold border-l-4 border-l-green-400 text-xs"
-                    colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                    key={ranesh.idranesh}
+                    className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center text-xs font-bold"
+                    colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                   >
                     {totalWaterVolume
                       .toFixed(1)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </td>
                 );
               })}
@@ -881,76 +781,76 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
           <tr className="bg-yellow-100 font-semibold">
             <td
-              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+              className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-4 text-xs font-bold"
               colSpan={2}
             >
               حجم پیش بینی
             </td>
             {khatRaneshList
               .filter(
-                (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
               )
               .map((ranesh) => (
                 <td
-                  key={ranesh.IdRanesh}
-                  className="border border-gray-300 px-4 py-0.3 text-center font-semibold border-l-4 border-l-green-400 text-xs"
-                  colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                  key={ranesh.idranesh}
+                  className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center text-xs font-semibold"
+                  colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 >
-                  {finalVolumes[ranesh.IdRanesh] !== undefined
-                    ? finalVolumes[ranesh.IdRanesh]
+                  {finalVolumes[ranesh.idranesh] !== undefined
+                    ? finalVolumes[ranesh.idranesh]
                         .toFixed(1)
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    : '-'}
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : "-"}
                 </td>
               ))}
           </tr>
           <tr className="bg-gray-200 font-bold">
             <td
-              className="border border-gray-300 px-4 py-0.3 font-bold border-l-4 border-l-green-400 text-xs"
+              className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-4 text-xs font-bold"
               colSpan={2}
             >
               اضافه درخواست
             </td>
             {khatRaneshList
               .filter(
-                (ranesh) => ranesh.Active !== false && ranesh.FIdDPipe === 1,
+                (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
               )
               .map((ranesh) => {
                 const totalWaterVolume = records.reduce((sum, record) => {
-                  const pumpInfo = pumpData[record.IdTarDor];
-                  const raneshInfo = pumpInfo?.[ranesh.IdRanesh];
+                  const pumpInfo = pumpData[record.idtardor];
+                  const raneshInfo = pumpInfo?.[ranesh.idranesh];
 
                   if (!raneshInfo) return sum;
 
                   const debi =
-                    ranesh.FIdSePu === 2
-                      ? Number(raneshInfo?.Zarfiat ?? 0)
-                      : (selectedPumpCounts[record.IdTarDor]?.[
-                          ranesh.IdRanesh
+                    ranesh.fidsepu === 2
+                      ? Number(raneshInfo?.zarfiat ?? 0)
+                      : (selectedPumpCounts[record.idtardor]?.[
+                          ranesh.idranesh
                         ] ??
-                          raneshInfo.Tedad ??
+                          raneshInfo.tedad ??
                           0) *
                         (khatRaneshList.find(
-                          (khat) => khat.IdRanesh === ranesh.IdRanesh,
-                        )?.DebiPomp ?? 0);
+                          (khat) => khat.idranesh === ranesh.idranesh
+                        )?.debipomp ?? 0);
 
                   const fromValue =
-                    timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.from ??
-                    (raneshInfo.Shorooe
-                      ? new Date(raneshInfo.Shorooe).toISOString().slice(11, 16)
-                      : '');
+                    timeValues[record.idtardor]?.[ranesh.idranesh]?.from ??
+                    (raneshInfo.shorooe
+                      ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
+                      : "");
 
                   const toValue =
-                    timeValues[record.IdTarDor]?.[ranesh.IdRanesh]?.to ??
-                    (raneshInfo.Paian
-                      ? new Date(raneshInfo.Paian).toISOString().slice(11, 16)
-                      : '');
+                    timeValues[record.idtardor]?.[ranesh.idranesh]?.to ??
+                    (raneshInfo.paian
+                      ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
+                      : "");
 
                   if (fromValue && toValue) {
                     const [fromHours, fromMinutes] = fromValue
-                      .split(':')
+                      .split(":")
                       .map(Number);
-                    const [toHours, toMinutes] = toValue.split(':').map(Number);
+                    const [toHours, toMinutes] = toValue.split(":").map(Number);
 
                     let durationMinutes =
                       toHours * 60 + toMinutes - (fromHours * 60 + fromMinutes);
@@ -964,21 +864,21 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                   return sum;
                 }, 0);
 
-                const predictedVolume = finalVolumes[ranesh.IdRanesh] ?? 0;
+                const predictedVolume = finalVolumes[ranesh.idranesh] ?? 0;
                 const extraRequest = totalWaterVolume - predictedVolume;
                 const textColor =
-                  extraRequest > 0 ? 'text-red-700' : 'text-black';
-                const bgColor = extraRequest > 0 ? 'bg-red-100' : '';
+                  extraRequest > 0 ? "text-red-700" : "text-black";
+                const bgColor = extraRequest > 0 ? "bg-red-100" : "";
 
                 return (
                   <td
-                    key={ranesh.IdRanesh}
-                    className={`border border-gray-300 px-4 py-0.3 text-center ${textColor} ${bgColor}  border-l-4 border-l-green-400 text-xs`}
-                    colSpan={ranesh.FIdSePu === 1 ? 5 : 4}
+                    key={ranesh.idranesh}
+                    className={`py-0.3 border border-gray-300 px-4 text-center ${textColor} ${bgColor} border-l-4 border-l-green-400 text-xs`}
+                    colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                   >
                     {extraRequest
                       .toFixed(1)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </td>
                 );
               })}

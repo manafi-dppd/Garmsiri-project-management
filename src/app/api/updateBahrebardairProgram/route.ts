@@ -1,45 +1,61 @@
-import {NextResponse} from 'next/server';
-import {sqlServerClient} from '@prisma/db';
-
-const prisma = sqlServerClient;
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function PUT(request: Request) {
   try {
-    const {IdRanesh, IdTarDor, Tedad, Shorooe, Paian} = await request.json();
+    const body = await request.json();
+    const { IdRanesh, IdTarDor, Tedad, Shorooe, Paian } = body;
 
-    // تابع تبدیل مقدار ورودی به `Date` بدون تغییر منطقه زمانی
-    const convertToDate = (timeString: string | undefined | null) => {
-      if (!timeString || !timeString.includes(':')) {
-        return null; // مقدار NULL
-      }
+    const convertToUTCTime = (
+      timeString: string | null | undefined
+    ): Date | null => {
+      if (!timeString) return null;
 
-      const [hours, minutes] = timeString.split(':').map(Number);
-      return new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
+      const [hours, minutes] = timeString.split(":").map(Number);
+      const date = new Date();
+      date.setUTCHours(hours, minutes, 0, 0);
+      return date;
     };
 
-    const shorooeDate = convertToDate(Shorooe);
-    const paianDate = convertToDate(Paian);
+    const updateData: {
+      tedad?: number;
+      shorooe?: Date | null;
+      paian?: Date | null;
+    } = {};
 
-    // به‌روزرسانی مقدار در پایگاه داده
-    await prisma.bahrebardairProgram.updateMany({
+    if (Tedad !== undefined) {
+      updateData.tedad = Tedad ?? 0;
+    }
+
+    if (Shorooe !== undefined) {
+      updateData.shorooe = convertToUTCTime(Shorooe);
+    }
+
+    if (Paian !== undefined) {
+      updateData.paian = convertToUTCTime(Paian);
+    }
+
+    const result = await prisma.bahrebardairprogram.updateMany({
       where: {
-        FIdRanesh: IdRanesh,
-        FIdTarDor: IdTarDor,
+        fidranesh: IdRanesh,
+        fidtardor: IdTarDor,
       },
-      data: {
-        Tedad: Tedad ?? null, // اگر مقدار NULL باشد، مقدار پایگاه داده هم NULL شود
-        Shorooe: shorooeDate ?? null, // مقدار NULL در پایگاه داده تنظیم شود
-        Paian: paianDate ?? null, // مقدار NULL در پایگاه داده تنظیم شود
-      },
+      data: updateData,
     });
 
     return NextResponse.json(
-      {message: 'Data updated successfully'},
-      {status: 200},
+      { message: "Data updated successfully", count: result.count },
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Failed to update BahrebardairProgram:', error);
-    return NextResponse.json({error: 'Failed to update data'}, {status: 500});
+    console.error("Failed to update bahrebardairprogram:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to update data",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

@@ -1,5 +1,5 @@
 // src/components/RequestPumpingStation/hooks/usePumpingTime.ts
-import {useState} from 'react';
+import { useState } from 'react';
 
 export const usePumpingTime = () => {
   const [timeValues, setTimeValues] = useState<{
@@ -12,14 +12,14 @@ export const usePumpingTime = () => {
   }>({});
 
   const [selectedPumpCounts, setSelectedPumpCounts] = useState<{
-    [key: number]: {[date: string]: number};
+    [key: number]: { [date: string]: number };
   }>({});
 
   const handleTimeChange = (
     recordId: number,
     raneshId: number,
     field: 'from' | 'to',
-    value: string,
+    value: string
   ) => {
     setTimeValues((prev) => ({
       ...prev,
@@ -27,9 +27,9 @@ export const usePumpingTime = () => {
         ...prev[recordId],
         [raneshId]: {
           ...prev[recordId]?.[raneshId],
-          [field]: value,
-        },
-      },
+          [field]: value
+        }
+      }
     }));
   };
 
@@ -38,7 +38,7 @@ export const usePumpingTime = () => {
     idRanesh: number,
     field: 'from' | 'to',
     type: 'hour' | 'minute',
-    increment: number,
+    increment: number
   ) => {
     setTimeValues((prev) => {
       const currentTime = prev[idTarDor]?.[idRanesh]?.[field] || '08:00';
@@ -65,24 +65,20 @@ export const usePumpingTime = () => {
           ...prev[idTarDor],
           [idRanesh]: {
             ...prev[idTarDor]?.[idRanesh],
-            [field]: formattedTime,
-          },
-        },
+            [field]: formattedTime
+          }
+        }
       };
     });
   };
 
-  const handlePumpCountChange = (
-    recordId: number,
-    raneshId: number,
-    value: number,
-  ) => {
+  const handlePumpCountChange = (recordId: number, raneshId: number, value: number) => {
     setSelectedPumpCounts((prev) => ({
       ...prev,
       [recordId]: {
         ...prev[recordId],
-        [raneshId]: value,
-      },
+        [raneshId]: value
+      }
     }));
 
     setTimeValues((prev) => ({
@@ -93,10 +89,10 @@ export const usePumpingTime = () => {
           value > 0
             ? {
                 from: prev[recordId]?.[raneshId]?.from || '08:00',
-                to: prev[recordId]?.[raneshId]?.to ?? '',
+                to: prev[recordId]?.[raneshId]?.to ?? ''
               }
-            : {from: '', to: ''},
-      },
+            : { from: '', to: '' }
+      }
     }));
   };
 
@@ -105,6 +101,6 @@ export const usePumpingTime = () => {
     selectedPumpCounts,
     handleTimeChange,
     updateTime,
-    handlePumpCountChange,
+    handlePumpCountChange
   };
 };

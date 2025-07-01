@@ -1,155 +1,96 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-
-interface ShabakeRecord {
-  fidnet: number;
-  trikhshorooe: Date;
-  trikhpayan: Date;
-  fidsal: number;
-  fiddore: number;
-}
-
-interface SaleZeraee {
-  salezeraee: string;
-}
-
-interface DoreKesht {
-  dore: string;
-}
-
-interface IdShDo {
-  idshdo: number;
-}
+import {NextRequest, NextResponse} from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
-    const selectedNetworkId = Number(url.searchParams.get("networkId"));
+    const selectedNetworkId = Number(url.searchParams.get('networkId'));
     const currentDate = new Date();
 
     if (!selectedNetworkId) {
-      return NextResponse.json(
-        { error: "شبکه انتخاب نشده است." },
-        { status: 400 }
-      );
+      return NextResponse.json({error: 'شبکه انتخاب نشده است.'}, {status: 400});
     }
 
-    const shabakeRecords = await prisma.shabakedorekesht.findMany({
-      where: { fidnet: selectedNetworkId },
-      orderBy: { trikhshorooe: "asc" },
-    });
-
-    if (!shabakeRecords.length) {
-      return NextResponse.json(
-        { error: "تقویم آبیاری در سامانه بارگذاری نشده است." },
-        { status: 404 }
-      );
-    }
-
-    let finalFIdSal: number | number[] = [];
-    let finalFIdDore: number | number[] = [];
-    let matchedRecord: ShabakeRecord | null = null;
-
-    matchedRecord =
-      shabakeRecords.find(
-        (record: {
-          trikhshorooe: string | number | Date;
-          trikhpayan: string | number | Date;
-        }) => {
-          const startDate = new Date(record.trikhshorooe);
-          const endDate = new Date(record.trikhpayan);
-
-          const adjustedStart = new Date(startDate);
-          adjustedStart.setDate(startDate.getDate() + 10);
-
-          const adjustedEnd = new Date(endDate);
-          adjustedEnd.setDate(endDate.getDate() - 10);
-
-          return currentDate >= adjustedStart && currentDate <= adjustedEnd;
-        }
-      ) || null;
-
-    if (matchedRecord) {
-      finalFIdSal = matchedRecord.fidsal;
-      finalFIdDore = matchedRecord.fiddore;
-    } else {
-      matchedRecord =
-        shabakeRecords.find(
-          (record: { trikhshorooe: string | number | Date }) => {
-            const startDate = new Date(record.trikhshorooe);
-            const windowStart = new Date(startDate);
-            const windowEnd = new Date(startDate);
-
-            windowStart.setDate(startDate.getDate() - 10);
-            windowEnd.setDate(startDate.getDate() + 20);
-
-            return currentDate >= windowStart && currentDate <= windowEnd;
-          }
-        ) || null;
-
-      if (matchedRecord) {
-        const prevRecord = shabakeRecords.find(
-          (record: { trikhpayan: string | number | Date }) => {
-            const recordEnd = new Date(record.trikhpayan);
-            const matchedStart = new Date(matchedRecord!.trikhshorooe);
-            return recordEnd.getTime() === matchedStart.getTime() - 86400000;
-          }
-        );
-
-        if (prevRecord) {
-          finalFIdDore = [prevRecord.fiddore, matchedRecord.fiddore];
-          finalFIdSal =
-            prevRecord.fidsal === matchedRecord.fidsal
-              ? prevRecord.fidsal
-              : [prevRecord.fidsal, matchedRecord.fidsal];
-        } else {
-          finalFIdDore = matchedRecord.fiddore;
-          finalFIdSal = matchedRecord.fidsal;
-        }
-      } else {
-        return NextResponse.json(
-          { error: "تقویم آبیاری در سامانه بارگذاری نشده است." },
-          { status: 404 }
-        );
-      }
-    }
-
-    const saleZeraee = await prisma.salezeraee.findMany({
-      where: {
-        idsal: { in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal] },
-      },
-      select: { salezeraee: true },
-    });
-
-    const doreKesht = await prisma.dorekesht.findMany({
-      where: {
-        iddore: {
-          in: Array.isArray(finalFIdDore) ? finalFIdDore : [finalFIdDore],
-        },
-      },
-      select: { dore: true },
-    });
-
-    const idShDoRecords = await prisma.shabakedorekesht.findMany({
+    // دریافت رکورد جاری shabakedorekesht
+    const currentShabakeRecord = await prisma.shabakedorekesht.findFirst({
       where: {
         fidnet: selectedNetworkId,
-        fidsal: {
-          in: Array.isArray(finalFIdSal) ? finalFIdSal : [finalFIdSal],
-        },
-        fiddore: {
-          in: Array.isArray(finalFIdDore) ? finalFIdDore : [finalFIdDore],
-        },
+        trikhshorooe: {lte: currentDate},
+        trikhpayan: {gte: currentDate},
       },
-      select: { idshdo: true },
     });
 
+    if (!currentShabakeRecord) {
+      return NextResponse.json(
+        {error: 'دوره کشت جاری یافت نشد.'},
+        {status: 404},
+      );
+    }
+
+    // محاسبه بازه 10 روز قبل و بعد از شروع دوره کشت جاری
+    const doreKeshtStart = new Date(currentShabakeRecord.trikhshorooe);
+    const doreWindowStart = new Date(doreKeshtStart);
+    const doreWindowEnd = new Date(doreKeshtStart);
+    doreWindowStart.setDate(doreKeshtStart.getDate() - 10);
+    doreWindowEnd.setDate(doreKeshtStart.getDate() + 10);
+
+    // بررسی آیا در بازه 10 روز قبل یا بعد از شروع دوره کشت هستیم
+    const isInDoreWindow =
+      currentDate >= doreWindowStart && currentDate <= doreWindowEnd;
+
+    // دریافت سال زراعی جاری
+    const currentSaleZeraee = await prisma.salezeraee.findUnique({
+      where: {idsal: currentShabakeRecord.fidsal},
+      select: {salezeraee: true},
+    });
+
+    // دریافت دوره کشت جاری
+    const currentDoreKesht = await prisma.dorekesht.findUnique({
+      where: {iddore: currentShabakeRecord.fiddore},
+      select: {dore: true},
+    });
+
+    // دریافت سایر دوره‌های کشت فقط اگر در بازه زمانی باشیم
+    let otherDoreKesht: string[] = [];
+    if (isInDoreWindow) {
+      const allDoreKesht = await prisma.dorekesht.findMany({
+        where: {
+          iddore: {
+            in: await prisma.shabakedorekesht
+              .findMany({
+                where: {fidnet: selectedNetworkId},
+                select: {fiddore: true},
+                distinct: ['fiddore'],
+              })
+              .then((res) => res.map((r) => r.fiddore)),
+          },
+        },
+        select: {dore: true},
+      });
+      otherDoreKesht = allDoreKesht.map((d) => d.dore);
+    }
+
     return NextResponse.json({
-      SaleZeraee: saleZeraee.map((s: SaleZeraee) => s.salezeraee),
-      Dore: doreKesht.map((d: DoreKesht) => d.dore),
-      IdShDo: idShDoRecords.map((i: IdShDo) => i.idshdo),
+      // همیشه فقط سال زراعی جاری را برگردان
+      SaleZeraee: currentSaleZeraee ? [currentSaleZeraee.salezeraee] : [],
+
+      // اگر در بازه زمانی هستیم تمام دوره‌ها، در غیر اینصورت فقط دوره جاری
+      Dore: isInDoreWindow
+        ? otherDoreKesht
+        : currentDoreKesht
+          ? [currentDoreKesht.dore]
+          : [],
+
+      // مقدار پیشفرض برای دوره کشت
+      currentDoreKesht: currentDoreKesht?.dore || null,
+
+      // مقدار پیشفرض برای سال زراعی
+      currentSaleZeraee: currentSaleZeraee?.salezeraee || null,
+
+      IdShDo: currentShabakeRecord.idshdo,
     });
   } catch (error) {
-    console.error("خطا در دریافت داده‌های شبکه:", error);
-    return NextResponse.json({ error: "خطای داخلی سرور" }, { status: 500 });
+    console.error('خطا در دریافت داده‌های شبکه:', error);
+    return NextResponse.json({error: 'خطای داخلی سرور'}, {status: 500});
   }
 }

@@ -40,8 +40,6 @@ export async function POST(req: Request) {
     const username = uuidv4();
     const rawPassword = Math.random().toString(36).slice(-8); // تولید رمز عبور تصادفی
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
-    console.log('Generated username:', username);
-    console.log('Generated password:', rawPassword);
 
     // ذخیره دعوت‌نامه
     const newInvitation = await prisma.invitation.create({

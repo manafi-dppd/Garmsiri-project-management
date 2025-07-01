@@ -1,0 +1,604 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+model abademakhzan {
+  idmakhzan     Int           @id @default(autoincrement()) @db.SmallInt
+  toolebala     Decimal?      @db.Decimal(4, 1)
+  arzebala      Decimal?      @db.Decimal(4, 1)
+  toolekaf      Decimal?      @db.Decimal(4, 1)
+  arzekaf       Decimal?      @db.Decimal(4, 1)
+  omgh          Decimal?      @db.Decimal(4, 1)
+  hajmmohasebat Decimal       @db.Decimal(6, 1)
+  hadeaghalhajm Int?
+  namestation   String        @db.VarChar(40)
+  pumpstation   pumpstation[]
+}
+
+model abgir {
+  idkontor   Int        @id @default(autoincrement()) @db.SmallInt
+  fidranesh  Int        @db.SmallInt
+  abgir      String     @db.VarChar(12)
+  khatranesh khatranesh @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_abgir_khatranesh")
+  kontor     kontor[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model atashsoozi {
+  idatash    Int? @db.SmallInt
+  fidranesh  Int? @db.SmallInt
+  fidtardor  Int? @db.SmallInt
+  atashsoozi Int?
+
+  @@ignore
+}
+
+model bahrebardairprogram {
+  idprogram      Int            @id @default(autoincrement())
+  fidranesh      Int            @db.SmallInt
+  fidtardor      Int            @db.SmallInt
+  tedad          Int            @db.SmallInt
+  shorooe        DateTime?      @db.Time(6)
+  paian          DateTime?      @db.Time(6)
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogram_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogram_trikhdorekesht")
+}
+
+model bahrebardairprogramseghli {
+  idprosrgl      Int            @id @default(autoincrement())
+  fidranesh      Int            @db.SmallInt
+  fidtardor      Int            @db.SmallInt
+  zarfiat        Decimal?       @db.Decimal(5, 1)
+  shorooe        DateTime?      @db.Time(6)
+  paian          DateTime?      @db.Time(6)
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogramseghli_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogramseghli_trikhdorekesht")
+}
+
+model bahrebardarikeshtdore {
+  idbahdor         Int              @id @default(autoincrement()) @db.SmallInt
+  fidshdo          Int              @db.SmallInt
+  fidranesh        Int              @db.SmallInt
+  fidnoem          Int              @db.SmallInt
+  area             Decimal          @db.Decimal(6, 2)
+  khatranesh       khatranesh       @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardarikeshtdore_khatranesh")
+  noemahsool       noemahsool       @relation(fields: [fidnoem], references: [idnoem], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardarikeshtdore_noemahsool")
+  shabakedorekesht shabakedorekesht @relation(fields: [fidshdo], references: [idshdo], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardarikeshtdore_shabakedorekesht")
+}
+
+model bahrebardaritaghvim {
+  idtag          Int            @id @default(autoincrement())
+  fidtardor      Int            @db.SmallInt
+  fidranesh      Int            @db.SmallInt
+  taghvim        Decimal        @db.Decimal(9, 2)
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardaritaghvim_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardaritaghvim_trikhdorekesht")
+}
+
+model bareshmotaleat {
+  idbarmot       Int       @id @default(autoincrement()) @db.SmallInt
+  fidnet         Int       @db.SmallInt
+  fidmah         Int       @db.SmallInt
+  bareshmotaleat Decimal   @db.Decimal(4, 2)
+  mahshamsi      mahshamsi @relation(fields: [fidmah], references: [idmah], onDelete: NoAction, onUpdate: NoAction, map: "fk_bareshmotaleat_mah")
+  network        network   @relation(fields: [fidnet], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "fk_bareshmotaleat_network")
+}
+
+model darajepipe {
+  iddpipe    Int          @id @default(autoincrement()) @db.SmallInt
+  darajepipe String       @db.VarChar(40)
+  khatranesh khatranesh[]
+}
+
+model darjestation {
+  iddstation    Int           @id @default(autoincrement()) @db.SmallInt
+  darajestation String        @db.VarChar(12)
+  pumpstation   pumpstation[]
+}
+
+model deliverypoints {
+  iddp          Int           @id @default(autoincrement()) @db.SmallInt
+  deliverypoint String        @db.VarChar(30)
+  pumpstation   pumpstation[]
+}
+
+model dorekesht {
+  iddore Int    @id @default(autoincrement()) @db.SmallInt
+  dore   String @db.VarChar(16)
+}
+
+model eshtebahavamel {
+  idesht         Int            @id @default(autoincrement()) @db.SmallInt
+  fidranesh      Int            @db.SmallInt
+  fidtardor      Int            @db.SmallInt
+  eshtebah       Int
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_eshtebahavamel_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_eshtebahavamel_trikhdorekesht")
+}
+
+model flowbehbood {
+  idbehbood      Int            @id @default(autoincrement()) @db.SmallInt
+  fidranesh      Int            @db.SmallInt
+  fidtardor      Int            @db.SmallInt
+  flow           Int            @db.SmallInt
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_flowbehbood_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_flowbehbood_trikhdorekesht")
+}
+
+model flowmeter {
+  idfit          Int            @id @default(autoincrement())
+  fidranesh      Int            @db.SmallInt
+  fidtrikh       Int            @db.SmallInt
+  flowmeter      Float
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_flowmeter_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtrikh], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_flowmeter_trikhdorekesht")
+}
+
+model khatranesh {
+  idranesh                  Int                         @id @default(autoincrement()) @db.SmallInt
+  raneshname                String                      @db.VarChar(30)
+  fidpumpsta                Int                         @db.SmallInt
+  fiddpipe                  Int                         @db.SmallInt
+  fidsepu                   Int                         @db.SmallInt
+  fidmeasuring              Int                         @db.SmallInt
+  active                    Boolean                     @default(true)
+  abgir                     abgir[]
+  bahrebardairprogram       bahrebardairprogram[]
+  bahrebardairprogramseghli bahrebardairprogramseghli[]
+  bahrebardarikeshtdore     bahrebardarikeshtdore[]
+  bahrebardaritaghvim       bahrebardaritaghvim[]
+  eshtebahavamel            eshtebahavamel[]
+  flowbehbood               flowbehbood[]
+  flowmeter                 flowmeter[]
+  darajepipe                darajepipe                  @relation(fields: [fiddpipe], references: [iddpipe], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesh_darajepipe")
+  measuringtool             measuringtool               @relation(fields: [fidmeasuring], references: [idmeasuring], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesh_measuringtool")
+  pumpstation               pumpstation                 @relation(fields: [fidpumpsta], references: [idpumpsta], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesh_pumpstation")
+  seghlipump                seghlipump                  @relation(fields: [fidsepu], references: [idsepu], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesh_seghlipump")
+  khatranesharea            khatranesharea[]
+  khatraneshpump            khatraneshpump[]
+  khatraneshsegli           khatraneshsegli[]
+  nashtshabake              nashtshabake[]
+  nonfit                    nonfit[]
+}
+
+model khatranesharea {
+  idranesh   Int        @id @default(autoincrement()) @db.SmallInt
+  fidranesh  Int        @db.SmallInt
+  fidland    Int        @db.SmallInt
+  fidnet     Int        @db.SmallInt
+  area       Decimal    @db.Decimal(5, 1)
+  khatranesh khatranesh @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesharea_khatranesh")
+  land       land       @relation(fields: [fidland], references: [idland], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesharea_land")
+  network    network    @relation(fields: [fidnet], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatranesharea_network")
+}
+
+model khatraneshpump {
+  idranesh          Int        @id @default(autoincrement()) @db.SmallInt
+  fidranesh         Int        @db.SmallInt
+  modelpump         String?    @db.VarChar(25)
+  fidpump           Int        @db.SmallInt
+  tedadpump         Int?       @db.SmallInt
+  debipomp          Decimal    @db.Decimal(5, 1)
+  fesharpump        Decimal    @db.Decimal(4, 1)
+  randeman          Int        @db.SmallInt
+  tavanenami        Decimal    @db.Decimal(4, 1)
+  tavanejazbi       Decimal    @db.Decimal(4, 1)
+  voltazh           Int        @db.SmallInt
+  doremotor         Int        @db.SmallInt
+  fesharemakesh     Int        @db.SmallInt
+  feshareranesh     Int        @db.SmallInt
+  sizemakesh        Int        @db.SmallInt
+  sizeranesh        Int        @db.SmallInt
+  sizekolektor      Int        @db.SmallInt
+  sizeshirekolektor Int        @db.SmallInt
+  khatranesh        khatranesh @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatraneshpump_khatranesh")
+  pumptype          pumptype   @relation(fields: [fidpump], references: [idpump], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatraneshpump_pumptype")
+}
+
+model khatraneshsegli {
+  idranesh   Int        @id @default(autoincrement()) @db.SmallInt
+  fidranesh  Int        @db.SmallInt
+  zarfiat    Decimal    @db.Decimal(5, 1)
+  khatranesh khatranesh @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_khatraneshsegli_khatranesh")
+}
+
+model kontor {
+  idkon          Int            @id @default(autoincrement())
+  fidkontor      Int
+  fidtardor      Int
+  kontor         Int
+  abgir          abgir          @relation(fields: [fidkontor], references: [idkontor], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontor_abgir")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontor_trikhdorekesht")
+}
+
+model land {
+  idland         Int              @id @default(autoincrement())
+  land           String           @db.VarChar(10)
+  khatranesharea khatranesharea[]
+}
+
+model mahshamsi {
+  idmah          Int              @id @default(autoincrement())
+  mah            String           @db.VarChar(16)
+  bareshmotaleat bareshmotaleat[]
+}
+
+model measuringtool {
+  idmeasuring   Int          @id @default(autoincrement())
+  measuringtool String       @db.VarChar(40)
+  precision     String       @db.VarChar(30)
+  khatranesh    khatranesh[]
+}
+
+model nashtshabake {
+  idnasht        Int            @id @default(autoincrement())
+  fidranesh      Int
+  fidtridor      Int
+  nashtshabake   Int
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_nashtshabake_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtridor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_nashtshabake_trikhdorekesht")
+}
+
+model network {
+  idnet          Int              @id @default(autoincrement())
+  network        String           @db.VarChar(40)
+  fidsp          Int
+  trustee        String           @db.VarChar(20)
+  bareshmotaleat bareshmotaleat[]
+  khatranesharea khatranesharea[]
+  systempart     systempart       @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
+  pumpstation    pumpstation[]
+
+  @@index([network], map: "idx_network_network")
+}
+
+model noekesht {
+  idnoek     Int          @id @default(autoincrement())
+  kesht      String       @db.VarChar(10)
+  noemahsool noemahsool[]
+}
+
+model noemahsool {
+  idnoem                Int                     @id @default(autoincrement())
+  mahsool               String                  @db.VarChar(60)
+  fidnoek               Int
+  bahrebardarikeshtdore bahrebardarikeshtdore[]
+  noekesht              noekesht                @relation(fields: [fidnoek], references: [idnoek], onDelete: NoAction, onUpdate: NoAction, map: "fk_noemahsool_noekesht")
+}
+
+model nonfit {
+  idnonfit       Int            @id
+  fidranesh      Int
+  fidtardor      Int            @default(autoincrement())
+  volum          Int
+  khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_nonfit_khatranesh")
+  trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_nonfit_trikhdorekesht")
+}
+
+model pumpstation {
+  idpumpsta      Int            @id @default(autoincrement())
+  namestation    String         @db.VarChar(40)
+  km             Int?
+  fidnet         Int
+  fiddstation    Int
+  fidmakhzan     Int?
+  fiddp          Int
+  ready          Boolean        @default(true)
+  khatranesh     khatranesh[]
+  abademakhzan   abademakhzan?  @relation(fields: [fidmakhzan], references: [idmakhzan], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_abademakhzan")
+  darjestation   darjestation   @relation(fields: [fiddstation], references: [iddstation], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_darjestation")
+  deliverypoints deliverypoints @relation(fields: [fiddp], references: [iddp], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_deliverypoints")
+  network        network        @relation(fields: [fidnet], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_network")
+}
+
+model pumptype {
+  idpump         Int              @id @default(autoincrement()) @db.SmallInt
+  pumptype       String           @db.VarChar(100)
+  khatraneshpump khatraneshpump[]
+}
+
+model rainfallstation {
+  idraista      Int     @id @default(autoincrement()) @db.SmallInt
+  fidweasta     Int     @db.SmallInt
+  fidtrikh      Int     @db.SmallInt
+  fidraity      Int     @db.SmallInt
+  ertefaebaresh Decimal @db.Decimal(3, 1)
+}
+
+model rainfalltype {
+  idraity      Int    @id @default(autoincrement()) @db.SmallInt
+  rainfalltype String @db.VarChar(10)
+}
+
+model salezeraee {
+  idsal      Int    @id @default(autoincrement()) @db.SmallInt
+  salezeraee String @db.VarChar(20)
+}
+
+model salmahdahe {
+  iddahe          Int              @id @default(autoincrement())
+  sal             Int              @db.SmallInt
+  mah             Int              @db.SmallInt
+  dahe            Int              @db.SmallInt
+  taeedprograms   taeedprogram[]
+  trikhdorekeshts trikhdorekesht[]
+
+  @@unique([sal, mah, dahe], map: "unique_sal_mah_dahe")
+  @@map("salmahdahe")
+}
+
+model seghlipump {
+  idsepu     Int          @id @default(autoincrement()) @db.SmallInt
+  seghlipump String       @db.VarChar(20)
+  khatranesh khatranesh[]
+}
+
+model shabakedorekesht {
+  idshdo                Int                     @id @default(autoincrement()) @db.SmallInt
+  fidnet                Int                     @db.SmallInt
+  trikhshorooe          DateTime                @db.Date
+  trikhpayan            DateTime                @db.Date
+  fidsal                Int                     @db.SmallInt
+  fiddore               Int                     @db.SmallInt
+  bahrebardarikeshtdore bahrebardarikeshtdore[]
+}
+
+model systempart {
+  idsp    Int       @id @default(autoincrement()) @db.SmallInt
+  part    String    @db.VarChar(40)
+  km      Int
+  network network[]
+
+  @@index([part], map: "idx_systempart_part")
+}
+
+model taeedprogram {
+  idtaeedprogram     Int         @id @default(autoincrement())
+  fidpumpsta         Int         @db.SmallInt
+  fidsal             Int         @db.SmallInt
+  fiddore            Int         @db.SmallInt
+  sal                Int         @db.SmallInt
+  mah                Int         @db.SmallInt
+  dahe               Int         @db.SmallInt
+  fiduserersal       Int?        @db.SmallInt
+  firstnersal        String?     @db.VarChar(40)
+  lastnersal         String?     @db.VarChar(40)
+  tozihersal         String?
+  tarikhersal        DateTime?   @db.Timestamp(6)
+  fiduserabmantaghe  Int?        @db.SmallInt
+  firstnabmantaghe   String?     @db.VarChar(40)
+  lastnabmantaghe    String?     @db.VarChar(40)
+  tozihabmantaghe    String?
+  tarikhabmantaghe   DateTime?   @db.Timestamp(6)
+  taedabmantaghe     Boolean?
+  fiduserpeymankar   Int?        @db.SmallInt
+  firstnpeymankar    String?     @db.VarChar(40)
+  lastnpeymankar     String?     @db.VarChar(40)
+  tozihpeymankar     String?
+  tarikhpeymankar    DateTime?   @db.Timestamp(6)
+  taedpeymankar      Boolean?
+  fiduserabniroo     Int?        @db.SmallInt
+  firstnabniroo      String?     @db.VarChar(40)
+  lastnabniroo       String?     @db.VarChar(40)
+  tozihabniroo       String?
+  tarikhabniroo      DateTime?   @db.Timestamp(6)
+  taedabniroo        Boolean?
+  filenamenahaee     String?     @db.VarChar(255)
+  filepathnahaee     String?     @db.VarChar(1000)
+  tarikhfilenahee    DateTime?   @db.Timestamp(6)
+  fidusertaeednahaee Int?        @db.SmallInt
+  firstntaeednahaee  String?     @db.VarChar(40)
+  lastntaeednahaee   String?     @db.VarChar(40)
+  tarikhtaeednahaee  DateTime?   @db.Timestamp(6)
+  taeednahaee        Boolean?
+  fiddahe            Int?
+  toziheslah         String?
+  salmahdahe         salmahdahe? @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+
+  @@map("taeedprogram")
+}
+
+model takhliemakhzan {
+  idtakhlie Int @id @default(autoincrement()) @db.SmallInt
+  fidranesh Int @db.SmallInt
+  fidtardor Int @db.SmallInt
+  takhlie   Int
+}
+
+model test {
+  idtest    Int @id @default(autoincrement()) @db.SmallInt
+  fidranesh Int @db.SmallInt
+  fidtardor Int @db.SmallInt
+  test      Int
+}
+
+model trikhdorekesht {
+  idtardor                  Int                         @id @default(autoincrement()) @db.SmallInt
+  fidsal                    Int                         @db.SmallInt
+  fiddore                   Int                         @db.SmallInt
+  trikh                     DateTime                    @db.Date
+  trikhkhorshidi            String                      @db.VarChar(20)
+  dahe                      Int                         @db.SmallInt
+  sal                       Int
+  mah                       Int                         @db.SmallInt
+  fiddahe                   Int
+  bahrebardairprogram       bahrebardairprogram[]
+  bahrebardairprogramseghli bahrebardairprogramseghli[]
+  bahrebardaritaghvim       bahrebardaritaghvim[]
+  eshtebahavamel            eshtebahavamel[]
+  flowbehbood               flowbehbood[]
+  flowmeters                flowmeter[]
+  kontor                    kontor[]
+  nashtshabake              nashtshabake[]
+  nonfit                    nonfit[]
+  salmahdahe                salmahdahe                  @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+
+  @@map("trikhdorekesht")
+}
+
+model weatherstation {
+  idweasta Int    @id @default(autoincrement()) @db.SmallInt
+  station  String @db.VarChar(40)
+}
+
+model menu {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  title_fa          String
+  active            Boolean
+  general           Boolean
+  slug              String              @unique
+  parent_id         Int?
+  access_level      access_level[]
+  invitation_access invitation_access[]
+  parent            menu?               @relation("ParentChild", fields: [parent_id], references: [id])
+  children          menu[]              @relation("ParentChild")
+  user_access       user_access[]
+
+  @@index([parent_id])
+  @@index([slug])
+  @@map("menu")
+}
+
+model position {
+  id                     Int                      @id @default(autoincrement())
+  title                  String
+  title_fa               String
+  req_license            Boolean                  @default(false)
+  dependent              String?
+  access_level           access_level[]
+  position_on_invitation position_on_invitation[]
+  position_on_user       position_on_user[]
+
+  @@map("position")
+}
+
+model access_level {
+  id          Int      @id @default(autoincrement())
+  position_id Int
+  menu_id     Int
+  has_access  Boolean  @default(false)
+  menu        menu     @relation(fields: [menu_id], references: [id], map: "access_level_menuId_fkey")
+  position    position @relation(fields: [position_id], references: [id], map: "access_level_positionId_fkey")
+
+  @@unique([position_id, menu_id], map: "access_level_positionId_menuId_key")
+  @@map("access_level")
+}
+
+model invitation {
+  id                     Int                      @id @default(autoincrement())
+  first_name             String?
+  last_name              String
+  mobile                 String                   @unique
+  end_date               DateTime?
+  gender                 String?
+  username               String                   @unique
+  password               String
+  created_at             DateTime                 @default(now())
+  user_id                Int?                     @unique(map: "invitation_userId_key")
+  introd_path_letter     String?
+  letter_issuer          String?
+  letter_number          String?
+  letter_date            String?
+  letter_approver        String?
+  is_registered          Boolean                  @default(false)
+  user                   user?                    @relation(fields: [user_id], references: [id], map: "invitation_userId_fkey")
+  invitation_access      invitation_access[]
+  position_on_invitation position_on_invitation[]
+
+  @@index([mobile])
+  @@index([username])
+  @@map("invitation")
+}
+
+model position_on_invitation {
+  id            Int        @id @default(autoincrement())
+  invitation_id Int
+  position_id   Int
+  invitation    invitation @relation(fields: [invitation_id], references: [id], map: "position_on_invitation_invitationId_fkey")
+  position      position   @relation(fields: [position_id], references: [id], map: "position_on_invitation_positionId_fkey")
+
+  @@unique([invitation_id, position_id], map: "position_on_invitation_invitationId_positionId_key")
+  @@map("position_on_invitation")
+}
+
+model invitation_access {
+  id            Int        @id @default(autoincrement())
+  invitation_id Int
+  menu_id       Int
+  has_access    Boolean
+  invitation    invitation @relation(fields: [invitation_id], references: [id], map: "invitation_access_invitationId_fkey")
+  menu          menu       @relation(fields: [menu_id], references: [id], map: "invitation_access_menuId_fkey")
+
+  @@unique([invitation_id, menu_id], map: "invitation_access_invitationId_menuId_key")
+  @@map("invitation_access")
+}
+
+model user {
+  id                 Int                  @id @default(autoincrement())
+  first_name         String
+  last_name          String
+  mobile             String               @unique
+  email              String?              @unique
+  gender             String
+  inviter_id         Int?
+  invitation_time    DateTime
+  registration_time  DateTime             @default(now())
+  end_date           DateTime?
+  active             Boolean              @default(true)
+  introd_path_letter String?              @db.VarChar(50)
+  letter_issuer      String?              @db.VarChar(50)
+  letter_number      String?              @db.VarChar(50)
+  letter_date        String?              @db.VarChar(50)
+  letter_approver    String?              @db.VarChar(50)
+  user_name          String               @unique @db.VarChar(50)
+  password           String               @db.VarChar(100)
+  invitation         invitation?
+  position_on_user   position_on_user[]
+  user_access        user_access[]
+  user_login_history user_login_history[]
+
+  @@index([mobile])
+  @@map("user")
+}
+
+model position_on_user {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  position_id Int
+  position    position @relation(fields: [position_id], references: [id])
+  user        user     @relation(fields: [user_id], references: [id])
+
+  @@map("position_on_user")
+}
+
+model user_access {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  menu_id    Int
+  has_access Boolean
+  menu       menu    @relation(fields: [menu_id], references: [id])
+  user       user    @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, menu_id])
+  @@map("user_access")
+}
+
+model user_login_history {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  login_time  DateTime  @default(now())
+  logout_time DateTime?
+  ip_address  String?   @db.VarChar(45)
+  user_agent  String?
+  status      String
+  user        user      @relation(fields: [user_id], references: [id], map: "user_login_history_userId_fkey")
+
+  @@map("user_login_history")
+}

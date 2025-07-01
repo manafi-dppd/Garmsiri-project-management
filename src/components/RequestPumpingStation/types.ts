@@ -61,8 +61,15 @@ export interface MahItem {
   sal: number;
 }
 
+export interface ShabakeDoreKeshtData {
+  mahList: MahItem[];
+  currentFiddahe: number | null;
+  trikhshorooe: string;
+  trikhpayan: string;
+}
+
 export interface TaeedProgramData {
-  fiddahe: number;
+  fiddahe?: number | null;
   firstnersal: string;
   lastnersal: string;
   tarikhersal: string;

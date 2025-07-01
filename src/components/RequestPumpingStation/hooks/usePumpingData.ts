@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from 'react';
 import {
   KhatRanesh,
   MahItem,
   PredictedVolume,
   PumpingData,
   RecordType,
-} from "../types";
+} from '../types';
 
 interface TaeedProgramData {
   fiddahe: number;
@@ -65,22 +65,22 @@ export const usePumpingData = (
   mah: number,
   dahe: number,
   selectedDahe: number,
-  pumpData: { [idtardor: number]: { [idranesh: number]: PumpingData } },
+  pumpData: {[idtardor: number]: {[idranesh: number]: PumpingData}},
   setPumpData: (data: {
-    [idtardor: number]: { [idranesh: number]: PumpingData };
-  }) => void
+    [idtardor: number]: {[idranesh: number]: PumpingData};
+  }) => void,
+  saleZeraee: string,
+  doreKesht: string,
 ) => {
   const [taedAbMantaghe, setTaedAbMantaghe] = useState<
-    Array<{ [key: string]: unknown }>
+    Array<{[key: string]: unknown}>
   >([]);
   const [khatRaneshList, setKhatRaneshList] = useState<KhatRanesh[]>([]);
   const [predictedVolumes, setPredictedVolumes] = useState<PredictedVolume>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
   const [records, setRecords] = useState<RecordType[]>([]);
-  const [finalVolumes, setFinalVolumes] = useState<{ [key: number]: number }>(
-    {}
-  );
+  const [finalVolumes, setFinalVolumes] = useState<{[key: number]: number}>({});
   const [mahList, setMahList] = useState<MahItem[]>([]);
   const [taedProgramData, setTaedProgramData] =
     useState<TaeedProgramData | null>(null);
@@ -90,9 +90,9 @@ export const usePumpingData = (
     if (idPumpStation > 0 && sal && mah && dahe) {
       const fetchTaedProgramData = async () => {
         try {
-          const response = await fetch("/api/getTaeedProgramDetails", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const response = await fetch('/api/getTaeedProgramDetails', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
               fidpumpsta: idPumpStation,
               sal,
@@ -102,7 +102,7 @@ export const usePumpingData = (
           });
 
           if (!response.ok) {
-            throw new Error("Failed to fetch TaeedProgram data");
+            throw new Error('Failed to fetch TaeedProgram data');
           }
           setTaedProgramData(await response.json());
         } catch {
@@ -118,14 +118,14 @@ export const usePumpingData = (
         setLoading(true);
         try {
           const response = await fetch(
-            `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&fidpumpsta=${idPumpStation}`
+            `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&fidpumpsta=${idPumpStation}`,
           );
-          if (!response.ok) throw new Error("Failed to fetch data");
+          if (!response.ok) throw new Error('Failed to fetch data');
           const data = await response.json();
           setTaedAbMantaghe(data);
         } catch (err) {
           console.error(
-            err instanceof Error ? err.message : "An unknown error occurred"
+            err instanceof Error ? err.message : 'An unknown error occurred',
           );
         } finally {
           setLoading(false);
@@ -140,7 +140,7 @@ export const usePumpingData = (
     const fetchMahList = async () => {
       try {
         const res = await fetch(
-          `/api/getMahList?networkId=${selectedNetworkId}`
+          `/api/getMahList?networkId=${selectedNetworkId}`,
         );
         const data = await res.json();
         if (data.mahList && data.mahList.length > 0) {
@@ -150,7 +150,7 @@ export const usePumpingData = (
           setCurrentFiddahe(data.currentFiddahe);
         }
       } catch (error) {
-        console.error("Failed to fetch Mah list:", error);
+        console.error('Failed to fetch Mah list:', error);
       }
     };
 
@@ -164,13 +164,13 @@ export const usePumpingData = (
     const fetchKhatRanesh = async () => {
       try {
         const res = await fetch(
-          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`
+          `/api/getKhatRanesh?idPumpStation=${idPumpStation}`,
         );
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) throw new Error('Failed to fetch');
         const data: KhatRanesh[] = await res.json();
         setKhatRaneshList(data);
       } catch (error) {
-        console.error("Error fetching KhatRanesh:", error);
+        console.error('Error fetching KhatRanesh:', error);
       }
     };
 
@@ -183,15 +183,18 @@ export const usePumpingData = (
     const fetchRecords = async () => {
       setLoading(true);
       try {
+        // همیشه از مقادیر جاری استفاده می‌کنیم
+        const currentSaleZeraee = saleZeraee;
+        const currentDoreKesht = doreKesht;
+
         const res = await fetch(
-          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}`
+          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}&saleZeraee=${encodeURIComponent(currentSaleZeraee)}&doreKesht=${encodeURIComponent(currentDoreKesht)}`,
         );
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) throw new Error('Failed to fetch');
 
         const data: RecordsResponse = await res.json();
-
         if (!Array.isArray(data.records)) {
-          setMessage(data.message || "خطایی رخ داده است");
+          setMessage(data.message || 'خطایی رخ داده است');
           return;
         }
 
@@ -199,10 +202,10 @@ export const usePumpingData = (
         setMessage(null);
 
         const predictedVolumesMap: PredictedVolume = {};
-        data.predictedVolumes.forEach(({ idtardor, volumes }) => {
+        data.predictedVolumes.forEach(({idtardor, volumes}) => {
           predictedVolumesMap[idtardor] = volumes.reduce<
             Record<number, number>
-          >((acc, { fidranesh, totaltaghvim }) => {
+          >((acc, {fidranesh, totaltaghvim}) => {
             acc[fidranesh] = (acc[fidranesh] || 0) + (totaltaghvim || 0);
             return acc;
           }, {});
@@ -210,19 +213,27 @@ export const usePumpingData = (
 
         setPredictedVolumes(predictedVolumesMap);
       } catch {
-        setMessage("خطا در دریافت داده‌ها");
+        setMessage('خطا در دریافت داده‌ها');
       } finally {
         setLoading(false);
       }
     };
 
     fetchRecords();
-  }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation]);
+  }, [
+    selectedNetworkId,
+    sal,
+    selectedMah,
+    dahe,
+    idPumpStation,
+    saleZeraee,
+    doreKesht,
+  ]);
 
   useEffect(() => {
     if (!predictedVolumes || !khatRaneshList.length) return;
 
-    const summedVolumes: { [key: number]: number } = {};
+    const summedVolumes: {[key: number]: number} = {};
 
     Object.values(predictedVolumes).forEach((tardor) => {
       Object.entries(tardor).forEach(([raneshId, volume]) => {
@@ -242,10 +253,10 @@ export const usePumpingData = (
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch("/api/request-pumping");
-        if (!response.ok) throw new Error("Failed to fetch all pump data");
+        const response = await fetch('/api/request-pumping');
+        if (!response.ok) throw new Error('Failed to fetch all pump data');
 
-        const { bahrebardair, bahrebardairSeghli } = await response.json();
+        const {bahrebardair, bahrebardairSeghli} = await response.json();
         const newPumpData: typeof pumpData = {};
 
         // مقداردهی اولیه برای تمام ردیف‌ها
@@ -292,7 +303,7 @@ export const usePumpingData = (
 
         setPumpData(newPumpData);
       } catch (error) {
-        console.error("Error fetching pump data:", error);
+        console.error('Error fetching pump data:', error);
       } finally {
         setLoading(false);
       }

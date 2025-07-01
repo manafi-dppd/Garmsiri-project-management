@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import prisma from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const {searchParams} = new URL(req.url);
   const networkId = searchParams.get('networkId');
 
   if (!networkId) {
-    return NextResponse.json({ error: 'Network ID is required' }, { status: 400 });
+    return NextResponse.json({error: 'Network ID is required'}, {status: 400});
   }
 
   try {
@@ -16,59 +16,56 @@ export async function GET(req: NextRequest) {
     const shabake = await prisma.shabakedorekesht.findFirst({
       where: {
         fidnet: Number(networkId),
-        trikhshorooe: { lte: currentDate },
-        trikhpayan: { gte: currentDate }
+        trikhshorooe: {lte: currentDate},
+        trikhpayan: {gte: currentDate},
       },
       select: {
         trikhshorooe: true,
-        trikhpayan: true
-      }
+        trikhpayan: true,
+      },
     });
-
     if (!shabake) {
       return NextResponse.json(
-        { message: 'تقویم آبیاری در سامانه بارگذاری نشده است' },
-        { status: 404 }
+        {message: 'تقویم آبیاری در سامانه بارگذاری نشده است'},
+        {status: 404},
       );
     }
 
     // دریافت لیست ماه‌ها و fiddahe برای تاریخ امروز
     const todayRecord = await prisma.trikhdorekesht.findFirst({
       where: {
-        trikh: currentDate
+        trikh: currentDate,
       },
       select: {
-        fiddahe: true
-      }
+        fiddahe: true,
+      },
     });
-
     const mahList = await prisma.trikhdorekesht.findMany({
       where: {
         trikh: {
           gte: shabake.trikhshorooe,
-          lte: shabake.trikhpayan
-        }
+          lte: shabake.trikhpayan,
+        },
       },
       select: {
         mah: true,
-        sal: true
+        sal: true,
       },
       distinct: ['mah'],
-      orderBy: { mah: 'asc' }
+      orderBy: {mah: 'asc'},
     });
-
     return NextResponse.json({
       mahList,
-      currentFiddahe: todayRecord?.fiddahe || null
+      currentFiddahe: todayRecord?.fiddahe || null,
     });
   } catch (error) {
     console.error('Database error:', error);
     return NextResponse.json(
       {
         error: 'Internal Server Error',
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      {status: 500},
     );
   }
 }

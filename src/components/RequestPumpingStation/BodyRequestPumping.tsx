@@ -1,11 +1,11 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { getCurrentSalMahDahe } from "../../utils/dateUtils";
-import PumpingForm from "./PumpingForm";
-import { usePumpingData } from "./hooks/usePumpingData";
-import { usePumpingTime } from "./hooks/usePumpingTime";
-import type { TaeedProgramData } from "./types";
-import { PumpingData } from "./types";
+import * as React from 'react';
+import {useState, useEffect} from 'react';
+import {getCurrentSalMahDahe} from '../../utils/dateUtils';
+import PumpingForm from './PumpingForm';
+import {usePumpingData} from './hooks/usePumpingData';
+import {usePumpingTime} from './hooks/usePumpingTime';
+import type {TaeedProgramData} from './types';
+import {PumpingData, ShabakeDoreKeshtData, MahItem} from './types';
 
 interface BodyRequestPumpingProps {
   userName: string;
@@ -24,6 +24,11 @@ interface BodyRequestPumpingProps {
   idShDo: number;
   mah: number;
   dahe: number;
+  shabakeData: ShabakeDoreKeshtData | null;
+  currentSal: number;
+  setCurrentSal: (value: number) => void;
+  setCurrentMah: (value: number) => void;
+  setCurrentDahe: (value: number) => void;
 }
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
@@ -39,6 +44,10 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   isSaving,
   setIsSaving,
   userRole,
+  shabakeData,
+  setCurrentMah,
+  setCurrentDahe,
+  setCurrentSal,
 }) => {
   const {
     sal: currentSal,
@@ -52,16 +61,16 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [selectedMah, setSelectedMah] = useState(currentMah);
   const [selectedDahe, setSelectedDahe] = useState(currentDahe);
   const [pumpData, setPumpData] = useState<{
-    [idTarDor: number]: { [idRanesh: number]: PumpingData };
+    [idTarDor: number]: {[idRanesh: number]: PumpingData};
   }>({});
   const [selectedZarfiat, setSelectedZarfiat] = useState<{
-    [key: number]: { [key: number]: number };
+    [key: number]: {[key: number]: number};
   }>({});
   const [isFormFilled] = useState(false);
   const [validationErrors, setValidationErrors] = useState<
-    { date: string; raneshName: string; message: string }[]
+    {date: string; raneshName: string; message: string}[]
   >([]);
-  const [allDates] = useState<{ mah: number; dahe: number }[]>([]);
+  const [allDates] = useState<{mah: number; dahe: number}[]>([]);
   const [isFormDisabled, setIsFormDisabled] = useState(false);
   const [isStationLoaded, setIsStationLoaded] = useState(false);
   const [prevPumpStation, setPrevPumpStation] = useState<number | null>(null);
@@ -83,7 +92,9 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     dahe,
     selectedDahe,
     pumpData,
-    setPumpData
+    setPumpData,
+    saleZeraee,
+    doreKesht
   );
 
   type ExtendedTaeedProgramData = TaeedProgramData & {
@@ -109,28 +120,28 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
       sal === currentSal && mah === currentMah && dahe <= currentDahe;
     const isUserRoleAllowed = userRole.some((role) =>
       [
-        "Website Creator",
-        "Website Admin",
-        "Ezgele Water Users Representative",
-        "Jegiran Water Users Representative",
-        "Northern Zahab Water Users Representative",
-        "Southern Zahab Water Users Representative",
-        "Hoomeh Qaraviz Water Users Representative",
-        "Beshiveh Water Users Representative",
-        "Ghaleh Shahin Water Users Representative",
-        "Water Users Representative South Jagarlu",
-      ].includes(role)
+        'Website Creator',
+        'Website Admin',
+        'Ezgele Water Users Representative',
+        'Jegiran Water Users Representative',
+        'Northern Zahab Water Users Representative',
+        'Southern Zahab Water Users Representative',
+        'Hoomeh Qaraviz Water Users Representative',
+        'Beshiveh Water Users Representative',
+        'Ghaleh Shahin Water Users Representative',
+        'Water Users Representative South Jagarlu',
+      ].includes(role),
     );
 
     const isTaedAbMantagheTrue = taedAbMantaghe.some(
-      (record) => record.TaedAbMantaghe === true
+      (record) => record.TaedAbMantaghe === true,
     );
 
     setIsFormDisabled(
       isPastOrCurrentMonth ||
         isPastOrCurrentDahe ||
         !isUserRoleAllowed ||
-        isTaedAbMantagheTrue
+        isTaedAbMantagheTrue,
     );
   }, [
     sal,
@@ -153,6 +164,24 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   };
 
   useEffect(() => {
+    if (shabakeData?.mahList && shabakeData.mahList.length > 0) {
+      const currentDate = new Date();
+      const currentMahItem =
+        shabakeData.mahList.find(
+          (item: MahItem) =>
+            item.sal === currentDate.getFullYear() &&
+            item.mah === currentDate.getMonth() + 1,
+        ) || shabakeData.mahList[0];
+
+      setSal(currentMahItem.sal);
+      setMah(currentMahItem.mah);
+      setSelectedMah(currentMahItem.mah);
+      setCurrentMah(currentMahItem.mah);
+      setCurrentSal(currentMahItem.sal);
+    }
+  }, [shabakeData, setCurrentMah, setCurrentSal]);
+
+  useEffect(() => {
     // فقط زمانی که ماه جاری را انتخاب می‌کنیم، دهه را به دهه جاری تنظیم کنیم
     if (selectedMah === currentMah && sal === currentSal) {
       setSelectedDahe(currentDahe);
@@ -166,11 +195,11 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   }, [idPumpStation]);
 
   useEffect(() => {
-  if (idPumpStation > 0) {
-    setIsStationLoaded(false);
-    setPrevPumpStation(idPumpStation);
-  }
-}, [idPumpStation, setIsStationLoaded, setPrevPumpStation]);
+    if (idPumpStation > 0) {
+      setIsStationLoaded(false);
+      setPrevPumpStation(idPumpStation);
+    }
+  }, [idPumpStation, setIsStationLoaded, setPrevPumpStation]);
 
   return (
     <div className="overflow-x-auto">
@@ -239,6 +268,10 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           setIsStationLoaded={setIsStationLoaded}
           prevPumpStation={prevPumpStation}
           setPrevPumpStation={setPrevPumpStation}
+          shabakeData={shabakeData}
+          setCurrentMah={setCurrentMah}
+          setCurrentDahe={setCurrentDahe}
+          setCurrentSal={setCurrentSal}
         />
       )}
     </div>

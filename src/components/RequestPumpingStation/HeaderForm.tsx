@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect, memo } from "react";
+import {useState, useEffect, memo, useCallback} from 'react';
+import {ShabakeDoreKeshtData} from './types';
 
 interface HeaderRequestPumpingProps {
   setUserName: (name: string) => void;
@@ -16,6 +17,7 @@ interface HeaderRequestPumpingProps {
   setIdShDo: (Id: number) => void;
   setNetworkTrustee: (trustee: string | null) => void;
   isSaving?: boolean;
+  onShabakeDataChange?: (data: ShabakeDoreKeshtData) => void;
 }
 
 interface Network {
@@ -37,29 +39,38 @@ const HeaderRequestPumping = ({
   setDoreKesht,
   setIdShDo,
   setNetworkTrustee,
+  onShabakeDataChange,
 }: HeaderRequestPumpingProps) => {
   const [userPositions, setUserPositions] = useState<string[]>([]);
   const [networks, setNetworks] = useState<Network[]>([]);
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [localSaleZeraee, setLocalSaleZeraee] = useState<string | null>(null);
   const [localDore, setLocalDore] = useState<string | null>(null);
-  const [selectedSaleZeraee, setSelectedSaleZeraee] = useState<string>("");
-  const [selectedDore, setSelectedDore] = useState<string>("");
+  const [selectedSaleZeraee, setSelectedSaleZeraee] = useState<string>(
+    Array.isArray(localSaleZeraee) && localSaleZeraee.length === 1
+      ? localSaleZeraee[0]
+      : '',
+  );
+
+  const [selectedDore, setSelectedDore] = useState<string>(
+    Array.isArray(localDore) && localDore.length === 1 ? localDore[0] : '',
+  );
   const [filteredNetworks, setFilteredNetworks] = useState<Network[]>([]);
   const [pumpStations, setPumpStations] = useState<
-    { idpumpsta: number; namestation: string }[]
+    {idpumpsta: number; namestation: string}[]
   >([]);
   const [selectedNetworkId, setLocalSelectedNetworkId] = useState<
     number | null
   >(null);
-  const [selectedPumpStation, setSelectedPumpStation] = useState<string>("");
+  const [selectedPumpStation, setSelectedPumpStation] = useState<string>('');
   const [networkTrusteeMap, setNetworkTrusteeMap] = useState<
     Record<number, string>
   >({});
+  const [calendarFetched, setCalendarFetched] = useState(false);
 
   // Fetch user position data
   useEffect(() => {
-    fetch("/api/user-position")
+    fetch('/api/user-position')
       .then((res) => res.json())
       .then((data) => {
         setUserName(data.username);
@@ -73,7 +84,7 @@ const HeaderRequestPumping = ({
 
   // Fetch irrigation networks
   useEffect(() => {
-    fetch("/api/irrigation-networks")
+    fetch('/api/irrigation-networks')
       .then((res) => res.json())
       .then((data) => {
         setNetworks(data.networks);
@@ -82,7 +93,7 @@ const HeaderRequestPumping = ({
             acc[network.idnet] = network.trustee;
             return acc;
           },
-          {}
+          {},
         );
         setNetworkTrusteeMap(trusteeMap);
       })
@@ -99,14 +110,14 @@ const HeaderRequestPumping = ({
     if (
       userPositions.some((pos) =>
         [
-          "Website Creator",
-          "Website Admin",
-          "Operation Manager",
-          "Electricity and Pumping Supervisor",
-          "Network Operator",
-          "Network Guard",
-          "Regional Water Representative",
-        ].includes(pos)
+          'Website Creator',
+          'Website Admin',
+          'Operation Manager',
+          'Electricity and Pumping Supervisor',
+          'Network Operator',
+          'Network Guard',
+          'Regional Water Representative',
+        ].includes(pos),
       )
     ) {
       allowedNetworks = networks.map((n) => n.network);
@@ -115,36 +126,36 @@ const HeaderRequestPumping = ({
     if (
       userPositions.some((pos) =>
         [
-          "Supervisor of the First Pumping Set",
-          "Operator of the First Pumping Set",
-        ].includes(pos)
+          'Supervisor of the First Pumping Set',
+          'Operator of the First Pumping Set',
+        ].includes(pos),
       )
     ) {
-      allowedNetworks.push(...["ازگله", "جگیران", "ذهاب شمالی", "ذهاب جنوبی"]);
+      allowedNetworks.push(...['ازگله', 'جگیران', 'ذهاب شمالی', 'ذهاب جنوبی']);
     }
 
     if (
       userPositions.some((pos) =>
         [
-          "Supervisor of the Second Pumping Set",
-          "Operator of the Second Pumping Set",
-        ].includes(pos)
+          'Supervisor of the Second Pumping Set',
+          'Operator of the Second Pumping Set',
+        ].includes(pos),
       )
     ) {
       allowedNetworks.push(
-        ...["حومه قراویز", "بشیوه", "قلعه شاهین", "جگرلوی جنوبی"]
+        ...['حومه قراویز', 'بشیوه', 'قلعه شاهین', 'جگرلوی جنوبی'],
       );
     }
 
     const specialPositionsMap: Record<string, string> = {
-      "Ezgele Water Users Representative": "ازگله",
-      "Jegiran Water Users Representative": "جگیران",
-      "Northern Zahab Water Users Representative": "ذهاب شمالی",
-      "Southern Zahab Water Users Representative": "ذهاب جنوبی",
-      "Hoomeh Qaraviz Water Users Representative": "حومه قراویز",
-      "Beshiveh Water Users Representative": "بشیوه",
-      "Ghaleh Shahin Water Users Representative": "قلعه شاهین",
-      "Water Users Representative South Jagarlu": "جگرلوی جنوبی",
+      'Ezgele Water Users Representative': 'ازگله',
+      'Jegiran Water Users Representative': 'جگیران',
+      'Northern Zahab Water Users Representative': 'ذهاب شمالی',
+      'Southern Zahab Water Users Representative': 'ذهاب جنوبی',
+      'Hoomeh Qaraviz Water Users Representative': 'حومه قراویز',
+      'Beshiveh Water Users Representative': 'بشیوه',
+      'Ghaleh Shahin Water Users Representative': 'قلعه شاهین',
+      'Water Users Representative South Jagarlu': 'جگرلوی جنوبی',
     };
 
     userPositions.forEach((pos) => {
@@ -172,7 +183,7 @@ const HeaderRequestPumping = ({
     if (defaultNetwork) {
       setSelectedNetwork(defaultNetwork);
       const defaultNetworkObj = newFilteredNetworks.find(
-        (n) => n.network === defaultNetwork
+        (n) => n.network === defaultNetwork,
       );
       if (defaultNetworkObj) {
         setNetworkName(defaultNetworkObj.network);
@@ -228,14 +239,14 @@ const HeaderRequestPumping = ({
   };
 
   const handlePumpStationChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const stationName = event.target.value;
     setSelectedPumpStation(stationName);
     setPumpStationName(stationName);
 
     const selectedStation = pumpStations.find(
-      (station) => station.namestation === stationName
+      (station) => station.namestation === stationName,
     );
 
     if (selectedStation) {
@@ -259,8 +270,8 @@ const HeaderRequestPumping = ({
             setPumpStationName(station.namestation);
             setIdPumpStation(station.idpumpsta);
           } else {
-            setSelectedPumpStation("");
-            setPumpStationName("");
+            setSelectedPumpStation('');
+            setPumpStationName('');
             setIdPumpStation(0);
           }
         })
@@ -277,16 +288,117 @@ const HeaderRequestPumping = ({
           if (data.error) {
             console.error(data.error);
           } else {
-            setLocalSaleZeraee(data.SaleZeraee || "");
-            setLocalDore(data.Dore || "");
-            setSaleZeraee(data.SaleZeraee || "");
-            setDoreKesht(data.Dore || "");
-            setIdShDo(data.IdShDo || "");
+            // تنظیم سال زراعی (همیشه فقط مقدار جاری)
+            setLocalSaleZeraee(data.SaleZeraee);
+            setSelectedSaleZeraee(data.currentSaleZeraee || data.SaleZeraee[0]);
+            setSaleZeraee(data.currentSaleZeraee || data.SaleZeraee[0]);
+
+            // تنظیم دوره کشت
+            setLocalDore(data.Dore);
+            if (data.currentDoreKesht) {
+              setSelectedDore(data.currentDoreKesht);
+              setDoreKesht(data.currentDoreKesht);
+            } else {
+              setSelectedDore(data.Dore.length === 1 ? data.Dore[0] : '');
+            }
+
+            setIdShDo(data.IdShDo || '');
           }
         })
-        .catch((error) => console.error("خطا در دریافت اطلاعات:", error));
+        .catch((error) => console.error('خطا در دریافت اطلاعات:', error));
     }
   }, [selectedNetworkId, setDoreKesht, setIdShDo, setSaleZeraee]);
+  const fetchShabakeDoreKesht = useCallback(
+    async (networkId: number, saleZeraee: string, doreKesht: string) => {
+      try {
+        const response = await fetch(
+          `/api/getShabakeDoreKesht?networkId=${networkId}&saleZeraee=${encodeURIComponent(
+            saleZeraee,
+          )}&doreKesht=${encodeURIComponent(doreKesht)}`,
+        );
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        const data: ShabakeDoreKeshtData = await response.json();
+
+        if (onShabakeDataChange) {
+          onShabakeDataChange(data);
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Error:', error);
+        return null;
+      }
+    },
+    [onShabakeDataChange],
+  );
+
+  // هندلر تغییر سال زراعی
+  const handleSaleZeraeeChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const value = e.target.value;
+    setSelectedSaleZeraee(value);
+    setSaleZeraee(value);
+
+    if (selectedNetworkId) {
+      const doreValue =
+        Array.isArray(localDore) && localDore.length === 1
+          ? localDore[0]
+          : selectedDore;
+      if (value && doreValue) {
+        await fetchShabakeDoreKesht(selectedNetworkId, value, doreValue);
+      }
+    }
+  };
+
+  const handleDoreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedDore(value);
+    setDoreKesht(value);
+
+    if (selectedNetworkId) {
+      const saleZeraeeValue =
+        Array.isArray(localSaleZeraee) && localSaleZeraee.length === 1
+          ? localSaleZeraee[0]
+          : selectedSaleZeraee;
+
+      if (value && saleZeraeeValue) {
+        fetchShabakeDoreKesht(selectedNetworkId, saleZeraeeValue, value);
+      }
+    }
+  };
+
+  // در useEffect که شبکه تغییر می‌کند، اگر یکی از مقادیر سال زراعی یا دوره کشت طول 1 داشته باشد،
+  // اطلاعات تقویم را واکشی می‌کنیم
+  useEffect(() => {
+    if (!selectedNetworkId || calendarFetched) return;
+
+    const saleZeraeeValue =
+      Array.isArray(localSaleZeraee) && localSaleZeraee.length === 1
+        ? localSaleZeraee[0]
+        : selectedSaleZeraee;
+
+    const doreValue =
+      Array.isArray(localDore) && localDore.length === 1
+        ? localDore[0]
+        : selectedDore;
+
+    if (saleZeraeeValue && doreValue) {
+      fetchShabakeDoreKesht(selectedNetworkId, saleZeraeeValue, doreValue).then(
+        () => setCalendarFetched(true),
+      );
+    }
+  }, [
+    selectedNetworkId,
+    selectedSaleZeraee,
+    selectedDore,
+    fetchShabakeDoreKesht,
+    calendarFetched,
+    localSaleZeraee,
+    localDore,
+  ]);
 
   return (
     <div
@@ -309,7 +421,7 @@ const HeaderRequestPumping = ({
           <select
             id="network"
             className="w-32 rounded-lg border p-1 text-sm"
-            value={selectedNetwork || ""}
+            value={selectedNetwork || ''}
             onChange={handleNetworkChange}
           >
             <option value="" disabled hidden>
@@ -382,7 +494,7 @@ const HeaderRequestPumping = ({
               id="saleZeraee"
               className="w-24 rounded-lg border p-1 text-sm"
               value={selectedSaleZeraee}
-              onChange={(e) => setSelectedSaleZeraee(e.target.value)}
+              onChange={handleSaleZeraeeChange}
               disabled={!selectedNetwork}
             >
               <option value="" disabled hidden>
@@ -419,7 +531,7 @@ const HeaderRequestPumping = ({
               id="dore"
               className="w-24 rounded-lg border p-1 text-sm"
               value={selectedDore}
-              onChange={(e) => setSelectedDore(e.target.value)}
+              onChange={handleDoreChange}
               disabled={!selectedNetwork}
             >
               <option value="" disabled hidden>

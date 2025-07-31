@@ -1,0 +1,202 @@
+{
+  "common": {
+    "title": "نظام إدارة متكامل شامل",
+    "projectName": "خطة جرمسيري",
+    "welcome": "مرحباً بكم في نظام إدارة المشاريع الشامل المتكامل جرمسيري",
+    "login": "تسجيل الدخول",
+    "register": "يسجل",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "continue": "يكمل",
+    "submit": "يُقدِّم",
+    "loading": "تحميل",
+    "error": "خطأ",
+    "success": "نجاح",
+    "required": "مطلوب",
+    "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صالحة"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "logoAlt": "أيقونة تسجيل الدخول",
+    "usernameLabel": "اسم المستخدم",
+    "usernamePlaceholder": "أدخل اسم المستخدم الخاص بك.",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك.",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "تسجيل الدخول...",
+    "keyboardWarning": "قم بالتبديل إلى لوحة المفاتيح الإنجليزية ولا تستخدم المسافات",
+    "Success": "تم تسجيل الدخول بنجاح",
+    "errors": {
+      "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صالحة",
+      "accountExpired": "حسابك منتهي الصلاحية وغير مفعل",
+      "invalidResponse": "استجابة الخادم غير صالحة",
+      "unknown": "حدث خطأ غير معروف"
+    }
+  },
+  "register": {
+    "title": "أكمل وتحديث المعلومات",
+    "optional": "(خياري)",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "mobile": "الهاتف المحمول",
+    "email": "بريد إلكتروني",
+    "placeholderEmail": "أدخل بريدك الإلكتروني.",
+    "continue": "يكمل"
+  },
+  "updateCredentials": {
+    "changeWordPassword": "تغيير اسم المستخدم وكلمة المرور",
+    "optional": "(خياري)",
+    "important": "مهم",
+    "importantMessage": "يرجى إدخال معلوماتك بعناية.",
+    "changeUsername": "اسم المستخدم الجديد",
+    "repeatUsernameChange": "تأكيد اسم المستخدم الجديد",
+    "changePassword": "كلمة المرور الجديدة",
+    "repeatPasswordChange": "تأكيد كلمة المرور الجديدة",
+    "placeholderUsername": "أدخل اسم المستخدم الجديد الخاص بك",
+    "placeholderPassword": "أدخل كلمة المرور الجديدة",
+    "checkingUsername": "جاري التحقق من توفر اسم المستخدم...",
+    "registering": "جاري التسجيل...",
+    "continue": "يكمل",
+    "sir": "عزيزي",
+    "successful": "تم التسجيل بنجاح",
+    "start": "يبدأ",
+    "loading": "تحميل...",
+    "iconAlt": "أيقونة تحديث كلمة المرور",
+    "keyboardWarning": "استخدم لوحة المفاتيح الإنجليزية وتجنب المسافات",
+    "validation": {
+      "usernameValidation": "يجب أن يكون اسم المستخدم من 4 إلى 20 حرفًا ويتضمن فقط الأحرف والأرقام الإنجليزية",
+      "checkUsernameAvailability": "اسم المستخدم هذا مستخدم بالفعل",
+      "confirmUsernameValidation": "يجب أن يتطابق اسم المستخدم والتأكيد",
+      "nonPasscodeRegex": "يجب أن تتكون كلمة المرور من 8 إلى 20 حرفًا وتحتوي فقط على أحرف وأرقام إنجليزية",
+      "confirmPasscode": "يجب أن تتطابق كلمة المرور والتأكيد"
+    },
+    "errors": {
+      "missingParams": "Invitation ID not found",
+      "invalidId": "معرف غير صالح",
+      "invitationNotFound": "لم يتم العثور على الدعوة",
+      "alreadyRegistered": "هذه الدعوة مسجلة بالفعل",
+      "missingCredentials": "يجب تقديم اسم المستخدم وكلمة المرور معًا",
+      "errorResult": "حدث خطأ أثناء التسجيل",
+      "retry": "حدث خطأ، يرجى المحاولة مرة أخرى",
+      "serverError": "حدث خطأ في الخادم"
+    }
+  },
+  "menu": {
+    "home": "بيت",
+    "tropicalPlan": "خطة جارمسيري",
+    "title": "صفحة {menuSlug}",
+    "content": "يعتمد محتوى هذه الصفحة على المسار {menuSlug} معروض",
+    "welcome": "مرحباً",
+    "currentAffairs": "الشؤون الجارية",
+    "operationRecords": "سجلات العمليات",
+    "executionRecords": "سجلات التنفيذ",
+    "studyRecords": "سجلات الدراسة",
+    "browserManagement": "إدارة المتصفح",
+    "waterRequest": "طلب المياه",
+    "requestFromPumpingStation": "طلب من محطة الضخ",
+    "browserManagementDescription": "إدارة وتكوين إعدادات الموقع والمستخدم",
+    "waterRequestDescription": "تسجيل وتتبع طلبات المياه من محطات الضخ"
+  },
+  "footer": {
+    "copyright": "جميع الحقوق محفوظة لهذا المتصفح."
+  },
+  "AdminMenuForm": {
+    "ManagePages": "إدارة الصفحات"
+  },
+  "invitation": {
+    "button": "دعوة"
+  },
+  "userInvitationTable": {
+    "loading": "تحميل...",
+    "users": "المستخدمون",
+    "invitees": "المدعوين",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "mobilePhone": "الهاتف المحمول",
+    "registrationTime": "وقت التسجيل",
+    "invitationDate": "تاريخ الدعوة",
+    "expirationTime": "وقت انتهاء الصلاحية",
+    "register": "يسجل",
+    "active": "نشيط",
+    "role": "دور",
+    "details": "تفاصيل",
+    "uncertain": "غير مؤكد",
+    "yes": "نعم",
+    "no": "لا",
+    "noRole": "لا يوجد دور",
+    "view": "منظر"
+  },
+  "AccessLevelModal": {
+    "menuManagement": "إدارة القائمة",
+    "accessLevelTitle": "عنوان مستوى الوصول",
+    "save": "يحفظ",
+    "close": "يغلق",
+    "updateSuccess": "تحديث النجاح"
+  },
+  "InvitationModal": {
+    "invitation": "دعوة",
+    "cancellation": "إلغاء",
+    "sendInvitation": "إرسال دعوة",
+    "successfully": "تم إرسال الدعوة بنجاح.",
+    "errorSubmitting": "خطأ في إرسال الدعوة"
+  },
+  "FormSection": {
+    "loading": "تحميل",
+    "completionMessage": "يجب إكمال العناصر المميزة بالنجمة.",
+    "selectDate": "حدد التاريخ",
+    "gender": "جنس",
+    "male": "ذكر",
+    "female": "أنثى",
+    "roleSelection": "اختيار الدور",
+    "editAccessLevel": "تعديل مستوى الوصول",
+    "noPositionsAvailable": "لا توجد وظائف متاحة."
+  },
+  "AdditionalFormFields": {
+    "introductionLetter": "تحميل خطاب التعريف",
+    "letterIssuer": "جهة إصدار الخطاب",
+    "letterNumber": "رقم الخطاب",
+    "letterDate": "تاريخ الخطاب",
+    "letterApprover": "الموافق",
+    "select": "اختيار",
+    "clear": "مسح",
+    "selectDate": "اختيار التاريخ",
+    "months": {
+      "farvardin": "يناير",
+      "ordibehesht": "فبراير",
+      "khordad": "مارس",
+      "tir": "يوليو",
+      "mordad": "أغسطس",
+      "shahrivar": "سبتمبر",
+      "mehr": "أكتوبر",
+      "aban": "نوفمبر",
+      "azar": "ديسمبر",
+      "dey": "أبريل",
+      "bahman": "مايو",
+      "esfand": "يونيو"
+    },
+    "issuerOptions": {
+      "company1": "شركة المياه الإقليمية في كرمانشاه",
+      "company2": "منظمة الجهاد الزراعي في كرمانشاه"
+    }
+  },
+  "Validation": {
+    "required": "{fieldName} مطلوب.",
+    "onlyLettersAndSpaces": "يجب أن يحتوي {fieldName} على حروف ومسافات فقط.",
+    "maxLength": "يجب ألا يتجاوز {fieldName} {maxLength} حرفًا.",
+    "invalidMobile": "رقم الهاتف المدخل غير صالح.",
+    "invalidEndDate": "يجب ألا يكون تاريخ انتهاء العضوية قبل تاريخ اليوم.",
+    "positionRequired": "اختيار منصب واحد على الأقل مطلوب.",
+    "invalidFileFormat": "يجب أن يكون {fieldName} صورة (PNG، JPG، JPEG) أو PDF."
+  },
+  "ApiInvitation": {
+    "userAlreadyInvited": "تم دعوة هذا المستخدم بالفعل.",
+    "invitationCreated": "تم إنشاء الدعوة بنجاح.",
+    "invalidMenus": "قوائم غير صالحة: {invalidMenuIds}",
+    "serverError": "حدث خطأ في الخادم.",
+    "fetchError": "خطأ في جلب البيانات"
+  },
+  "notFound": {
+    "title": "لم يتم العثور على الصفحة",
+    "message": "الصفحة التي تبحث عنها غير موجودة."
+  }
+}

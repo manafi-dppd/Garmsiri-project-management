@@ -185,7 +185,7 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
     });
   };
   const isFiddaheValid = taedProgramData?.fiddahe
-    ? taedProgramData.fiddahe > (currentFiddahe || 0) - 2
+    ? taedProgramData.fiddahe > (currentFiddahe || 0) - 20
     : false;
   // تغییر هندلرهای انتخاب ماه و دهه
   const handleMahSelection = (item: {mah: number; sal: number}) => {

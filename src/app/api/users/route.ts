@@ -32,6 +32,8 @@ export async function GET() {
                 id: true,
                 title: true,
                 title_fa: true,
+                title_ar: true,
+                title_tr: true,
               },
             },
           },

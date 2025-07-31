@@ -1,0 +1,202 @@
+{
+  "common": {
+    "title": "Kapsamlı entegre yönetim sistemi",
+    "projectName": "Garmsiri Planı",
+    "welcome": "Kapsamlı entegre Garmsiri proje yönetim sistemine hoş geldiniz",
+    "login": "Login",
+    "register": "giriş yapmak",
+    "username": "kullanıcı adı",
+    "password": "şifre",
+    "continue": "devam etmek",
+    "submit": "göndermek",
+    "loading": "yükleniyor",
+    "error": "hata",
+    "success": "başarı",
+    "required": "gerekli",
+    "invalidCredentials": "geçersiz kullanıcı adı veya şifre"
+  },
+  "login": {
+    "title": "Giriş yap",
+    "logoAlt": "Giriş simgesi",
+    "usernameLabel": "Kullanıcı adı",
+    "usernamePlaceholder": "Kullanıcı adınızı giriniz.",
+    "passwordLabel": "Şifre",
+    "passwordPlaceholder": "Şifrenizi giriniz.",
+    "loginButton": "Giriş yap",
+    "loggingIn": "Oturum açma...",
+    "keyboardWarning": "İngilizce klavyeye geçin ve boşluk kullanmayın",
+    "Success": "Giriş başarılı",
+    "errors": {
+      "invalidCredentials": "Geçersiz kullanıcı adı veya şifre",
+      "accountExpired": "Hesabınız süresi dolmuş ve devre dışı bırakılmış",
+      "invalidResponse": "Geçersiz sunucu yanıtı",
+      "unknown": "Bilinmeyen bir hata oluştu"
+    }
+  },
+  "register": {
+    "title": "Bilgileri tamamlayın ve güncelleyin",
+    "optional": "(İsteğe bağlı)",
+    "firstName": "İlk adı",
+    "lastName": "Soy isim",
+    "mobile": "Cep telefonu",
+    "email": "e-posta",
+    "placeholderEmail": "E-postanızı girin.",
+    "continue": "Devam etmek"
+  },
+  "updateCredentials": {
+    "changeWordPassword": "Kullanıcı Adı ve Şifreyi Değiştir",
+    "optional": "(isteğe bağlı)",
+    "important": "Önemli",
+    "importantMessage": "Lütfen bilgilerinizi dikkatlice giriniz.",
+    "changeUsername": "Yeni Kullanıcı Adı",
+    "repeatUsernameChange": "Yeni Kullanıcı Adını Onayla",
+    "changePassword": "Yeni Şifre",
+    "repeatPasswordChange": "Yeni Şifreyi Onayla",
+    "placeholderUsername": "Yeni kullanıcı adınızı girin",
+    "placeholderPassword": "Yeni şifrenizi girin",
+    "checkingUsername": "Kullanıcı adı kullanılabilirliği kontrol ediliyor...",
+    "registering": "Kayıt olunuyor...",
+    "continue": "Devam etmek",
+    "sir": "Canım",
+    "successful": "Kayıt başarıyla tamamlandı",
+    "start": "Başlangıç",
+    "loading": "Yükleniyor...",
+    "iconAlt": "Şifre Güncelleme Simgesi",
+    "keyboardWarning": "İngilizce klavye kullanın ve boşluklardan kaçının",
+    "validation": {
+      "usernameValidation": "Kullanıcı adı 4-20 karakter uzunluğunda olmalı ve yalnızca İngilizce harfler ve rakamlar içermelidir",
+      "checkUsernameAvailability": "Bu kullanıcı adı zaten alınmış",
+      "confirmUsernameValidation": "Kullanıcı adı ve onay eşleşmelidir",
+      "nonPasscodeRegex": "Şifre 8-20 karakter uzunluğunda olmalı ve yalnızca İngilizce harfler ve rakamlar içermelidir",
+      "confirmPasscode": "Şifre ve onay eşleşmelidir"
+    },
+    "errors": {
+      "missingParams": "Davetiye Kimliği bulunamadı",
+      "invalidId": "Geçersiz kimlik",
+      "invitationNotFound": "Davetiye bulunamadı",
+      "alreadyRegistered": "Bu davet zaten kayıtlı",
+      "missingCredentials": "Kullanıcı adı ve şifre birlikte sağlanmalıdır",
+      "errorResult": "AKayıt sırasında bir hata oluştu",
+      "retry": "Bir hata oluştu, lütfen tekrar deneyin",
+      "serverError": "Sunucu hatası oluştu"
+    }
+  },
+  "menu": {
+    "home": "Ev",
+    "tropicalPlan": "Garmsiri Plan",
+    "title": "sayfa {menuSlug}",
+    "content": "Bu sayfanın içeriği yola dayanmaktadır {menuSlug} Görüntülendi",
+    "welcome": "Hoş geldin",
+    "currentAffairs": "Güncel Olaylar",
+    "operationRecords": "Operasyon Kayıtları",
+    "executionRecords": "Yürütme Kayıtları",
+    "studyRecords": "Çalışma Kayıtları",
+    "browserManagement": "Tarayıcı Yönetimi",
+    "waterRequest": "Su Talebi",
+    "requestFromPumpingStation": "Pompa İstasyonundan Talep",
+    "browserManagementDescription": "Web sitesi ve kullanıcı yönetimi ve ayarları",
+    "waterRequestDescription": "Pompa istasyonlarından gelen taleplerin kaydedilmesi"
+  },
+  "footer": {
+    "copyright": "Bu tarayıcının tüm hakları saklıdır."
+  },
+  "AdminMenuForm": {
+    "ManagePages": "Sayfaları yönet"
+  },
+  "invitation": {
+    "button": "Davet"
+  },
+  "userInvitationTable": {
+    "loading": "Yükleniyor...",
+    "users": "Kullanıcılar",
+    "invitees": "Davetliler",
+    "firstName": "İlk adı",
+    "lastName": "Soy isim",
+    "mobilePhone": "Cep Telefonu",
+    "registrationTime": "Kayıt Zamanı",
+    "invitationDate": "Davet tarihi",
+    "expirationTime": "Son Kullanma Tarihi",
+    "register": "Kayıt olmak",
+    "active": "Aktif",
+    "role": "Rol",
+    "details": "Detaylar",
+    "uncertain": "Belirsiz",
+    "yes": "Evet",
+    "no": "HAYIR",
+    "noRole": "Hiçbir rol",
+    "view": "Görüş"
+  },
+  "AccessLevelModal": {
+    "menuManagement": "Menü yönetimi",
+    "accessLevelTitle": "Erişim düzeyi başlığı",
+    "save": "Kaydetmek",
+    "close": "Kapalı",
+    "updateSuccess": "güncelleme Başarılı"
+  },
+  "InvitationModal": {
+    "invitation": "Davet",
+    "cancellation": "İptal",
+    "sendInvitation": "Davetiye gönder",
+    "successfully": "Davetiye başarıyla gönderildi.",
+    "errorSubmitting": "Davetiye gönderilirken hata oluştu"
+  },
+  "FormSection": {
+    "loading": "Yükleniyor",
+    "completionMessage": "Yıldızlı öğelerin tamamlanması gereklidir.",
+    "selectDate": "Tarih seçin",
+    "gender": "Cinsiyet",
+    "male": "Erkek",
+    "female": "Kadın",
+    "roleSelection": "Rol seçimi",
+    "editAccessLevel": "Erişim düzeyini düzenle",
+    "noPositionsAvailable": "Pozisyon bulunmamaktadır."
+  },
+  "AdditionalFormFields": {
+    "introductionLetter": "Tanıtım Mektubu Yükle",
+    "letterIssuer": "Mektup Düzenleyici",
+    "letterNumber": "Mektup Numarası",
+    "letterDate": "Mektup Tarihi",
+    "letterApprover": "Onaylayıcı",
+    "select": "Seç",
+    "clear": "Temizle",
+    "selectDate": "Tarih Seç",
+    "months": {
+      "farvardin": "Ocak",
+      "ordibehesht": "Şubat",
+      "khordad": "Mart",
+      "tir": "Temmuz",
+      "mordad": "Ağustos",
+      "shahrivar": "Eylül",
+      "mehr": "Ekim",
+      "aban": "Kasım",
+      "azar": "Aralık",
+      "dey": "Nisan",
+      "bahman": "Mayıs",
+      "esfand": "Haziran"
+    },
+    "issuerOptions": {
+      "company1": "Kermanşah Bölgesel Su Şirketi",
+      "company2": "Kermanşah Tarım Cihad Örgütü"
+    }
+  },
+  "Validation": {
+    "required": "{fieldName} zorunludur.",
+    "onlyLettersAndSpaces": "{fieldName} yalnızca harf ve boşluk içermelidir.",
+    "maxLength": "{fieldName}, {maxLength} karakteri aşmamalıdır.",
+    "invalidMobile": "Girilen telefon numarası geçerli değil.",
+    "invalidEndDate": "Üyelik bitiş tarihi bugünden önce olmamalıdır.",
+    "positionRequired": "En az bir pozisyon seçilmesi zorunludur.",
+    "invalidFileFormat": "{fieldName}, bir resim (PNG, JPG, JPEG) veya PDF olmalıdır."
+  },
+  "ApiInvitation": {
+    "userAlreadyInvited": "Bu kullanıcı zaten davet edildi.",
+    "invitationCreated": "Davet başarıyla oluşturuldu.",
+    "invalidMenus": "Geçersiz menüler: {invalidMenuIds}",
+    "serverError": "Sunucuda bir hata oluştu.",
+    "fetchError": "Veri alınırken hata oluştu"
+  },
+  "notFound": {
+    "title": "Sayfa Bulunamadı",
+    "message": "Aradığınız sayfa bulunamadı."
+  }
+}

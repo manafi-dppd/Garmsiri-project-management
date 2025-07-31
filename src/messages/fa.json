@@ -1,0 +1,202 @@
+{
+  "common": {
+    "title": "سامانه جامع مدیریت یکپارچه",
+    "projectName": "طرح گرمسیری",
+    "welcome": "به سامانه جامع مدیریت یکپارچه طرح گرمسیری خوش آمدید",
+    "login": "ورود",
+    "register": "ثبت نام",
+    "username": "نام کاربری",
+    "password": "رمز عبور",
+    "continue": "ادامه",
+    "submit": "ثبت",
+    "loading": "در حال بارگذاری",
+    "error": "خطا",
+    "success": "موفقیت",
+    "required": "الزامی",
+    "invalidCredentials": "نام کاربری یا رمز عبور نادرست است"
+  },
+  "login": {
+    "title": "ورود",
+    "logoAlt": "آیکون ورود",
+    "usernameLabel": "نام کاربری",
+    "usernamePlaceholder": "نام کاربری خود را وارد کنید",
+    "passwordLabel": "رمز عبور",
+    "passwordPlaceholder": "رمز عبور خود را وارد کنید",
+    "loginButton": "ورود",
+    "loggingIn": "ورود به سیستم...",
+    "keyboardWarning": "کیبورد رو انگلیسی کنید و فاصله نذارید",
+    "Success": "ورود با موفقیت انجام شد",
+    "errors": {
+      "invalidCredentials": "نام کاربری یا رمز عبور نامعتبر است",
+      "accountExpired": "حساب کاربری شما منقضی شده و غیرفعال است",
+      "invalidResponse": "پاسخ سرور نامعتبر است",
+      "unknown": "خطای ناشناخته‌ای رخ داد"
+    }
+  },
+  "register": {
+    "title": "اصلاح و تکمیل مشخصات",
+    "optional": "(اختیاری)",
+    "firstName": "نام",
+    "lastName": "نام خانوادگی",
+    "mobile": "تلفن همراه",
+    "email": "ایمیل",
+    "placeholderEmail": "ایمیل خود را وارد کنید.",
+    "continue": "ادامه"
+  },
+  "updateCredentials": {
+    "changeWordPassword": "تغییر نام کاربری و رمز عبور",
+    "optional": "(اختیاری)",
+    "important": "مهم",
+    "importantMessage": "لطفاً اطلاعات خود را با دقت وارد کنید.",
+    "changeUsername": "نام کاربری جدید",
+    "repeatUsernameChange": "تکرار نام کاربری جدید",
+    "changePassword": "رمز عبور جدید",
+    "repeatPasswordChange": "تکرار رمز عبور جدید",
+    "placeholderUsername": "نام کاربری جدید را وارد کنید",
+    "placeholderPassword": "رمز عبور جدید را وارد کنید",
+    "checkingUsername": "در حال بررسی نام کاربری...",
+    "registering": "در حال ثبت...",
+    "continue": "ادامه",
+    "sir": "جناب",
+    "successful": "ثبت‌نام با موفقیت انجام شد",
+    "start": "شروع",
+    "loading": "در حال بارگذاری...",
+    "iconAlt": "آیکون به‌روزرسانی رمز عبور",
+    "keyboardWarning": "صفحه کلید انگلیسی شود و کاراکتر فاصله وارد نکنید",
+    "validation": {
+      "usernameValidation": "نام کاربری باید بین 4 تا 20 کاراکتر و فقط شامل حروف و اعداد انگلیسی باشد",
+      "checkUsernameAvailability": "این نام کاربری قبلاً استفاده شده است",
+      "confirmUsernameValidation": "نام کاربری و تکرار آن باید یکسان باشند",
+      "nonPasscodeRegex": "رمز عبور باید بین 8 تا 20 کاراکتر و فقط شامل حروف و اعداد انگلیسی باشد",
+      "confirmPasscode": "رمز عبور و تکرار آن باید یکسان باشند"
+    },
+    "errors": {
+      "missingParams": "شناسه دعوت‌نامه یافت نشد",
+      "invalidId": "شناسه نامعتبر است",
+      "invitationNotFound": "دعوت‌نامه یافت نشد",
+      "alreadyRegistered": "این دعوت‌نامه قبلاً ثبت شده است",
+      "missingCredentials": "نام کاربری و رمز عبور باید با هم وارد شوند",
+      "errorResult": "خطایی در ثبت اطلاعات رخ داد",
+      "retry": "خطایی رخ داد، لطفاً دوباره تلاش کنید",
+      "serverError": "خطای سرور رخ داد"
+    }
+  },
+  "menu": {
+    "home": "خانه",
+    "tropicalPlan": "طرح گرمسیری",
+    "title": "صفحه {menuSlug}",
+    "content": "محتوای این صفحه بر اساس مسیر {menuSlug} نمایش داده می‌شود",
+    "welcome": "خوش آمدید",
+    "currentAffairs": "امور جاری",
+    "operationRecords": "سوابق عملیات",
+    "executionRecords": "سوابق اجرایی",
+    "studyRecords": "سوابق مطالعاتی",
+    "browserManagement": "مدیریت مرورگر",
+    "waterRequest": "درخواست آب",
+    "requestFromPumpingStation": "درخواست از ایستگاه پمپاژ",
+    "browserManagementDescription": "مدیریت و پیکربندی تنظیمات وب سایت و کاربران",
+    "waterRequestDescription": "ثبت و پیگیری درخواست‌های آب از ایستگاه‌های پمپاژ"
+  },
+  "footer": {
+    "copyright": "تمامی حقوق این مرورگر محفوظ است."
+  },
+  "AdminMenuForm": {
+    "ManagePages": "مدیریت صفحات"
+  },
+  "invitation": {
+    "button": "دعوت‌نامه"
+  },
+  "userInvitationTable": {
+    "loading": "در حال بارگذاری",
+    "users": "کاربران",
+    "invitees": "دعوت شدگان",
+    "firstName": "نام",
+    "lastName": "نام خانوادگی",
+    "mobilePhone": "تلفن همراه",
+    "registrationTime": "زمان ثبت نام",
+    "invitationDate": "تاریخ دعوت",
+    "expirationTime": "زمان انقضا",
+    "register": "ثبت‌نام",
+    "active": "فعال",
+    "role": "سمت",
+    "details": "جزئیات",
+    "uncertain": "نامشخص",
+    "yes": "بله",
+    "no": "خیر",
+    "noRole": "بدون سمت",
+    "view": "مشاهده"
+  },
+  "AccessLevelModal": {
+    "menuManagement": "مدیریت منو",
+    "accessLevelTitle": "عنوان سطح دسترسی",
+    "save": "ذخیره",
+    "close": "بستن",
+    "updateSuccess": "به‌روزرسانی موفقیت‌آمیز"
+  },
+  "InvitationModal": {
+    "invitation": "دعوتنامه",
+    "cancellation": "انصراف",
+    "sendInvitation": "ارسال دعوتنامه",
+    "successfully": "دعوتنامه با موفقیت ارسال شد.",
+    "errorSubmitting": "خطا در ارسال دعوت‌نامه"
+  },
+  "FormSection": {
+    "loading": "در حال بارگذاری...",
+    "completionMessage": "تکمیل موارد ستاره‌دار الزامیست.",
+    "selectDate": "انتخاب تاریخ",
+    "gender": "جنسیت",
+    "male": "مرد",
+    "female": "زن",
+    "roleSelection": "انتخاب سمت",
+    "editAccessLevel": "ویرایش سطح دسترسی",
+    "noPositionsAvailable": "هیچ موقعیتی در دسترس نیست"
+  },
+  "AdditionalFormFields": {
+    "introductionLetter": "آپلود معرفی‌نامه",
+    "letterIssuer": "صادرکننده معرفی‌نامه",
+    "letterNumber": "شماره معرفی‌نامه",
+    "letterDate": "تاریخ معرفی‌نامه",
+    "letterApprover": "تاییدکننده",
+    "select": "انتخاب",
+    "clear": "حذف",
+    "selectDate": "انتخاب تاریخ",
+    "months": {
+      "farvardin": "فروردین",
+      "ordibehesht": "اردیبهشت",
+      "khordad": "خرداد",
+      "tir": "تیر",
+      "mordad": "مرداد",
+      "shahrivar": "شهریور",
+      "mehr": "مهر",
+      "aban": "آبان",
+      "azar": "آذر",
+      "dey": "دی",
+      "bahman": "بهمن",
+      "esfand": "اسفند"
+    },
+    "issuerOptions": {
+      "company1": "شرکت آب منطقه‌ای کرمانشاه",
+      "company2": "سازمان جهاد کشاورزی استان کرمانشاه"
+    }
+  },
+  "Validation": {
+    "required": "{fieldName} الزامی است.",
+    "onlyLettersAndSpaces": "{fieldName} باید فقط شامل حروف و فاصله باشد.",
+    "maxLength": "{fieldName} نباید بیشتر از {maxLength} کاراکتر باشد.",
+    "invalidMobile": "شماره تلفن وارد شده معتبر نیست.",
+    "invalidEndDate": "تاریخ پایان عضویت نباید قبل از تاریخ امروز باشد.",
+    "positionRequired": "انتخاب حداقل یک سمت الزامی است.",
+    "invalidFileFormat": "{fieldName} باید تصویر (PNG, JPG, JPEG) یا PDF باشد."
+  },
+  "ApiInvitation": {
+    "userAlreadyInvited": "این کاربر قبلاً دعوت شده است.",
+    "invitationCreated": "دعوت‌نامه با موفقیت ثبت شد.",
+    "invalidMenus": "منوهای نامعتبر: {invalidMenuIds}",
+    "serverError": "خطایی در سرور رخ داده است.",
+    "fetchError": "خطا در دریافت داده‌ها"
+  },
+  "notFound": {
+    "title": "صفحه یافت نشد",
+    "message": "صفحه‌ای که به دنبال آن هستید وجود ندارد."
+  }
+}

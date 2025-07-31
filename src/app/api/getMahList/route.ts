@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
         trikhpayan: true,
       },
     });
+
     if (!shabake) {
       return NextResponse.json(
         {message: 'تقویم آبیاری در سامانه بارگذاری نشده است'},
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest) {
         fiddahe: true,
       },
     });
+
     const mahList = await prisma.trikhdorekesht.findMany({
       where: {
         trikh: {
@@ -54,6 +56,7 @@ export async function GET(req: NextRequest) {
       distinct: ['mah'],
       orderBy: {mah: 'asc'},
     });
+
     return NextResponse.json({
       mahList,
       currentFiddahe: todayRecord?.fiddahe || null,

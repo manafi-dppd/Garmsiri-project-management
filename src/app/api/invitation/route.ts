@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
+import { cookies } from "next/headers";
+import { getServerTranslations } from "@/lib/getServerTranslations";
+import { locales, Locale, defaultLocale } from "@/i18n/config";
 
 interface InvitationRequest {
   first_name?: string;
@@ -26,7 +29,18 @@ interface AccessLevel {
   has_access: boolean;
 }
 
+export const dynamic = "force-dynamic"; // فعال کردن رندرینگ پویا برای این مسیر
+
 export async function POST(req: Request) {
+  const cookieStore = cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value ||
+    defaultLocale) as Locale;
+  if (!locales.includes(locale)) {
+    console.error("[InvitationAPI] Invalid locale:", locale);
+    return NextResponse.json({ error: "Invalid locale" }, { status: 400 });
+  }
+
+  const t = await getServerTranslations("ApiInvitation", locale);
   try {
     const body = (await req.json()) as InvitationRequest;
     const { mobile, selectedPositions, editedAccessLevel, ...rest } = body;
@@ -34,7 +48,7 @@ export async function POST(req: Request) {
     const existing = await prisma.invitation.findUnique({ where: { mobile } });
     if (existing) {
       return NextResponse.json(
-        { message: "این کاربر قبلاً دعوت شده است." },
+        { message: t("userAlreadyInvited") },
         { status: 409 }
       );
     }
@@ -44,6 +58,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
     console.log("username: ", username);
     console.log("Password: ", rawPassword);
+
     const newInvitation = await prisma.invitation.create({
       data: {
         ...rest,
@@ -55,7 +70,7 @@ export async function POST(req: Request) {
       },
     });
 
-    if (editedAccessLevel) {
+    if (Array.isArray(editedAccessLevel) && editedAccessLevel.length > 0) {
       const allMenus = await prisma.menu.findMany({ select: { id: true } });
       const menuIds = allMenus.map((m: Menu) => m.id);
 
@@ -64,7 +79,9 @@ export async function POST(req: Request) {
         .filter((id) => !menuIds.includes(id));
 
       if (invalidMenuIds.length > 0) {
-        throw new Error(`منوهای نامعتبر: ${invalidMenuIds.join(", ")}`);
+        throw new Error(
+          t("invalidMenus", { invalidMenuIds: invalidMenuIds.join(", ") })
+        );
       }
 
       await prisma.invitation_access.createMany({
@@ -88,6 +105,7 @@ export async function POST(req: Request) {
             menu_id: a.menu_id,
             has_access: a.has_access,
           })),
+          skipDuplicates: true,
         });
       }
     }
@@ -97,29 +115,38 @@ export async function POST(req: Request) {
         invitation_id: newInvitation.id,
         position_id,
       })),
+      skipDuplicates: true,
     });
 
     return NextResponse.json(
       {
-        message: "دعوت‌نامه با موفقیت ثبت شد.",
+        message: t("invitationCreated"),
         invitation: newInvitation,
         rawPassword,
       },
       { status: 201 }
     );
   } catch (error: unknown) {
-    console.error("خطا در ثبت دعوت‌نامه:", error);
+    console.error("[Invitation] Error creating invitation:", error);
     return NextResponse.json(
       {
-        message:
-          error instanceof Error ? error.message : "خطایی در سرور رخ داده است.",
+        message: error instanceof Error ? error.message : t("serverError"),
       },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const cookieStore = cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value ||
+    defaultLocale) as Locale;
+  if (!locales.includes(locale)) {
+    console.error("[InvitationAPI] Invalid locale:", locale);
+    return NextResponse.json({ error: "Invalid locale" }, { status: 400 });
+  }
+
+  const t = await getServerTranslations("ApiInvitation", locale);
   try {
     const invitations = await prisma.invitation.findMany({
       select: {
@@ -130,14 +157,17 @@ export async function GET() {
         created_at: true,
         end_date: true,
         is_registered: true,
+        invitation_access: {
+          select: {
+            menu_id: true,
+            has_access: true,
+          },
+        },
       },
     });
     return NextResponse.json(invitations);
   } catch (error) {
-    console.error("Error fetching invitations:", error);
-    return NextResponse.json(
-      { message: "خطا در دریافت داده‌ها" },
-      { status: 500 }
-    );
+    console.error("[Invitation] Error fetching invitations:", error);
+    return NextResponse.json({ message: t("fetchError") }, { status: 500 });
   }
 }

@@ -12,22 +12,15 @@ import {
   FaCalculator,
   FaBars,
 } from "react-icons/fa";
-
-interface Menu {
-  id: number;
-  title: string;
-  title_fa: string;
-  active: boolean;
-  parent_id: number | null; // تغییر از parentId به parent_id
-  slug: string;
-  parentSlug: string | null;
-}
+import { Menu } from "@/types/menu";
+import { useLocale } from "next-intl";
 
 interface NavMenuProps {
   menus: Menu[];
 }
 
 const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
+  const locale = useLocale();
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
   const [localMenus, setLocalMenus] = useState<Menu[]>(menus);
@@ -43,12 +36,11 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
         });
         if (!response.ok) {
           if (response.status === 401) {
-            router.push("/login");
+            router.push(`/${locale}/login` as any);
           }
           return;
         }
         const data: Menu[] = await response.json();
-
         setLocalMenus(data);
       } catch (error) {
         console.error("Error fetching menus:", error);
@@ -56,10 +48,10 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
     };
 
     fetchMenus();
-  }, [router]);
+  }, [router, locale]);
 
   const buildPath = (menu: Menu): string => {
-    return `/${menu.slug}`;
+    return menu.title === "home" ? "/" : `/${locale}/${menu.slug}`;
   };
 
   const handleMenuClick = (menu: Menu, e: React.MouseEvent) => {
@@ -70,7 +62,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
       e.preventDefault();
       setOpenMenu(menu.id === openMenu ? null : menu.id);
     } else {
-      router.push(buildPath(menu));
+      router.push(buildPath(menu) as any);
     }
   };
 
@@ -84,20 +76,32 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
     } else {
       setOpenMenu(null);
       setOpenSubMenu(null);
-      router.push(buildPath(submenu));
+      router.push(buildPath(submenu) as any);
     }
   };
 
   const handleSubSubMenuClick = (subSubMenu: Menu) => {
     setOpenMenu(null);
     setOpenSubMenu(null);
-    router.push(buildPath(subSubMenu));
+    router.push(buildPath(subSubMenu) as any);
   };
 
   const parentMenus = Array.isArray(localMenus)
     ? localMenus.filter((menu) => menu.parent_id === null && menu.active)
     : [];
-
+  const getLocalizedTitle = (menu: Menu) => {
+    switch (locale) {
+      case "en":
+        return menu.title;
+      case "ar":
+        return menu.title_ar;
+      case "tr":
+        return menu.title_tr;
+      case "fa":
+      default:
+        return menu.title_fa;
+    }
+  };
   return (
     <nav className="relative z-10 bg-gray-700 text-white">
       <div className="container flex flex-col items-start px-2">
@@ -138,25 +142,25 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
                   ) : menu.title === "Current Affairs" ? (
                     <>
                       <FaClock className="text-lg text-yellow-500" />
-                      {menu.title_fa}
+                      {getLocalizedTitle(menu)}
                     </>
                   ) : menu.title === "Operation Records" ? (
                     <>
                       <FaCogs className="text-lg text-green-500" />
-                      {menu.title_fa}
+                      {getLocalizedTitle(menu)}
                     </>
                   ) : menu.title === "Execution Records" ? (
                     <>
                       <FaWrench className="text-lg text-red-500" />
-                      {menu.title_fa}
+                      {getLocalizedTitle(menu)}
                     </>
                   ) : menu.title === "Study Records" ? (
                     <>
                       <FaCalculator className="text-lg text-purple-500" />
-                      {menu.title_fa}
+                      {getLocalizedTitle(menu)}
                     </>
                   ) : (
-                    menu.title_fa
+                    getLocalizedTitle(menu)
                   )}
                 </Link>
                 {childMenus.length > 0 && openMenu === menu.id && (
@@ -181,7 +185,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
                             onClick={(e) => handleSubMenuClick(submenu, e)}
                             className="flex cursor-pointer justify-between hover:text-gray-300"
                           >
-                            <span>{submenu.title_fa}</span>
+                            <span>{getLocalizedTitle(submenu)}</span>
                             {subChildMenus.length > 0 && (
                               <span className="ml-2 text-sm text-gray-400">
                                 {">"}
@@ -191,7 +195,13 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
 
                           {subChildMenus.length > 0 &&
                             openSubMenu === submenu.id && (
-                              <ul className="absolute right-full top-0 mt-0 min-w-[200px] rounded bg-gray-600 p-2 text-sm shadow-lg">
+                              <ul
+                                className={`absolute ${
+                                  locale === "fa" || locale === "ar"
+                                    ? "right-full"
+                                    : "left-full"
+                                } top-0 mt-0 min-w-[200px] rounded bg-gray-600 p-2 text-sm shadow-lg`}
+                              >
                                 {subChildMenus.map((subSubMenu) => (
                                   <li
                                     key={subSubMenu.id}
@@ -204,7 +214,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
                                       }
                                       className="cursor-pointer hover:text-gray-300"
                                     >
-                                      {subSubMenu.title_fa}
+                                      {getLocalizedTitle(subSubMenu)}
                                     </Link>
                                   </li>
                                 ))}

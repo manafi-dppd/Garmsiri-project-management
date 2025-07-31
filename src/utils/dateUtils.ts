@@ -1,18 +1,18 @@
 // src/utils/dateUtils.ts
 export const toPersianDate = (date: string | Date, format: string): string => {
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   };
 
   // تبدیل تاریخ به روز هفته
-  if (format === 'dddd') {
-    return new Date(date).toLocaleDateString('fa-IR', { weekday: 'long' });
+  if (format === "dddd") {
+    return new Date(date).toLocaleDateString("fa-IR", { weekday: "long" });
   }
 
   // تبدیل تاریخ به فرمت شمسی
-  return new Date(date).toLocaleDateString('fa-IR', options);
+  return new Date(date).toLocaleDateString("fa-IR", options);
 };
 export const formatDateTime = (date: string | Date): string => {
   // ایجاد یک شیء Date از تاریخ ورودی
@@ -27,15 +27,23 @@ export const formatDateTime = (date: string | Date): string => {
   const utcDate = new Date(Date.UTC(year, month - 1, day));
 
   // تبدیل تاریخ به فرمت شمسی
-  const persianDate = toPersianDate(utcDate, 'yyyy/MM/dd');
+  const persianDate = toPersianDate(utcDate, "yyyy/MM/dd");
 
   // دریافت ساعت و دقیقه به‌صورت UTC
-  const hours = dateObj.getUTCHours().toString().padStart(2, '0'); // ساعت با دو رقم
-  const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0'); // دقیقه با دو رقم
+  const hours = dateObj.getUTCHours().toString().padStart(2, "0"); // ساعت با دو رقم
+  const minutes = dateObj.getUTCMinutes().toString().padStart(2, "0"); // دقیقه با دو رقم
 
   // ترکیب تاریخ شمسی و زمان
   return `${persianDate}-${hours}:${minutes}`;
 };
+export function formatDateForNonPersian(dateString: string): string {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 export const formatLocalDateTime = (date: string | Date): string => {
   // ایجاد یک شیء Date از تاریخ ورودی
   const dateObj = new Date(date);
@@ -49,15 +57,25 @@ export const formatLocalDateTime = (date: string | Date): string => {
   const localDate = new Date(year, month - 1, day);
 
   // تبدیل تاریخ به فرمت شمسی
-  const persianDate = toPersianDate(localDate, 'yyyy/MM/dd');
+  const persianDate = toPersianDate(localDate, "yyyy/MM/dd");
 
   // دریافت ساعت و دقیقه به‌صورت محلی
-  const hours = dateObj.getHours().toString().padStart(2, '0'); // ساعت با دو رقم
-  const minutes = dateObj.getMinutes().toString().padStart(2, '0'); // دقیقه با دو رقم
+  const hours = dateObj.getHours().toString().padStart(2, "0"); // ساعت با دو رقم
+  const minutes = dateObj.getMinutes().toString().padStart(2, "0"); // دقیقه با دو رقم
 
   // ترکیب تاریخ شمسی و زمان محلی
   return `${persianDate}-${hours}:${minutes}`;
 };
+export function formatDateTimeForNonPersian(dateString: string): string {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}-${hours}:${minutes}`;
+}
 export function getCurrentSalMahDahe(): {
   sal: number;
   mah: number;
@@ -66,14 +84,16 @@ export function getCurrentSalMahDahe(): {
   const today = new Date();
 
   // دریافت تاریخ شمسی به‌صورت رشته‌ای
-  const persianDate = today.toLocaleDateString('fa-IR'); // مثلاً "۱۴۰۳/۱۱/۲۷"
+  const persianDate = today.toLocaleDateString("fa-IR"); // مثلاً "۱۴۰۳/۱۱/۲۷"
 
   // تبدیل اعداد فارسی به انگلیسی
   const toEnglishDigits = (str: string) =>
-    str.replace(/[\u06F0-\u06F9]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 1728));
+    str.replace(/[\u06F0-\u06F9]/g, (d) =>
+      String.fromCharCode(d.charCodeAt(0) - 1728)
+    );
 
   // پردازش تاریخ
-  const [salStr, mahStr, dayStr] = toEnglishDigits(persianDate).split('/'); // ["1403", "11", "27"]
+  const [salStr, mahStr, dayStr] = toEnglishDigits(persianDate).split("/"); // ["1403", "11", "27"]
 
   const sal = parseInt(salStr, 10); // سال شمسی
   const mah = parseInt(mahStr, 10); // ماه شمسی

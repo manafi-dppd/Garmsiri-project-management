@@ -4,85 +4,76 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import NavMenu from "../NavMenu";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // اضافه کردن این import
+import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import LocaleSwitcher from "../../app/[locale]/LocaleSwitcher";
+import { Menu } from "@/types/menu";
+import { locales, Locale, defaultLocale } from "@/i18n/config";
 
-interface menu {
-  id: number;
-  title: string;
-  title_fa: string;
-  active: boolean;
-  parent_id: number | null;
-  slug: string;
-  parentSlug: string | null;
+interface HeaderProps {
+  locale: Locale;
+  menus: Menu[];
 }
 
 interface UserInfo {
   firstname: string;
   lastname: string;
-  positions: string[];
+  positions: { positionTitle: string; title: string }[];
 }
 
-export default function Header() {
-  const [menus, setMenus] = useState<menu[]>([]);
+export default function Header({ locale, menus }: HeaderProps) {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const pathname = usePathname(); // دریافت مسیر فعلی
+  const pathname = usePathname();
+  const t = useTranslations("common");
+  const router = useRouter();
 
-  // لیست مسیرهایی که نباید NavMenu نمایش داده شود
   const excludedPaths = ["/login", "/register", "/update-credentials"];
 
-  // بررسی آیا مسیر فعلی در لیست مسیرهای مستثنی شده است
   const shouldShowNavMenu = pathname
-    ? !excludedPaths.some((path) => pathname.startsWith(path))
+    ? !excludedPaths.some((path) => pathname.includes(path))
     : false;
 
   useEffect(() => {
-    const fetchMenus = async () => {
-      try {
-        const response = await fetch("/api/menus", {
-          method: "GET",
-          credentials: "include",
-        });
-        if (!response.ok) {
-          if (response.status === 401) {
-            window.location.href = "/login"; // تغییر به window.location برای خارج از کامپوننت
-          }
-          return;
-        }
-        const data: menu[] = await response.json();
-        setMenus(data);
-      } catch {}
-    };
-
     const fetchUserInfo = async () => {
       try {
-        const res = await fetch("/api/get-user-info", {
+        const res = await fetch(`/api/get-user-info`, {
           credentials: "include",
+          headers: {
+            "Accept-Language": locale,
+          },
         });
-        if (!res.ok) throw new Error("Failed to fetch user info");
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            router.push(`/${locale}/login`);
+            return;
+          }
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
         const data = await res.json();
         setUserInfo(data);
-      } catch {}
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
     };
 
-    // فقط اگر نیاز به نمایش NavMenu باشد، منوها را فراخوانی کنیم
     if (shouldShowNavMenu) {
-      fetchMenus();
+      fetchUserInfo();
     }
-
-    fetchUserInfo();
-  }, [shouldShowNavMenu]);
+  }, [shouldShowNavMenu, locale, router]);
 
   return (
     <>
       <header className="bg-green-800 p-4 text-center text-white">
         <div className="container mx-auto flex items-center justify-between">
-          <Link href="/" passHref>
+          <Link href={`/${locale}`}>
             <div style={{ fontFamily: "b titr", cursor: "pointer" }}>
-              <h1 className="border-b text-lg">سامانه جامع مدیریت یکپارچه</h1>
-              <h4 className="text-2xl">طــرح گرمسـیـری</h4>
+              <h1 className="border-b text-lg">{t("title")}</h1>
+              <h4 className="text-2xl">{t("projectName")}</h4>
             </div>
           </Link>
-          <div>
+
+          <div className="flex flex-col items-end gap-2">
             {userInfo && (
               <div className="text-right text-sm text-white">
                 <p className="font-bold underline">
@@ -90,11 +81,14 @@ export default function Header() {
                 </p>
                 {userInfo.positions.map((pos, index) => (
                   <p key={index} className="font-light no-underline">
-                    {pos}
+                    {pos.positionTitle}
                   </p>
                 ))}
               </div>
             )}
+            <div className="scale-90">
+              <LocaleSwitcher />
+            </div>
           </div>
         </div>
       </header>

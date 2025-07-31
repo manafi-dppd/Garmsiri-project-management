@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -8,12 +8,18 @@ export async function GET() {
         id: true,
         title: true,
         title_fa: true,
-        req_license: true
-      }
+        title_ar: true,
+        title_tr: true,
+        req_license: true,
+        dependent: true,
+      },
     });
-    return NextResponse.json(positions, { status: 200 });
+    return NextResponse.json(positions);
   } catch (error) {
-    console.error('Error fetching positions:', error);
-    return NextResponse.json({ error: 'Error fetching positions' }, { status: 500 });
+    console.error("[API] Error fetching positions:", error);
+    return NextResponse.json(
+      { message: "Error fetching positions" },
+      { status: 500 }
+    );
   }
 }

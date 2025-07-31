@@ -31,8 +31,8 @@ export async function GET(req: NextRequest) {
     const doreKeshtStart = new Date(currentShabakeRecord.trikhshorooe);
     const doreWindowStart = new Date(doreKeshtStart);
     const doreWindowEnd = new Date(doreKeshtStart);
-    doreWindowStart.setDate(doreKeshtStart.getDate() - 10);
-    doreWindowEnd.setDate(doreKeshtStart.getDate() + 10);
+    doreWindowStart.setDate(doreKeshtStart.getDate() - 30);
+    doreWindowEnd.setDate(doreKeshtStart.getDate() + 30);
 
     // بررسی آیا در بازه 10 روز قبل یا بعد از شروع دوره کشت هستیم
     const isInDoreWindow =

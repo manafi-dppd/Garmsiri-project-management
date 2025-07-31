@@ -1,18 +1,3 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "plugins": ["@typescript-eslint", "react", "prettier"],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-    "no-empty-function": "error",
-    "@typescript-eslint/no-empty-function": "error",
-    "prettier/prettier": "off"
-  }
+  "extends": "next/core-web-vitals"
 }

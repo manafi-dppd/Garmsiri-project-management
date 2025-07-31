@@ -69,7 +69,7 @@ export interface ShabakeDoreKeshtData {
 }
 
 export interface TaeedProgramData {
-  fiddahe?: number | null;
+  fiddahe: number;
   firstnersal: string;
   lastnersal: string;
   tarikhersal: string;

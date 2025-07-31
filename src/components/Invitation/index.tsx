@@ -1,12 +1,15 @@
+"use client";
+
 import { useState } from "react";
 import InvitationModal from "./InvitationModal";
 import InvitationsTable from "./InvitationModal/table";
 import UserTable from "./InvitationModal/UserTable";
-import * as React from "react";
-
+import React from "react";
+import { useTranslations } from "next-intl";
 
 const Invitation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const t = useTranslations("invitation");
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -23,7 +26,7 @@ const Invitation = () => {
           onClick={handleOpenModal}
           className="w-48 rounded-lg bg-blue-500 px-6 py-2 text-xl font-semibold text-white shadow transition hover:bg-blue-600"
         >
-          دعوت‌نامه
+          {t("button")}
         </button>
         {isModalOpen && (
           <InvitationModal showModal={isModalOpen} onClose={handleCloseModal} />

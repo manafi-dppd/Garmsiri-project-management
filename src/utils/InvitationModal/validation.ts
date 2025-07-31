@@ -1,34 +1,23 @@
-/**
- * تابع برای بررسی صحت فایل آپلود شده
- * @param file - فایل انتخاب شده
- * @param fieldName - نام فیلد برای پیام خطا
- * @returns آرایه‌ای از پیام‌های خطا
- */
-
-export const validateFileFormat = (file: File | null, fieldName: string): string[] => {
+export const validateFileFormat = (
+  file: File | null,
+  fieldName: string,
+  t: (key: string, params?: Record<string, any>) => string
+): string[] => {
   const errors: string[] = [];
-
   if (file) {
-    const allowedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+    const allowedFormats = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "application/pdf",
+    ];
     if (!allowedFormats.includes(file.type)) {
-      errors.push(`${fieldName} باید تصویر (PNG, JPG, JPEG) یا PDF باشد.`);
+      errors.push(t("invalidFileFormat", { fieldName }));
     }
   }
-
   return errors;
 };
 
-/**
- * تابع برای بررسی صحت فرم دعوتنامه
- * @param firstName - نام
- * @param lastName - نام خانوادگی
- * @param mobile - شماره تلفن همراه
- * @param endDate - تاریخ پایان عضویت
- * @param today - تاریخ امروز
- * @param selectedPositions - آرایه‌ای از مقادیر انتخاب شده برای سمت‌ها
- * @param file - فایل معرفی‌نامه
- * @returns آرایه‌ای از پیام‌های خطا
- */
 export const validateInvitation = (
   firstName: string,
   lastName: string,
@@ -36,70 +25,75 @@ export const validateInvitation = (
   endDate: string,
   today: string,
   selectedPositions: number[],
-  file: File | null
-): string[] => {
+  file: File | null,
+  t: (key: string, params?: Record<string, any>) => string
+): string[] => {  
   let errors: string[] = [];
 
-  // صحت‌سنجی نام
-  errors = [...errors, ...validateField(firstName, 'نام', false, 20)];
-
-  // صحت‌سنجی نام خانوادگی
-  errors = [...errors, ...validateField(lastName, 'نام خانوادگی', true, 20)];
-
-  // صحت‌سنجی شماره تلفن همراه
-  errors = [...errors, ...validatemobile(mobile)];
-
-  // صحت‌سنجی تاریخ پایان عضویت
-  errors = [...errors, ...validateEndDate(endDate, today)];
-
-  // صحت‌سنجی انتخاب سمت
-  errors = [...errors, ...validatePositionSelection(selectedPositions)];
-
-  // صحت‌سنجی فایل معرفی‌نامه
-  errors = [...errors, ...validateFileFormat(file, 'معرفی‌نامه')];
+  errors = [...errors, ...validateField(firstName, "firstName", false, 20, t)];
+  errors = [...errors, ...validateField(lastName, "lastName", true, 20, t)];
+  errors = [...errors, ...validateMobile(mobile, t)];
+  errors = [...errors, ...validateEndDate(endDate, today, t)];
+  errors = [...errors, ...validatePositionSelection(selectedPositions, t)];
+  errors = [...errors, ...validateFileFormat(file, "attachment", t)];
 
   return errors;
 };
+
 function validateField(
   value: string,
   fieldName: string,
   isRequired: boolean,
-  maxLength: number
+  maxLength: number,
+  t: (key: string, params?: Record<string, any>) => string
 ): string[] {
   const errors: string[] = [];
-  const persianRegex = /^[آ-ی\s]*$/; // حروف فارسی و فضای خالی
+  const letterRegex = /^[a-zA-Z\u0600-\u06FF\u0750-\u077F\s]*$/;
 
   if (isRequired && !value) {
-    errors.push(`${fieldName} الزامی است.`);
-  } else if (value && !persianRegex.test(value)) {
-    errors.push(`${fieldName} باید فقط شامل حروف فارسی و فاصله باشد.`);
+    errors.push(t("required", { fieldName }));
+  } else if (value && !letterRegex.test(value)) {
+    errors.push(t("onlyLettersAndSpaces", { fieldName }));
   } else if (value.length > maxLength) {
-    errors.push(`${fieldName} نباید بیشتر از ${maxLength} کاراکتر باشد.`);
+    errors.push(t("maxLength", { fieldName, maxLength }));
   }
   return errors;
 }
 
-function validatemobile(mobile: string): string[] {
+function validateMobile(
+  mobile: string,
+  t: (key: string, params?: Record<string, any>) => string
+): string[] {
   const errors: string[] = [];
-  const phoneRegex = /^09\d{9}$/; // مثال برای صحت‌سنجی شماره موبایل ایرانی
+  const phoneRegex = /^09\d{9}$/;
+
   if (!phoneRegex.test(mobile)) {
-    errors.push('شماره تلفن وارد شده معتبر نیست.');
+    errors.push(t("invalidMobile"));
   }
   return errors;
 }
 
-function validateEndDate(endDate: string, today: string): string[] {
+function validateEndDate(
+  endDate: string,
+  today: string,
+  t: (key: string, params?: Record<string, any>) => string
+): string[] {
   const errors: string[] = [];
-  if (new Date(endDate) < new Date(today)) {
-    errors.push('تاریخ پایان عضویت نباید قبل از تاریخ امروز باشد.');
+
+  if (endDate && new Date(endDate) < new Date(today)) {
+    errors.push(t("invalidEndDate"));
   }
   return errors;
 }
 
-function validatePositionSelection(selectedPositions: number[]): string[] {
+function validatePositionSelection(
+  selectedPositions: number[],
+  t: (key: string, params?: Record<string, any>) => string
+): string[] {
   const errors: string[] = [];
+
   if (selectedPositions.length === 0) {
-    errors.push('انتخاب حداقل یک سمت الزامی است.');
+    errors.push(t("positionRequired"));
   }
   return errors;
 }

@@ -36,11 +36,8 @@ export default function Header({ locale, menus }: HeaderProps) {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const res = await fetch(`/api/get-user-info`, {
+        const res = await fetch(`/api/get-user-info?locale=${locale}`, {
           credentials: "include",
-          headers: {
-            "Accept-Language": locale,
-          },
         });
 
         if (!res.ok) {
@@ -53,7 +50,7 @@ export default function Header({ locale, menus }: HeaderProps) {
         const data = await res.json();
         setUserInfo(data);
       } catch (error) {
-        console.error("Failed to fetch user info:", error);
+        console.error("[Header] Failed to fetch user info:", error);
       }
     };
 

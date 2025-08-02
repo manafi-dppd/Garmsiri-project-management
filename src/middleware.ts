@@ -35,6 +35,9 @@ export async function middleware(request: import("next/server").NextRequest) {
     "/api/invitation",
     "/api/check-username",
     "/api/update-invitation",
+    "/api/user-position",
+    "/api/irrigation-networks",
+    "/api/position_networks",
     ...locales.map((loc) => `/${loc}/login`),
     ...locales.map((loc) => `/${loc}/register`),
     ...locales.map((loc) => `/${loc}/update-credentials`),
@@ -44,6 +47,9 @@ export async function middleware(request: import("next/server").NextRequest) {
     ...locales.map((loc) => `/${loc}/api/get-user-info`),
     ...locales.map((loc) => `/${loc}/api/check-username`),
     ...locales.map((loc) => `/${loc}/api/update-invitation`),
+    ...locales.map((loc) => `/${loc}/api/user-position`),
+    ...locales.map((loc) => `/${loc}/api/irrigation-networks`),
+    ...locales.map((loc) => `/${loc}/api/position_networks`),
   ];
 
   if (

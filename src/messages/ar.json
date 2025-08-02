@@ -177,7 +177,8 @@
     "issuerOptions": {
       "company1": "شركة المياه الإقليمية في كرمانشاه",
       "company2": "منظمة الجهاد الزراعي في كرمانشاه"
-    }
+    },
+    "attachment":"رسالة تعريفية"
   },
   "Validation": {
     "required": "{fieldName} مطلوب.",
@@ -198,5 +199,36 @@
   "notFound": {
     "title": "لم يتم العثور على الصفحة",
     "message": "الصفحة التي تبحث عنها غير موجودة."
+  },
+   "HeaderRequestPumping": {
+    "irrigationNetwork": "شبكة الري",
+    "pumpStation": "محطة",
+    "cropYear": "سنة المحصول",
+    "irrigationPeriod": "فترة الزراعة",
+    "select": "يختار",
+    "fetchError": "خطأ في تلقي المعلومات"
+  },
+  "BodyRequestPumping": {
+    "selectIrrigationNetwork": "الرجاء تحديد شبكة الري المطلوبة.",
+    "selectPumpStation": "الرجاء تحديد محطة الضخ المطلوبة."
+  },
+  "LoadingSpinner": {
+    "loading": "جاري تحميل المعلومات..."
+  },
+  "GetShabakeDoreKesht": {
+    "missingParameters": "المعلمات المطلوبة غير متوفرة.",
+    "cropYearNotFound": "لم يتم العثور على سنة المحصول",
+    "irrigationPeriodNotFound": "لم يتم العثور على فترة الزراعة",
+    "irrigationCalendarNotFound": "لم يتم العثور على معلومات تقويم الري لهذه الشبكة وسنة المحصول.",
+    "internalServerError": "خطأ في الخادم الداخلي"
+  },
+  "NetworkData": {
+    "noNetworkSelected": "لم يتم تحديد الشبكة.",
+    "currentIrrigationPeriodNotFound": "لم يتم العثور على فترة المحصول الحالية",
+    "internalServerError": "خطأ في الخادم الداخلي"
+  },
+  "PumpStations": {
+    "invalidParameters": "معلمات غير صالحة",
+    "fetchError": "خطأ في تلقي المعلومات"
   }
 }

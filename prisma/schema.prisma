@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model abademakhzan {
@@ -108,8 +108,11 @@ model deliverypoints {
 }
 
 model dorekesht {
-  iddore Int    @id @default(autoincrement()) @db.SmallInt
-  dore   String @db.VarChar(16)
+  iddore  Int     @id @default(autoincrement()) @db.SmallInt
+  dore    String  @db.VarChar(16)
+  dore_fa String? @db.VarChar(16)
+  dore_ar String? @db.VarChar(16)
+  dore_tr String? @db.VarChar(16)
 }
 
 model eshtebahavamel {
@@ -245,14 +248,18 @@ model nashtshabake {
 }
 
 model network {
-  idnet          Int              @id @default(autoincrement())
-  network        String           @db.VarChar(40)
-  fidsp          Int
-  trustee        String           @db.VarChar(20)
-  bareshmotaleat bareshmotaleat[]
-  khatranesharea khatranesharea[]
-  systempart     systempart       @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
-  pumpstation    pumpstation[]
+  idnet             Int                 @id @default(autoincrement())
+  network           String              @db.VarChar(40)
+  fidsp             Int
+  trustee           String              @db.VarChar(20)
+  network_fa        String?             @db.VarChar(40)
+  network_ar        String?             @db.VarChar(40)
+  network_tr        String?             @db.VarChar(40)
+  bareshmotaleat    bareshmotaleat[]
+  khatranesharea    khatranesharea[]
+  systempart        systempart          @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
+  position_newtwork position_newtwork[]
+  pumpstation       pumpstation[]
 
   @@index([network], map: "idx_network_network")
 }
@@ -289,6 +296,9 @@ model pumpstation {
   fidmakhzan     Int?
   fiddp          Int
   ready          Boolean        @default(true)
+  namestation_fa String?        @db.VarChar(40)
+  namestation_ar String?        @db.VarChar(40)
+  namestation_tr String?        @db.VarChar(40)
   khatranesh     khatranesh[]
   abademakhzan   abademakhzan?  @relation(fields: [fidmakhzan], references: [idmakhzan], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_abademakhzan")
   darjestation   darjestation   @relation(fields: [fiddstation], references: [iddstation], onDelete: NoAction, onUpdate: NoAction, map: "fk_pumpstation_darjestation")
@@ -316,8 +326,9 @@ model rainfalltype {
 }
 
 model salezeraee {
-  idsal      Int    @id @default(autoincrement()) @db.SmallInt
-  salezeraee String @db.VarChar(20)
+  idsal      Int     @id @default(autoincrement()) @db.SmallInt
+  salezeraee String  @db.VarChar(20)
+  cropyear   String? @db.VarChar(20)
 }
 
 model salmahdahe {
@@ -333,9 +344,12 @@ model salmahdahe {
 }
 
 model seghlipump {
-  idsepu     Int          @id @default(autoincrement()) @db.SmallInt
-  seghlipump String       @db.VarChar(20)
-  khatranesh khatranesh[]
+  idsepu        Int          @id @default(autoincrement()) @db.SmallInt
+  seghlipump    String       @db.VarChar(20)
+  seghlipump_fa String?      @db.VarChar(20)
+  seghlipump_ar String?      @db.VarChar(20)
+  seghlipump_tr String?      @map("seghlipump-tr") @db.VarChar(20)
+  khatranesh    khatranesh[]
 }
 
 model shabakedorekesht {
@@ -476,6 +490,7 @@ model position {
   title_ar               String
   title_tr               String
   access_level           access_level[]
+  position_newtwork      position_newtwork[]
   position_on_invitation position_on_invitation[]
   position_on_user       position_on_user[]
 
@@ -604,4 +619,12 @@ model user_login_history {
   user        user      @relation(fields: [user_id], references: [id], map: "user_login_history_userId_fkey")
 
   @@map("user_login_history")
+}
+
+model position_newtwork {
+  id          Int       @id(map: "position_newtwork_pk") @default(autoincrement())
+  fidposition Int?
+  fidnetwork  Int?
+  network     network?  @relation(fields: [fidnetwork], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "position_newtwork_network_fk")
+  position    position? @relation(fields: [fidposition], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "position_newtwork_position_fk")
 }

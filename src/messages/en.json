@@ -177,7 +177,8 @@
     "issuerOptions": {
       "company1": "Kermanshah Regional Water Company",
       "company2": "Kermanshah Agricultural Jihad Organization"
-    }
+    },
+    "attachment":"Letter of introduction"
   },
   "Validation": {
     "required": "{fieldName} is required.",
@@ -198,5 +199,36 @@
   "notFound": {
     "title": "Page Not Found",
     "message": "The page you are looking for does not exist."
+  },
+  "HeaderRequestPumping": {
+    "irrigationNetwork": "Irrigation network",
+    "pumpStation": "Station",
+    "cropYear": "Crop year",
+    "irrigationPeriod": "Cultivation period",
+    "select": "Choose",
+    "fetchError": "Error receiving information"
+  },
+  "BodyRequestPumping": {
+    "selectIrrigationNetwork": "Please select the desired irrigation network.",
+    "selectPumpStation": "Please select the desired pumping station."
+  },
+  "LoadingSpinner": {
+    "loading": "Loading information..."
+  },
+  "GetShabakeDoreKesht": {
+    "missingParameters": "Required parameters not provided.",
+    "cropYearNotFound": "Crop year not found",
+    "irrigationPeriodNotFound": "Cultivation period not found",
+    "irrigationCalendarNotFound": "Irrigation calendar information was not found for this network and crop year.",
+    "internalServerError": "Internal server error"
+  },
+  "NetworkData": {
+    "noNetworkSelected": "Network not selected.",
+    "currentIrrigationPeriodNotFound": "Current crop period not found",
+    "internalServerError": "Internal server error"
+  },
+  "PumpStations": {
+    "invalidParameters": "Invalid parameters",
+    "fetchError": "Error receiving information"
   }
 }

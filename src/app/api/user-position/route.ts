@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/prisma";
 
-export const dynamic = "force-dynamic"; // اجبار به رندر دینامیک
+export const dynamic = "force-dynamic"; // استفاده از force-dynamic
 
 interface DecodedToken {
   userId: number;
@@ -12,13 +12,16 @@ interface DecodedToken {
 
 interface Position {
   position: {
+    id: number; // اضافه کردن id
     title: string;
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const token = cookies().get("auth_token")?.value;
+    const cookieStore = cookies();
+    const token = cookieStore.get("auth_token")?.value;
+
     if (!token) {
       console.error("[UserPositionAPI] No auth token found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -46,6 +49,7 @@ export async function GET() {
           include: {
             position: {
               select: {
+                id: true, // اضافه کردن id
                 title: true,
               },
             },
@@ -60,14 +64,25 @@ export async function GET() {
     }
 
     const positions = userWithPositions.position_on_user.map(
-      (pu: Position) => pu.position.title
+      (pu: Position) => ({
+        id: pu.position.id, // اضافه کردن id
+        title: pu.position.title,
+      })
     );
-    return NextResponse.json({
-      username: userWithPositions.user_name,
-      positions,
-      firstname: userWithPositions.first_name,
-      lastname: userWithPositions.last_name,
-    });
+
+    return NextResponse.json(
+      {
+        username: userWithPositions.user_name,
+        positions, // شامل id و title
+        firstname: userWithPositions.first_name,
+        lastname: userWithPositions.last_name,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store", // غیرفعال کردن کش
+        },
+      }
+    );
   } catch (error) {
     console.error("[UserPositionAPI] Error in user-position route:", error);
     return NextResponse.json(

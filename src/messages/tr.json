@@ -177,7 +177,8 @@
     "issuerOptions": {
       "company1": "Kermanşah Bölgesel Su Şirketi",
       "company2": "Kermanşah Tarım Cihad Örgütü"
-    }
+    },
+    "attachment":"Tanıtım mektubu"
   },
   "Validation": {
     "required": "{fieldName} zorunludur.",
@@ -198,5 +199,36 @@
   "notFound": {
     "title": "Sayfa Bulunamadı",
     "message": "Aradığınız sayfa bulunamadı."
+  },
+  "HeaderRequestPumping": {
+    "irrigationNetwork": "Sulama şebekesi",
+    "pumpStation": "İstasyon",
+    "cropYear": "Mahsul yılı",
+    "irrigationPeriod": "Yetiştirme dönemi",
+    "select": "seçmek",
+    "fetchError": "Bilgi alınırken hata oluştu"
+  },
+  "BodyRequestPumping": {
+    "selectIrrigationNetwork": "Lütfen istediğiniz sulama şebekesini seçiniz.",
+    "selectPumpStation": "Lütfen istediğiniz pompa istasyonunu seçiniz."
+  },
+  "LoadingSpinner": {
+    "loading": "Bilgiler yükleniyor..."
+  },
+  "GetShabakeDoreKesht": {
+    "missingParameters": "Gerekli parametreler sağlanmadı.",
+    "cropYearNotFound": "Mahsul yılı bulunamadı",
+    "irrigationPeriodNotFound": "Yetiştirme dönemi bulunamadı",
+    "irrigationCalendarNotFound": "Bu şebeke ve ürün yılı için sulama takvimi bilgisi bulunamadı.",
+    "internalServerError": "İç Sunucu Hatası"
+  },
+  "NetworkData": {
+    "noNetworkSelected": "Ağ seçilmedi.",
+    "currentIrrigationPeriodNotFound": "Mevcut mahsul dönemi bulunamadı",
+    "internalServerError": "İç Sunucu Hatası"
+  },
+  "PumpStations": {
+    "invalidParameters": "Geçersiz parametreler",
+    "fetchError": "Bilgi alınırken hata oluştu"
   }
 }

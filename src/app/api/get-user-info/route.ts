@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/prisma";
-import { locales } from "@/i18n/config";
+import { locales, Locale, defaultLocale } from "@/i18n/config";
 
-export const dynamic = "force-dynamic"; // اجبار به رندر دینامیک
+export const dynamic = "force-dynamic";
 
 interface DecodedToken {
   userId: number;
@@ -30,21 +30,33 @@ interface UserWithPositions {
   position_on_user: Position[];
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    // 1. استخراج locale از کوکی NEXT_LOCALE
     const cookieStore = cookies();
-    const locale = (cookieStore.get("NEXT_LOCALE")?.value || "fa") as
-      | "en"
-      | "fa"
-      | "ar"
-      | "tr";
+    const url = new URL(request.url);
+    const urlLocale = url.searchParams.get("locale");
+    const acceptLanguage = request.headers
+      .get("Accept-Language")
+      ?.split(",")[0];
+    const localeBase = acceptLanguage
+      ? acceptLanguage.split("-")[0]
+      : defaultLocale;
+    const cookieLocale = cookieStore.get("NEXT_LOCALE")?.value;
+
+    // اولویت: 1) پارامتر URL، 2) هدر Accept-Language، 3) کوکی NEXT_LOCALE، 4) defaultLocale
+    const localeCandidate =
+      urlLocale || localeBase || cookieLocale || defaultLocale;
+    const locale = (
+      locales.includes(localeCandidate as Locale)
+        ? localeCandidate
+        : defaultLocale
+    ) as Locale;
+
     if (!locales.includes(locale)) {
       console.error("[GetUserInfoAPI] Invalid locale:", locale);
       return NextResponse.json({ error: "Invalid locale" }, { status: 400 });
     }
 
-    // 2. بررسی وجود کوکی auth_token
     const token = cookieStore.get("auth_token")?.value;
 
     if (!token) {
@@ -52,7 +64,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 3. اعتبارسنجی توکن
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {
       console.error("[GetUserInfoAPI] SECRET_KEY is not defined");
@@ -64,13 +75,11 @@ export async function GET(request: Request) {
 
     const decoded = jwt.verify(token, secretKey) as DecodedToken;
 
-    // 4. بررسی وجود userId در توکن
     if (!decoded.userId) {
       console.error("[GetUserInfoAPI] No userId in token");
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    // 5. جستجوی کاربر با روابط
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: {
@@ -94,7 +103,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 6. انتخاب عنوان موقعیت بر اساس زبان و افزودن title انگلیسی
     const positions = user.position_on_user.map((pos: Position) => {
       return {
         positionTitle: (() => {
@@ -102,15 +110,15 @@ export async function GET(request: Request) {
             case "en":
               return pos.position.title;
             case "ar":
-              return pos.position.title_ar;
+              return pos.position.title_ar || pos.position.title;
             case "tr":
-              return pos.position.title_tr;
+              return pos.position.title_tr || pos.position.title;
             case "fa":
             default:
-              return pos.position.title_fa;
+              return pos.position.title_fa || pos.position.title;
           }
         })(),
-        title: pos.position.title, // افزودن title انگلیسی برای isAdminOrCreator
+        title: pos.position.title,
       };
     });
 
@@ -123,7 +131,7 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("[GetUserInfoAPI] JWT Verification Error:", error);
+    console.error("[GetUserInfoAPI] Error:", error);
     return NextResponse.json(
       { error: "Invalid or expired token" },
       { status: 401 }

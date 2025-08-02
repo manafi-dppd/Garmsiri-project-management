@@ -177,7 +177,8 @@
     "issuerOptions": {
       "company1": "شرکت آب منطقه‌ای کرمانشاه",
       "company2": "سازمان جهاد کشاورزی استان کرمانشاه"
-    }
+    },
+    "attachment":"معرفی نامه"
   },
   "Validation": {
     "required": "{fieldName} الزامی است.",
@@ -198,5 +199,36 @@
   "notFound": {
     "title": "صفحه یافت نشد",
     "message": "صفحه‌ای که به دنبال آن هستید وجود ندارد."
+  },
+  "HeaderRequestPumping": {
+    "irrigationNetwork": "شبکه آبیاری",
+    "pumpStation": "ایستگاه",
+    "cropYear": "سال زراعی",
+    "irrigationPeriod": "دوره کشت",
+    "select": "انتخاب کنید",
+    "fetchError": "خطا در دریافت اطلاعات"
+  },
+  "BodyRequestPumping": {
+    "selectIrrigationNetwork": "لطفاً شبکه آبیاری مورد نظر را انتخاب کنید",
+    "selectPumpStation": "لطفاً ایستگاه پمپاژ مورد نظر را انتخاب کنید"
+  },
+  "LoadingSpinner": {
+    "loading": "در حال بارگذاری اطلاعات..."
+  },
+  "GetShabakeDoreKesht": {
+    "missingParameters": "پارامترهای مورد نیاز ارائه نشده‌اند",
+    "cropYearNotFound": "سال زراعی یافت نشد",
+    "irrigationPeriodNotFound": "دوره کشت یافت نشد",
+    "irrigationCalendarNotFound": "اطلاعات تقویم آبیاری برای این شبکه و سال زراعی یافت نشد",
+    "internalServerError": "خطای داخلی سرور"
+  },
+  "NetworkData": {
+    "noNetworkSelected": "شبکه انتخاب نشده است",
+    "currentIrrigationPeriodNotFound": "دوره کشت جاری یافت نشد",
+    "internalServerError": "خطای داخلی سرور"
+  },
+  "PumpStations": {
+    "invalidParameters": "پارامترهای نامعتبر",
+    "fetchError": "خطا در دریافت اطلاعات"
   }
 }

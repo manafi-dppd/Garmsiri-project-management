@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import {useParams} from 'next/navigation';
-// import RequestPumpingStation from '../../../../components/RequestPumpingStation/RequestPumpingStation';
+import { useParams } from "next/navigation";
+import RequestPumpingStation from "@/components/RequestPumpingStation/RequestPumpingStation"
 
 export default function Page() {
   const params = useParams();
@@ -12,16 +12,16 @@ export default function Page() {
   const subSubMenuSlug = params?.subSubMenuSlug;
 
   const isRequestPumpingStation =
-    menuSlug === 'current-affairs' &&
-    submenuSlug === 'water-request' &&
-    subSubMenuSlug === 'request-from-pumping-station';
+    menuSlug === "current-affairs" &&
+    submenuSlug === "water-request" &&
+    subSubMenuSlug === "request-from-pumping-station";
 
   return (
     <div>
       {isRequestPumpingStation ? (
         <div>
           {/* <h1>مدیریت مرورگر</h1> */}
-          {/* <RequestPumpingStation /> */}
+          <RequestPumpingStation />
         </div>
       ) : (
         <>

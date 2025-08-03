@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { ShabakeDoreKeshtData } from "./types";
+import { NetworkDataResponse, ShabakeDoreKeshtData } from "./types";
 
 interface HeaderRequestPumpingProps {
   setUserName: (name: string) => void;
@@ -19,6 +19,7 @@ interface HeaderRequestPumpingProps {
   setNetworkTrustee: (trustee: string | null) => void;
   isSaving?: boolean;
   onShabakeDataChange?: (data: ShabakeDoreKeshtData) => void;
+  onNetworkDataChange?: (data: NetworkDataResponse) => void;
 }
 
 interface Network {
@@ -43,7 +44,9 @@ const HeaderRequestPumping = ({
   setDoreKesht,
   setIdShDo,
   setNetworkTrustee,
+  isSaving,
   onShabakeDataChange,
+  onNetworkDataChange,
 }: HeaderRequestPumpingProps) => {
   const t = useTranslations("HeaderRequestPumping");
   const locale = useLocale();
@@ -52,10 +55,16 @@ const HeaderRequestPumping = ({
   >([]);
   const [networks, setNetworks] = useState<Network[]>([]);
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
-  const [localSaleZeraee, setLocalSaleZeraee] = useState<string[]>([]);
-  const [localDore, setLocalDore] = useState<string[]>([]);
+  const [networkData, setNetworkData] = useState<NetworkDataResponse | null>(
+    null
+  );
+  const [shabakeData, setShabakeData] = useState<ShabakeDoreKeshtData | null>(
+    null
+  );
   const [selectedSaleZeraee, setSelectedSaleZeraee] = useState<string>("");
   const [selectedDore, setSelectedDore] = useState<string>("");
+  const [selectedIdsal, setSelectedIdsal] = useState<number | null>(null);
+  const [selectedIddore, setSelectedIddore] = useState<number | null>(null);
   const [filteredNetworks, setFilteredNetworks] = useState<Network[]>([]);
   const [pumpStations, setPumpStations] = useState<
     {
@@ -125,6 +134,7 @@ const HeaderRequestPumping = ({
     fetch("/api/user-position", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
+        console.log("[HeaderForm] User position data:", data);
         setUserName(data.username);
         setUserPositions(data.positions);
         setUserRole(data.positions.map((pos: { title: string }) => pos.title));
@@ -141,6 +151,7 @@ const HeaderRequestPumping = ({
     fetch("/api/irrigation-networks", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
+        console.log("[HeaderForm] Irrigation networks:", data);
         setNetworks(data.networks);
         const trusteeMap = data.networks.reduce(
           (acc: Record<number, string>, network: Network) => {
@@ -170,6 +181,12 @@ const HeaderRequestPumping = ({
             { credentials: "include" }
           );
           const data = await response.json();
+          console.log(
+            "[HeaderForm] Position networks for position",
+            position.id,
+            ":",
+            data
+          );
           if (data.networks) {
             allowedNetworks.push(
               ...data.networks.map((n: Network) => n.network)
@@ -189,6 +206,7 @@ const HeaderRequestPumping = ({
         .filter((n) => allowedNetworks.includes(n.network))
         .sort((a, b) => a.idnet - b.idnet);
 
+      console.log("[HeaderForm] Filtered networks:", newFilteredNetworks);
       setFilteredNetworks(newFilteredNetworks);
 
       if (newFilteredNetworks.length === 1) {
@@ -244,28 +262,77 @@ const HeaderRequestPumping = ({
               credentials: "include",
             }
           );
-          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(t("fetchError"));
+          }
+          const data: NetworkDataResponse = await response.json();
+          console.log("[HeaderForm] Network data:", data);
           if (data.error) {
             console.error("[HeaderForm] Network data error:", data.error);
+            setNetworkData(null);
+            setSelectedSaleZeraee("");
+            setSelectedIdsal(null);
+            setSaleZeraee("");
+            setSelectedDore("");
+            setSelectedIddore(null);
+            setDoreKesht("");
+            setIdShDo(0);
+            if (onNetworkDataChange) {
+              onNetworkDataChange({
+                SaleZeraee: [],
+                Dore: [],
+                currentSaleZeraee: null,
+                currentDoreKesht: null,
+                IdShDo: 0,
+              });
+            }
           } else {
-            setLocalSaleZeraee(data.SaleZeraee || []);
+            setNetworkData(data);
             setSelectedSaleZeraee(
-              data.currentSaleZeraee || data.SaleZeraee[0] || ""
+              data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
             );
-            setSaleZeraee(data.currentSaleZeraee || data.SaleZeraee[0] || "");
+            setSelectedIdsal(
+              data.currentSaleZeraee?.idsal || data.SaleZeraee[0]?.idsal || null
+            );
+            setSaleZeraee(
+              data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
+            );
 
-            setLocalDore(data.Dore || []);
-            setSelectedDore(data.currentDoreKesht || data.Dore[0] || "");
-            setDoreKesht(data.currentDoreKesht || data.Dore[0] || "");
+            setSelectedDore(
+              data.currentDoreKesht?.name || data.Dore[0]?.name || ""
+            );
+            setSelectedIddore(
+              data.currentDoreKesht?.iddore || data.Dore[0]?.iddore || null
+            );
+            setDoreKesht(
+              data.currentDoreKesht?.name || data.Dore[0]?.name || ""
+            );
 
             setIdShDo(data.IdShDo || 0);
-
-            if (onShabakeDataChange) {
-              onShabakeDataChange(data);
+            if (onNetworkDataChange) {
+              console.log("[HeaderForm] Calling onNetworkDataChange:", data);
+              onNetworkDataChange(data);
             }
           }
         } catch (error) {
           console.error("[HeaderForm] Error fetching network data:", error);
+          setNetworkData(null);
+          setSelectedSaleZeraee("");
+          setSelectedIdsal(null);
+          setSaleZeraee("");
+          setSelectedDore("");
+          setSelectedIddore(null);
+          setDoreKesht("");
+          setIdShDo(0);
+          if (onNetworkDataChange) {
+            onNetworkDataChange({
+              SaleZeraee: [],
+              Dore: [],
+              currentSaleZeraee: null,
+              currentDoreKesht: null,
+              IdShDo: 0,
+            });
+          }
         }
       };
 
@@ -278,7 +345,7 @@ const HeaderRequestPumping = ({
     setIdShDo,
     setSaleZeraee,
     t,
-    onShabakeDataChange,
+    onNetworkDataChange,
   ]);
 
   const handleNetworkChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -295,6 +362,43 @@ const HeaderRequestPumping = ({
       setLocalSelectedNetworkId(null);
       setSelectedNetworkId(null);
       setNetworkTrustee(null);
+    }
+    // Reset dependent fields
+    setSelectedPumpStation("");
+    setPumpStationName("");
+    setIdPumpStation(0);
+    setNetworkData(null);
+    setShabakeData(null);
+    setSelectedSaleZeraee("");
+    setSelectedIdsal(null);
+    setSaleZeraee("");
+    setSelectedDore("");
+    setSelectedIddore(null);
+    setDoreKesht("");
+    setIdShDo(0);
+    setCalendarFetched(false);
+    if (onNetworkDataChange) {
+      onNetworkDataChange({
+        SaleZeraee: [],
+        Dore: [],
+        currentSaleZeraee: null,
+        currentDoreKesht: null,
+        IdShDo: 0,
+      });
+    }
+    if (onShabakeDataChange) {
+      onShabakeDataChange({
+        mahList: [],
+        currentFiddahe: null,
+        trikhshorooe: new Date(),
+        trikhpayan: new Date(),
+        IdShDo: 0,
+        error: undefined,
+        SaleZeraee: [],
+        Dore: [],
+        currentDoreKesht: null,
+        currentSaleZeraee: null
+      });
     }
   };
 
@@ -319,11 +423,15 @@ const HeaderRequestPumping = ({
   // Fetch pump stations
   useEffect(() => {
     if (selectedNetworkId !== null) {
-      fetch(`/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2`, {
-        credentials: "include",
-      })
+      fetch(
+        `/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2&locale=${locale}`,
+        {
+          credentials: "include",
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
+          console.log("[HeaderForm] Pump stations:", data);
           setPumpStations(data.pumpStations);
 
           if (data.pumpStations.length === 1) {
@@ -343,6 +451,7 @@ const HeaderRequestPumping = ({
     }
   }, [
     selectedNetworkId,
+    locale,
     setIdPumpStation,
     setPumpStationName,
     getLocalizedPumpStationName,
@@ -355,17 +464,26 @@ const HeaderRequestPumping = ({
     setSelectedSaleZeraee(value);
     setSaleZeraee(value);
 
-    if (selectedNetworkId) {
-      const doreValue = localDore.length === 1 ? localDore[0] : selectedDore;
-      if (value && doreValue) {
-        const data = await fetchShabakeDoreKesht(
-          selectedNetworkId,
-          value,
-          doreValue
+    const selectedSale = networkData?.SaleZeraee.find(
+      (sale) => sale.name === value
+    );
+    if (selectedSale) {
+      setSelectedIdsal(selectedSale.idsal);
+    }
+
+    if (selectedNetworkId && selectedIddore) {
+      const data = await fetchShabakeDoreKesht(
+        selectedNetworkId,
+        selectedSale?.idsal || null,
+        selectedIddore
+      );
+      if (data && onShabakeDataChange) {
+        console.log(
+          "[HeaderForm] SaleZeraee change, calling onShabakeDataChange:",
+          data
         );
-        if (data && onShabakeDataChange) {
-          onShabakeDataChange(data);
-        }
+        setShabakeData(data);
+        onShabakeDataChange(data);
       }
     }
   };
@@ -375,67 +493,85 @@ const HeaderRequestPumping = ({
     setSelectedDore(value);
     setDoreKesht(value);
 
-    if (selectedNetworkId) {
-      const saleZeraeeValue =
-        localSaleZeraee.length === 1 ? localSaleZeraee[0] : selectedSaleZeraee;
-      if (value && saleZeraeeValue) {
-        const data = await fetchShabakeDoreKesht(
-          selectedNetworkId,
-          saleZeraeeValue,
-          value
+    const selectedDoreObj = networkData?.Dore.find(
+      (dore) => dore.name === value
+    );
+    if (selectedDoreObj) {
+      setSelectedIddore(selectedDoreObj.iddore);
+    }
+
+    if (selectedNetworkId && selectedIdsal) {
+      const data = await fetchShabakeDoreKesht(
+        selectedNetworkId,
+        selectedIdsal,
+        selectedDoreObj?.iddore || null
+      );
+      if (data && onShabakeDataChange) {
+        console.log(
+          "[HeaderForm] Dore change, calling onShabakeDataChange:",
+          data
         );
-        if (data && onShabakeDataChange) {
-          onShabakeDataChange(data);
-        }
+        setShabakeData(data);
+        onShabakeDataChange(data);
       }
     }
   };
 
   const fetchShabakeDoreKesht = useCallback(
-    async (networkId: number, saleZeraee: string, doreKesht: string) => {
+    async (networkId: number, idsal: number | null, iddore: number | null) => {
+      if (!idsal || !iddore) {
+        console.warn(
+          "[HeaderForm] Missing idsal or iddore, skipping fetchShabakeDoreKesht"
+        );
+        return null;
+      }
       try {
         const response = await fetch(
-          `/api/getShabakeDoreKesht?networkId=${networkId}&saleZeraee=${encodeURIComponent(
-            saleZeraee
-          )}&doreKesht=${encodeURIComponent(doreKesht)}`,
+          `/api/getShabakeDoreKesht?networkId=${networkId}&idsal=${idsal}&iddore=${iddore}&locale=${locale}`,
           { credentials: "include" }
         );
 
         if (!response.ok) throw new Error(t("fetchError"));
 
         const data: ShabakeDoreKeshtData = await response.json();
+        console.log("[HeaderForm] ShabakeDoreKesht data:", data);
         return data;
       } catch (error) {
         console.error("[HeaderForm] Error fetching ShabakeDoreKesht:", error);
         return null;
       }
     },
-    [t]
+    [t, locale]
   );
 
   useEffect(() => {
-    if (!selectedNetworkId || calendarFetched) return;
+    if (
+      !selectedNetworkId ||
+      calendarFetched ||
+      !selectedIdsal ||
+      !selectedIddore
+    )
+      return;
 
-    const saleZeraeeValue =
-      localSaleZeraee.length === 1 ? localSaleZeraee[0] : selectedSaleZeraee;
-    const doreValue = localDore.length === 1 ? localDore[0] : selectedDore;
-
-    if (saleZeraeeValue && doreValue) {
-      fetchShabakeDoreKesht(selectedNetworkId, saleZeraeeValue, doreValue).then(
-        (data) => {
-          if (data && onShabakeDataChange) {
-            onShabakeDataChange(data);
-            setCalendarFetched(true);
-          }
-        }
-      );
-    }
+    fetchShabakeDoreKesht(
+      selectedNetworkId,
+      selectedIdsal,
+      selectedIddore
+    ).then((data) => {
+      if (data && onShabakeDataChange) {
+        console.log(
+          "[HeaderForm] Initial fetch, calling onShabakeDataChange:",
+          data
+        );
+        setShabakeData(data);
+        onShabakeDataChange(data);
+        setCalendarFetched(true);
+      }
+    });
   }, [
     selectedNetworkId,
-    selectedSaleZeraee,
-    selectedDore,
-    localSaleZeraee,
-    localDore,
+    selectedIdsal,
+    selectedIddore,
     fetchShabakeDoreKesht,
     calendarFetched,
     onShabakeDataChange,
@@ -519,12 +655,12 @@ const HeaderRequestPumping = ({
           <label className="text-sm font-semibold" htmlFor="saleZeraee">
             {t("cropYear")}
           </label>
-          {localSaleZeraee.length === 1 ? (
+          {networkData?.SaleZeraee.length === 1 ? (
             <input
               type="text"
               id="saleZeraee"
               className="w-24 rounded-lg border bg-gray-200 p-1 text-sm"
-              value={localSaleZeraee[0] || ""}
+              value={networkData.SaleZeraee[0]?.name || ""}
               readOnly
             />
           ) : (
@@ -533,14 +669,14 @@ const HeaderRequestPumping = ({
               className="w-24 rounded-lg border p-1 text-sm"
               value={selectedSaleZeraee}
               onChange={handleSaleZeraeeChange}
-              disabled={!selectedNetwork}
+              disabled={!selectedNetwork || isSaving}
             >
               <option value="" disabled hidden>
                 {t("select")}
               </option>
-              {localSaleZeraee.map((year, index) => (
-                <option key={`year-${index}`} value={year}>
-                  {year}
+              {networkData?.SaleZeraee.map((year) => (
+                <option key={`year-${year.idsal}`} value={year.name}>
+                  {year.name}
                 </option>
               ))}
             </select>
@@ -554,12 +690,12 @@ const HeaderRequestPumping = ({
           <label className="text-sm font-semibold" htmlFor="dore">
             {t("irrigationPeriod")}
           </label>
-          {localDore.length === 1 ? (
+          {networkData?.Dore.length === 1 ? (
             <input
               type="text"
               id="dore"
               className="w-24 rounded-lg border bg-gray-200 p-1 text-sm"
-              value={getLocalizedDoreKesht(localDore[0]) || ""}
+              value={getLocalizedDoreKesht(networkData.Dore[0]?.name) || ""}
               readOnly
             />
           ) : (
@@ -568,14 +704,14 @@ const HeaderRequestPumping = ({
               className="w-24 rounded-lg border p-1 text-sm"
               value={selectedDore}
               onChange={handleDoreChange}
-              disabled={!selectedNetwork}
+              disabled={!selectedNetwork || isSaving}
             >
               <option value="" disabled hidden>
                 {t("select")}
               </option>
-              {localDore.map((dore, index) => (
-                <option key={`dore-${index}`} value={dore}>
-                  {getLocalizedDoreKesht(dore)}
+              {networkData?.Dore.map((dore) => (
+                <option key={`dore-${dore.iddore}`} value={dore.name}>
+                  {getLocalizedDoreKesht(dore.name)}
                 </option>
               ))}
             </select>

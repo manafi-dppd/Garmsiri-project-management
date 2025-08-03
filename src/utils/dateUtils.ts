@@ -102,3 +102,62 @@ export function getCurrentSalMahDahe(): {
 
   return { sal, mah, dahe };
 }
+
+// src/utils/dateUtils.ts
+import { Locale } from '../i18n/config';
+
+export const toLocalizedWeekday = (
+  date: string | Date,
+  locale: Locale
+): string => {
+  const localeMap: Record<Locale, string> = {
+    en: "en-US",
+    fa: "fa-IR",
+    ar: "ar-SA",
+    tr: "tr-TR",
+  };
+
+  return new Date(date).toLocaleDateString(localeMap[locale], {
+    weekday: "long",
+  });
+};
+
+export const formatLocalizedDate = (
+  date: string | Date,
+  locale: Locale
+): string => {
+  const dateObj = new Date(date);
+
+  if (locale === "fa") {
+    // تاریخ شمسی برای فارسی
+    return dateObj.toLocaleDateString("fa-IR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
+
+  if (locale === "ar") {
+    // تاریخ میلادی با فرمت YYYY/MM/DD و اعداد عربی
+    const year = dateObj.getFullYear();
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    
+    const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    const toArabicNumbers = (num: string) => 
+      num.split("").map(c => arabicDigits[parseInt(c)]).join("");
+    
+    return `${toArabicNumbers(year.toString())}/${toArabicNumbers(month)}/${toArabicNumbers(day)}`;
+  }
+
+  // برای انگلیسی و ترکی
+  const day = dateObj.getDate().toString().padStart(2, "0");
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  const year = dateObj.getFullYear();
+
+  if (locale === "tr") {
+    return `${day}.${month}.${year}`; // فرمت ترکی: DD.MM.YYYY
+  }
+
+  return `${day}/${month}/${year}`; // فرمت انگلیسی: DD/MM/YYYY
+};

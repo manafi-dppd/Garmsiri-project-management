@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import HeaderRequestPumping from "./HeaderForm";
 import BodyRequestPumping from "./BodyRequestPumping";
 import LoadingSpinner from "./LoadingSpinner";
-import { ShabakeDoreKeshtData } from "./types";
+import { ShabakeDoreKeshtData, NetworkDataResponse } from "./types";
 
 const RequestPumpingStation = () => {
   const [userName, setUserName] = useState("");
@@ -24,6 +24,9 @@ const RequestPumpingStation = () => {
   const [shabakeData, setShabakeData] = useState<ShabakeDoreKeshtData | null>(
     null
   );
+  const [networkData, setNetworkData] = useState<NetworkDataResponse | null>(
+    null
+  );
   const [currentSal, setCurrentSal] = useState<number>(
     new Date().getFullYear()
   );
@@ -32,18 +35,49 @@ const RequestPumpingStation = () => {
   );
 
   const handleShabakeData = useCallback((data: ShabakeDoreKeshtData) => {
+    console.log("[RequestPumpingStation] Shabake data received:", data);
     setShabakeData(data);
-    if (data.mahList && data.mahList.length > 0) {
-      const currentDate = new Date();
-      const currentMahItem = data.mahList.find(
-        (item) =>
-          item.sal === currentDate.getFullYear() &&
-          item.mah === currentDate.getMonth() + 1
-      );
-      const selectedMahItem = currentMahItem || data.mahList[0];
-      setCurrentMah(selectedMahItem.mah);
-      setCurrentSal(selectedMahItem.sal);
-    }
+    // if (data.mahList && data.mahList.length > 0) {
+    //   const currentDate = new Date();
+    //   const currentMahItem = data.mahList.find(
+    //     (item) =>
+    //       item.sal === currentDate.getFullYear() &&
+    //       item.mah === currentDate.getMonth() + 1
+    //   );
+    //   const selectedMahItem = currentMahItem || data.mahList[0];
+    //   setCurrentMah(selectedMahItem.mah);
+    //   setCurrentSal(selectedMahItem.sal);
+    //   console.log("currentMahItem: ", currentMahItem);
+    //   console.log("data: ", data);
+    // }
+    // if (data.IdShDo) {
+    //   console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
+    //   setIdShDo(data.IdShDo);
+    // }
+  }, []);
+  console.log("CurrentMah: ", currentMah);
+
+  const handleNetworkData = useCallback((data: NetworkDataResponse) => {
+    console.log("[RequestPumpingStation] Network data received:", data);
+    setNetworkData(data);
+    // if (data.currentSaleZeraee) {
+    //   console.log(
+    //     "[RequestPumpingStation] Setting saleZeraee:",
+    //     data.currentSaleZeraee.name
+    //   );
+    //   setSaleZeraee(data.currentSaleZeraee.name);
+    // }
+    // if (data.currentDoreKesht) {
+    //   console.log(
+    //     "[RequestPumpingStation] Setting doreKesht:",
+    //     data.currentDoreKesht.name
+    //   );
+    //   setDoreKesht(data.currentDoreKesht.name);
+    // }
+    // if (data.IdShDo) {
+    //   console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
+    //   setIdShDo(data.IdShDo);
+    // }
   }, []);
 
   return (
@@ -65,6 +99,7 @@ const RequestPumpingStation = () => {
           setNetworkTrustee={setNetworkTrustee}
           isSaving={isSaving}
           onShabakeDataChange={handleShabakeData}
+          onNetworkDataChange={handleNetworkData}
         />
         <BodyRequestPumping
           userName={userName}
@@ -76,18 +111,19 @@ const RequestPumpingStation = () => {
           selectedNetworkId={selectedNetworkId}
           saleZeraee={saleZeraee}
           doreKesht={doreKesht}
-          idShDo={idShDo}
-          mah={currentMah}
-          dahe={currentDahe}
           idPumpStation={idPumpStation}
           networkTrustee={networkTrustee}
           isSaving={isSaving}
           setIsSaving={setIsSaving}
           shabakeData={shabakeData}
+          networkData={networkData}
           setCurrentMah={setCurrentMah}
           setCurrentDahe={setCurrentDahe}
           currentSal={currentSal}
           setCurrentSal={setCurrentSal}
+          idShDo={idShDo}
+          mah={currentMah}
+          dahe={currentDahe}
         />
       </div>
     </div>

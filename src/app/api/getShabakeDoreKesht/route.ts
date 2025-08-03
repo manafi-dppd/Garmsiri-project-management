@@ -2,16 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 
-// export const dynamic = "force-static";
-
 export async function GET(req: NextRequest) {
   const t = await getTranslations("GetShabakeDoreKesht");
   const { searchParams } = new URL(req.url);
   const networkId = searchParams.get("networkId");
-  const saleZeraee = searchParams.get("saleZeraee");
-  const doreKesht = searchParams.get("doreKesht");
+  const idsal = searchParams.get("idsal");
+  const iddore = searchParams.get("iddore");
+  console.log("[GetShabakeDoreKesht] Parameters:", {
+    networkId,
+    idsal,
+    iddore,
+  });
 
-  if (!networkId || !saleZeraee || !doreKesht) {
+  if (!networkId || !idsal || !iddore) {
     return NextResponse.json(
       { error: t("missingParameters") },
       { status: 400 }
@@ -19,42 +22,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const saleZeraeeRecord = await prisma.salezeraee.findFirst({
-      where: { salezeraee: saleZeraee },
-      select: { idsal: true },
-    });
-
-    if (!saleZeraeeRecord) {
-      return NextResponse.json(
-        { error: t("cropYearNotFound") },
-        { status: 404 }
-      );
-    }
-
-    const doreKeshtRecord = await prisma.dorekesht.findFirst({
-      where: { dore: doreKesht },
-      select: { iddore: true },
-    });
-
-    if (!doreKeshtRecord) {
-      return NextResponse.json(
-        { error: t("irrigationPeriodNotFound") },
-        { status: 404 }
-      );
-    }
-
     const shabake = await prisma.shabakedorekesht.findFirst({
       where: {
         fidnet: Number(networkId),
-        fidsal: saleZeraeeRecord.idsal,
-        fiddore: doreKeshtRecord.iddore,
+        fidsal: Number(idsal),
+        fiddore: Number(iddore),
       },
       select: {
+        idshdo: true,
         trikhshorooe: true,
         trikhpayan: true,
       },
     });
-
+    console.log("[GetShabakeDoreKesht] shabake:", shabake);
     if (!shabake) {
       return NextResponse.json(
         { error: t("irrigationCalendarNotFound") },
@@ -98,6 +78,7 @@ export async function GET(req: NextRequest) {
         currentFiddahe: todayRecord?.fiddahe || null,
         trikhshorooe: shabake.trikhshorooe,
         trikhpayan: shabake.trikhpayan,
+        idshdo: shabake.idshdo,
       },
       {
         headers: {
@@ -106,7 +87,7 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("[GetShabakeDoreKesht] Database error:", error);
     return NextResponse.json(
       {
         error: t("internalServerError"),

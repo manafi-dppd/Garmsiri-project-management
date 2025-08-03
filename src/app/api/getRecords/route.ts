@@ -1,6 +1,6 @@
-import {NextRequest, NextResponse} from 'next/server';
-import prisma from '@/lib/prisma';
-import {Decimal} from '@prisma/client/runtime/library';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 
 interface Record {
   idtardor: number;
@@ -12,57 +12,40 @@ interface Record {
 
 interface VolumeResult {
   fidranesh: number;
-  _sum: {taghvim: Decimal | null};
+  _sum: { taghvim: Decimal | null };
 }
 
 export async function GET(req: NextRequest) {
-  const {searchParams} = new URL(req.url);
-  const networkId = searchParams.get('networkId');
-  const dahe = searchParams.get('dahe');
-  const sal = searchParams.get('sal');
-  const mah = searchParams.get('mah');
-  const saleZeraee = searchParams.get('saleZeraee');
-  const doreKesht = searchParams.get('doreKesht');
-  if (!networkId || !saleZeraee || !doreKesht) {
+  const { searchParams } = new URL(req.url);
+  const networkId = searchParams.get("networkId");
+  const dahe = searchParams.get("dahe");
+  const sal = searchParams.get("sal");
+  const mah = searchParams.get("mah");
+  const idsal = searchParams.get("idsal");
+  const iddore = searchParams.get("iddore");
+
+  if (!networkId || !idsal || !iddore) {
     return NextResponse.json(
-      {error: 'Network ID, SaleZeraee and DoreKesht are required'},
-      {status: 400},
+      { error: "Network ID, idsal, and iddore are required" },
+      { status: 400 }
     );
   }
 
   try {
-    // دریافت idsal از جدول salezeraee
-    const saleZeraeeRecord = await prisma.salezeraee.findFirst({
-      where: {salezeraee: saleZeraee},
-    });
-
-    if (!saleZeraeeRecord) {
-      return NextResponse.json({error: 'سال زراعی یافت نشد'}, {status: 404});
-    }
-
-    // دریافت iddore از جدول dorekesht
-    const doreKeshtRecord = await prisma.dorekesht.findFirst({
-      where: {dore: doreKesht},
-    });
-
-    if (!doreKeshtRecord) {
-      return NextResponse.json({error: 'دوره کشت یافت نشد'}, {status: 404});
-    }
-
-    // دریافت shabake بر اساس networkId, fidsal و fiddore
+    // دریافت shabake بر اساس networkId, idsal و iddore
     const shabake = await prisma.shabakedorekesht.findFirst({
       where: {
         fidnet: Number(networkId),
-        fidsal: saleZeraeeRecord.idsal,
-        fiddore: doreKeshtRecord.iddore,
+        fidsal: Number(idsal),
+        fiddore: Number(iddore),
       },
-      select: {trikhshorooe: true, trikhpayan: true},
+      select: { trikhshorooe: true, trikhpayan: true },
     });
 
     if (!shabake) {
       return NextResponse.json(
-        {message: 'تقویم آبیاری برای این دوره کشت و سال زراعی یافت نشد'},
-        {status: 404},
+        { message: "تقویم آبیاری برای این دوره کشت و سال زراعی یافت نشد" },
+        { status: 404 }
       );
     }
 
@@ -81,33 +64,38 @@ export async function GET(req: NextRequest) {
 
     const records = await prisma.trikhdorekesht.findMany({
       where: {
-        trikh: {gte: startDate, lte: endDate},
+        trikh: { gte: startDate, lte: endDate },
         sal: sal ? Number(sal) : undefined,
         mah: mah ? Number(mah) : undefined,
         dahe: dahe ? Number(dahe) : undefined,
       },
-      select: {idtardor: true, trikh: true, dahe: true, sal: true, mah: true},
-      orderBy: {trikh: 'asc'},
+      select: { idtardor: true, trikh: true, dahe: true, sal: true, mah: true },
+      orderBy: { trikh: "asc" },
     });
+
     const predictedVolumes = await Promise.all(
       records.map(async (record: Record) => {
         const raneshVolumes = await prisma.bahrebardaritaghvim.groupBy({
-          by: ['fidranesh'],
-          where: {fidtardor: record.idtardor},
-          _sum: {taghvim: true},
+          by: ["fidranesh"],
+          where: { fidtardor: record.idtardor },
+          _sum: { taghvim: true },
         });
         return {
           idtardor: record.idtardor,
           volumes: raneshVolumes.map((rv: VolumeResult) => ({
             fidranesh: rv.fidranesh,
-            totaltaghvim: rv._sum.taghvim || 0,
+            totaltaghvim: rv._sum.taghvim ? Number(rv._sum.taghvim) : 0,
           })),
         };
-      }),
+      })
     );
-    return NextResponse.json({records, predictedVolumes});
+
+    return NextResponse.json({ records, predictedVolumes });
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({error: 'Internal Server Error'}, {status: 500});
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

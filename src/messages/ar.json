@@ -178,7 +178,7 @@
       "company1": "شركة المياه الإقليمية في كرمانشاه",
       "company2": "منظمة الجهاد الزراعي في كرمانشاه"
     },
-    "attachment":"رسالة تعريفية"
+    "attachment": "رسالة تعريفية"
   },
   "Validation": {
     "required": "{fieldName} مطلوب.",
@@ -200,7 +200,7 @@
     "title": "لم يتم العثور على الصفحة",
     "message": "الصفحة التي تبحث عنها غير موجودة."
   },
-   "HeaderRequestPumping": {
+  "HeaderRequestPumping": {
     "irrigationNetwork": "شبكة الري",
     "pumpStation": "محطة",
     "cropYear": "سنة المحصول",
@@ -230,5 +230,31 @@
   "PumpStations": {
     "invalidParameters": "معلمات غير صالحة",
     "fetchError": "خطأ في تلقي المعلومات"
+  },
+  "Months": {
+    "month1": "يناير",
+    "month2": "فبراير",
+    "month3": "مارس",
+    "month4": "أبريل",
+    "month5": "مايو",
+    "month6": "يونيو",
+    "month7": "يوليو",
+    "month8": "أغسطس",
+    "month9": "سبتمبر",
+    "month10": "أكتوبر",
+    "month11": "نوفمبر",
+    "month12": "ديسمبر",
+    "dahe": {
+      "first": "الأول",
+      "second": "الثاني",
+      "third": "الثالث"
+    },
+    "alerts": {
+      "needsCorrection": "البرنامج يحتاج إلى تصحيح",
+      "programCorrection": "البرنامج لـ {dahe} من {mah} في محطة {pumpStationName} يحتاج إلى تصحيح.",
+      "explanation": "عرض التفسير",
+      "explanationTitle": "تفسير التصحيح",
+      "close": "إغلاق"
+    }
   }
 }

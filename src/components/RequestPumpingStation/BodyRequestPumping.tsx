@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { getCurrentSalMahDahe } from "../../utils/dateUtils";
 import PumpingForm from "./PumpingForm";
 import { usePumpingData } from "./hooks/usePumpingData";
@@ -41,7 +41,6 @@ interface BodyRequestPumpingProps {
 }
 
 const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
-  // userName,
   firstName,
   lastName,
   networkName,
@@ -50,29 +49,29 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   idPumpStation,
   saleZeraee,
   doreKesht,
-  // idShDo,
   networkTrustee,
   isSaving,
   setIsSaving,
   userRole,
   shabakeData,
   networkData,
-  // currentSal,
   setCurrentSal,
   setCurrentMah,
   setCurrentDahe,
+  mah,
+  dahe,
 }) => {
   const t = useTranslations("BodyRequestPumping");
+  const locale = useLocale();
   const {
     sal: currentSal,
     mah: currentMah,
     dahe: currentDahe,
   } = getCurrentSalMahDahe();
   const [sal, setSal] = useState<number>(currentSal);
-  const [mah, setMah] = useState(currentMah);
-  const [dahe, setDahe] = useState(currentDahe);
-  const [selectedMah, setSelectedMah] = useState(currentMah);
-  const [selectedDahe, setSelectedDahe] = useState(currentDahe);
+  const [selectedMah, setSelectedMah] = useState<number>(mah);
+  const [selectedDahe, setSelectedDahe] = useState<number>(dahe);
+  const [daheState, setDaheState] = useState<number>(dahe);
   const [pumpData, setPumpData] = useState<{
     [idTarDor: number]: { [idRanesh: number]: PumpingData };
   }>({});
@@ -87,6 +86,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const [isFormDisabled, setIsFormDisabled] = useState(false);
   const [isStationLoaded, setIsStationLoaded] = useState(false);
   const [prevPumpStation, setPrevPumpStation] = useState<number | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const {
     khatRaneshList,
@@ -103,7 +103,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     selectedMah,
     sal,
     mah,
-    dahe,
+    daheState,
     selectedDahe,
     pumpData,
     setPumpData,
@@ -113,10 +113,13 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
   type ExtendedTaeedProgramData = TaeedProgramData & {
     fiddahe?: number;
+    fiddec?: number;
   };
 
   const isFiddaheValid =
-    ((taedProgramData as unknown as ExtendedTaeedProgramData)?.fiddahe ?? 0) >
+    (locale === "fa"
+      ? (taedProgramData as unknown as ExtendedTaeedProgramData)?.fiddahe ?? 0
+      : (taedProgramData as unknown as ExtendedTaeedProgramData)?.fiddec ?? 0) >
     (currentFiddahe || 0) - 2;
 
   const {
@@ -127,13 +130,58 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     handlePumpCountChange,
   } = usePumpingTime();
 
+  // تنظیم مقادیر اولیه فقط در بارگذاری اولیه
   useEffect(() => {
-    console.log("[BodyRequestPumping] shabakeData:", shabakeData);
-    console.log("[BodyRequestPumping] networkData:", networkData);
+    if (
+      shabakeData?.mahList &&
+      shabakeData.mahList.length > 0 &&
+      isInitialLoad
+    ) {
+      const currentDate =
+        locale === "fa"
+          ? getCurrentSalMahDahe()
+          : {
+              sal: new Date().getFullYear(),
+              mah: new Date().getMonth() + 1,
+            };
+      const currentMahItem =
+        shabakeData.mahList.find(
+          (item: MahItem) =>
+            item.sal === currentDate.sal && item.mah === currentDate.mah
+        ) || shabakeData.mahList[0];
+
+      setSal(currentMahItem.sal);
+      setSelectedMah(currentMahItem.mah);
+      setCurrentMah(currentMahItem.mah);
+      setCurrentSal(currentMahItem.sal);
+      setSelectedDahe(dahe);
+      setDaheState(dahe);
+      setCurrentDahe(dahe);
+      setIsInitialLoad(false); // غیرفعال کردن بارگذاری اولیه پس از اولین اجرا
+    }
+  }, [
+    shabakeData,
+    setCurrentMah,
+    setCurrentSal,
+    locale,
+    dahe,
+    setCurrentDahe,
+    isInitialLoad,
+  ]);
+
+  // همگام‌سازی daheState با currentDahe
+  useEffect(() => {
+    setCurrentDahe(daheState);
+  }, [daheState, setCurrentDahe]);
+
+  // غیرفعال کردن فرم بر اساس شرایط
+  useEffect(() => {
     const isPastOrCurrentMonth =
-      sal < currentSal || (sal === currentSal && mah < currentMah);
+      sal < currentSal || (sal === currentSal && selectedMah < currentMah);
     const isPastOrCurrentDahe =
-      sal === currentSal && mah === currentMah && dahe <= currentDahe;
+      sal === currentSal &&
+      selectedMah === currentMah &&
+      daheState <= currentDahe;
     const isUserRoleAllowed = userRole.some((role) =>
       [
         "Website Creator",
@@ -161,15 +209,13 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     );
   }, [
     sal,
-    mah,
-    dahe,
+    selectedMah,
+    daheState,
     currentSal,
-    userRole,
-    taedAbMantaghe,
-    shabakeData,
-    networkData,
     currentMah,
     currentDahe,
+    userRole,
+    taedAbMantaghe,
   ]);
 
   const handleSave = () => {
@@ -180,32 +226,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
   const handleReset = () => {
     // منطق بازنشانی فرم
   };
-
-  // useEffect(() => {
-    // if (shabakeData?.mahList && shabakeData.mahList.length > 0) {
-    //   const currentDate = new Date();
-    //   const currentMahItem =
-    //     shabakeData.mahList.find(
-    //       (item: MahItem) =>
-    //         item.sal === currentDate.getFullYear() &&
-    //         item.mah === currentDate.getMonth() + 1
-    //     ) || shabakeData.mahList[0];
-    // setSal(currentSal);
-    // setMah(currentMah);
-    // setSelectedMah(currentMah);
-    // setCurrentMah(currentMahItem.mah);
-    // setCurrentSal(currentMahItem.sal);
-    // }
-  // }, [shabakeData, setCurrentMah, setCurrentSal]);
-
-
-  useEffect(() => {
-    if (selectedMah === currentMah && sal === currentSal) {
-      setSelectedDahe(currentDahe);
-      setDahe(currentDahe);
-      // setCurrentDahe(currentDahe);
-    }
-  }, [selectedMah, sal, currentSal, setCurrentDahe, currentMah, currentDahe]);
 
   useEffect(() => {
     setIsStationLoaded(false);
@@ -252,17 +272,17 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           sal={sal}
           selectedDahe={selectedDahe}
           setSelectedDahe={setSelectedDahe}
-          setDahe={setDahe}
+          setDahe={setDaheState}
           allDates={allDates}
           mahList={mahList}
           currentMah={mah}
           currentSal={sal}
-          currentDahe={dahe}
+          currentDahe={daheState}
           selectedNetworkId={selectedNetworkId}
           idPumpStation={idPumpStation}
           setSelectedMah={setSelectedMah}
           setSal={setSal}
-          setMah={setMah}
+          setMah={setCurrentMah}
           userRole={userRole}
           firstName={firstName}
           lastName={lastName}
@@ -283,11 +303,10 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
           prevPumpStation={prevPumpStation}
           setPrevPumpStation={setPrevPumpStation}
           shabakeData={shabakeData}
-          // networkData={networkData}
           setCurrentMah={setCurrentMah}
           setCurrentDahe={setCurrentDahe}
           setCurrentSal={setCurrentSal}
-          dahe={dahe}
+          dahe={daheState}
           mah={mah}
           saleZeraee={saleZeraee}
           doreKesht={doreKesht}

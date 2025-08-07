@@ -178,7 +178,7 @@
       "company1": "شرکت آب منطقه‌ای کرمانشاه",
       "company2": "سازمان جهاد کشاورزی استان کرمانشاه"
     },
-    "attachment":"معرفی نامه"
+    "attachment": "معرفی نامه"
   },
   "Validation": {
     "required": "{fieldName} الزامی است.",
@@ -230,5 +230,31 @@
   "PumpStations": {
     "invalidParameters": "پارامترهای نامعتبر",
     "fetchError": "خطا در دریافت اطلاعات"
+  },
+  "Months": {
+    "month1": "فروردین",
+    "month2": "اردیبهشت",
+    "month3": "خرداد",
+    "month4": "تیر",
+    "month5": "مرداد",
+    "month6": "شهریور",
+    "month7": "مهر",
+    "month8": "آبان",
+    "month9": "آذر",
+    "month10": "دی",
+    "month11": "بهمن",
+    "month12": "اسفند",
+    "dahe": {
+      "first": "اول",
+      "second": "دوم",
+      "third": "سوم"
+    },
+    "alerts": {
+      "needsCorrection": "برنامه نیاز به اصلاح دارد",
+      "programCorrection": "برنامه برای {dahe} ماه {mah} در ایستگاه {pumpStationName} نیاز به اصلاح دارد.",
+      "explanation": "مشاهده توضیحات",
+      "explanationTitle": "توضیحات اصلاح",
+      "close": "بستن"
+    }
   }
 }

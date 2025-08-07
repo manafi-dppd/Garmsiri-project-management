@@ -1,11 +1,10 @@
 import * as React from "react";
 import {
-  toPersianDate,
   toLocalizedWeekday,
   formatLocalizedDate,
 } from "../../../../utils/dateUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../../types";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
 import { Locale } from "@/i18n/config";
 
 export interface PumpingTableProps {
@@ -110,6 +109,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 
     return calculatedWidth;
   };
+
   return (
     <table
       id="pumping-table"

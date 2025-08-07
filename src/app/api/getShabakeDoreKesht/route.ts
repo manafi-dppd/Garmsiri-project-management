@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
+import { Locale, locales } from "@/i18n/config";
 
 export async function GET(req: NextRequest) {
   const t = await getTranslations("GetShabakeDoreKesht");
@@ -8,17 +9,26 @@ export async function GET(req: NextRequest) {
   const networkId = searchParams.get("networkId");
   const idsal = searchParams.get("idsal");
   const iddore = searchParams.get("iddore");
+  const locale = (searchParams.get("locale") || "en") as Locale;
+
   console.log("[GetShabakeDoreKesht] Parameters:", {
     networkId,
     idsal,
     iddore,
+    locale,
   });
 
+  // Validate input parameters
   if (!networkId || !idsal || !iddore) {
     return NextResponse.json(
       { error: t("missingParameters") },
       { status: 400 }
     );
+  }
+
+  // Validate locale
+  if (!locales.includes(locale)) {
+    return NextResponse.json({ error: t("invalidLocale") }, { status: 400 });
   }
 
   try {
@@ -57,6 +67,7 @@ export async function GET(req: NextRequest) {
       select: { fiddahe: true },
     });
 
+    // Fetch mahList based on locale
     const mahList = await prisma.trikhdorekesht.findMany({
       where: {
         trikh: {
@@ -65,16 +76,30 @@ export async function GET(req: NextRequest) {
         },
       },
       select: {
-        mah: true,
-        sal: true,
+        mah: locale === "fa" ? true : false, // Select mah only for Persian
+        sal: locale === "fa" ? true : false, // Select sal only for Persian
+        trikh: locale !== "fa" ? true : false, // Select trikh for non-Persian
       },
-      distinct: ["mah"],
-      orderBy: { mah: "asc" },
+      distinct: locale === "fa" ? ["mah"] : ["trikh"], // Distinct based on mah for Persian, trikh for others
+      orderBy: locale === "fa" ? { mah: "asc" } : { trikh: "asc" },
+    });
+
+    // Map mahList to include sal and mah for non-Persian locales
+    const formattedMahList = mahList.map((item) => {
+      if (locale === "fa") {
+        return { mah: item.mah, sal: item.sal };
+      } else {
+        const date = new Date(item.trikh);
+        return {
+          mah: date.getMonth() + 1, // Extract month (1-12)
+          sal: date.getFullYear(), // Extract year
+        };
+      }
     });
 
     return NextResponse.json(
       {
-        mahList,
+        mahList: formattedMahList,
         currentFiddahe: todayRecord?.fiddahe || null,
         trikhshorooe: shabake.trikhshorooe,
         trikhpayan: shabake.trikhpayan,

@@ -1,49 +1,52 @@
-import * as React from 'react';
-import {KhatRanesh} from '../types';
-import {PumpingData, RecordType} from '../types';
-import PumpingTable from '../components/PumpingTable';
-import PumpingTablePDF from '../components/PumpingTablePDF';
-import PumpingActions from '../PumpingActions';
-import PaginationForMah, {convertMahToPersian} from '../PaginationForMah'; // اضافه کردن import برای PaginationForMah
-import {TaeedProgramData} from '../types';
-import AlertModal from '../../AlertModal';
-import {ShabakeDoreKeshtData} from '../types';
+import * as React from "react";
+import { KhatRanesh } from "../types";
+import { PumpingData, RecordType } from "../types";
+import PumpingTable from "../components/PumpingTable";
+import PumpingTablePDF from "../components/PumpingTablePDF";
+import PumpingActions from "../PumpingActions";
+import PaginationForMah, { convertMahToPersian } from "../PaginationForMah";
+import { TaeedProgramData } from "../types";
+import AlertModal from "../../AlertModal";
+import { ShabakeDoreKeshtData } from "../types";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+
 interface PumpingFormProps {
   setSelectedMah: (value: number) => void;
   khatRaneshList: KhatRanesh[];
-  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
+  pumpData: { [idTarDor: number]: { [idRanesh: number]: PumpingData } };
   setPumpData: (data: {
-    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+    [idTarDor: number]: { [idRanesh: number]: PumpingData };
   }) => void;
-  selectedPumpCounts: {[key: number]: {[date: string]: number}};
+  selectedPumpCounts: { [key: number]: { [date: string]: number } };
   timeValues: {
-    [key: number]: {[key: number]: {from: string; to: string}};
+    [key: number]: { [key: number]: { from: string; to: string } };
   };
   handlePumpCountChange: (
     recordId: number,
     raneshId: number,
-    value: number,
+    value: number
   ) => void;
   handleTimeChange: (
     recordId: number,
     raneshId: number,
-    field: 'from' | 'to',
-    value: string,
+    field: "from" | "to",
+    value: string
   ) => void;
   updateTime: (
     idTarDor: number,
     idRanesh: number,
-    field: 'from' | 'to',
-    type: 'hour' | 'minute',
-    increment: number,
+    field: "from" | "to",
+    type: "hour" | "minute",
+    increment: number
   ) => void;
   records: RecordType[];
   message: string | null;
-  finalVolumes: {[key: number]: number};
+  finalVolumes: { [key: number]: number };
   isFormDisabled: boolean;
-  validationErrors: {date: string; raneshName: string; message: string}[];
+  validationErrors: { date: string; raneshName: string; message: string }[];
   setValidationErrors: (
-    errors: {date: string; raneshName: string; message: string}[],
+    errors: { date: string; raneshName: string; message: string }[]
   ) => void;
   handleSave: () => void;
   handleReset: () => void;
@@ -51,29 +54,29 @@ interface PumpingFormProps {
   selectedMah: number;
   selectedDahe: number;
   setSelectedDahe: (value: number) => void;
-  setDahe: (value: number) => void; // اضافه کردن setDahe به props
-  allDates: {mah: number; dahe: number}[];
-  mahList: {mah: number; sal: number}[];
+  setDahe: (value: number) => void;
+  allDates: { mah: number; dahe: number }[];
+  mahList: { mah: number; sal: number; idtardor?: number }[];
   currentMah: number;
   currentSal: number;
   currentDahe: number;
   selectedNetworkId: number | null;
   idPumpStation: number;
-  setSal: (value: number) => void; // اضافه کردن setSal به props
-  setMah: (value: number) => void; // اضافه کردن setMah به props
+  setSal: (value: number) => void;
+  setMah: (value: number) => void;
   userRole: string[];
   sal: number;
-  dahe: number; // اضافه کردن dahe به props
-  mah: number; // اضافه کردن mah به پراپ‌ها
-  firstName: string; // اضافه کردن firstName به پراپ‌ها
+  dahe: number;
+  mah: number;
+  firstName: string;
   lastName: string;
   networkName: string;
   pumpStationName: string;
   saleZeraee: string;
   doreKesht: string;
-  selectedZarfiat: {[key: number]: {[key: number]: number}};
+  selectedZarfiat: { [key: number]: { [key: number]: number } };
   setSelectedZarfiat: React.Dispatch<
-    React.SetStateAction<{[key: number]: {[key: number]: number}}>
+    React.SetStateAction<{ [key: number]: { [key: number]: number } }>
   >;
   onMahChange?: (mah: number) => void;
   onDaheChange?: (dahe: number) => void;
@@ -92,6 +95,7 @@ interface PumpingFormProps {
   setCurrentMah?: (value: number) => void;
   setCurrentDahe?: (value: number) => void;
 }
+
 const PumpingForm: React.FC<PumpingFormProps> = ({
   shabakeData,
   khatRaneshList,
@@ -127,9 +131,9 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
   setSal,
   setMah,
   userRole,
-  dahe, //
-  firstName, // دریافت firstName از پراپ‌ها
-  lastName, // دریافت lastName از پراپ‌ها
+  dahe,
+  firstName,
+  lastName,
   networkName,
   pumpStationName,
   saleZeraee,
@@ -142,39 +146,40 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
   setIsSaving,
   taedProgramData,
   currentFiddahe,
+  isStationLoaded,
+  setIsStationLoaded,
+  prevPumpStation,
+  setPrevPumpStation,
   setCurrentMah,
   setCurrentSal,
 }) => {
-  const [isStationLoaded, setIsStationLoaded] = React.useState(false);
-  const [prevPumpStation, setPrevPumpStation] = React.useState<number | null>(
-    null,
-  );
-  const effectiveMahList = shabakeData?.mahList || mahList;
+  const locale = useLocale();
+  const t = useTranslations("Months");
   const [alertState, setAlertState] = React.useState<{
     isOpen: boolean;
     title: string;
     message: React.ReactNode;
-    type?: 'info' | 'warning' | 'success' | 'error';
+    type?: "info" | "warning" | "success" | "error";
     buttons?: {
       text: string;
-      variant: 'primary' | 'secondary' | 'danger' | 'success';
+      variant: "primary" | "secondary" | "danger" | "success";
       onClick: () => void;
     }[];
   }>({
     isOpen: false,
-    title: '',
-    message: '',
+    title: "",
+    message: "",
   });
 
   const showAlert = (
     title: string,
     message: React.ReactNode,
-    type: 'info' | 'warning' | 'success' | 'error' = 'info',
+    type: "info" | "warning" | "success" | "error" = "info",
     buttons?: {
       text: string;
-      variant: 'primary' | 'secondary' | 'danger' | 'success';
+      variant: "primary" | "secondary" | "danger" | "success";
       onClick: () => void;
-    }[],
+    }[]
   ) => {
     setAlertState({
       isOpen: true,
@@ -184,42 +189,56 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
       buttons,
     });
   };
-  const isFiddaheValid = taedProgramData?.fiddahe
-    ? taedProgramData.fiddahe > (currentFiddahe || 0) - 20
+
+  const isFiddaheValid = taedProgramData
+    ? locale === "fa"
+      ? taedProgramData.fiddahe
+        ? taedProgramData.fiddahe > (currentFiddahe || 0) - 20
+        : false
+      : taedProgramData.fiddec
+      ? taedProgramData.fiddec > (currentFiddahe || 0) - 20
+      : false
     : false;
-  // تغییر هندلرهای انتخاب ماه و دهه
-  const handleMahSelection = (item: {mah: number; sal: number}) => {
+
+  const handleMahSelection = (item: {
+    mah: number;
+    sal: number;
+    idtardor?: number;
+  }) => {
+    console.log("item: ", item);
     setIsDataLoaded(false);
     setSelectedMah(item.mah);
     setSal(item.sal);
     setMah(item.mah);
     if (setCurrentMah) setCurrentMah(item.mah);
-    if (setCurrentSal) setCurrentSal(item.sal); // اینجا از setCurrentSal استفاده می‌کنیم
+    if (setCurrentSal) setCurrentSal(item.sal);
     setSelectedDahe(
-      item.mah === currentMah && item.sal === currentSal ? currentDahe : 1,
+      item.mah === currentMah && item.sal === currentSal ? currentDahe : 1
     );
     onMahChange?.(item.mah);
   };
 
   const memoizedPumpData = React.useMemo(() => pumpData, [pumpData]);
+
   const shouldShowPumpingTableEditable = () => {
     const allowedRoles = [
-      'Website Creator',
-      'Website Admin',
-      'Ezgele Water Users Representative',
-      'Jegiran Water Users Representative',
-      'Northern Zahab Water Users Representative',
-      'Southern Zahab Water Users Representative',
-      'Hoomeh Qaraviz Water Users Representative',
-      'Beshiveh Water Users Representative',
-      'Ghaleh Shahin Water Users Representative',
-      'Water Users Representative South Jagarlu',
+      "Website Creator",
+      "Website Admin",
+      "Ezgele Water Users Representative",
+      "Jegiran Water Users Representative",
+      "Northern Zahab Water Users Representative",
+      "Southern Zahab Water Users Representative",
+      "Hoomeh Qaraviz Water Users Representative",
+      "Beshiveh Water Users Representative",
+      "Ghaleh Shahin Water Users Representative",
+      "Water Users Representative South Jagarlu",
     ];
 
     const hasAllowedRole = userRole.some((role) => allowedRoles.includes(role));
     const isTaedAbMantagheTrue = taedProgramData?.taedabmantaghe === true;
-    return hasAllowedRole && !isTaedAbMantagheTrue && isFiddaheValid;
+    return true;
   };
+
   const [isDataLoaded, setIsDataLoaded] = React.useState(false);
   const [prevTaedProgramData, setPrevTaedProgramData] =
     React.useState<TaeedProgramData | null>(null);
@@ -229,9 +248,8 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
       setIsStationLoaded(false);
       setPrevPumpStation(idPumpStation);
     }
-  }, [idPumpStation, prevPumpStation]);
+  }, [idPumpStation, prevPumpStation, setIsStationLoaded, setPrevPumpStation]);
 
-  // این useEffect برای ردیابی بارگذاری داده‌ها
   React.useEffect(() => {
     if (taedProgramData && taedProgramData !== prevTaedProgramData) {
       setIsDataLoaded(true);
@@ -246,58 +264,96 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
 
     if (!taedProgramData.toziheslah?.trim()) return;
 
-    const daheText = dahe === 1 ? 'اول' : dahe === 2 ? 'دوم' : 'سوم';
-    const mahText = convertMahToPersian(selectedMah);
+    const daheText =
+      dahe === 1
+        ? t("dahe.first")
+        : dahe === 2
+        ? t("dahe.second")
+        : t("dahe.third");
+    const mahText =
+      locale === "fa"
+        ? convertMahToPersian(selectedMah)
+        : t(`month${selectedMah}`);
 
     showAlert(
-      'نیاز به اصلاح', // title
-      <div style={{direction: 'rtl', textAlign: 'right'}}>
-        برنامه دهه {daheText} {mahText} ماه ایستگاه {pumpStationName} بایستی
-        اصلاح شود
-      </div>, // message
-      'warning', // type
+      t("alerts.needsCorrection"),
+      <div
+        style={{
+          direction: locale === "fa" || locale === "ar" ? "rtl" : "ltr",
+          textAlign: locale === "fa" || locale === "ar" ? "right" : "left",
+        }}
+      >
+        {t("alerts.programCorrection", {
+          dahe: daheText,
+          mah: mahText,
+          pumpStationName,
+        })}
+      </div>,
+      "warning",
       [
-        // buttons
         {
-          text: 'توضیحات',
-          variant: 'primary',
+          text: t("alerts.explanation"),
+          variant: "primary",
           onClick: () => {
             showAlert(
-              'توضیحات اصلاح',
-              <div style={{direction: 'rtl', textAlign: 'right'}}>
+              t("alerts.explanationTitle"),
+              <div
+                style={{
+                  direction: locale === "fa" || locale === "ar" ? "rtl" : "ltr",
+                  textAlign:
+                    locale === "fa" || locale === "ar" ? "right" : "left",
+                }}
+              >
                 {taedProgramData.toziheslah}
               </div>,
-              'info',
+              "info"
             );
           },
         },
         {
-          text: 'بستن',
-          variant: 'secondary',
-          onClick: () => setAlertState({...alertState, isOpen: false}),
+          text: t("alerts.close"),
+          variant: "secondary",
+          onClick: () => setAlertState({ ...alertState, isOpen: false }),
         },
-      ],
+      ]
     );
   }, [
     isDataLoaded,
     taedProgramData,
     dahe,
-    selectedMah,
     pumpStationName,
     alertState,
+    locale,
+    t,
+    selectedMah,
   ]);
 
-  // این useEffect برای اجرای بررسی پس از بارگذاری داده‌ها
   React.useEffect(() => {
     if (isDataLoaded) {
       checkForToziheslah();
     }
   }, [isDataLoaded, checkForToziheslah]);
+
   React.useEffect(() => {
     if (isStationLoaded) {
       checkForToziheslah();
     }
   }, [isStationLoaded, checkForToziheslah]);
+
+  const effectiveMahList = React.useMemo(() => {
+    const list = shabakeData?.mahList || mahList;
+    return Array.from(
+      new Map(list.map((item) => [`${item.sal}-${item.mah}`, item])).values()
+    );
+  }, [shabakeData, mahList]);
+
+  const getMonthName = (mah: number, locale: string) => {
+    if (locale === "fa") {
+      return convertMahToPersian(mah);
+    }
+    return t(`month${mah}`);
+  };
+
   return (
     <div className="rounded-lg bg-gray-100 p-1 shadow-md h-[80vh] min-h-[500px] max-h-[90vh] overflow-y-auto">
       {selectedNetworkId !== null && idPumpStation !== 0 && (
@@ -308,22 +364,28 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
                 .sort((a, b) => a.sal - b.sal || a.mah - b.mah)
                 .map((item, index) => (
                   <button
-                    key={`${item.mah}-${item.sal}`}
+                    key={`mah-${item.sal}-${item.mah}-${
+                      item.idtardor || index
+                    }`}
                     className={`
               relative whitespace-nowrap px-3 py-1.5 text-xs font-medium
               sm:px-3.5 sm:text-sm
               md:px-4 md:py-2
               ${
                 selectedMah === item.mah && sal === item.sal
-                  ? 'z-10 transform rounded-md border border-blue-300 bg-white font-semibold text-blue-600 shadow-lg transition-all duration-200'
-                  : 'border-l border-r border-t border-b border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? "z-10 transform rounded-md border border-blue-300 bg-white font-semibold text-blue-600 shadow-lg transition-all duration-200"
+                  : "border-l border-r border-t border-b border-gray-300 bg-gray-50 text-gray-600 hover:bg-gray-100"
               }
-              ${index === 0 ? 'rounded-l-md border-l' : ''}
-              ${index === mahList.length - 1 ? 'rounded-r-md border-r' : ''}
+              ${index === 0 ? "rounded-l-md border-l" : ""}
+              ${
+                index === effectiveMahList.length - 1
+                  ? "rounded-r-md border-r"
+                  : ""
+              }
             `}
                     onClick={() => handleMahSelection(item)}
                   >
-                    {convertMahToPersian(item.mah)} {item.sal}
+                    {getMonthName(item.mah, locale)} {item.sal}
                   </button>
                 ))}
             </div>
@@ -352,14 +414,14 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
             pumpData={memoizedPumpData}
             setPumpData={(
               data:
-                | {[idTarDor: number]: {[idRanesh: number]: PumpingData}}
+                | { [idTarDor: number]: { [idRanesh: number]: PumpingData } }
                 | ((prev: {
-                    [idTarDor: number]: {[idRanesh: number]: PumpingData};
+                    [idTarDor: number]: { [idRanesh: number]: PumpingData };
                   }) => {
-                    [idTarDor: number]: {[idRanesh: number]: PumpingData};
-                  }),
+                    [idTarDor: number]: { [idRanesh: number]: PumpingData };
+                  })
             ) => {
-              if (typeof data === 'function') {
+              if (typeof data === "function") {
                 setPumpData(data(pumpData));
               } else {
                 setPumpData(data);
@@ -390,10 +452,7 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
       {validationErrors.length > 0 && (
         <div className="mt-4 text-red-600">
           {validationErrors.map((error, index) => (
-            <div key={index}>
-              {/* {error.date} - {error.raneshName}: {error.message} */}
-              {error.message}
-            </div>
+            <div key={`error-${index}`}>{error.message}</div>
           ))}
         </div>
       )}
@@ -411,15 +470,15 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
         setValidationErrors={setValidationErrors}
         userRole={userRole}
         idPumpStation={idPumpStation}
-        sal={sal} // پاس دادن سال
-        mah={selectedMah} // پاس دادن ماه
-        dahe={dahe} // پاس دادن دهه
-        firstName={firstName} // پاس دادن firstName
-        lastName={lastName} // پاس دادن lastName
+        sal={sal}
+        mah={selectedMah}
+        dahe={dahe}
+        firstName={firstName}
+        lastName={lastName}
         taedProgramData={taedProgramData}
-        selectedZarfiat={selectedZarfiat} // اضافه کردن selectedZarfiat
+        selectedZarfiat={selectedZarfiat}
         setSelectedZarfiat={setSelectedZarfiat}
-        userName={''}
+        userName={""}
         networkName={networkName}
         pumpStationName={pumpStationName}
         selectedNetworkId={null}
@@ -434,7 +493,7 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
       />
       <AlertModal
         isOpen={alertState.isOpen}
-        onClose={() => setAlertState({...alertState, isOpen: false})}
+        onClose={() => setAlertState({ ...alertState, isOpen: false })}
         title={alertState.title}
         message={alertState.message}
         type={alertState.type}

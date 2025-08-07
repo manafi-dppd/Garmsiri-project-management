@@ -108,7 +108,7 @@
   },
   "userInvitationTable": {
     "loading": "Loading...",
-    "users":"Users",
+    "users": "Users",
     "invitees": "Invitees",
     "firstName": "First Name",
     "lastName": "Last Name",
@@ -121,34 +121,34 @@
     "role": "Role",
     "details": "Details",
     "uncertain": "Uncertain",
-    "yes":"Yes",
-    "no":"No",
-    "noRole":"No role",
-    "view":"View"
+    "yes": "Yes",
+    "no": "No",
+    "noRole": "No role",
+    "view": "View"
   },
-  "AccessLevelModal":{
+  "AccessLevelModal": {
     "menuManagement": "Menu management",
-    "accessLevelTitle":"Access level title",
+    "accessLevelTitle": "Access level title",
     "save": "Save",
     "close": "Close",
     "updateSuccess": "Update success"
   },
-  "InvitationModal":{
-    "invitation":"Invitation",
-    "cancellation":"Cancellation",
-    "sendInvitation":"Send invitation",
-    "successfully":"Invitation sent successfully.",
+  "InvitationModal": {
+    "invitation": "Invitation",
+    "cancellation": "Cancellation",
+    "sendInvitation": "Send invitation",
+    "successfully": "Invitation sent successfully.",
     "errorSubmitting": "Error sending invitation"
   },
-  "FormSection":{
+  "FormSection": {
     "loading": "Loading",
-    "completionMessage":"Completion of asterisked items is required.",
-    "selectDate":"Select date",
-    "gender":"Gender",
-    "male":"Male",
-    "female":"Female",
-    "roleSelection":"Role selection",
-    "editAccessLevel":"Edit access level",
+    "completionMessage": "Completion of asterisked items is required.",
+    "selectDate": "Select date",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "roleSelection": "Role selection",
+    "editAccessLevel": "Edit access level",
     "noPositionsAvailable": "No positions available."
   },
   "AdditionalFormFields": {
@@ -178,7 +178,7 @@
       "company1": "Kermanshah Regional Water Company",
       "company2": "Kermanshah Agricultural Jihad Organization"
     },
-    "attachment":"Letter of introduction"
+    "attachment": "Letter of introduction"
   },
   "Validation": {
     "required": "{fieldName} is required.",
@@ -230,5 +230,31 @@
   "PumpStations": {
     "invalidParameters": "Invalid parameters",
     "fetchError": "Error receiving information"
+  },
+  "Months": {
+    "month1": "January",
+    "month2": "February",
+    "month3": "March",
+    "month4": "April",
+    "month5": "May",
+    "month6": "June",
+    "month7": "July",
+    "month8": "August",
+    "month9": "September",
+    "month10": "October",
+    "month11": "November",
+    "month12": "December",
+    "dahe": {
+      "first": "First",
+      "second": "Second",
+      "third": "Third"
+    },
+    "alerts": {
+      "needsCorrection": "Program Needs Correction",
+      "programCorrection": "The program for {dahe} of {mah} at {pumpStationName} needs correction.",
+      "explanation": "View Explanation",
+      "explanationTitle": "Correction Explanation",
+      "close": "Close"
+    }
   }
 }

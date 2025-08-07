@@ -71,6 +71,7 @@ export interface BodyRequestPumpingProps {
 }
 
 export interface MahItem {
+  idtardor?: number;
   dahe: (dahe: number) => void;
   Msh: (Msh: string) => void;
   mah: number;
@@ -81,6 +82,7 @@ export interface ShabakeDoreKeshtData {
   error: any;
   mahList: MahItem[];
   currentFiddahe: number | null;
+  currentFiddec: number | null;
   trikhshorooe: Date;
   trikhpayan: Date;
   SaleZeraee: { idsal: number; name: string }[];
@@ -91,7 +93,8 @@ export interface ShabakeDoreKeshtData {
 }
 
 export interface TaeedProgramData {
-  fiddahe: number;
+  fiddahe?: number;
+  fiddec?: number;
   firstnersal: string;
   lastnersal: string;
   tarikhersal: string;
@@ -140,7 +143,13 @@ export interface PumpingFormProps {
     field: "from" | "to",
     value: string
   ) => void;
-  updateTime: (idtardor: number, idranesh: number) => void;
+  updateTime: (
+    idtardor: number,
+    idranesh: number,
+    field: "from" | "to",
+    type: "hour" | "minute",
+    increment: number
+  ) => void;
   records: RecordType[];
   message: string | null;
   finalVolumes: { [key: number]: number };
@@ -189,7 +198,6 @@ export interface PumpingFormProps {
   prevPumpStation: number | null;
   setPrevPumpStation: React.Dispatch<React.SetStateAction<number | null>>;
   shabakeData: ShabakeDoreKeshtData | null;
-  networkData: NetworkDataResponse | null;
   setCurrentMah: React.Dispatch<React.SetStateAction<number>>;
   setCurrentDahe: React.Dispatch<React.SetStateAction<number>>;
   setCurrentSal: React.Dispatch<React.SetStateAction<number>>;

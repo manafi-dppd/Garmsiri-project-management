@@ -83,6 +83,7 @@ const HeaderRequestPumping = ({
     Record<number, string>
   >({});
   const [calendarFetched, setCalendarFetched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getLocalizedNetworkName = useCallback(
     (network: Network): string => {
@@ -126,13 +127,16 @@ const HeaderRequestPumping = ({
   );
 
   const getLocalizedDoreKesht = useCallback((dore: string): string => {
-    return dore; // API مقدار محلی‌سازی‌شده را برمی‌گرداند
+    return dore;
   }, []);
 
-  // Fetch user position data
   useEffect(() => {
+    console.log("[HeaderForm] Fetching user positions...");
     fetch("/api/user-position", { credentials: "include" })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch user position");
+        return res.json();
+      })
       .then((data) => {
         console.log("[HeaderForm] User position data:", data);
         setUserName(data.username);
@@ -141,15 +145,19 @@ const HeaderRequestPumping = ({
         setFirstName(data.firstname);
         setLastName(data.lastname);
       })
-      .catch((error) =>
-        console.error("[HeaderForm] Error fetching user position:", error)
-      );
-  }, [setFirstName, setLastName, setUserName, setUserRole]);
+      .catch((error) => {
+        console.error("[HeaderForm] Error fetching user position:", error);
+        setError(t("fetchError"));
+      });
+  }, [setFirstName, setLastName, setUserName, setUserRole, t]);
 
-  // Fetch irrigation networks
   useEffect(() => {
+    console.log("[HeaderForm] Fetching irrigation networks...");
     fetch("/api/irrigation-networks", { credentials: "include" })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch irrigation networks");
+        return res.json();
+      })
       .then((data) => {
         console.log("[HeaderForm] Irrigation networks:", data);
         setNetworks(data.networks);
@@ -162,16 +170,17 @@ const HeaderRequestPumping = ({
         );
         setNetworkTrusteeMap(trusteeMap);
       })
-      .catch((error) =>
-        console.error("[HeaderForm] Error fetching irrigation networks:", error)
-      );
-  }, []);
+      .catch((error) => {
+        console.error("[HeaderForm] Error fetching irrigation networks:", error);
+        setError(t("fetchError"));
+      });
+  }, [t]);
 
-  // Fetch allowed networks based on user positions
   useEffect(() => {
     if (userPositions.length === 0 || networks.length === 0) return;
 
     const fetchAllowedNetworks = async () => {
+      console.log("[HeaderForm] Fetching allowed networks...");
       let allowedNetworks: string[] = [];
 
       for (const position of userPositions) {
@@ -180,6 +189,7 @@ const HeaderRequestPumping = ({
             `/api/position-networks?positionId=${position.id}`,
             { credentials: "include" }
           );
+          if (!response.ok) throw new Error("Failed to fetch position networks");
           const data = await response.json();
           console.log(
             "[HeaderForm] Position networks for position",
@@ -197,6 +207,7 @@ const HeaderRequestPumping = ({
             `[HeaderForm] Error fetching networks for position ${position.id}:`,
             error
           );
+          setError(t("fetchError"));
         }
       }
 
@@ -227,14 +238,15 @@ const HeaderRequestPumping = ({
     setSelectedNetworkId,
     setNetworkTrustee,
     getLocalizedNetworkName,
+    t,
   ]);
 
-  // Handle single network case
   useEffect(() => {
     if (
       filteredNetworks.length === 1 &&
       selectedNetworkId !== filteredNetworks[0].idnet
     ) {
+      console.log("[HeaderForm] Setting default network for single filtered network");
       const network = filteredNetworks[0];
       setSelectedNetwork(network.network);
       setNetworkName(getLocalizedNetworkName(network));
@@ -251,71 +263,29 @@ const HeaderRequestPumping = ({
     getLocalizedNetworkName,
   ]);
 
-  // Fetch network data
   useEffect(() => {
-    if (selectedNetworkId !== null) {
-      const fetchNetworkData = async () => {
-        try {
-          const response = await fetch(
-            `/api/network-data?networkId=${selectedNetworkId}&locale=${locale}`,
-            {
-              credentials: "include",
-            }
-          );
-          if (!response.ok) {
-            throw new Error(t("fetchError"));
-          }
-          const data: NetworkDataResponse = await response.json();
-          console.log("[HeaderForm] Network data:", data);
-          if (data.error) {
-            console.error("[HeaderForm] Network data error:", data.error);
-            setNetworkData(null);
-            setSelectedSaleZeraee("");
-            setSelectedIdsal(null);
-            setSaleZeraee("");
-            setSelectedDore("");
-            setSelectedIddore(null);
-            setDoreKesht("");
-            setIdShDo(0);
-            if (onNetworkDataChange) {
-              onNetworkDataChange({
-                SaleZeraee: [],
-                Dore: [],
-                currentSaleZeraee: null,
-                currentDoreKesht: null,
-                IdShDo: 0,
-              });
-            }
-          } else {
-            setNetworkData(data);
-            setSelectedSaleZeraee(
-              data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
-            );
-            setSelectedIdsal(
-              data.currentSaleZeraee?.idsal || data.SaleZeraee[0]?.idsal || null
-            );
-            setSaleZeraee(
-              data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
-            );
+    if (selectedNetworkId === null) {
+      console.log("[HeaderForm] No selected network, skipping network data fetch");
+      return;
+    }
 
-            setSelectedDore(
-              data.currentDoreKesht?.name || data.Dore[0]?.name || ""
-            );
-            setSelectedIddore(
-              data.currentDoreKesht?.iddore || data.Dore[0]?.iddore || null
-            );
-            setDoreKesht(
-              data.currentDoreKesht?.name || data.Dore[0]?.name || ""
-            );
-
-            setIdShDo(data.IdShDo || 0);
-            if (onNetworkDataChange) {
-              console.log("[HeaderForm] Calling onNetworkDataChange:", data);
-              onNetworkDataChange(data);
-            }
+    const fetchNetworkData = async () => {
+      console.log("[HeaderForm] Fetching network data for networkId:", selectedNetworkId);
+      try {
+        const response = await fetch(
+          `/api/network-data?networkId=${selectedNetworkId}&locale=${locale}`,
+          {
+            credentials: "include",
+            cache: "no-store",
           }
-        } catch (error) {
-          console.error("[HeaderForm] Error fetching network data:", error);
+        );
+        if (!response.ok) {
+          throw new Error(t("fetchError"));
+        }
+        const data: NetworkDataResponse = await response.json();
+        console.log("[HeaderForm] Network data:", data);
+        if (data.error) {
+          console.error("[HeaderForm] Network data error:", data.error);
           setNetworkData(null);
           setSelectedSaleZeraee("");
           setSelectedIdsal(null);
@@ -324,6 +294,7 @@ const HeaderRequestPumping = ({
           setSelectedIddore(null);
           setDoreKesht("");
           setIdShDo(0);
+          setError(t("fetchError"));
           if (onNetworkDataChange) {
             onNetworkDataChange({
               SaleZeraee: [],
@@ -333,11 +304,58 @@ const HeaderRequestPumping = ({
               IdShDo: 0,
             });
           }
-        }
-      };
+        } else {
+          setNetworkData(data);
+          setSelectedSaleZeraee(
+            data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
+          );
+          setSelectedIdsal(
+            data.currentSaleZeraee?.idsal || data.SaleZeraee[0]?.idsal || null
+          );
+          setSaleZeraee(
+            data.currentSaleZeraee?.name || data.SaleZeraee[0]?.name || ""
+          );
 
-      fetchNetworkData();
-    }
+          setSelectedDore(
+            data.currentDoreKesht?.name || data.Dore[0]?.name || ""
+          );
+          setSelectedIddore(
+            data.currentDoreKesht?.iddore || data.Dore[0]?.iddore || null
+          );
+          setDoreKesht(
+            data.currentDoreKesht?.name || data.Dore[0]?.name || ""
+          );
+
+          setIdShDo(data.IdShDo || 0);
+          if (onNetworkDataChange) {
+            console.log("[HeaderForm] Calling onNetworkDataChange:", data);
+            onNetworkDataChange(data);
+          }
+        }
+      } catch (error) {
+        console.error("[HeaderForm] Error fetching network data:", error);
+        setNetworkData(null);
+        setSelectedSaleZeraee("");
+        setSelectedIdsal(null);
+        setSaleZeraee("");
+        setSelectedDore("");
+        setSelectedIddore(null);
+        setDoreKesht("");
+        setIdShDo(0);
+        setError(t("fetchError"));
+        if (onNetworkDataChange) {
+          onNetworkDataChange({
+            SaleZeraee: [],
+            Dore: [],
+            currentSaleZeraee: null,
+            currentDoreKesht: null,
+            IdShDo: 0,
+          });
+        }
+      }
+    };
+
+    fetchNetworkData();
   }, [
     selectedNetworkId,
     locale,
@@ -349,6 +367,7 @@ const HeaderRequestPumping = ({
   ]);
 
   const handleNetworkChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("[HeaderForm] Network changed:", event.target.value);
     const networkName = event.target.value;
     setSelectedNetwork(networkName);
     setNetworkName(networkName);
@@ -363,7 +382,6 @@ const HeaderRequestPumping = ({
       setSelectedNetworkId(null);
       setNetworkTrustee(null);
     }
-    // Reset dependent fields
     setSelectedPumpStation("");
     setPumpStationName("");
     setIdPumpStation(0);
@@ -377,6 +395,7 @@ const HeaderRequestPumping = ({
     setDoreKesht("");
     setIdShDo(0);
     setCalendarFetched(false);
+    setError(null);
     if (onNetworkDataChange) {
       onNetworkDataChange({
         SaleZeraee: [],
@@ -397,7 +416,8 @@ const HeaderRequestPumping = ({
         SaleZeraee: [],
         Dore: [],
         currentDoreKesht: null,
-        currentSaleZeraee: null
+        currentSaleZeraee: null,
+        currentFiddec: null
       });
     }
   };
@@ -405,6 +425,7 @@ const HeaderRequestPumping = ({
   const handlePumpStationChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    console.log("[HeaderForm] Pump station changed:", event.target.value);
     const stationName = event.target.value;
     setSelectedPumpStation(stationName);
     setPumpStationName(stationName);
@@ -420,46 +441,56 @@ const HeaderRequestPumping = ({
     }
   };
 
-  // Fetch pump stations
   useEffect(() => {
-    if (selectedNetworkId !== null) {
-      fetch(
-        `/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2&locale=${locale}`,
-        {
-          credentials: "include",
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("[HeaderForm] Pump stations:", data);
-          setPumpStations(data.pumpStations);
-
-          if (data.pumpStations.length === 1) {
-            const station = data.pumpStations[0];
-            setSelectedPumpStation(station.namestation);
-            setPumpStationName(getLocalizedPumpStationName(station));
-            setIdPumpStation(station.idpumpsta);
-          } else {
-            setSelectedPumpStation("");
-            setPumpStationName("");
-            setIdPumpStation(0);
-          }
-        })
-        .catch((error) =>
-          console.error("[HeaderForm] Error fetching pump stations:", error)
-        );
+    if (selectedNetworkId === null) {
+      console.log("[HeaderForm] No selected network, skipping pump stations fetch");
+      return;
     }
+
+    console.log("[HeaderForm] Fetching pump stations for networkId:", selectedNetworkId);
+    fetch(
+      `/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2&locale=${locale}`,
+      {
+        credentials: "include",
+        cache: "no-store",
+      }
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch pump stations");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("[HeaderForm] Pump stations:", data);
+        setPumpStations(data.pumpStations);
+
+        if (data.pumpStations.length === 1) {
+          const station = data.pumpStations[0];
+          setSelectedPumpStation(station.namestation);
+          setPumpStationName(getLocalizedPumpStationName(station));
+          setIdPumpStation(station.idpumpsta);
+        } else {
+          setSelectedPumpStation("");
+          setPumpStationName("");
+          setIdPumpStation(0);
+        }
+      })
+      .catch((error) => {
+        console.error("[HeaderForm] Error fetching pump stations:", error);
+        setError(t("fetchError"));
+      });
   }, [
     selectedNetworkId,
     locale,
     setIdPumpStation,
     setPumpStationName,
     getLocalizedPumpStationName,
+    t,
   ]);
 
   const handleSaleZeraeeChange = async (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    console.log("[HeaderForm] SaleZeraee changed:", e.target.value);
     const value = e.target.value;
     setSelectedSaleZeraee(value);
     setSaleZeraee(value);
@@ -472,6 +503,7 @@ const HeaderRequestPumping = ({
     }
 
     if (selectedNetworkId && selectedIddore) {
+      console.log("[HeaderForm] Fetching ShabakeDoreKesht for SaleZeraee change...");
       const data = await fetchShabakeDoreKesht(
         selectedNetworkId,
         selectedSale?.idsal || null,
@@ -483,12 +515,14 @@ const HeaderRequestPumping = ({
           data
         );
         setShabakeData(data);
+        setCalendarFetched(true);
         onShabakeDataChange(data);
       }
     }
   };
 
   const handleDoreChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("[HeaderForm] Dore changed:", e.target.value);
     const value = e.target.value;
     setSelectedDore(value);
     setDoreKesht(value);
@@ -501,6 +535,7 @@ const HeaderRequestPumping = ({
     }
 
     if (selectedNetworkId && selectedIdsal) {
+      console.log("[HeaderForm] Fetching ShabakeDoreKesht for Dore change...");
       const data = await fetchShabakeDoreKesht(
         selectedNetworkId,
         selectedIdsal,
@@ -512,6 +547,7 @@ const HeaderRequestPumping = ({
           data
         );
         setShabakeData(data);
+        setCalendarFetched(true);
         onShabakeDataChange(data);
       }
     }
@@ -519,25 +555,54 @@ const HeaderRequestPumping = ({
 
   const fetchShabakeDoreKesht = useCallback(
     async (networkId: number, idsal: number | null, iddore: number | null) => {
-      if (!idsal || !iddore) {
+      if (!networkId || !idsal || !iddore) {
         console.warn(
-          "[HeaderForm] Missing idsal or iddore, skipping fetchShabakeDoreKesht"
+          "[HeaderForm] Missing parameters for fetchShabakeDoreKesht:",
+          { networkId, idsal, iddore }
         );
+        setError(t("missingParameters"));
         return null;
       }
+
+      console.log("[HeaderForm] Fetching ShabakeDoreKesht with parameters:", {
+        networkId,
+        idsal,
+        iddore,
+        locale,
+      });
+
       try {
         const response = await fetch(
           `/api/getShabakeDoreKesht?networkId=${networkId}&idsal=${idsal}&iddore=${iddore}&locale=${locale}`,
-          { credentials: "include" }
+          {
+            credentials: "include",
+            cache: "no-store",
+          }
         );
 
-        if (!response.ok) throw new Error(t("fetchError"));
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("[HeaderForm] ShabakeDoreKesht error response:", errorData);
+          throw new Error(errorData.error || t("fetchError"));
+        }
 
         const data: ShabakeDoreKeshtData = await response.json();
         console.log("[HeaderForm] ShabakeDoreKesht data:", data);
+
+        if (data.error) {
+          console.error("[HeaderForm] ShabakeDoreKesht data error:", data.error);
+          setError(data.error);
+          return null;
+        }
+
+        setError(null);
         return data;
       } catch (error) {
-        console.error("[HeaderForm] Error fetching ShabakeDoreKesht:", error);
+        console.error("[HeaderForm] Error fetching ShabakeDoreKesht:", {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        });
+        setError(t("fetchError"));
         return null;
       }
     },
@@ -550,9 +615,17 @@ const HeaderRequestPumping = ({
       calendarFetched ||
       !selectedIdsal ||
       !selectedIddore
-    )
+    ) {
+      console.log("[HeaderForm] Skipping ShabakeDoreKesht fetch due to conditions", {
+        selectedNetworkId,
+        calendarFetched,
+        selectedIdsal,
+        selectedIddore,
+      });
       return;
+    }
 
+    console.log("[HeaderForm] Initial fetch for ShabakeDoreKesht...");
     fetchShabakeDoreKesht(
       selectedNetworkId,
       selectedIdsal,
@@ -564,8 +637,8 @@ const HeaderRequestPumping = ({
           data
         );
         setShabakeData(data);
-        onShabakeDataChange(data);
         setCalendarFetched(true);
+        onShabakeDataChange(data);
       }
     });
   }, [
@@ -582,6 +655,22 @@ const HeaderRequestPumping = ({
       id="header-form"
       className="container flex flex-wrap items-center justify-center gap-2 rounded-lg bg-blue-100 px-2 shadow-md"
     >
+      {error && (
+        <div className="w-full text-center text-red-500">
+          {error}
+          <button
+            className="ml-2 rounded-md bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+            onClick={() => {
+              setError(null);
+              if (selectedNetworkId && selectedIdsal && selectedIddore) {
+                fetchShabakeDoreKesht(selectedNetworkId, selectedIdsal, selectedIddore);
+              }
+            }}
+          >
+            {t("retry")}
+          </button>
+        </div>
+      )}
       <div className="flex items-center gap-1">
         <label className="text-sm font-semibold" htmlFor="network">
           {t("irrigationNetwork")}
@@ -599,6 +688,7 @@ const HeaderRequestPumping = ({
             className="w-32 rounded-lg border p-1 text-sm"
             value={selectedNetwork || ""}
             onChange={handleNetworkChange}
+            disabled={isSaving}
           >
             <option value="" disabled hidden>
               {t("select")}
@@ -631,7 +721,7 @@ const HeaderRequestPumping = ({
               className="w-32 rounded-lg border p-1 text-sm"
               value={selectedPumpStation}
               onChange={handlePumpStationChange}
-              disabled={!selectedNetwork}
+              disabled={!selectedNetwork || isSaving}
             >
               <option value="" disabled hidden>
                 {t("select")}

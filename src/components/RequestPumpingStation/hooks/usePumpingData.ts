@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocale } from "next-intl";
 import {
   KhatRanesh,
   MahItem,
@@ -10,7 +11,8 @@ import {
 } from "../types";
 
 interface TaeedProgramData {
-  fiddahe: number;
+  fiddahe?: number;
+  fiddec?: number;
   FirstNErsal: string;
   LastNErsal: string;
   TarikhErsal: string;
@@ -74,6 +76,7 @@ export const usePumpingData = (
   shabakeData: ShabakeDoreKeshtData | null,
   networkData: NetworkDataResponse | null
 ) => {
+  const locale = useLocale();
   const [taedAbMantaghe, setTaedAbMantaghe] = useState<
     Array<{ [key: string]: unknown }>
   >([]);
@@ -89,13 +92,45 @@ export const usePumpingData = (
   const [taedProgramData, setTaedProgramData] =
     useState<TaeedProgramData | null>(null);
   const [currentFiddahe, setCurrentFiddahe] = useState<number | null>(null);
+  // useEffect(() => {
+  //   if (idPumpStation > 0 && sal && mah && dahe) {
+  //     const fetchTaedProgramData = async () => {
+  //       try {
+  //         const response = await fetch("/api/getTaeedProgramDetails", {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             fidpumpsta: idPumpStation,
+  //             sal,
+  //             mah,
+  //             dahe,
+  //           }),
+  //         });
 
+  //         if (!response.ok) {
+  //           throw new Error("Failed to fetch TaeedProgram data");
+  //         }
+  //         setTaedProgramData(await response.json());
+  //       } catch {
+  //         setTaedProgramData(null);
+  //       }
+  //     };
+  //     fetchTaedProgramData();
+  //   }
+  // }, [idPumpStation, sal, mah, dahe]);
+  // console.log("dahe: ", dahe);
   useEffect(() => {
-    console.log("[usePumpingData] shabakeData:", shabakeData);
-    console.log("[usePumpingData] networkData:", networkData);
     if (idPumpStation > 0 && sal && mah && dahe) {
       const fetchTaedProgramData = async () => {
+        setLoading(true);
         try {
+          console.log("[usePumpingData] Fetching TaeedProgramData with:", {
+            fidpumpsta: idPumpStation,
+            sal,
+            mah,
+            dahe,
+            locale,
+          });
           const response = await fetch("/api/getTaeedProgramDetails", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -104,38 +139,86 @@ export const usePumpingData = (
               sal,
               mah,
               dahe,
+              locale,
             }),
           });
 
           if (!response.ok) {
-            throw new Error("Failed to fetch TaeedProgram data");
+            const errorData = await response.json();
+            throw new Error(
+              `Failed to fetch TaeedProgram data: ${
+                errorData.error || response.statusText
+              }`
+            );
           }
           const data = await response.json();
           console.log("[usePumpingData] TaeedProgramData:", data);
           setTaedProgramData(data);
-        } catch {
+          setCurrentFiddahe(locale === "fa" ? data.fiddahe : data.fiddec);
+        } catch (error) {
+          console.error(
+            "[usePumpingData] Error fetching TaeedProgramData:",
+            error
+          );
+          setMessage(
+            locale === "fa"
+              ? "خطا در دریافت اطلاعات برنامه تأیید"
+              : "Error fetching TaeedProgram data"
+          );
           setTaedProgramData(null);
+          setCurrentFiddahe(null);
+        } finally {
+          setLoading(false);
         }
       };
       fetchTaedProgramData();
+    } else {
+      console.warn(
+        "[usePumpingData] Invalid parameters for TaeedProgramData:",
+        {
+          idPumpStation,
+          sal,
+          mah,
+          dahe,
+        }
+      );
     }
-  }, [idPumpStation, sal, mah, dahe, shabakeData, networkData]);
+  }, [idPumpStation, sal, mah, dahe, locale]);
 
   useEffect(() => {
     if (idPumpStation > 0) {
       const fetchTaedAbMantaghe = async () => {
         setLoading(true);
         try {
-          const response = await fetch(
-            `/api/getTaedAbMantaghe?sal=${sal}&mah=${selectedMah}&dahe=${dahe}&fidpumpsta=${idPumpStation}`
+          const queryParams = new URLSearchParams({
+            sal: sal.toString(),
+            mah: selectedMah.toString(),
+            dahe: dahe.toString(),
+            fidpumpsta: idPumpStation.toString(),
+          }).toString();
+
+          console.log(
+            "[usePumpingData] Fetching TaedAbMantaghe with:",
+            queryParams
           );
-          if (!response.ok) throw new Error("Failed to fetch data");
+          const response = await fetch(`/api/getTaedAbMantaghe?${queryParams}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              `Failed to fetch TaedAbMantaghe: ${
+                errorData.error || response.statusText
+              }`
+            );
+          }
           const data = await response.json();
           console.log("[usePumpingData] TaedAbMantaghe:", data);
           setTaedAbMantaghe(data);
         } catch (err) {
-          console.error(
-            err instanceof Error ? err.message : "An unknown error occurred"
+          console.error("[usePumpingData] Error fetching TaedAbMantaghe:", err);
+          setMessage(
+            locale === "fa"
+              ? "خطا در دریافت اطلاعات تأیید آب منطقه"
+              : "Error fetching TaedAbMantaghe"
           );
         } finally {
           setLoading(false);
@@ -144,7 +227,7 @@ export const usePumpingData = (
 
       fetchTaedAbMantaghe();
     }
-  }, [sal, selectedMah, dahe, idPumpStation]);
+  }, [sal, selectedMah, dahe, idPumpStation, locale]);
 
   useEffect(() => {
     if (shabakeData?.mahList) {
@@ -152,31 +235,65 @@ export const usePumpingData = (
         "[usePumpingData] MahList from shabakeData:",
         shabakeData.mahList
       );
-      setMahList(shabakeData.mahList);
-      if (shabakeData.currentFiddahe) {
-        setCurrentFiddahe(shabakeData.currentFiddahe);
+      const uniqueMahList = Array.from(
+        new Map(
+          shabakeData.mahList.map((item) => [`${item.sal}-${item.mah}`, item])
+        ).values()
+      );
+      setMahList(uniqueMahList);
+      if (
+        shabakeData.currentFiddahe !== undefined ||
+        shabakeData.currentFiddec !== undefined
+      ) {
+        const fidValue =
+          locale === "fa"
+            ? shabakeData.currentFiddahe
+            : shabakeData.currentFiddec ?? null;
+        console.log("[usePumpingData] Setting currentFiddahe:", fidValue);
+        setCurrentFiddahe(fidValue);
       }
     }
-  }, [shabakeData]);
+  }, [shabakeData, locale]);
 
   useEffect(() => {
     if (idPumpStation === 0) return;
     const fetchKhatRanesh = async () => {
       try {
+        console.log(
+          "[usePumpingData] Fetching KhatRanesh with idPumpStation:",
+          idPumpStation
+        );
         const res = await fetch(
           `/api/getKhatRanesh?idPumpStation=${idPumpStation}`
         );
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(
+            `Failed to fetch KhatRanesh: ${errorData.error || res.statusText}`
+          );
+        }
         const data: KhatRanesh[] = await res.json();
         console.log("[usePumpingData] KhatRanesh:", data);
         setKhatRaneshList(data);
       } catch (error) {
-        console.error("Error fetching KhatRanesh:", error);
+        console.error("[usePumpingData] Error fetching KhatRanesh:", error);
+        setMessage(
+          locale === "fa"
+            ? "خطا در دریافت خط رانش"
+            : "Error fetching KhatRanesh"
+        );
       }
     };
 
     fetchKhatRanesh();
-  }, [selectedNetworkId, sal, selectedMah, selectedDahe, idPumpStation]);
+  }, [
+    selectedNetworkId,
+    sal,
+    selectedMah,
+    selectedDahe,
+    idPumpStation,
+    locale,
+  ]);
 
   useEffect(() => {
     if (
@@ -184,8 +301,15 @@ export const usePumpingData = (
       !selectedMah ||
       idPumpStation === 0 ||
       !networkData
-    )
+    ) {
+      console.warn("[usePumpingData] Invalid parameters for Records:", {
+        selectedNetworkId,
+        selectedMah,
+        idPumpStation,
+        networkData,
+      });
       return;
+    }
 
     const fetchRecords = async () => {
       setLoading(true);
@@ -203,19 +327,31 @@ export const usePumpingData = (
         });
 
         if (!idsal || !iddore) {
-          setMessage("سال زراعی یا دوره کشت انتخاب نشده است");
+          setMessage(
+            locale === "fa"
+              ? "سال زراعی یا دوره کشت انتخاب نشده است"
+              : "Crop year or irrigation period not selected"
+          );
           return;
         }
 
         const res = await fetch(
-          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}&idsal=${idsal}&iddore=${iddore}`
+          `/api/getRecords?networkId=${selectedNetworkId}&sal=${sal}&mah=${selectedMah}&dahe=${dahe}&idsal=${idsal}&iddore=${iddore}&locale=${locale}`
         );
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(
+            `Failed to fetch Records: ${errorData.error || res.statusText}`
+          );
+        }
 
         const data: RecordsResponse = await res.json();
         console.log("[usePumpingData] Records response:", data);
         if (!Array.isArray(data.records)) {
-          setMessage(data.message || "خطایی رخ داده است");
+          setMessage(
+            data.message ||
+              (locale === "fa" ? "خطایی رخ داده است" : "An error occurred")
+          );
           return;
         }
 
@@ -235,14 +371,24 @@ export const usePumpingData = (
         setPredictedVolumes(predictedVolumesMap);
       } catch (error) {
         console.error("[usePumpingData] Error fetching records:", error);
-        setMessage("خطا در دریافت داده‌ها");
+        setMessage(
+          locale === "fa" ? "خطا در دریافت داده‌ها" : "Error fetching data"
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchRecords();
-  }, [selectedNetworkId, sal, selectedMah, dahe, idPumpStation, networkData]);
+  }, [
+    selectedNetworkId,
+    sal,
+    selectedMah,
+    dahe,
+    idPumpStation,
+    networkData,
+    locale,
+  ]);
 
   useEffect(() => {
     if (!predictedVolumes || !khatRaneshList.length) return;
@@ -267,13 +413,20 @@ export const usePumpingData = (
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log("[usePumpingData] Fetching pump data");
         const response = await fetch("/api/request-pumping");
-        if (!response.ok) throw new Error("Failed to fetch all pump data");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Failed to fetch pump data: ${
+              errorData.error || response.statusText
+            }`
+          );
+        }
 
         const { bahrebardair, bahrebardairSeghli } = await response.json();
         const newPumpData: typeof pumpData = {};
 
-        // مقداردهی اولیه برای تمام ردیف‌ها
         records.forEach((record) => {
           if (!newPumpData[record.idtardor]) {
             newPumpData[record.idtardor] = {};
@@ -290,7 +443,6 @@ export const usePumpingData = (
           });
         });
 
-        // پر کردن مقادیر از پایگاه داده
         bahrebardair.forEach((item: BahrebardairItem) => {
           if (!newPumpData[item.fidtardor]) {
             newPumpData[item.fidtardor] = {};
@@ -317,7 +469,12 @@ export const usePumpingData = (
 
         setPumpData(newPumpData);
       } catch (error) {
-        console.error("Error fetching pump data:", error);
+        console.error("[usePumpingData] Error fetching pump data:", error);
+        setMessage(
+          locale === "fa"
+            ? "خطا در دریافت داده‌های پمپ"
+            : "Error fetching pump data"
+        );
       } finally {
         setLoading(false);
       }
@@ -326,7 +483,7 @@ export const usePumpingData = (
     if (records.length > 0 && khatRaneshList.length > 0) {
       fetchData();
     }
-  }, [records, khatRaneshList, setPumpData]);
+  }, [records, khatRaneshList, setPumpData, locale]);
 
   return {
     khatRaneshList,

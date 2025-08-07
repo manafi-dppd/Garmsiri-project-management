@@ -1,18 +1,20 @@
-import * as React from 'react';
-import {useEffect, useState} from 'react';
-import {validatePumpingData} from '../utils/validationUtils';
-import {KhatRanesh, RecordType, PumpingData} from '../types';
-import {convertMahToPersian} from '../PaginationForMah';
-import {formatLocalDateTime} from '../../../utils/dateUtils';
-import Modal from './Modal';
-import ModalPDF from './ModalPDF';
-import {CheckCircleIcon} from '@heroicons/react/24/solid';
-import ViewFinalFileModal from './ViewFinalFileModal';
-import CorrectionModal from './CorrectionModal';
-import AlertModal from '../../AlertModal';
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { validatePumpingData } from "../utils/validationUtils";
+import { KhatRanesh, RecordType, PumpingData } from "../types";
+import { convertMahToPersian } from "../PaginationForMah";
+import { formatLocalDateTime } from "../../../utils/dateUtils";
+import Modal from "./Modal";
+import ModalPDF from "./ModalPDF";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import ViewFinalFileModal from "./ViewFinalFileModal";
+import CorrectionModal from "./CorrectionModal";
+import AlertModal from "../../AlertModal";
+import { useLocale } from "next-intl";
 
 interface TaeedProgramData {
   fiddahe?: number | null;
+  fiddec?: number | null;
   firstnersal: string;
   lastnersal: string;
   tarikhersal: string;
@@ -41,7 +43,7 @@ interface PumpingActionsProps {
   onSave: () => void;
   isFormFilled: boolean;
   setValidationErrors: (
-    errors: {date: string; raneshName: string; message: string}[],
+    errors: { date: string; raneshName: string; message: string }[]
   ) => void;
   sal: number;
   mah: number;
@@ -56,14 +58,14 @@ interface PumpingActionsProps {
   doreKesht: string;
   khatRaneshList: KhatRanesh[];
   records: RecordType[];
-  pumpData: {[idTarDor: number]: {[idRanesh: number]: PumpingData}};
-  selectedPumpCounts: {[key: number]: {[date: string]: number}};
+  pumpData: { [idTarDor: number]: { [idRanesh: number]: PumpingData } };
+  selectedPumpCounts: { [key: number]: { [date: string]: number } };
   timeValues: {
-    [key: number]: {[key: number]: {from: string; to: string}};
+    [key: number]: { [key: number]: { from: string; to: string } };
   };
-  finalVolumes: {[key: number]: number};
+  finalVolumes: { [key: number]: number };
   isFormDisabled: boolean;
-  selectedZarfiat: {[key: number]: {[key: number]: number}};
+  selectedZarfiat: { [key: number]: { [key: number]: number } };
   networkTrustee: string | null;
   isSaving: boolean;
   setIsSaving: (value: boolean) => void;
@@ -72,7 +74,7 @@ interface PumpingActionsProps {
   userRole: string[];
   onReset?: () => void;
   setSelectedZarfiat: React.Dispatch<
-    React.SetStateAction<{[key: number]: {[key: number]: number}}>
+    React.SetStateAction<{ [key: number]: { [key: number]: number } }>
   >;
   userName: string;
   selectedNetworkId: number | null;
@@ -80,12 +82,12 @@ interface PumpingActionsProps {
   showAlert?: (
     title: string,
     message: React.ReactNode,
-    type?: 'info' | 'warning' | 'success' | 'error',
+    type?: "info" | "warning" | "success" | "error",
     buttons?: {
       text: string;
-      variant: 'primary' | 'secondary' | 'danger' | 'success';
+      variant: "primary" | "secondary" | "danger" | "success";
       onClick: () => void;
-    }[],
+    }[]
   ) => void;
 }
 
@@ -96,7 +98,6 @@ interface SuccessAlertProps {
 
 const PumpingActions: React.FC<PumpingActionsProps> = ({
   onSave,
-  // isFormFilled,
   setValidationErrors,
   sal,
   mah,
@@ -115,7 +116,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   selectedPumpCounts,
   timeValues,
   finalVolumes,
-  // isFormDisabled,
   selectedZarfiat,
   networkTrustee,
   isSaving,
@@ -123,14 +123,17 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   isFiddaheValid,
   userRole,
 }) => {
-  const [modalContent, setModalContent] = useState<{[key: string]: string}>({});
+  const locale = useLocale();
+  const [modalContent, setModalContent] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isSavedRegionalWater, setIsSavedRegionalWater] = useState(false);
   const [isSavedPumpingContractor, setIsSavedPumpingContractor] =
     useState(false);
   const [isSavedWaterPower, setIsSavedWaterPower] = useState(false);
-  const [currentDateTime, setCurrentDateTime] = useState<string>('');
+  const [currentDateTime, setCurrentDateTime] = useState<string>("");
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [isWaterPowerSubmitted, setIsWaterPowerSubmitted] = useState(false);
   const [isFinalFileUploaded, setIsFinalFileUploaded] = useState(false);
@@ -138,7 +141,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     useState(false);
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState<React.ReactNode>('');
+  const [alertMessage, setAlertMessage] = useState<React.ReactNode>("");
   const [isViewFileModalOpen, setIsViewFileModalOpen] = useState(false);
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
   const [isRegionalWaterSubmitDisabled, setIsRegionalWaterSubmitDisabled] =
@@ -149,51 +152,92 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   ] = useState(false);
   const [isWaterPowerSubmitDisabled, setIsWaterPowerSubmitDisabled] =
     useState(false);
-
-  // بررسی وضعیت‌ها بر اساس نام فیلدهای کوچک شده
-  const isTarikhErsalNull = taedProgramData?.tarikhersal === null;
-  const isTaedAbMantagheTrue = taedProgramData?.taedabmantaghe === true;
-  const isTaedAbNirooTrue = taedProgramData?.taedabniroo === true;
   const [isCorrectionModalOpen, setIsCorrectionModalOpen] = useState(false);
   const [isTaedPeymankarSavedInDB, setIsTaedPeymankarSavedInDB] =
     useState(false);
-  const isFileNameNahaeeNullOrEmpty =
-    taedProgramData?.filenamenahaee === null ||
-    (typeof taedProgramData?.filenamenahaee === 'string' &&
-      taedProgramData.filenamenahaee === '');
-
-  const handleGeneratePDF = () => {
-    setIsPdfModalOpen(true);
-  };
-
-  const [taedAbMantaghe, setTaedAbMantaghe] = useState<boolean | null>(
-    taedProgramData?.taedabmantaghe ?? null,
-  );
-  const [taedPeymankar, setTaedPeymankar] = useState<boolean | null>(
-    taedProgramData?.taedpeymankar ?? null,
-  );
-  const [taedAbNiroo, setTaedAbNiroo] = useState<boolean | null>(
-    taedProgramData?.taedabniroo ?? null,
-  );
   const [isPeymankarApprovedInDB, setIsPeymankarApprovedInDB] = useState(false);
   const [isAbNirooApprovedInDB, setIsAbNirooApprovedInDB] = useState(false);
+
+  const isTarikhErsalNull = taedProgramData?.tarikhersal === null;
+  const isTaedAbMantagheTrue = taedProgramData?.taedabmantaghe === true;
+  const isTaedAbNirooTrue = taedProgramData?.taedabniroo === true;
+  const isFileNameNahaeeNullOrEmpty =
+    taedProgramData?.filenamenahaee === null ||
+    (typeof taedProgramData?.filenamenahaee === "string" &&
+      taedProgramData.filenamenahaee === "");
+
+  const showPumpingContractor = networkTrustee !== "AbMantaghei";
+  const showWaterPower = networkTrustee !== "AbMantaghei";
+  const isPdfButtonEnabled =
+    networkTrustee === "AbMantaghei"
+      ? isTaedAbMantagheTrue || isSavedRegionalWater
+      : isTaedAbNirooTrue || isWaterPowerSubmitted;
+
+  const [taedAbMantaghe, setTaedAbMantaghe] = useState<boolean | null>(
+    taedProgramData?.taedabmantaghe ?? null
+  );
+  const [taedPeymankar, setTaedPeymankar] = useState<boolean | null>(
+    taedProgramData?.taedpeymankar ?? null
+  );
+  const [taedAbNiroo, setTaedAbNiroo] = useState<boolean | null>(
+    taedProgramData?.taedabniroo ?? null
+  );
+
   const [alertState, setAlertState] = useState<{
     isOpen: boolean;
     title: string;
-    message: React.ReactNode; // تغییر از string به React.ReactNode
-    type: 'info' | 'warning' | 'success' | 'error';
+    message: React.ReactNode;
+    type: "info" | "warning" | "success" | "error";
   }>({
     isOpen: false,
-    title: '',
-    message: '',
-    type: 'error',
+    title: "",
+    message: "",
+    type: "error",
   });
-  const showPumpingContractor = networkTrustee !== 'AbMantaghei';
-  const showWaterPower = networkTrustee !== 'AbMantaghei';
-  const isPdfButtonEnabled =
-    networkTrustee === 'AbMantaghei'
-      ? isTaedAbMantagheTrue || isSavedRegionalWater
-      : isTaedAbNirooTrue || isWaterPowerSubmitted;
+
+  // بررسی isFiddaheValid بر اساس locale
+  const isFiddaheValidComputed = React.useMemo(() => {
+    if (!taedProgramData) return false;
+    const fidValue =
+      locale === "fa" ? taedProgramData.fiddahe : taedProgramData.fiddec;
+    console.log("[PumpingActions] Computing isFiddaheValid:", {
+      locale,
+      fiddahe: taedProgramData.fiddahe,
+      fiddec: taedProgramData.fiddec,
+      fidValue,
+      currentFiddahe: taedProgramData.fiddahe || taedProgramData.fiddec,
+    });
+    return (
+      fidValue != null &&
+      fidValue >
+        ((locale === "fa" ? taedProgramData.fiddahe : taedProgramData.fiddec) ||
+          0) -
+          20
+    );
+  }, [taedProgramData, locale]);
+
+  useEffect(() => {
+    if (taedProgramData) {
+      setTaedAbMantaghe(
+        typeof taedProgramData.taedabmantaghe === "boolean"
+          ? taedProgramData.taedabmantaghe
+          : null
+      );
+      setTaedPeymankar(
+        typeof taedProgramData.taedpeymankar === "boolean"
+          ? taedProgramData.taedpeymankar
+          : null
+      );
+      setIsTaedPeymankarSavedInDB(taedProgramData.taedpeymankar === true);
+      setTaedAbNiroo(
+        typeof taedProgramData.taedabniroo === "boolean"
+          ? taedProgramData.taedabniroo
+          : null
+      );
+      setIsPeymankarApprovedInDB(taedProgramData.taedpeymankar === true);
+      setIsAbNirooApprovedInDB(taedProgramData.taedabniroo === true);
+    }
+  }, [taedProgramData]);
 
   const handleTaedAbMantagheChange = (value: boolean) => {
     setTaedAbMantaghe(value);
@@ -207,28 +251,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     setTaedAbNiroo(value);
   };
 
-  useEffect(() => {
-    if (taedProgramData) {
-      setTaedAbMantaghe(
-        typeof taedProgramData.taedabmantaghe === 'boolean'
-          ? taedProgramData.taedabmantaghe
-          : null,
-      );
-      setTaedPeymankar(
-        typeof taedProgramData.taedpeymankar === 'boolean'
-          ? taedProgramData.taedpeymankar
-          : null,
-      );
-      setIsTaedPeymankarSavedInDB(taedProgramData.taedpeymankar === true);
-      setTaedAbNiroo(
-        typeof taedProgramData.taedabniroo === 'boolean'
-          ? taedProgramData.taedabniroo
-          : null,
-      );
-      setIsPeymankarApprovedInDB(taedProgramData.taedpeymankar === true);
-      setIsAbNirooApprovedInDB(taedProgramData.taedabniroo === true);
-    }
-  }, [taedProgramData]);
+  // تعریف تابع handleGeneratePDF
+  const handleGeneratePDF = () => {
+    setIsPdfModalOpen(true);
+  };
 
   const handleRegionalWaterSubmit = async () => {
     if (
@@ -237,59 +263,71 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: 'خطا',
-        message: 'در صورت رد برنامه ارائه توضیحات الزامی است',
-        type: 'error',
+        title: "خطا",
+        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        type: "error",
       });
       return;
     }
 
-    if (taedProgramData?.fiddahe && taedProgramData.fiddahe > 1) {
+    if (!taedProgramData) {
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "داده‌های برنامه موجود نیست",
+        type: "error",
+      });
+      return;
+    }
+
+    const fidValue =
+      locale === "fa" ? taedProgramData.fiddahe : taedProgramData.fiddec;
+    if (fidValue != null && fidValue > 1) {
       try {
-        const response = await fetch('/api/checkPreviousDaheApproval', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+        const response = await fetch("/api/checkPreviousDaheApproval", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             idPumpStation,
-            fiddahe: taedProgramData.fiddahe,
+            fiddahe: fidValue,
           }),
         });
 
-        const {isApproved} = await response.json();
+        const { isApproved } = await response.json();
 
         if (!isApproved) {
           setAlertState({
             isOpen: true,
-            title: 'خطا در تایید',
+            title: "خطا در تایید",
             message: (
-              <div style={{direction: 'rtl', textAlign: 'right'}}>
+              <div style={{ direction: "rtl", textAlign: "right" }}>
                 برنامه دهه قبل تایید نشده است. <br /> قبل از تایید این برنامه
-                بایستی برنامه دهه قبل ایستگاه{' '}
+                بایستی برنامه دهه قبل ایستگاه{" "}
                 <span className="font-bold">{pumpStationName}</span> تایید شده
                 باشد.
               </div>
             ),
-            type: 'error',
+            type: "error",
           });
           return;
         }
       } catch (error) {
-        console.error('Error checking previous dahe approval:', error);
+        console.error("Error checking previous dahe approval:", error);
         setAlertState({
           isOpen: true,
-          title: 'خطا',
-          message: 'خطا در بررسی وضعیت دهه قبلی',
-          type: 'error',
+          title: "خطا",
+          message: "خطا در بررسی وضعیت دهه قبلی",
+          type: "error",
         });
         return;
       }
     }
 
     try {
-      const response = await fetch('/api/updateRegionalWater', {
-        method: 'PUT',
+      const response = await fetch("/api/updateRegionalWater", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           idPumpStation: idPumpStation,
@@ -306,11 +344,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Update failed:', errorData);
-        throw new Error(errorData.error || 'Failed to update');
+        console.error("Update failed:", errorData);
+        throw new Error(errorData.error || "Failed to update");
       }
 
-      // اگر دکمه رادیویی "تایید" انتخاب شده باشد، دکمه "ارسال" را disable کنید
       if (taedAbMantaghe === true) {
         setIsRegionalWaterSubmitDisabled(true);
       }
@@ -318,13 +355,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: 'موفقیت',
-        message: 'اطلاعات با موفقیت ذخیره شد',
-        type: 'success',
+        title: "موفقیت",
+        message: "اطلاعات با موفقیت ذخیره شد",
+        type: "success",
       });
     } catch (error) {
-      console.error('Error updating TaeedProgram:', error);
-      alert('خطا در ذخیره‌سازی اطلاعات');
+      console.error("Error updating TaeedProgram:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در ذخیره‌سازی اطلاعات",
+        type: "error",
+      });
       setIsSavedRegionalWater(false);
     }
   };
@@ -336,18 +378,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: 'خطا',
-        message: 'در صورت رد برنامه ارائه توضیحات الزامی است',
-        type: 'error',
+        title: "خطا",
+        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        type: "error",
       });
       return;
     }
 
     try {
-      const response = await fetch('/api/updatePumpingContractor', {
-        method: 'PUT',
+      const response = await fetch("/api/updatePumpingContractor", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           idPumpStation: idPumpStation,
@@ -364,11 +406,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Update failed:', errorData);
-        throw new Error(errorData.error || 'Failed to update');
+        console.error("Update failed:", errorData);
+        throw new Error(errorData.error || "Failed to update");
       }
 
-      // اگر دکمه رادیویی "تایید" انتخاب شده باشد، دکمه "ارسال" را disable کنید
       if (taedPeymankar === true) {
         setIsPumpingContractorSubmitDisabled(true);
       }
@@ -376,13 +417,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: 'موفقیت',
-        message: 'اطلاعات با موفقیت ذخیره شد',
-        type: 'success',
+        title: "موفقیت",
+        message: "اطلاعات با موفقیت ذخیره شد",
+        type: "success",
       });
     } catch (error) {
-      console.error('Error updating TaeedProgram:', error);
-      alert('خطا در ذخیره‌سازی اطلاعات');
+      console.error("Error updating TaeedProgram:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در ذخیره‌سازی اطلاعات",
+        type: "error",
+      });
     }
   };
 
@@ -393,18 +439,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: 'خطا',
-        message: 'در صورت رد برنامه ارائه توضیحات الزامی است',
-        type: 'error',
+        title: "خطا",
+        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        type: "error",
       });
       return;
     }
 
     try {
-      const response = await fetch('/api/updateWaterPower', {
-        method: 'PUT',
+      const response = await fetch("/api/updateWaterPower", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           idPumpStation: idPumpStation,
@@ -421,8 +467,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Update failed:', errorData);
-        throw new Error(errorData.error || 'Failed to update');
+        console.error("Update failed:", errorData);
+        throw new Error(errorData.error || "Failed to update");
       }
 
       if (taedAbNiroo === true) {
@@ -433,28 +479,38 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: 'موفقیت',
-        message: 'اطلاعات با موفقیت ذخیره شد',
-        type: 'success',
+        title: "موفقیت",
+        message: "اطلاعات با موفقیت ذخیره شد",
+        type: "success",
       });
     } catch (error) {
-      console.error('Error updating TaeedProgram:', error);
-      alert('خطا در ذخیره‌سازی اطلاعات');
+      console.error("Error updating TaeedProgram:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در ذخیره‌سازی اطلاعات",
+        type: "error",
+      });
     }
   };
 
   const handleFinalApprovalSubmit = async () => {
     try {
       if (!firstName || !lastName) {
-        alert('لطفا نام و نام خانوادگی را وارد کنید');
+        setAlertState({
+          isOpen: true,
+          title: "خطا",
+          message: "لطفا نام و نام خانوادگی را وارد کنید",
+          type: "error",
+        });
         return;
       }
 
-      const response = await fetch('/api/updateFinalApproval', {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+      const response = await fetch("/api/updateFinalApproval", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          idpumpstation: idPumpStation, // تغییر نام فیلد به idpumpstation
+          idpumpstation: idPumpStation,
           sal: sal,
           mah: mah,
           dahe: dahe,
@@ -465,27 +521,34 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update');
+        throw new Error(errorData.error || "Failed to update");
       }
 
       setIsFinalApprovalSubmitted(true);
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: 'موفقیت',
-        message: 'تایید نهایی با موفقیت ثبت شد',
-        type: 'success',
+        title: "موفقیت",
+        message: "تایید نهایی با موفقیت ثبت شد",
+        type: "success",
       });
     } catch (error) {
-      console.error('Error updating TaeedProgram:', error);
-      alert(
-        `خطا در ثبت تایید نهایی: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      console.error("Error updating TaeedProgram:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: `خطا در ثبت تایید نهایی: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        type: "error",
+      });
     }
   };
-  const daheText = `دهه ${dahe === 1 ? 'اول' : dahe === 2 ? 'دوم' : 'سوم'}`;
+
+  const daheText = `دهه ${dahe === 1 ? "اول" : dahe === 2 ? "دوم" : "سوم"}`;
   const mahText = convertMahToPersian(mah);
-  function SuccessAlert({message, onClose}: SuccessAlertProps) {
+
+  function SuccessAlert({ message, onClose }: SuccessAlertProps) {
     return (
       <div
         className="animate-fade-in fixed right-4 top-4 z-50 cursor-pointer"
@@ -501,51 +564,57 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       </div>
     );
   }
+
   const checkPreviousDahe = async () => {
-    if (!taedProgramData?.fiddahe || taedProgramData.fiddahe <= 1) {
-      return true; // اگر دهه اول باشد نیاز به بررسی ندارد
+    if (!taedProgramData) {
+      return true;
+    }
+
+    const fidValue =
+      locale === "fa" ? taedProgramData.fiddahe : taedProgramData.fiddec;
+    if (fidValue == null || fidValue <= 1) {
+      return true;
     }
 
     try {
-      const response = await fetch('/api/checkPreviousDahe', {
-        method: 'POST',
+      const response = await fetch("/api/checkPreviousDahe", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           FIdPumpSta: idPumpStation,
-          FidDahe: taedProgramData.fiddahe,
+          FidDahe: fidValue,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to check previous dahe');
+        throw new Error("Failed to check previous dahe");
       }
 
       const data = await response.json();
       return data.isPreviousSaved;
     } catch (error) {
-      console.error('Error checking previous dahe:', error);
-      return true; // در صورت خطا اجازه ذخیره داده شود
+      console.error("Error checking previous dahe:", error);
+      return true;
     }
   };
 
   const handleSave = async () => {
-    // بررسی دهه قبلی
     const isPreviousSaved = await checkPreviousDahe();
     if (!isPreviousSaved) {
       setAlertState({
         isOpen: true,
-        title: 'خطا در ذخیره',
+        title: "خطا در ذخیره",
         message: (
-          <div style={{direction: 'rtl', textAlign: 'right'}}>
+          <div style={{ direction: "rtl", textAlign: "right" }}>
             برنامه دهه قبلی هنوز ذخیره نشده است. <br />
-            قبل از ذخیره این برنامه بایستی برنامه دهه قبل ایستگاه پمپاژ{' '}
+            قبل از ذخیره این برنامه بایستی برنامه دهه قبل ایستگاه پمپاژ{" "}
             <span className="font-bold">{pumpStationName}</span> را تکمیل و
             ذخیره نمایید.
           </div>
         ),
-        type: 'error',
+        type: "error",
       });
       return;
     }
@@ -560,7 +629,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       pumpData,
       selectedPumpCounts,
       selectedZarfiat,
-      timeValues,
+      timeValues
     );
 
     if (newErrors.length > 0) {
@@ -579,7 +648,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           const zarfiatValue =
             selectedZarfiat[record.idtardor]?.[ranesh.idranesh] ?? 0;
 
-          // جایگزینی مقادیر ویرایش شده در raneshInfo
           const updatedRaneshInfo = {
             ...raneshInfo,
             Tedad:
@@ -600,14 +668,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time);
           };
 
-          // در حلقه بروزرسانی داده‌ها
           if (
             updatedRaneshInfo.Shorooe &&
             !isValidTime(updatedRaneshInfo.Shorooe)
           ) {
-            alert(
-              `فرمت زمان شروع برای خط رانش ${ranesh.raneshname} نامعتبر است`,
-            );
+            setAlertState({
+              isOpen: true,
+              title: "خطا",
+              message: `فرمت زمان شروع برای خط رانش ${ranesh.raneshname} نامعتبر است`,
+              type: "error",
+            });
             return;
           }
 
@@ -615,15 +685,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             updatedRaneshInfo.Paian &&
             !isValidTime(updatedRaneshInfo.Paian)
           ) {
-            alert(
-              `فرمت زمان پایان برای خط رانش ${ranesh.raneshname} نامعتبر است`,
-            );
+            setAlertState({
+              isOpen: true,
+              title: "خطا",
+              message: `فرمت زمان پایان برای خط رانش ${ranesh.raneshname} نامعتبر است`,
+              type: "error",
+            });
             return;
           }
           if (ranesh.fidsepu === 1) {
-            const response = await fetch('/api/updateBahrebardairProgram', {
-              method: 'PUT',
-              headers: {'Content-Type': 'application/json'},
+            const response = await fetch("/api/updateBahrebardairProgram", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 IdRanesh: ranesh.idranesh,
                 IdTarDor: record.idtardor,
@@ -634,13 +707,13 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             });
 
             if (!response.ok) {
-              console.error('Update failed:', await response.json());
-              throw new Error('Failed to update bahrebardairprogram');
+              console.error("Update failed:", await response.json());
+              throw new Error("Failed to update bahrebardairprogram");
             }
           } else if (ranesh.fidsepu === 2) {
-            await fetch('/api/updateBahrebardairProgramSeghli', {
-              method: 'PUT',
-              headers: {'Content-Type': 'application/json'},
+            await fetch("/api/updateBahrebardairProgramSeghli", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 IdRanesh: ranesh.idranesh,
                 IdTarDor: record.idtardor,
@@ -653,10 +726,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         }
       }
 
-      // بروزرسانی TaeedProgram
-      await fetch('/api/updateTaeedProgram', {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+      await fetch("/api/updateTaeedProgram", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fidpumpsta: idPumpStation,
           sal: sal,
@@ -664,18 +736,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           dahe: dahe,
           firstnersal: firstName,
           lastnersal: lastName,
-          tozihersal: modalContent[`${sal}-${mah}-${dahe}-requester`] || '',
+          tozihersal: modalContent[`${sal}-${mah}-${dahe}-requester`] || "",
         }),
       });
 
       setAlertMessage(
         <span>
-          اطلاعات <span className="font-bold text-green-800">{daheText}</span>{' '}
+          اطلاعات <span className="font-bold text-green-800">{daheText}</span>{" "}
           <span className="font-bold text-green-800">{mahText}</span> ماه
-          ایستگاه پمپاژ{' '}
+          ایستگاه پمپاژ{" "}
           <span className="font-bold text-green-800">{pumpStationName}</span> با
           موفقیت ذخیره شد
-        </span>,
+        </span>
       );
       setIsSaved(true);
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
@@ -684,8 +756,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
       setTimeout(() => setShowAlert(false), 5000);
     } catch (error) {
-      console.error('Failed to save data:', error);
+      console.error("Failed to save data:", error);
       setIsSaved(false);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: `خطا در ذخیره‌سازی اطلاعات: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        type: "error",
+      });
     } finally {
       setIsSaving(false);
       setIsSaveButtonDisabled(false);
@@ -693,54 +773,55 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   };
 
   const handleModalSave = (key: string, content: string) => {
-    setModalContent((prev) => ({...prev, [key]: content}));
+    setModalContent((prev) => ({ ...prev, [key]: content }));
     setOpenModal(null);
   };
 
   const getIsReadOnly = (modalKey: string) => {
     switch (modalKey) {
-      case 'requester':
+      case "requester":
         return !userRole.some((role) =>
           [
-            'Website Creator',
-            'Website Admin',
-            'Ezgele Water Users Representative',
-            'Jegiran Water Users Representative',
-            'Northern Zahab Water Users Representative',
-            'Southern Zahab Water Users Representative',
-            'Hoomeh Qaraviz Water Users Representative',
-            'Beshiveh Water Users Representative',
-            'Ghaleh Shahin Water Users Representative',
-            'Water Users Representative South Jagarlu',
-          ].includes(role),
+            "Website Creator",
+            "Website Admin",
+            "Ezgele Water Users Representative",
+            "Jegiran Water Users Representative",
+            "Northern Zahab Water Users Representative",
+            "Southern Zahab Water Users Representative",
+            "Hoomeh Qaraviz Water Users Representative",
+            "Beshiveh Water Users Representative",
+            "Ghaleh Shahin Water Users Representative",
+            "Water Users Representative South Jagarlu",
+          ].includes(role)
         );
-      case 'regionalWater':
+      case "regionalWater":
         return !userRole.some((role) =>
           [
-            'Website Creator',
-            'Website Admin',
-            'Regional Water Representative',
-          ].includes(role),
+            "Website Creator",
+            "Website Admin",
+            "Regional Water Representative",
+          ].includes(role)
         );
-      case 'pumpingContractor':
+      case "pumpingContractor":
         return !userRole.some((role) =>
           [
-            'Website Creator',
-            'Website Admin',
-            'Supervisor of the First Pumping Set',
-            'Supervisor of the Second Pumping Set',
-          ].includes(role),
+            "Website Creator",
+            "Website Admin",
+            "Supervisor of the First Pumping Set",
+            "Supervisor of the Second Pumping Set",
+          ].includes(role)
         );
-      case 'waterPower':
+      case "waterPower":
         return !userRole.some((role) =>
-          ['Website Creator', 'Website Admin', 'Operation Manager'].includes(
-            role,
-          ),
+          ["Website Creator", "Website Admin", "Operation Manager"].includes(
+            role
+          )
         );
       default:
         return true;
     }
   };
+
   const getModalKey = (modalType: string) => {
     return `${sal}-${mah}-${dahe}-${modalType}`;
   };
@@ -748,34 +829,32 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   const handleOpenModal = async (modalType: string) => {
     const modalKey = getModalKey(modalType);
 
-    // اگر مقدار قبلاً تنظیم شده باشد، مستقیماً مودال را باز کنید
     if (modalContent[modalKey]) {
       setOpenModal(modalKey);
       return;
     }
 
-    // مشخص کردن فیلد مرتبط با هر دکمه
-    let field = '';
+    let field = "";
     switch (modalType) {
-      case 'requester':
-        field = 'tozihersal';
+      case "requester":
+        field = "tozihersal";
         break;
-      case 'regionalWater':
-        field = 'tozihabmantaghe';
+      case "regionalWater":
+        field = "tozihabmantaghe";
         break;
-      case 'pumpingContractor':
-        field = 'tozihpeymankar';
+      case "pumpingContractor":
+        field = "tozihpeymankar";
         break;
-      case 'waterPower':
-        field = 'tozihabniroo';
+      case "waterPower":
+        field = "tozihabniroo";
         break;
       default:
         return;
     }
     try {
-      const response = await fetch('/api/getExplanationProgram', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+      const response = await fetch("/api/getExplanationProgram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           FIdPumpSta: idPumpStation,
           Sal: sal,
@@ -795,125 +874,132 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       } else {
         setModalContent((prev) => ({
           ...prev,
-          [modalKey]: 'خطا در دریافت اطلاعات',
+          [modalKey]: "خطا در دریافت اطلاعات",
         }));
       }
     } catch (error) {
-      console.error('Error fetching modal data:', error);
+      console.error("Error fetching modal data:", error);
       setModalContent((prev) => ({
         ...prev,
-        [modalKey]: 'خطا در دریافت اطلاعات',
+        [modalKey]: "خطا در دریافت اطلاعات",
       }));
     }
 
-    // باز کردن مودال پس از دریافت مقدار
     setOpenModal(modalKey);
   };
 
   const convertToFinglish = (persianText: string) => {
     const persianMap: Record<string, string> = {
-      ا: 'a',
-      آ: 'a',
-      ب: 'b',
-      پ: 'p',
-      ت: 't',
-      ث: 's',
-      ج: 'j',
-      چ: 'ch',
-      ح: 'h',
-      خ: 'kh',
-      د: 'd',
-      ذ: 'z',
-      ر: 'r',
-      ز: 'z',
-      ژ: 'zh',
-      س: 's',
-      ش: 'sh',
-      ص: 's',
-      ض: 'z',
-      ط: 't',
-      ظ: 'z',
-      ع: 'a',
-      غ: 'gh',
-      ف: 'f',
-      ق: 'gh',
-      ک: 'k',
-      گ: 'g',
-      ل: 'l',
-      م: 'm',
-      ن: 'n',
-      و: 'v',
-      ه: 'eh',
-      ی: 'y',
-      ' ': '_',
+      ا: "a",
+      آ: "a",
+      ب: "b",
+      پ: "p",
+      ت: "t",
+      ث: "s",
+      ج: "j",
+      چ: "ch",
+      ح: "h",
+      خ: "kh",
+      د: "d",
+      ذ: "z",
+      ر: "r",
+      ز: "z",
+      ژ: "zh",
+      س: "s",
+      ش: "sh",
+      ص: "s",
+      ض: "z",
+      ط: "t",
+      ظ: "z",
+      ع: "a",
+      غ: "gh",
+      ف: "f",
+      ق: "gh",
+      ک: "k",
+      گ: "g",
+      ل: "l",
+      م: "m",
+      ن: "n",
+      و: "v",
+      ه: "eh",
+      ی: "y",
+      " ": "_",
     };
 
     return persianText
-      .split('')
+      .split("")
       .map((char) => persianMap[char] || char)
-      .join('')
-      .replace(/[^\w-]/g, '');
+      .join("")
+      .replace(/[^\w-]/g, "");
   };
 
-  // تابع handleFileUpload را با این کد جایگزین کنید:
   const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const allowedTypes = [
-      'application/pdf',
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-      'image/bmp',
+      "application/pdf",
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/bmp",
     ];
     if (!allowedTypes.includes(file.type)) {
       setAlertState({
         isOpen: true,
-        title: 'خطا',
+        title: "خطا",
         message:
-          'فرمت فایل مجاز نیست. لطفا یک فایل با فرمت PDF، JPG، JPEG، PNG یا BMP انتخاب کنید.',
-        type: 'error',
+          "فرمت فایل مجاز نیست. لطفا یک فایل با فرمت PDF، JPG، JPEG، PNG یا BMP انتخاب کنید.",
+        type: "error",
       });
       return;
     }
 
-    // ساخت نام فایل جدید
     const currentDate = new Date();
-    const year = currentDate.getFullYear(); // سال میلادی
+    const year = currentDate.getFullYear();
     const finglishPumpName = convertToFinglish(pumpStationName);
-    const fileExtension = file.name.split('.').pop();
+    const fileExtension = file.name.split(".").pop();
     const newFileName = `${finglishPumpName}_${mah}_${dahe}_${year}.${fileExtension}`;
-    // ایجاد FormData و ارسال به سرور
+
     const formData = new FormData();
-    formData.append('file', file, newFileName); // استفاده از نام جدید برای فایل
-    formData.append('idPumpStation', idPumpStation.toString());
-    formData.append('sal', sal.toString());
-    formData.append('mah', mah.toString());
-    formData.append('dahe', dahe.toString());
+    formData.append("file", file, newFileName);
+    formData.append("idPumpStation", idPumpStation.toString());
+    formData.append("sal", sal.toString());
+    formData.append("mah", mah.toString());
+    formData.append("dahe", dahe.toString());
 
     try {
-      const response = await fetch('/api/uploadFinalFile', {
-        method: 'POST',
+      const response = await fetch("/api/uploadFinalFile", {
+        method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         setAlertState({
           isOpen: true,
-          title: 'موفقیت',
-          message: 'فایل با موفقیت آپلود شد.',
-          type: 'success',
+          title: "موفقیت",
+          message: "فایل با موفقیت آپلود شد.",
+          type: "success",
         });
         setIsFinalFileUploaded(true);
       } else {
-        alert('خطا در آپلود فایل.');
+        setAlertState({
+          isOpen: true,
+          title: "خطا",
+          message: "خطا در آپلود فایل.",
+          type: "error",
+        });
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('خطا در آپلود فایل.');
+      console.error("Error uploading file:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در آپلود فایل.",
+        type: "error",
+      });
     }
   };
 
@@ -923,42 +1009,47 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error('Failed to download file');
+        throw new Error("Failed to download file");
       }
 
       const blob = await response.blob();
-      const contentDisposition = response.headers.get('Content-Disposition');
+      const contentDisposition = response.headers.get("Content-Disposition");
       let fileName = `final_file_${sal}_${mah}_${dahe}`;
 
-      if (contentDisposition && contentDisposition.includes('filename=')) {
+      if (contentDisposition && contentDisposition.includes("filename=")) {
         fileName = contentDisposition
-          .split('filename=')[1]
-          .split(';')[0]
-          .replace(/['"]/g, '');
+          .split("filename=")[1]
+          .split(";")[0]
+          .replace(/['"]/g, "");
       }
 
       const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
-      link.setAttribute('download', fileName);
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
     } catch (error) {
-      console.error('Error downloading file:', error);
-      alert('خطا در دریافت فایل.');
+      console.error("Error downloading file:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در دریافت فایل.",
+        type: "error",
+      });
     }
   };
 
   const [isFinalApprovalChecked, setIsFinalApprovalChecked] = useState(
-    taedProgramData?.taeednahaee ?? false,
+    taedProgramData?.taeednahaee ?? false
   );
 
   useEffect(() => {
     setIsFinalApprovalChecked(taedProgramData?.taeednahaee ?? false);
   }, [taedProgramData]);
-  // تابع برای تغییر وضعیت چک‌باکس
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsFinalApprovalChecked(event.target.checked);
   };
@@ -969,7 +1060,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error('Failed to fetch file');
+        throw new Error("Failed to fetch file");
       }
 
       const blob = await response.blob();
@@ -977,38 +1068,39 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setFilePreviewUrl(objectUrl);
       setIsViewFileModalOpen(true);
     } catch (error) {
-      console.error('Error viewing file:', error);
-      alert('خطا در مشاهده فایل.');
+      console.error("Error viewing file:", error);
+      setAlertState({
+        isOpen: true,
+        title: "خطا",
+        message: "خطا در مشاهده فایل.",
+        type: "error",
+      });
     }
   };
 
   const getModalTitle = (modalKey: string) => {
-    const modalType = modalKey.split('-')[3];
+    const modalType = modalKey.split("-")[3];
     switch (modalType) {
-      case 'requester':
-        return 'درخواست کننده';
-      case 'regionalWater':
-        return 'آب منطقه‌ای';
-      case 'pumpingContractor':
-        return 'پیمانکار پمپاژ';
-      case 'waterPower':
-        return 'آب نیرو';
+      case "requester":
+        return "درخواست کننده";
+      case "regionalWater":
+        return "آب منطقه‌ای";
+      case "pumpingContractor":
+        return "پیمانکار پمپاژ";
+      case "waterPower":
+        return "آب نیرو";
       default:
-        return '';
+        return "";
     }
   };
 
   return (
-    <div className={isSaving ? 'opacity-50' : ''}>
+    <div className={isSaving ? "opacity-50" : ""}>
       <div
         className={`
     mt-4 grid gap-4
-    grid-cols-2  // همیشه 2 ستونه در موبایل
-    ${
-      networkTrustee !== 'AbMantaghei'
-        ? 'lg:grid-cols-6' // 6 ستونه در دسکتاپ اگر آب منطقه‌ای نیست
-        : 'lg:grid-cols-4' // 4 ستونه در دسکتاپ اگر آب منطقه‌ای است
-    }
+    grid-cols-2
+    ${networkTrustee !== "AbMantaghei" ? "lg:grid-cols-6" : "lg:grid-cols-4"}
   `}
       >
         {/* Div 1: درخواست کننده */}
@@ -1017,25 +1109,24 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           <div className="mb-2 flex flex-col gap-2 xl:flex-row">
             <button
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              onClick={() => handleOpenModal('requester')}
+              onClick={() => handleOpenModal("requester")}
             >
               توضیحات
             </button>
-            {!getIsReadOnly('requester') && (
+            {!getIsReadOnly("requester") && (
               <button
                 className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
-                  isTaedAbMantagheTrue ? 'cursor-not-allowed opacity-50' : ''
+                  isTaedAbMantagheTrue ? "cursor-not-allowed opacity-50" : ""
                 }`}
                 disabled={isTaedAbMantagheTrue}
                 onClick={handleSave}
               >
                 {isSaveButtonDisabled || isSaving ? (
                   <span className="flex items-center justify-center gap-2">
-                    {/* <span className="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-white"></span> */}
                     منتظر بمانید...
                   </span>
                 ) : (
-                  'ذخیره'
+                  "ذخیره"
                 )}
                 {showAlert && (
                   <SuccessAlert
@@ -1046,7 +1137,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               </button>
             )}
           </div>
-          {/* نام و زمان درخواست کننده */}
           {(taedProgramData?.firstnersal && taedProgramData?.lastnersal) ||
           isSaved ? (
             <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
@@ -1061,16 +1151,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               {isSaved
                 ? currentDateTime
                 : taedProgramData?.tarikhersal &&
-                  new Intl.DateTimeFormat('fa-IR', {
-                    timeZone: 'Asia/Tehran',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                  new Intl.DateTimeFormat("fa-IR", {
+                    timeZone: "Asia/Tehran",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })
                     .format(new Date(taedProgramData.tarikhersal))
-                    .replace(/،/g, ' - ')}
+                    .replace(/،/g, " - ")}
             </div>
           ) : null}
         </div>
@@ -1085,7 +1175,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 name="region-water"
                 value="approve"
                 disabled={
-                  getIsReadOnly('regionalWater') ||
+                  getIsReadOnly("regionalWater") ||
                   isTaedAbMantagheTrue ||
                   isTarikhErsalNull ||
                   isRegionalWaterSubmitDisabled
@@ -1101,7 +1191,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 name="region-water"
                 value="reject"
                 disabled={
-                  getIsReadOnly('regionalWater') ||
+                  getIsReadOnly("regionalWater") ||
                   isTaedAbMantagheTrue ||
                   isTarikhErsalNull ||
                   isRegionalWaterSubmitDisabled
@@ -1115,19 +1205,19 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           <div className="mb-2 flex flex-col gap-2 xl:flex-row">
             <button
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              onClick={() => handleOpenModal('regionalWater')}
+              onClick={() => handleOpenModal("regionalWater")}
             >
               توضیحات
             </button>
-            {!getIsReadOnly('regionalWater') && (
+            {!getIsReadOnly("regionalWater") && (
               <button
                 className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
                   isTaedAbMantagheTrue ||
                   isTarikhErsalNull ||
                   taedAbMantaghe === null ||
                   isRegionalWaterSubmitDisabled
-                    ? 'cursor-not-allowed opacity-50'
-                    : ''
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
                 }`}
                 disabled={
                   isTaedAbMantagheTrue ||
@@ -1141,7 +1231,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               </button>
             )}
           </div>
-          {/* نام و زمان آب منطقه‌ای */}
           {(taedProgramData?.firstnabmantaghe &&
             taedProgramData?.lastnabmantaghe) ||
           isSavedRegionalWater ? (
@@ -1156,21 +1245,20 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               {isSavedRegionalWater
                 ? currentDateTime
                 : taedProgramData?.tarikhabmantaghe &&
-                  new Intl.DateTimeFormat('fa-IR', {
-                    timeZone: 'Asia/Tehran',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                  new Intl.DateTimeFormat("fa-IR", {
+                    timeZone: "Asia/Tehran",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })
                     .format(new Date(taedProgramData.tarikhabmantaghe))
-                    .replace(/،/g, ' - ')}
+                    .replace(/،/g, " - ")}
             </div>
           ) : null}
         </div>
 
-        {/* Div 3: پیمانکار پمپاژ */}
         {showPumpingContractor && (
           <div className="relative rounded-lg border border-gray-300 p-4">
             <div className="mb-2 font-bold">پیمانکار پمپاژ</div>
@@ -1181,10 +1269,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   name="contractor"
                   value="approve"
                   disabled={
-                    getIsReadOnly('pumpingContractor') ||
+                    getIsReadOnly("pumpingContractor") ||
                     !isTaedAbMantagheTrue ||
                     isPumpingContractorSubmitDisabled ||
-                    isTaedPeymankarSavedInDB // ✅ فقط اگر از پایگاه‌داده تایید شده باشد
+                    isTaedPeymankarSavedInDB
                   }
                   checked={taedPeymankar === true}
                   onChange={() => handleTaedPeymankarChange(true)}
@@ -1197,10 +1285,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   name="contractor"
                   value="reject"
                   disabled={
-                    getIsReadOnly('pumpingContractor') ||
+                    getIsReadOnly("pumpingContractor") ||
                     !isTaedAbMantagheTrue ||
                     isPumpingContractorSubmitDisabled ||
-                    isTaedPeymankarSavedInDB // ✅ فقط اگر از پایگاه‌داده تایید شده باشد
+                    isTaedPeymankarSavedInDB
                   }
                   checked={taedPeymankar === false}
                   onChange={() => handleTaedPeymankarChange(false)}
@@ -1211,25 +1299,25 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
               <button
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                onClick={() => handleOpenModal('pumpingContractor')}
+                onClick={() => handleOpenModal("pumpingContractor")}
               >
                 توضیحات
               </button>
-              {!getIsReadOnly('pumpingContractor') && (
+              {!getIsReadOnly("pumpingContractor") && (
                 <button
                   className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
                     taedPeymankar === null ||
                     !isTaedAbMantagheTrue ||
                     isPumpingContractorSubmitDisabled ||
                     isTaedPeymankarSavedInDB
-                      ? 'cursor-not-allowed opacity-50'
-                      : ''
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
                   }`}
                   disabled={
                     taedPeymankar === null ||
                     !isTaedAbMantagheTrue ||
                     isPumpingContractorSubmitDisabled ||
-                    isTaedPeymankarSavedInDB // ✅ فقط اگر قبلاً ذخیره شده باشد، غیر فعال شود
+                    isTaedPeymankarSavedInDB
                   }
                   onClick={handlePumpingContractorSubmit}
                 >
@@ -1237,7 +1325,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 </button>
               )}
             </div>
-            {/* نام و زمان پیمانکار پمپاژ */}
             {(taedProgramData?.firstnpeymankar &&
               taedProgramData?.lastnpeymankar) ||
             isSavedPumpingContractor ? (
@@ -1252,22 +1339,21 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {isSavedPumpingContractor
                   ? currentDateTime
                   : taedProgramData?.tarikhpeymankar &&
-                    new Intl.DateTimeFormat('fa-IR', {
-                      timeZone: 'Asia/Tehran',
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    new Intl.DateTimeFormat("fa-IR", {
+                      timeZone: "Asia/Tehran",
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })
                       .format(new Date(taedProgramData.tarikhpeymankar))
-                      .replace(/،/g, ' - ')}
+                      .replace(/،/g, " - ")}
               </div>
             ) : null}
           </div>
         )}
 
-        {/* Div 4: آب نیرو */}
         {showWaterPower && (
           <div className="relative rounded-lg border border-gray-300 p-4">
             <div className="mb-2 font-bold">آب نیرو</div>
@@ -1278,7 +1364,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   name="water-power"
                   value="approve"
                   disabled={
-                    getIsReadOnly('waterPower') ||
+                    getIsReadOnly("waterPower") ||
                     isTaedAbNirooTrue ||
                     isWaterPowerSubmitDisabled ||
                     !isPeymankarApprovedInDB ||
@@ -1295,7 +1381,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   name="water-power"
                   value="reject"
                   disabled={
-                    getIsReadOnly('waterPower') ||
+                    getIsReadOnly("waterPower") ||
                     isTaedAbNirooTrue ||
                     isWaterPowerSubmitDisabled ||
                     !isPeymankarApprovedInDB ||
@@ -1310,18 +1396,18 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
               <button
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                onClick={() => handleOpenModal('waterPower')}
+                onClick={() => handleOpenModal("waterPower")}
               >
                 توضیحات
               </button>
-              {!getIsReadOnly('waterPower') && (
+              {!getIsReadOnly("waterPower") && (
                 <button
                   className={`rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
                     taedAbNiroo === null ||
                     isWaterPowerSubmitDisabled ||
                     isAbNirooApprovedInDB
-                      ? 'cursor-not-allowed opacity-50'
-                      : ''
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
                   }`}
                   disabled={
                     taedAbNiroo === null ||
@@ -1334,7 +1420,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 </button>
               )}
             </div>
-            {/* نام و زمان آب نیرو */}
             {(taedProgramData?.firstnabniroo &&
               taedProgramData?.lastnabniroo) ||
             isSavedWaterPower ? (
@@ -1349,31 +1434,31 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {isSavedWaterPower
                   ? currentDateTime
                   : taedProgramData?.tarikhabniroo &&
-                    new Intl.DateTimeFormat('fa-IR', {
-                      timeZone: 'Asia/Tehran',
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    new Intl.DateTimeFormat("fa-IR", {
+                      timeZone: "Asia/Tehran",
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })
                       .format(new Date(taedProgramData.tarikhabniroo))
-                      .replace(/،/g, ' - ')}
+                      .replace(/،/g, " - ")}
               </div>
             ) : null}
           </div>
         )}
-        {/* Div 5: دریافت PDF و بارگذاری فایل نهایی */}
+
         <div className="flex h-full items-center justify-center rounded-lg border border-gray-300 px-4">
           <div className="w-full text-center">
             <div className="mb-2 font-bold">فایل‌های نهایی</div>
             <div className="flex flex-col gap-2">
               <button
                 className={`w-full rounded-md bg-blue-500 px-4 py-1.5 text-white hover:bg-blue-600 ${
-                  isPdfButtonEnabled ? '' : 'cursor-not-allowed opacity-50'
+                  isPdfButtonEnabled ? "" : "cursor-not-allowed opacity-50"
                 }`}
                 disabled={
-                  (networkTrustee === 'AbMantaghei' &&
+                  (networkTrustee === "AbMantaghei" &&
                     taedAbMantaghe !== true) ||
                   !isPdfButtonEnabled
                 }
@@ -1383,23 +1468,23 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               </button>
               <button
                 className={`w-full rounded-md bg-green-500 px-4 py-1.5 text-white hover:bg-green-600 ${
-                  (networkTrustee !== 'AbMantaghei' ||
+                  (networkTrustee !== "AbMantaghei" ||
                     isSavedRegionalWater ||
                     isTaedAbMantagheTrue) &&
-                  (networkTrustee === 'AbMantaghei' ||
+                  (networkTrustee === "AbMantaghei" ||
                     isTaedAbNirooTrue ||
                     isWaterPowerSubmitted) &&
                   !isFinalApprovalSubmitted &&
                   !taedProgramData?.taeednahaee &&
                   !taedProgramData?.filenamenahaee
-                    ? ''
-                    : 'cursor-not-allowed opacity-50'
+                    ? ""
+                    : "cursor-not-allowed opacity-50"
                 }`}
                 disabled={
-                  (networkTrustee === 'AbMantaghei' &&
+                  (networkTrustee === "AbMantaghei" &&
                     !isSavedRegionalWater &&
                     !isTaedAbMantagheTrue) ||
-                  (networkTrustee !== 'AbMantaghei' &&
+                  (networkTrustee !== "AbMantaghei" &&
                     !isTaedAbNirooTrue &&
                     !isWaterPowerSubmitted) ||
                   isFinalApprovalSubmitted ||
@@ -1407,7 +1492,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   taedProgramData?.filenamenahaee
                 }
                 onClick={() => {
-                  document.getElementById('file-input')?.click();
+                  document.getElementById("file-input")?.click();
                 }}
               >
                 بارگذاری فایل نهایی
@@ -1416,14 +1501,14 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 id="file-input"
                 type="file"
                 accept=".jpg,.jpeg,.png,.bmp"
-                style={{display: 'none'}}
+                style={{ display: "none" }}
                 onChange={handleFileUpload}
               />
               <button
                 className={`w-full rounded-md bg-yellow-500 px-4 py-1.5 text-white hover:bg-yellow-600 ${
                   isFileNameNahaeeNullOrEmpty && !isFinalFileUploaded
-                    ? 'cursor-not-allowed opacity-50'
-                    : ''
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
                 }`}
                 disabled={isFileNameNahaeeNullOrEmpty && !isFinalFileUploaded}
                 onClick={handleViewFile}
@@ -1446,7 +1531,127 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           </div>
         </div>
 
-        {/* مودال برای نمایش PDF */}
+        <div className="relative rounded-lg border border-gray-300 p-4">
+          <div className="mb-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="final-approval"
+              disabled={
+                (networkTrustee === "AbMantaghei" &&
+                  getIsReadOnly("regionalWater")) ||
+                (networkTrustee !== "AbMantaghei" &&
+                  getIsReadOnly("waterPower")) ||
+                (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
+                isFinalApprovalSubmitted ||
+                taedProgramData?.taeednahaee
+              }
+              checked={
+                isFinalApprovalChecked ||
+                (taedProgramData?.taeednahaee ?? false)
+              }
+              onChange={handleCheckboxChange}
+            />
+            <label htmlFor="final-approval">تایید نهایی</label>
+          </div>
+          {networkTrustee === "AbMantaghei"
+            ? !getIsReadOnly("regionalWater") && (
+                <div className="flex gap-2">
+                  <button
+                    className={`w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
+                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
+                      isFinalApprovalSubmitted ||
+                      !isFinalApprovalChecked ||
+                      taedProgramData?.taeednahaee
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    }`}
+                    disabled={
+                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
+                      isFinalApprovalSubmitted ||
+                      !isFinalApprovalChecked ||
+                      taedProgramData?.taeednahaee
+                    }
+                    onClick={handleFinalApprovalSubmit}
+                  >
+                    ارسال
+                  </button>
+                </div>
+              )
+            : !getIsReadOnly("waterPower") && (
+                <div className="flex gap-2">
+                  <button
+                    className={`w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
+                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
+                      isFinalApprovalSubmitted ||
+                      !isFinalApprovalChecked ||
+                      taedProgramData?.taeednahaee
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    }`}
+                    disabled={
+                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
+                      isFinalApprovalSubmitted ||
+                      !isFinalApprovalChecked ||
+                      taedProgramData?.taeednahaee
+                    }
+                    onClick={handleFinalApprovalSubmit}
+                  >
+                    ارسال
+                  </button>
+                </div>
+              )}
+
+          {((((networkTrustee !== "AbMantaghei" &&
+            !getIsReadOnly("waterPower")) ||
+            (networkTrustee === "AbMantaghei" &&
+              !getIsReadOnly("regionalWater"))) &&
+            (taedProgramData?.taeednahaee || taedProgramData?.toziheslah) &&
+            isFiddaheValidComputed) ||
+            (!(
+              (networkTrustee !== "AbMantaghei" &&
+                !getIsReadOnly("waterPower")) ||
+              (networkTrustee === "AbMantaghei" &&
+                !getIsReadOnly("regionalWater"))
+            ) &&
+              taedProgramData?.toziheslah &&
+              isFiddaheValidComputed)) && (
+            <div className="mt-2">
+              <button
+                className="w-full rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+                onClick={() => setIsCorrectionModalOpen(true)}
+              >
+                اصلاحیه
+              </button>
+            </div>
+          )}
+          {(taedProgramData?.firstntaeednahaee &&
+            taedProgramData?.lastntaeednahaee) ||
+          isFinalApprovalSubmitted ? (
+            <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+              {isFinalApprovalSubmitted
+                ? `${firstName} ${lastName}`
+                : `${taedProgramData?.firstntaeednahaee} ${taedProgramData?.lastntaeednahaee}`}
+            </div>
+          ) : null}
+          {taedProgramData?.tarikhtaeednahaee || isFinalApprovalSubmitted ? (
+            <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+              {isFinalApprovalSubmitted
+                ? currentDateTime
+                : taedProgramData?.tarikhtaeednahaee &&
+                  new Intl.DateTimeFormat("fa-IR", {
+                    timeZone: "Asia/Tehran",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                    .format(new Date(taedProgramData.tarikhtaeednahaee))
+                    .replace(/،/g, " - ")}
+            </div>
+          ) : null}
+        </div>
+
         {isPdfModalOpen && (
           <ModalPDF
             isOpen={isPdfModalOpen}
@@ -1467,133 +1672,6 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           />
         )}
 
-        {/* Div 6: تایید نهایی و ارسال */}
-        <div className="relative rounded-lg border border-gray-300 p-4">
-          {/* <div className="mb-2 font-bold">تایید نهایی</div> */}
-          <div className="mb-2 flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="final-approval"
-              disabled={
-                (networkTrustee === 'AbMantaghei' &&
-                  getIsReadOnly('regionalWater')) ||
-                (networkTrustee !== 'AbMantaghei' &&
-                  getIsReadOnly('waterPower')) ||
-                (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
-                isFinalApprovalSubmitted ||
-                taedProgramData?.taeednahaee
-              }
-              checked={
-                isFinalApprovalChecked ||
-                (taedProgramData?.taeednahaee ?? false)
-              }
-              onChange={handleCheckboxChange}
-            />
-            <label htmlFor="final-approval">تایید نهایی</label>
-          </div>
-          {networkTrustee === 'AbMantaghei'
-            ? !getIsReadOnly('regionalWater') && (
-                <div className="flex gap-2">
-                  <button
-                    className={`w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
-                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
-                      isFinalApprovalSubmitted ||
-                      !isFinalApprovalChecked ||
-                      taedProgramData?.taeednahaee
-                        ? 'cursor-not-allowed opacity-50'
-                        : ''
-                    }`}
-                    disabled={
-                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
-                      isFinalApprovalSubmitted ||
-                      !isFinalApprovalChecked ||
-                      taedProgramData?.taeednahaee
-                    }
-                    onClick={handleFinalApprovalSubmit}
-                  >
-                    ارسال
-                  </button>
-                </div>
-              )
-            : !getIsReadOnly('waterPower') && (
-                <div className="flex gap-2">
-                  <button
-                    className={`w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 ${
-                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
-                      isFinalApprovalSubmitted ||
-                      !isFinalApprovalChecked ||
-                      taedProgramData?.taeednahaee
-                        ? 'cursor-not-allowed opacity-50'
-                        : ''
-                    }`}
-                    disabled={
-                      (!isFinalFileUploaded && isFileNameNahaeeNullOrEmpty) ||
-                      isFinalApprovalSubmitted ||
-                      !isFinalApprovalChecked ||
-                      taedProgramData?.taeednahaee
-                    }
-                    onClick={handleFinalApprovalSubmit}
-                  >
-                    ارسال
-                  </button>
-                </div>
-              )}
-
-          {((((networkTrustee !== 'AbMantaghei' &&
-            !getIsReadOnly('waterPower')) ||
-            (networkTrustee === 'AbMantaghei' &&
-              !getIsReadOnly('regionalWater'))) &&
-            (taedProgramData?.taeednahaee || taedProgramData?.toziheslah) &&
-            isFiddaheValid) ||
-            (!(
-              (networkTrustee !== 'AbMantaghei' &&
-                !getIsReadOnly('waterPower')) ||
-              (networkTrustee === 'AbMantaghei' &&
-                !getIsReadOnly('regionalWater'))
-            ) &&
-              taedProgramData?.toziheslah &&
-              isFiddaheValid)) && (
-            <div className="mt-2">
-              <button
-                className="w-full rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
-                onClick={() => setIsCorrectionModalOpen(true)}
-              >
-                اصلاحیه
-              </button>
-            </div>
-          )}
-          {/* نام در گوشه سمت راست پایین */}
-          {(taedProgramData?.firstntaeednahaee &&
-            taedProgramData?.lastntaeednahaee) ||
-          isFinalApprovalSubmitted ? (
-            <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
-              {isFinalApprovalSubmitted
-                ? `${firstName} ${lastName}`
-                : `${taedProgramData?.firstntaeednahaee} ${taedProgramData?.lastntaeednahaee}`}
-            </div>
-          ) : null}
-
-          {/* تاریخ در گوشه سمت چپ پایین */}
-          {taedProgramData?.tarikhtaeednahaee || isFinalApprovalSubmitted ? (
-            <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
-              {isFinalApprovalSubmitted
-                ? currentDateTime
-                : taedProgramData?.tarikhtaeednahaee &&
-                  new Intl.DateTimeFormat('fa-IR', {
-                    timeZone: 'Asia/Tehran',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })
-                    .format(new Date(taedProgramData.tarikhtaeednahaee))
-                    .replace(/،/g, ' - ')}
-            </div>
-          ) : null}
-        </div>
-
-        {/* Modal */}
         {openModal && (
           <Modal
             isOpen={!!openModal}
@@ -1603,14 +1681,14 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           >
             <textarea
               className="w-full rounded-md border border-gray-300 p-2"
-              style={{height: '200px'}}
-              value={modalContent[openModal] || ''}
+              style={{ height: "200px" }}
+              value={modalContent[openModal] || ""}
               onChange={(e) => {
-                const newContent = {...modalContent};
+                const newContent = { ...modalContent };
                 newContent[openModal] = e.target.value;
                 setModalContent(newContent);
               }}
-              readOnly={getIsReadOnly(openModal.split('-')[3])}
+              readOnly={getIsReadOnly(openModal.split("-")[3])}
             />
             <div className="mt-4 flex justify-end gap-2">
               <button
@@ -1619,19 +1697,20 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               >
                 بستن
               </button>
-              {!getIsReadOnly(openModal.split('-')[3]) && isFiddaheValid && (
-                <button
-                  className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                  onClick={() => {
-                    if (modalContent[openModal]) {
-                      handleModalSave(openModal, modalContent[openModal]);
-                    }
-                    setOpenModal(null);
-                  }}
-                >
-                  ذخیره
-                </button>
-              )}
+              {!getIsReadOnly(openModal.split("-")[3]) &&
+                isFiddaheValidComputed && (
+                  <button
+                    className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                    onClick={() => {
+                      if (modalContent[openModal]) {
+                        handleModalSave(openModal, modalContent[openModal]);
+                      }
+                      setOpenModal(null);
+                    }}
+                  >
+                    ذخیره
+                  </button>
+                )}
             </div>
           </Modal>
         )}
@@ -1639,12 +1718,12 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       <CorrectionModal
         isOpen={isCorrectionModalOpen}
         onClose={() => setIsCorrectionModalOpen(false)}
-        initialText={taedProgramData?.toziheslah || ''}
+        initialText={taedProgramData?.toziheslah || ""}
         isEditable={
           taedProgramData?.taeednahaee === true &&
-          ((networkTrustee !== 'AbMantaghei' && !getIsReadOnly('waterPower')) ||
-            (networkTrustee === 'AbMantaghei' &&
-              !getIsReadOnly('regionalWater')))
+          ((networkTrustee !== "AbMantaghei" && !getIsReadOnly("waterPower")) ||
+            (networkTrustee === "AbMantaghei" &&
+              !getIsReadOnly("regionalWater")))
         }
         daheText={daheText}
         mahText={mahText}
@@ -1656,7 +1735,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       />
       <AlertModal
         isOpen={alertState.isOpen}
-        onClose={() => setAlertState({...alertState, isOpen: false})}
+        onClose={() => setAlertState({ ...alertState, isOpen: false })}
         title={alertState.title}
         message={alertState.message}
         type={alertState.type}

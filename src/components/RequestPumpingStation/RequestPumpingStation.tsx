@@ -1,10 +1,13 @@
 import { useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import HeaderRequestPumping from "./HeaderForm";
 import BodyRequestPumping from "./BodyRequestPumping";
 import LoadingSpinner from "./LoadingSpinner";
 import { ShabakeDoreKeshtData, NetworkDataResponse } from "./types";
+import { getCurrentSalMahDahe } from "./utils/dateUtils";
 
 const RequestPumpingStation = () => {
+  const locale = useLocale();
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState<string[]>([]);
   const [firstName, setFirstName] = useState("");
@@ -19,7 +22,9 @@ const RequestPumpingStation = () => {
   const [doreKesht, setDoreKesht] = useState("");
   const [idShDo, setIdShDo] = useState<number>(0);
   const [networkTrustee, setNetworkTrustee] = useState<string | null>(null);
-  const [currentDahe, setCurrentDahe] = useState(1);
+  const [currentDahe, setCurrentDahe] = useState<number>(
+    locale === "fa" ? getCurrentSalMahDahe().dahe : 1
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [shabakeData, setShabakeData] = useState<ShabakeDoreKeshtData | null>(
     null
@@ -28,56 +33,69 @@ const RequestPumpingStation = () => {
     null
   );
   const [currentSal, setCurrentSal] = useState<number>(
-    new Date().getFullYear()
+    locale === "fa" ? getCurrentSalMahDahe().sal : new Date().getFullYear()
   );
   const [currentMah, setCurrentMah] = useState<number>(
-    new Date().getMonth() + 1
+    locale === "fa" ? getCurrentSalMahDahe().mah : new Date().getMonth() + 1
   );
 
-  const handleShabakeData = useCallback((data: ShabakeDoreKeshtData) => {
-    console.log("[RequestPumpingStation] Shabake data received:", data);
-    setShabakeData(data);
-    // if (data.mahList && data.mahList.length > 0) {
-    //   const currentDate = new Date();
-    //   const currentMahItem = data.mahList.find(
-    //     (item) =>
-    //       item.sal === currentDate.getFullYear() &&
-    //       item.mah === currentDate.getMonth() + 1
-    //   );
-    //   const selectedMahItem = currentMahItem || data.mahList[0];
-    //   setCurrentMah(selectedMahItem.mah);
-    //   setCurrentSal(selectedMahItem.sal);
-    //   console.log("currentMahItem: ", currentMahItem);
-    //   console.log("data: ", data);
-    // }
-    // if (data.IdShDo) {
-    //   console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
-    //   setIdShDo(data.IdShDo);
-    // }
-  }, []);
-  console.log("CurrentMah: ", currentMah);
+  const handleShabakeData = useCallback(
+    (data: ShabakeDoreKeshtData) => {
+      console.log("[RequestPumpingStation] Shabake data received:", data);
+      setShabakeData(data);
+      if (data.mahList && data.mahList.length > 0) {
+        const {
+          sal: currentSal,
+          mah: currentMah,
+          dahe: currentDahe,
+        } = locale === "fa"
+          ? getCurrentSalMahDahe()
+          : {
+              sal: new Date().getFullYear(),
+              mah: new Date().getMonth() + 1,
+              dahe: 1,
+            };
+        const selectedMahItem =
+          data.mahList.find(
+            (item) => item.sal === currentSal && item.mah === currentMah
+          ) || data.mahList[0];
+        setCurrentMah(selectedMahItem.mah);
+        setCurrentSal(selectedMahItem.sal);
+        setCurrentDahe(currentDahe);
+        console.log(
+          "[RequestPumpingStation] Selected mahItem:",
+          selectedMahItem
+        );
+      }
+      if (data.IdShDo) {
+        console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
+        setIdShDo(data.IdShDo);
+      }
+    },
+    [locale]
+  );
 
   const handleNetworkData = useCallback((data: NetworkDataResponse) => {
     console.log("[RequestPumpingStation] Network data received:", data);
     setNetworkData(data);
-    // if (data.currentSaleZeraee) {
-    //   console.log(
-    //     "[RequestPumpingStation] Setting saleZeraee:",
-    //     data.currentSaleZeraee.name
-    //   );
-    //   setSaleZeraee(data.currentSaleZeraee.name);
-    // }
-    // if (data.currentDoreKesht) {
-    //   console.log(
-    //     "[RequestPumpingStation] Setting doreKesht:",
-    //     data.currentDoreKesht.name
-    //   );
-    //   setDoreKesht(data.currentDoreKesht.name);
-    // }
-    // if (data.IdShDo) {
-    //   console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
-    //   setIdShDo(data.IdShDo);
-    // }
+    if (data.currentSaleZeraee) {
+      console.log(
+        "[RequestPumpingStation] Setting saleZeraee:",
+        data.currentSaleZeraee.name
+      );
+      setSaleZeraee(data.currentSaleZeraee.name);
+    }
+    if (data.currentDoreKesht) {
+      console.log(
+        "[RequestPumpingStation] Setting doreKesht:",
+        data.currentDoreKesht.name
+      );
+      setDoreKesht(data.currentDoreKesht.name);
+    }
+    if (data.IdShDo) {
+      console.log("[RequestPumpingStation] Setting IdShDo:", data.IdShDo);
+      setIdShDo(data.IdShDo);
+    }
   }, []);
 
   return (

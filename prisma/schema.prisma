@@ -248,18 +248,17 @@ model nashtshabake {
 }
 
 model network {
-  idnet             Int                 @id @default(autoincrement())
-  network           String              @db.VarChar(40)
-  fidsp             Int
-  trustee           String              @db.VarChar(20)
-  network_fa        String?             @db.VarChar(40)
-  network_ar        String?             @db.VarChar(40)
-  network_tr        String?             @db.VarChar(40)
-  bareshmotaleat    bareshmotaleat[]
-  khatranesharea    khatranesharea[]
-  systempart        systempart          @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
-  position_newtwork position_newtwork[]
-  pumpstation       pumpstation[]
+  idnet          Int              @id @default(autoincrement())
+  network        String           @db.VarChar(40)
+  fidsp          Int
+  trustee        String           @db.VarChar(20)
+  network_fa     String?          @db.VarChar(40)
+  network_ar     String?          @db.VarChar(40)
+  network_tr     String?          @db.VarChar(40)
+  bareshmotaleat bareshmotaleat[]
+  khatranesharea khatranesharea[]
+  systempart     systempart       @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
+  pumpstation    pumpstation[]
 
   @@index([network], map: "idx_network_network")
 }
@@ -346,9 +345,9 @@ model salmahdahe {
 model seghlipump {
   idsepu        Int          @id @default(autoincrement()) @db.SmallInt
   seghlipump    String       @db.VarChar(20)
-  seghlipump_fa String?      @db.VarChar(20)
-  seghlipump_ar String?      @db.VarChar(20)
   seghlipump_tr String?      @map("seghlipump-tr") @db.VarChar(20)
+  seghlipump_ar String?      @db.VarChar(20)
+  seghlipump_fa String?      @db.VarChar(20)
   khatranesh    khatranesh[]
 }
 
@@ -372,47 +371,49 @@ model systempart {
 }
 
 model taeedprogram {
-  idtaeedprogram     Int         @id @default(autoincrement())
-  fidpumpsta         Int         @db.SmallInt
-  fidsal             Int         @db.SmallInt
-  fiddore            Int         @db.SmallInt
-  sal                Int         @db.SmallInt
-  mah                Int         @db.SmallInt
-  dahe               Int         @db.SmallInt
-  fiduserersal       Int?        @db.SmallInt
-  firstnersal        String?     @db.VarChar(40)
-  lastnersal         String?     @db.VarChar(40)
+  idtaeedprogram     Int          @id @default(autoincrement())
+  fidpumpsta         Int          @db.SmallInt
+  fidsal             Int          @db.SmallInt
+  fiddore            Int          @db.SmallInt
+  sal                Int          @db.SmallInt
+  mah                Int          @db.SmallInt
+  dahe               Int          @db.SmallInt
+  fiduserersal       Int?         @db.SmallInt
+  firstnersal        String?      @db.VarChar(40)
+  lastnersal         String?      @db.VarChar(40)
   tozihersal         String?
-  tarikhersal        DateTime?   @db.Timestamp(6)
-  fiduserabmantaghe  Int?        @db.SmallInt
-  firstnabmantaghe   String?     @db.VarChar(40)
-  lastnabmantaghe    String?     @db.VarChar(40)
+  tarikhersal        DateTime?    @db.Timestamp(6)
+  fiduserabmantaghe  Int?         @db.SmallInt
+  firstnabmantaghe   String?      @db.VarChar(40)
+  lastnabmantaghe    String?      @db.VarChar(40)
   tozihabmantaghe    String?
-  tarikhabmantaghe   DateTime?   @db.Timestamp(6)
+  tarikhabmantaghe   DateTime?    @db.Timestamp(6)
   taedabmantaghe     Boolean?
-  fiduserpeymankar   Int?        @db.SmallInt
-  firstnpeymankar    String?     @db.VarChar(40)
-  lastnpeymankar     String?     @db.VarChar(40)
+  fiduserpeymankar   Int?         @db.SmallInt
+  firstnpeymankar    String?      @db.VarChar(40)
+  lastnpeymankar     String?      @db.VarChar(40)
   tozihpeymankar     String?
-  tarikhpeymankar    DateTime?   @db.Timestamp(6)
+  tarikhpeymankar    DateTime?    @db.Timestamp(6)
   taedpeymankar      Boolean?
-  fiduserabniroo     Int?        @db.SmallInt
-  firstnabniroo      String?     @db.VarChar(40)
-  lastnabniroo       String?     @db.VarChar(40)
+  fiduserabniroo     Int?         @db.SmallInt
+  firstnabniroo      String?      @db.VarChar(40)
+  lastnabniroo       String?      @db.VarChar(40)
   tozihabniroo       String?
-  tarikhabniroo      DateTime?   @db.Timestamp(6)
+  tarikhabniroo      DateTime?    @db.Timestamp(6)
   taedabniroo        Boolean?
-  filenamenahaee     String?     @db.VarChar(255)
-  filepathnahaee     String?     @db.VarChar(1000)
-  tarikhfilenahee    DateTime?   @db.Timestamp(6)
-  fidusertaeednahaee Int?        @db.SmallInt
-  firstntaeednahaee  String?     @db.VarChar(40)
-  lastntaeednahaee   String?     @db.VarChar(40)
-  tarikhtaeednahaee  DateTime?   @db.Timestamp(6)
+  filenamenahaee     String?      @db.VarChar(255)
+  filepathnahaee     String?      @db.VarChar(1000)
+  tarikhfilenahee    DateTime?    @db.Timestamp(6)
+  fidusertaeednahaee Int?         @db.SmallInt
+  firstntaeednahaee  String?      @db.VarChar(40)
+  lastntaeednahaee   String?      @db.VarChar(40)
+  tarikhtaeednahaee  DateTime?    @db.Timestamp(6)
   taeednahaee        Boolean?
   fiddahe            Int?
   toziheslah         String?
-  salmahdahe         salmahdahe? @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+  fiddec             Int?
+  salmahdahe         salmahdahe?  @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+  decade_link        decade_link? @relation("DecadeLinkToTaeedprogram", fields: [fiddec], references: [iddec], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddec")
 
   @@map("taeedprogram")
 }
@@ -441,6 +442,7 @@ model trikhdorekesht {
   sal                       Int
   mah                       Int                         @db.SmallInt
   fiddahe                   Int
+  fiddec                    Int?
   bahrebardairprogram       bahrebardairprogram[]
   bahrebardairprogramseghli bahrebardairprogramseghli[]
   bahrebardaritaghvim       bahrebardaritaghvim[]
@@ -451,6 +453,7 @@ model trikhdorekesht {
   nashtshabake              nashtshabake[]
   nonfit                    nonfit[]
   salmahdahe                salmahdahe                  @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+  decade_link               decade_link?                @relation("DecadeLinkToTrikhdorekesht", fields: [fiddec], references: [iddec], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddec")
 
   @@map("trikhdorekesht")
 }
@@ -468,12 +471,10 @@ model menu {
   general           Boolean
   slug              String              @unique
   parent_id         Int?
-  title_ar          String
   title_tr          String
+  title_ar          String
   access_level      access_level[]
   invitation_access invitation_access[]
-  parent            menu?               @relation("ParentChild", fields: [parent_id], references: [id])
-  children          menu[]              @relation("ParentChild")
   user_access       user_access[]
 
   @@index([parent_id])
@@ -487,8 +488,8 @@ model position {
   title_fa               String
   req_license            Boolean                  @default(false)
   dependent              String?
-  title_ar               String
   title_tr               String
+  title_ar               String
   access_level           access_level[]
   position_newtwork      position_newtwork[]
   position_on_invitation position_on_invitation[]
@@ -563,7 +564,7 @@ model user {
   first_name         String
   last_name          String
   mobile             String               @unique
-  email              String?              @unique
+  email              String?
   gender             String
   inviter_id         Int?
   invitation_time    DateTime
@@ -621,10 +622,20 @@ model user_login_history {
   @@map("user_login_history")
 }
 
+model decade_link {
+  iddec          Int              @id @default(autoincrement())
+  year           Int
+  month          Int
+  decade         Int
+  taeedprogram   taeedprogram[]   @relation("DecadeLinkToTaeedprogram")
+  trikhdorekesht trikhdorekesht[] @relation("DecadeLinkToTrikhdorekesht")
+
+  @@map("decade_link")
+}
+
 model position_newtwork {
-  id          Int       @id(map: "position_newtwork_pk") @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   fidposition Int?
   fidnetwork  Int?
-  network     network?  @relation(fields: [fidnetwork], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "position_newtwork_network_fk")
-  position    position? @relation(fields: [fidposition], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "position_newtwork_position_fk")
+  position    position? @relation(fields: [fidposition], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

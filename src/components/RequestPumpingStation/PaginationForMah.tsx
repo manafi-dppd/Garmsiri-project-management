@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useLocale } from "next-intl";
+import { Locale } from "@/i18n/config";
+import { useTranslations } from "next-intl";
 
 export function convertMahToPersian(mah: number): string {
   const months = [
@@ -35,6 +38,8 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
   setDahe,
   onDaheChange,
 }) => {
+  const locale = useLocale();
+  const t = useTranslations("Pagination");
   const handlePrevDahe = () => {
     if (dahe > 1) {
       const newDahe = dahe - 1;
@@ -75,7 +80,7 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
 
       {/* نمایش دهه فعلی */}
       <span className="rounded-md bg-yellow-300 px-4 py-1 text-lg font-bold text-gray-900 shadow-lg ring-2 ring-yellow-400">
-        دهه {dahe === 1 ? "اول" : dahe === 2 ? "دوم" : "سوم"}
+        {dahe === 1 ? t("first") : dahe === 2 ? t("second") : t("third")}
       </span>
 
       {/* دکمه "دهه بعد" */}

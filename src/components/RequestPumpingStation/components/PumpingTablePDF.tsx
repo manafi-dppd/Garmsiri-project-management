@@ -1,5 +1,10 @@
 import * as React from "react";
-import { toPersianDate } from "../../../utils/dateUtils";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+import {
+  toLocalizedWeekday,
+  formatLocalizedDate,
+} from "../../../utils/dateUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../types";
 
 interface PumpingTablePDFProps {
@@ -25,18 +30,25 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
   finalVolumes,
   compactMode = false,
 }) => {
+  const locale = useLocale();
+  const t = useTranslations("PumpingTable");
+  const isRtl = locale === "fa" || locale === "ar";
   return (
     <table
       className="w-full border-collapse border border-orange-500"
-      // style={{ fontSize: "12px" }}
+      style={{ direction: isRtl ? "rtl" : "ltr" }}
     >
       <thead className="bg-blue-100">
         <tr style={{ height: compactMode ? "30px" : "30px" }}>
           <th
-            className="h-8 border border-l-4 border-gray-300 border-l-green-400 px-4 align-top font-bold"
+            className={`h-8 border border-gray-300 px-4 align-top font-bold ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
             colSpan={2}
           >
-            خط رانش
+            {t("line")}
           </th>
           {khatRaneshList
             .filter(
@@ -45,7 +57,11 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
             .map((ranesh) => (
               <th
                 key={ranesh.idranesh}
-                className="h-8 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center align-top"
+                className={`h-8 border border-gray-300 px-4 text-center align-top ${
+                  isRtl
+                    ? "border-l-4 border-l-green-400"
+                    : "border-r-4 border-r-green-400"
+                }`}
                 colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 style={{ direction: "ltr" }}
               >
@@ -56,10 +72,14 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
         {/* سطر "دبی پمپ" */}
         <tr>
           <th
-            className="h-8 border border-l-4 border-gray-300 border-l-green-400 px-4 font-bold align-top"
+            className={`h-8 border border-gray-300 px-4 font-bold align-top ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
             colSpan={2}
           >
-            دبی
+            {t("flow")}
           </th>
           {khatRaneshList
             .filter(
@@ -68,8 +88,11 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
             .map((ranesh) => (
               <th
                 key={ranesh.idranesh}
-                className="h-8 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center align-top font-bold"
-                // style={{fontWeight: 300}}
+                className={`h-8 border border-gray-300 px-4 text-center align-top font-bold ${
+                  isRtl
+                    ? "border-l-4 border-l-green-400"
+                    : "border-r-4 border-r-green-400"
+                }`}
                 colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 dir="ltr"
               >
@@ -81,10 +104,16 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
         </tr>
         <tr>
           <th className="py-0.3 h-8 border border-gray-300 px-1 align-top font-bold">
-            روز
+            {t("day")}
           </th>
-          <th className="py-0.3 h-8 border border-l-4 border-gray-300 border-l-green-400 px-1 text-center align-top font-bold">
-            تاریخ
+          <th
+            className={`py-0.3 h-8 border border-gray-300 px-1 text-center align-top font-bold ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
+          >
+            {t("date")}
           </th>
           {khatRaneshList
             .filter(
@@ -93,21 +122,27 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
             .map((ranesh) => (
               <React.Fragment key={ranesh.idranesh}>
                 {ranesh.fidsepu === 1 && (
-                  <th className="py-0.3 h-8 border border-r-4 px-1 text-center align-top font-bold">
-                    تعداد
+                  <th className="py-0.3 h-8 border border-gray-300 px-1 text-center align-top font-bold">
+                    {t("count")}
                   </th>
                 )}
                 <th className="py-0.3 h-8 border border-gray-300 px-0.5 text-center align-top font-bold">
-                  دبی
+                  {t("flow")}
                 </th>
                 <th className="py-0.3 h-8 border border-gray-300 px-4 text-center align-top font-bold">
-                  شروع
+                  {t("start")}
                 </th>
                 <th className="py-0.3 h-8 border border-gray-300 px-4 text-center align-top font-bold">
-                  پایان
+                  {t("end")}
                 </th>
-                <th className="py-0.3 h-8 border border-l-4 border-l-green-400 px-1 text-center align-top font-bold">
-                  مدت
+                <th
+                  className={`py-0.3 h-8 border border-gray-300 px-1 text-center align-top font-bold ${
+                    isRtl
+                      ? "border-l-4 border-l-green-400"
+                      : "border-r-4 border-r-green-400"
+                  }`}
+                >
+                  {t("duration")}
                 </th>
               </React.Fragment>
             ))}
@@ -121,10 +156,16 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
             style={{ height: compactMode ? "25px" : "35px" }}
           >
             <td className="py-0.3 border border-gray-300 px-1 align-top">
-              {toPersianDate(record.trikh, "dddd")}
+              {toLocalizedWeekday(record.trikh, locale as any)}
             </td>
-            <td className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1 text-center align-top font-bold">
-              {toPersianDate(record.trikh, "YYYY/MM/DD")}
+            <td
+              className={`py-0.3 border border-gray-300 px-1 text-center align-top font-bold ${
+                isRtl
+                  ? "border-l-4 border-l-green-400"
+                  : "border-r-4 border-r-green-400"
+              }`}
+            >
+              {formatLocalizedDate(record.trikh, locale as any)}
             </td>
             {khatRaneshList
               .filter(
@@ -190,7 +231,13 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
                     <td className="py-0.3 border border-gray-300 px-1 text-center align-top">
                       {toValue || "-"}
                     </td>
-                    <td className="py-0.3 border border-l-4 border-gray-300 border-l-green-400 px-1 text-center align-top">
+                    <td
+                      className={`py-0.3 border border-gray-300 px-1 text-center align-top ${
+                        isRtl
+                          ? "border-l-4 border-l-green-400"
+                          : "border-r-4 border-r-green-400"
+                      }`}
+                    >
                       {durationMinutes
                         ? `${Math.floor(durationMinutes / 60)
                             .toString()
@@ -207,10 +254,14 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
         {/* سطرهای "حجم درخواستی"، "حجم پیش‌بینی" و "اضافه درخواست" */}
         <tr className="bg-yellow-100 font-semibold">
           <td
-            className="py-0.3 h-6 border border-l-4 border-gray-300 border-l-green-400 px-4 align-top text-xs font-bold"
+            className={`py-0.3 h-6 border border-gray-300 px-4 align-top text-xs font-bold ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
             colSpan={2}
           >
-            حجم درخواستی
+            {t("requested_volume")}
           </td>
           {khatRaneshList
             .filter(
@@ -259,7 +310,11 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
               return (
                 <td
                   key={ranesh.idranesh}
-                  className="py-0.3 h-6 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center align-top text-xs font-bold"
+                  className={`py-0.3 border border-gray-300 px-1 text-center align-top ${
+                    isRtl
+                      ? "border-l-4 border-l-green-400"
+                      : "border-r-4 border-r-green-400"
+                  }`}
                   colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 >
                   {totalWaterVolume
@@ -271,10 +326,14 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
         </tr>
         <tr className="bg-gray-200 font-bold">
           <td
-            className="py-0.3 h-6 border border-l-4 border-gray-300 border-l-green-400 px-4 align-top text-xs font-bold"
+            className={`py-0.3 h-6 border border-gray-300 px-4 align-top text-xs font-bold ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
             colSpan={2}
           >
-            حجم پیش‌بینی
+            {t("predicted_volume")}
           </td>
           {khatRaneshList
             .filter(
@@ -283,7 +342,11 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
             .map((ranesh) => (
               <td
                 key={ranesh.idranesh}
-                className="py-0.3 h-6 border border-l-4 border-gray-300 border-l-green-400 px-4 text-center align-top text-xs font-semibold"
+                className={`py-0.3 h-6 border border-gray-300 px-4 text-center align-top text-xs font-semibold ${
+                  isRtl
+                    ? "border-l-4 border-l-green-400"
+                    : "border-r-4 border-r-green-400"
+                }`}
                 colSpan={ranesh.fidsepu === 1 ? 5 : 4}
               >
                 {finalVolumes[ranesh.idranesh] !== undefined
@@ -296,10 +359,14 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
         </tr>
         <tr className="bg-gray-100 font-bold">
           <td
-            className="py-0.3 h-6 border border-l-4 border-gray-300 border-l-green-400 px-4 align-top text-xs font-bold"
+            className={`py-0.3 h-6 border border-gray-300 px-4 align-top text-xs font-bold ${
+              isRtl
+                ? "border-l-4 border-l-green-400"
+                : "border-r-4 border-r-green-400"
+            }`}
             colSpan={2}
           >
-            اضافه درخواست
+            {t("extra_request")}
           </td>
           {khatRaneshList
             .filter(
@@ -354,7 +421,11 @@ const PumpingTablePDF: React.FC<PumpingTablePDFProps> = ({
               return (
                 <td
                   key={ranesh.idranesh}
-                  className={`py-0.3 border border-gray-300 px-4 text-center ${bgColor} ${textColor} h-6 border-l-4 border-l-green-400 align-top text-xs`}
+                  className={`py-0.3 border border-gray-300 px-4 text-center ${bgColor} ${textColor} h-6 ${
+                    isRtl
+                      ? "border-l-4 border-l-green-400"
+                      : "border-r-4 border-r-green-400"
+                  } align-top text-xs`}
                   colSpan={ranesh.fidsepu === 1 ? 5 : 4}
                 >
                   {extraRequest

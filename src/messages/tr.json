@@ -9,7 +9,7 @@
     "password": "şifre",
     "continue": "devam etmek",
     "submit": "göndermek",
-    "loading": "yükleniyor",
+    "loading": "yükleniyor...",
     "error": "hata",
     "success": "başarı",
     "required": "gerekli",
@@ -256,5 +256,26 @@
       "explanationTitle": "Düzeltme Açıklaması",
       "close": "Kapat"
     }
+<<<<<<< HEAD
+  },
+  "PumpingTable": {
+    "line": "İtme hattı",
+    "flow": "Akış",
+    "day": "Gün",
+    "date": "Tarih",
+    "count": "Sayı",
+    "start": "Başlangıç",
+    "end": "Bitiş",
+    "duration": "Süre",
+    "requested_volume": "İstenen hacim",
+    "predicted_volume": "Tahmini Hacim",
+    "extra_request": "Ek Talep"
+  },
+  "Pagination":{
+    "first": "İlk on yıl",
+    "second": "İkinci on yıl",
+    "third": "Üçüncü on yıl"
+=======
+>>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

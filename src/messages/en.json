@@ -9,7 +9,7 @@
     "password": "Password",
     "continue": "Continue",
     "submit": "Submit",
-    "loading": "Loading",
+    "loading": "Loading...",
     "error": "Error",
     "success": "Success",
     "required": "Required",
@@ -256,5 +256,26 @@
       "explanationTitle": "Correction Explanation",
       "close": "Close"
     }
+<<<<<<< HEAD
+  },
+  "PumpingTable": {
+    "line": "Thrust line",
+    "flow": "Flow",
+    "day": "Day",
+    "date": "Date",
+    "count": "Count",
+    "start": "Start",
+    "end": "End",
+    "duration": "Duration",
+    "requested_volume": "Requested volume",
+    "predicted_volume": "Predicted Volume",
+    "extra_request": "Extra Request"
+  },
+  "Pagination":{
+    "first": "First decade",
+    "second": "Second decade",
+    "third": "Third decade"
+=======
+>>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

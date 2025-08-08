@@ -9,7 +9,7 @@
     "password": "كلمة المرور",
     "continue": "يكمل",
     "submit": "يُقدِّم",
-    "loading": "تحميل",
+    "loading": "تحميل...",
     "error": "خطأ",
     "success": "نجاح",
     "required": "مطلوب",
@@ -256,5 +256,26 @@
       "explanationTitle": "تفسير التصحيح",
       "close": "إغلاق"
     }
+<<<<<<< HEAD
+  },
+  "PumpingTable": {
+    "line": "خط الدفع",
+    "flow": "التدفق",
+    "day": "اليوم",
+    "date": "التاريخ",
+    "count": "العدد",
+    "start": "البداية",
+    "end": "النهاية",
+    "duration": "المدة",
+    "requested_volume": "الحجم المطلوب",
+    "predicted_volume": "الحجم المتوقع",
+    "extra_request": "الطلب الإضافي"
+  },
+  "Pagination":{
+    "first": "العقد الأول",
+    "second": "العقد الثاني",
+    "third": "العقد الثالث"
+=======
+>>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

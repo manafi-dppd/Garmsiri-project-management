@@ -9,7 +9,7 @@
     "password": "رمز عبور",
     "continue": "ادامه",
     "submit": "ثبت",
-    "loading": "در حال بارگذاری",
+    "loading": "در حال بارگذاری...",
     "error": "خطا",
     "success": "موفقیت",
     "required": "الزامی",
@@ -256,5 +256,26 @@
       "explanationTitle": "توضیحات اصلاح",
       "close": "بستن"
     }
+<<<<<<< HEAD
+  },
+  "PumpingTable": {
+    "line": "خط رانش",
+    "flow": "دبی",
+    "day": "روز",
+    "date": "تاریخ",
+    "count": "تعداد",
+    "start": "شروع",
+    "end": "پایان",
+    "duration": "مدت",
+    "requested_volume": "حجم درخواستی",
+    "predicted_volume": "حجم پیش‌بینی",
+    "extra_request": "اضافه درخواست"
+  },
+  "Pagination":{
+    "first": "دهه اول",
+    "second": "دهه دوم",
+    "third": "دهه سوم"
+=======
+>>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

@@ -2,8 +2,12 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const locale = useLocale();
+  const t = useTranslations("common");
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [params, router]);
 
   if (loading) {
-    return <div>در حال بارگذاری...</div>;
+    return <div>{t("loading")}</div>;
   }
 
   return <div>{children}</div>;

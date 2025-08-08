@@ -2,9 +2,13 @@ import * as React from "react";
 import {
   toLocalizedWeekday,
   formatLocalizedDate,
-} from "../../../../utils/dateUtils";
+} from "@/utils/dateUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../../types";
 import { useLocale } from "next-intl";
+<<<<<<< HEAD
+import { useTranslations } from "next-intl";
+=======
+>>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
 import { Locale } from "@/i18n/config";
 
 export interface PumpingTableProps {
@@ -59,6 +63,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   setSelectedZarfiat,
 }) => {
   const locale = useLocale();
+  const t = useTranslations("PumpingTable");
   const handleZarfiatChange = (
     IdTarDor: number,
     IdRanesh: number,
@@ -129,7 +134,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
             } px-4 font-bold`}
             colSpan={2}
           >
-            خط رانش
+            {t("line")}
           </th>
           {khatRaneshList
             .filter(
@@ -159,7 +164,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
             } px-4 font-bold`}
             colSpan={2}
           >
-            دبی پمپ
+            {t("flow")}
           </th>
           {khatRaneshList
             .filter(
@@ -188,7 +193,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
             className="py-0.3 border px-1 font-bold"
             style={{ width: "64px", minWidth: "64px", whiteSpace: "nowrap" }}
           >
-            روز
+            {t("day")}
           </th>
           <th
             className={`py-0.3 border px-1 font-bold ${
@@ -198,7 +203,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
             }`}
             style={{ width: "73px", minWidth: "73px", whiteSpace: "nowrap" }}
           >
-            تاریخ
+            {t("date")}
           </th>
           {khatRaneshList
             .filter(
@@ -215,7 +220,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                       whiteSpace: "nowrap",
                     }}
                   >
-                    تعداد
+                    {t("count")}
                   </th>
                 )}
                 <th
@@ -226,7 +231,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  دبی پمپ
+                  {t("flow")}
                 </th>
                 <th
                   className="py-0.3 border px-6 font-bold"
@@ -236,7 +241,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  شروع
+                  {t("start")}
                 </th>
                 <th
                   className="py-0.3 border px-6 font-bold"
@@ -246,7 +251,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  پایان
+                  {t("end")}
                 </th>
                 <th
                   className={`${
@@ -260,7 +265,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  مدت
+                  {t("duration")}
                 </th>
               </React.Fragment>
             ))}

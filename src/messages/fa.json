@@ -256,7 +256,6 @@
       "explanationTitle": "توضیحات اصلاح",
       "close": "بستن"
     }
-<<<<<<< HEAD
   },
   "PumpingTable": {
     "line": "خط رانش",
@@ -275,7 +274,5 @@
     "first": "دهه اول",
     "second": "دهه دوم",
     "third": "دهه سوم"
-=======
->>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

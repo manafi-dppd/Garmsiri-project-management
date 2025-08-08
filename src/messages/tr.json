@@ -256,7 +256,6 @@
       "explanationTitle": "Düzeltme Açıklaması",
       "close": "Kapat"
     }
-<<<<<<< HEAD
   },
   "PumpingTable": {
     "line": "İtme hattı",
@@ -275,7 +274,5 @@
     "first": "İlk on yıl",
     "second": "İkinci on yıl",
     "third": "Üçüncü on yıl"
-=======
->>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

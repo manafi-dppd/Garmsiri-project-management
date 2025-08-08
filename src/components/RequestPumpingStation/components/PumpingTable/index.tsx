@@ -5,10 +5,7 @@ import {
 } from "@/utils/dateUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../../types";
 import { useLocale } from "next-intl";
-<<<<<<< HEAD
 import { useTranslations } from "next-intl";
-=======
->>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
 import { Locale } from "@/i18n/config";
 
 export interface PumpingTableProps {

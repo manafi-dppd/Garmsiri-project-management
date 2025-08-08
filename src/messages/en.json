@@ -256,7 +256,6 @@
       "explanationTitle": "Correction Explanation",
       "close": "Close"
     }
-<<<<<<< HEAD
   },
   "PumpingTable": {
     "line": "Thrust line",
@@ -275,7 +274,5 @@
     "first": "First decade",
     "second": "Second decade",
     "third": "Third decade"
-=======
->>>>>>> 67c1552a58bf7b8ccd3df1fffc4a075ec2974c7e
   }
 }

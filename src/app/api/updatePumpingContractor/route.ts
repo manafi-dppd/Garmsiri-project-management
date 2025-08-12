@@ -5,9 +5,9 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
-    if (!body || typeof body !== "object") {
+    if (!body || typeof body !== "object" || !body.locale) {
       return NextResponse.json(
-        { error: "Invalid request body" },
+        { error: "بدنه درخواست نامعتبر است" },
         { status: 400 }
       );
     }
@@ -21,6 +21,7 @@ export async function PUT(request: Request) {
       lastName,
       tozihPeymankar = null,
       taedPeymankar,
+      locale,
     } = body;
 
     if (
@@ -33,7 +34,36 @@ export async function PUT(request: Request) {
       typeof taedPeymankar !== "boolean"
     ) {
       return NextResponse.json(
-        { error: "Missing or invalid required fields" },
+        { error: "فیلدهای مورد نیاز گم شده یا نامعتبر هستند" },
+        { status: 400 }
+      );
+    }
+
+    // Validate fiddahe or fiddec based on locale
+    const record = await prisma.taeedprogram.findFirst({
+      where: {
+        fidpumpsta: idPumpStation,
+        sal,
+        mah,
+        dahe,
+      },
+      select: { fiddahe: true, fiddec: true },
+    });
+
+    if (!record) {
+      return NextResponse.json({ error: "رکوردی یافت نشد" }, { status: 404 });
+    }
+
+    if (locale === "fa" && record.fiddahe === null) {
+      return NextResponse.json(
+        { error: "fiddahe نمی‌تواند NULL باشد برای زبان فارسی" },
+        { status: 400 }
+      );
+    }
+
+    if (locale !== "fa" && record.fiddec === null) {
+      return NextResponse.json(
+        { error: "fiddec نمی‌تواند NULL باشد برای زبان‌های غیرفارسی" },
         { status: 400 }
       );
     }
@@ -57,14 +87,14 @@ export async function PUT(request: Request) {
     });
 
     return NextResponse.json(
-      { message: "Data updated successfully", count: result.count },
+      { message: "داده‌ها با موفقیت به‌روزرسانی شدند", count: result.count },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Failed to update TaeedProgram:", error);
+    console.error("خطا در به‌روزرسانی TaeedProgram:", error);
     return NextResponse.json(
       {
-        error: "Failed to update data",
+        error: "خطا در به‌روزرسانی داده‌ها",
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }

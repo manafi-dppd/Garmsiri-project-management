@@ -753,7 +753,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               } px-4 font-bold  text-xs`}
               colSpan={2}
             >
-              حجم درخواستی
+              {t("requested_volume")}
             </td>
             {khatRaneshList
               .filter(
@@ -839,7 +839,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               } px-4 font-bold  text-xs`}
               colSpan={2}
             >
-              حجم پیش بینی
+              {t("predicted_volume")}
             </td>
             {khatRaneshList
               .filter(
@@ -872,7 +872,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               } px-4 font-bold  text-xs`}
               colSpan={2}
             >
-              اضافه درخواست
+              {t("extra_request")}
             </td>
             {khatRaneshList
               .filter(

@@ -11,12 +11,12 @@ export async function GET(req: NextRequest) {
   const iddore = searchParams.get("iddore");
   const locale = (searchParams.get("locale") || "en") as Locale;
 
-  console.log("[GetShabakeDoreKesht] Parameters:", {
-    networkId,
-    idsal,
-    iddore,
-    locale,
-  });
+  // console.log("[GetShabakeDoreKesht] Parameters:", {
+  //   networkId,
+  //   idsal,
+  //   iddore,
+  //   locale,
+  // });
 
   // Validate input parameters
   if (!networkId || !idsal || !iddore) {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         trikhpayan: true,
       },
     });
-    console.log("[GetShabakeDoreKesht] shabake:", shabake);
+    // console.log("[GetShabakeDoreKesht] shabake:", shabake);
     if (!shabake) {
       return NextResponse.json(
         { error: t("irrigationCalendarNotFound") },

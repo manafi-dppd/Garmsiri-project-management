@@ -1,6 +1,7 @@
 // src/components/CustomAlertModal.tsx
 import * as React from "react";
 import Modal from "./../../Modal";
+import { useTranslations } from "next-intl";
 
 interface CustomAlertModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ const CustomAlertModal: React.FC<CustomAlertModalProps> = ({
   onConfirm,
   message,
 }) => {
+  const t = useTranslations("CorrectionModal");
   return (
     <Modal
       isOpen={isOpen}
@@ -29,13 +31,13 @@ const CustomAlertModal: React.FC<CustomAlertModalProps> = ({
           className="rounded-md bg-gray-300 px-4 py-2 hover:bg-gray-400"
           onClick={onClose}
         >
-          خیر
+          {t("no")}
         </button>
         <button
           className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
           onClick={onConfirm}
         >
-          بله
+          {t("yes")}
         </button>
       </div>
     </Modal>

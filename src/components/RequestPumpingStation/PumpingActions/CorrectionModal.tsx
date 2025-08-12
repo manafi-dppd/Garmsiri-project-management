@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import * as React from "react";
 import Modal from "./../../Modal";
 import AlertModal from "../../AlertModal";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface CorrectionModalProps {
   isOpen: boolean;
@@ -31,6 +33,8 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
   mah,
   dahe,
 }) => {
+  const locale = useLocale();
+  const t = useTranslations("CorrectionModal");
   const [text, setText] = useState(initialText);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -42,7 +46,7 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
 
   const handleSubmit = async () => {
     if (!text.trim()) {
-      alert("برای درخواست اصلاحیه بایستی توضیحات ارائه شود");
+      alert(t("error_empty_text"));
       return;
     }
     setShowConfirmation(true);
@@ -64,6 +68,7 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
           mah,
           dahe,
           correctionText: text,
+          locale: locale,
         }),
       });
 
@@ -80,7 +85,7 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
     } catch (error) {
       console.error("Error submitting correction:", error);
       alert(
-        error instanceof Error ? error.message : "خطا در ثبت درخواست اصلاحیه"
+        error instanceof Error ? error.message : t("error_submission_failed")
       );
     } finally {
       setIsSubmitting(false);
@@ -90,19 +95,13 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
   const confirmationMessage = (
     <div className="text-right" style={{ direction: "rtl" }}>
       <span className="text-yellow-500">⚠️</span>
-      با ارسال درخواست اصلاحیه مراحل ارسال و تایید برنامه{" "}
-      <span className="font-bold">
-        {daheText} {mahText} ماه ایستگاه {pumpStationName}
-      </span>{" "}
-      حذف خواهد شد و بایستی دومرتبه انجام شود.
-      <br />
-      آیا از ارسال درخواست مطمئن هستید؟
+      {t("confirmation_message", { daheText, mahText, pumpStationName })}
     </div>
   );
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} title="اصلاحات" size="md">
+      <Modal isOpen={isOpen} onClose={onClose} title={t("title")} size="md">
         <div className="space-y-4">
           <textarea
             className="w-full rounded-md border border-gray-300 p-2"
@@ -117,7 +116,7 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
             className="rounded-md bg-gray-300 px-4 py-2 hover:bg-gray-400"
             onClick={onClose}
           >
-            بستن
+            {t("close_button")}
           </button>
           {isEditable && (
             <button
@@ -127,7 +126,7 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
               onClick={handleSubmit}
               disabled={!text.trim() || isSubmitting}
             >
-              {isSubmitting ? "در حال ارسال..." : "ارسال"}
+              {isSubmitting ? t("submitting") : t("submit_button")}
             </button>
           )}
         </div>
@@ -136,17 +135,17 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
       <AlertModal
         isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}
-        title="تأیید ارسال اصلاحیه"
+        title={t("confirmation_title")}
         message={confirmationMessage}
         type="warning"
         buttons={[
           {
-            text: "خیر",
+            text: t("no"),
             variant: "secondary",
             onClick: () => setShowConfirmation(false),
           },
           {
-            text: "بله",
+            text: t("yes"),
             variant: "primary",
             onClick: handleConfirmSubmit,
           },
@@ -159,8 +158,8 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
         <AlertModal
           isOpen={showSuccessAlert}
           onClose={() => setShowSuccessAlert(false)}
-          title="موفقیت"
-          message="درخواست اصلاحیه با موفقیت ثبت شد"
+          title={t("success")}
+          message={t("success_message")}
           type="success"
         />
       )}

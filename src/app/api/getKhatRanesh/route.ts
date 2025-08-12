@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+export const dynamic = "force-dynamic"; // Force dynamic rendering
+
 interface ApiKhatRanesh {
   idranesh: number;
   raneshname: string;
@@ -43,7 +45,7 @@ export async function GET(req: NextRequest) {
 
     if (!idPumpStation) {
       return NextResponse.json(
-        { error: "idPumpStation is required" },
+        { error: "idPumpStation مورد نیاز است" },
         { status: 400 }
       );
     }
@@ -99,7 +101,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("❌ خطا در واکشی خطوط رانش:", error);
     return NextResponse.json(
-      { error: "Failed to fetch KhatRanesh" },
+      { error: "خطا در دریافت خطوط رانش" },
       { status: 500 }
     );
   }

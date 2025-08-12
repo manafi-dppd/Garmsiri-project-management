@@ -1,4 +1,3 @@
-// src/app/api/requestCorrection/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -8,28 +7,55 @@ export async function PUT(request: Request) {
 
     if (!body || typeof body !== "object") {
       return NextResponse.json(
-        { error: "Invalid request body" },
+        { error: "بدنه درخواست نامعتبر است" },
         { status: 400 }
       );
     }
 
-    const { idPumpStation, sal, mah, dahe, correctionText } = body;
+    const { idPumpStation, sal, mah, dahe, correctionText, locale } = body;
 
     if (
       typeof idPumpStation !== "number" ||
       typeof sal !== "number" ||
       typeof mah !== "number" ||
       typeof dahe !== "number" ||
-      typeof correctionText !== "string"
+      typeof correctionText !== "string" ||
+      !locale
     ) {
       return NextResponse.json(
-        { error: "Missing or invalid required fields" },
+        { error: "فیلدهای مورد نیاز گم شده یا نامعتبر هستند" },
         { status: 400 }
       );
     }
 
-    // حذف متغیر now که استفاده نشده بود
-    // const currentDate = new Date();
+    // Validate fiddahe or fiddec based on locale
+    const record = await prisma.taeedprogram.findFirst({
+      where: {
+        fidpumpsta: idPumpStation,
+        sal,
+        mah,
+        dahe,
+      },
+      select: { fiddahe: true, fiddec: true },
+    });
+
+    if (!record) {
+      return NextResponse.json({ error: "رکوردی یافت نشد" }, { status: 404 });
+    }
+
+    if (locale === "fa" && record.fiddahe === null) {
+      return NextResponse.json(
+        { error: "fiddahe نمی‌تواند NULL باشد برای زبان فارسی" },
+        { status: 400 }
+      );
+    }
+
+    if (locale !== "fa" && record.fiddec === null) {
+      return NextResponse.json(
+        { error: "fiddec نمی‌تواند NULL باشد برای زبان‌های غیرفارسی" },
+        { status: 400 }
+      );
+    }
 
     await prisma.taeedprogram.updateMany({
       where: {
@@ -75,14 +101,14 @@ export async function PUT(request: Request) {
     });
 
     return NextResponse.json(
-      { message: "Correction requested successfully" },
+      { message: "درخواست اصلاح با موفقیت ثبت شد" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Failed to request correction:", error);
+    console.error("خطا در ثبت درخواست اصلاح:", error);
     return NextResponse.json(
       {
-        error: "Failed to request correction",
+        error: "خطا در ثبت درخواست اصلاح",
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }

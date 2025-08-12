@@ -41,7 +41,8 @@
     "mobile": "الهاتف المحمول",
     "email": "بريد إلكتروني",
     "placeholderEmail": "أدخل بريدك الإلكتروني.",
-    "continue": "يكمل"
+    "continue": "يكمل",
+    "problem_registering":"هناك مشكلة في تسجيل المعلومات."
   },
   "updateCredentials": {
     "changeWordPassword": "تغيير اسم المستخدم وكلمة المرور",
@@ -270,9 +271,78 @@
     "predicted_volume": "الحجم المتوقع",
     "extra_request": "الطلب الإضافي"
   },
-  "Pagination":{
+  "Pagination": {
     "first": "العقد الأول",
     "second": "العقد الثاني",
     "third": "العقد الثالث"
-  }
+  },
+  "ModalPDF": {
+    "irrigation_program": "جدول الري {daheText} من شهر {mahText} {pumpStationText}",
+    "Company": "شركة مياه كرمانشاه الإقليمية المساهمة",
+    "date": "تاريخ:",
+    "close": "يغلق",
+    "downloadFile": "تنزيل الملف",
+    "representativeExecutiveBranch": "ممثل السلطة التنفيذية:",
+    "representativeRegionalWaterCooperative": "ممثل شركة المياه الإقليمية/التعاونية الريفية:",
+    "No_table_found_Excel":"لم يتم العثور على جدول لتحويله إلى Excel."
+  },
+  "PumpingActions": {
+    "requester": "مقدم الطلب",
+    "regionalWater": "المياه الإقليمية",
+    "pumpingContractor": "مقاول الضخ",
+    "powerWater": "مياه الطاقة",
+    "finalFiles": "الملفات النهائية",
+    "save": "يحفظ",
+    "wait": "انتظر...",
+    "send": "يرسل",
+    "description": "وصف",
+    "confirmation": "تأكيد",
+    "reject": "يرفض",
+    "preview": "معاينة",
+    "uploadFinalFile": "تحميل الملف النهائي",
+    "viewFinalFile": "عرض الملف النهائي",
+    "finalApproval": "الموافقة النهائية",
+    "amendment": "تعديل",
+    "close": "يغلق",
+    "error_program_data_missing": "بيانات البرنامج غير موجودة",
+    "error_explanation_required": "تقديم التفسير إلزامي في حالة رفض البرنامج",
+    "error_previous_dahe_not_approved": "لم يتم الموافقة على برنامج العقد السابق. قبل الموافقة على هذا البرنامج، يجب الموافقة على برنامج العقد السابق لمحطة {pumpStationName}.",
+    "error_checking_previous_dahe": "خطأ في التحقق من حالة العقد السابق",
+    "error_invalid_start_time_format": "تنسيق وقت البدء غير صالح لخط الأنابيب {raneshName}",
+    "error_invalid_end_time_format": "تنسيق وقت الانتهاء غير صالح لخط الأنابيب {raneshName}",
+    "error_saving_data": "خطأ في حفظ البيانات: {errorMessage}",
+    "error_saving": "خطأ في الحفظ: لم يتم حفظ برنامج العقد السابق بعد. قبل حفظ هذا البرنامج، يجب إكمال وحفظ برنامج العقد السابق لمحطة الضخ {pumpStationName}.",
+    "error_no_first_last_name": "يرجى إدخال الاسم الأول واسم العائلة",
+    "error_final_approval_failed": "خطأ في تسجيل الموافقة النهائية: {errorMessage}",
+    "error_invalid_file_format": "تنسيق الملف غير صالح. يرجى اختيار ملف بصيغة PDF، JPG، JPEG، PNG، أو BMP.",
+    "error_file_upload": "خطأ في رفع الملف.",
+    "error_file_download": "خطأ في تنزيل الملف.",
+    "error_file_view": "خطأ في عرض الملف.",
+    "success_data_saved": "تم حفظ المعلومات بنجاح",
+    "success_final_approval": "تم تسجيل الموافقة النهائية بنجاح",
+    "success_file_uploaded": "تم رفع الملف بنجاح",
+    "title_error": "خطأ",
+    "title_error_confirmation": "خطأ في التأكيد",
+    "title_success": "نجاح",
+    "title_error_saving":"خطأ في الحفظ",
+    "first": "العقد الأول",
+    "second": "العقد الثاني",
+    "third": "العقد الثالث",
+    "successfully_saved_decade": "تم حفظ المعلومات المتعلقة ب{daheText} من شهر {mahText} في {pumpStationName} بنجاح.",
+    "fetchError": "خطأ في استرداد المعلومات"
+  },
+  "CorrectionModal": {
+      "title": "التعديل",
+      "close_button": "إغلاق",
+      "submit_button": "إرسال",
+      "submitting": "جاري الإرسال...",
+      "confirmation_title": "تأكيد إرسال التعديل",
+      "confirmation_message": "بإرسال طلب التعديل، سيتم إلغاء مراحل الإرسال والموافقة على برنامج {daheText} {mahText} لشهر محطة {pumpStationName} ويجب إعادة تنفيذها. <br /> هل أنت متأكد من إرسال الطلب؟",
+      "success_message": "تم تسجيل طلب التعديل بنجاح",
+      "error_empty_text": "يجب تقديم تفسير لطلب التعديل",
+      "error_submission_failed": "خطأ في تسجيل طلب التعديل",
+      "yes":"نعم",
+      "no":"لا",
+      "success":"نجاح"
+    }
 }

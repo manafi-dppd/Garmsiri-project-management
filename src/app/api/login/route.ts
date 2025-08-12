@@ -128,7 +128,7 @@ export async function POST(request: Request) {
     const isPasswordValid = await bcrypt.compare(password, invitation.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: t("errors.invalidCredentials") },
+        // { error: t("errors.invalidCredentials") },
         { status: 401 }
       );
     }

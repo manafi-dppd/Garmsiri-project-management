@@ -4,10 +4,12 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
 import Image from "next/image";
-import { toPersianDate } from "../../../utils/dateUtils";
+import { toPersianDate, formatDateForNonPersian } from "@/utils/dateUtils";
 import { convertMahToPersian } from "../PaginationForMah";
 import PumpingTablePDF from "../components/PumpingTablePDF";
 import { KhatRanesh, RecordType, PumpingData } from "../types";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface ModalPDFProps {
   isOpen: boolean;
@@ -44,10 +46,19 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
   mah,
   pumpStationName,
 }) => {
+  const locale = useLocale();
+  const today = new Date().toISOString();
+  const t = useTranslations("");
   const [isFormatMenuOpen, setIsFormatMenuOpen] = useState(false);
-  const daheText = `دهه ${dahe === 1 ? "اول" : dahe === 2 ? "دوم" : "سوم"}`;
-  const mahText = convertMahToPersian(mah);
   const pumpStationText = pumpStationName;
+  const daheText =
+    dahe === 1
+      ? t("Pagination.first")
+      : dahe === 2
+      ? t("Pagination.second")
+      : t("Pagination.third");
+  const mahText =
+    locale === "fa" ? convertMahToPersian(mah) : t(`Months.month${mah}`);
   const handleGenerateOutput = (
     format: "pdf" | "jpg" | "jpeg" | "bmp" | "png"
   ) => {
@@ -202,7 +213,7 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
         XLSX.writeFile(wb, `${daheText} ${mahText} ${pumpStationText}.xlsx`);
       } else {
-        alert("جدولی برای تبدیل به اکسل یافت نشد.");
+        alert(t("No_table_found_Excel"));
       }
     }
   };
@@ -231,30 +242,40 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
                   alt="Logo"
                   width={64}
                   height={64}
-                  className="absolute left-2 top-2"
+                  className={`absolute ${
+                    locale === "en" || locale === "tr" ? "right-2" : "left-2"
+                  } top-2`}
                 />
-                <div className="absolute left-20 top-11 flex items-center gap-2 pl-6">
-                  <span className="text-sm text-gray-600">تاریخ:</span>
+                <div
+                  className={`absolute ${
+                    locale === "en" || locale === "tr" ? "right-20" : "left-20"
+                  } top-11 flex items-center gap-2 pl-6`}
+                >
                   <span className="text-sm text-gray-600">
-                    {toPersianDate(new Date().toISOString(), "YYYY/MM/DD")}
+                    {t("ModalPDF.date")}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {locale === "fa"
+                      ? toPersianDate(today, "YYYY/MM/DD")
+                      : formatDateForNonPersian(today)}
                   </span>
                 </div>
               </div>
               <div className="font-IranNastaliq right-2 top-2 pb-2 pr-2 text-2xl text-gray-600">
-                شرکت سهامی آب منطقه ای کرمانشاه
+                {t("ModalPDF.Company")}
               </div>
 
               <div
                 className="mb-4 flex items-center gap-1 font-b-zar text-lg font-bold"
                 style={{ textRendering: "optimizeLegibility" }}
               >
-                <span>برنامه آبیاری</span>
+                {t("ModalPDF.irrigation_program", {
+                  daheText: daheText,
+                  mahText: mahText,
+                  pumpStationText: pumpStationText,
+                })}
                 <div>
-                  <span>
-                    دهه {dahe === 1 ? "اول " : dahe === 2 ? "دوم " : "سوم "}
-                  </span>
-                  <span>{convertMahToPersian(mah)} </span>
-                  {(() => {
+                  {/* {(() => {
                     const isLastCharNumber = /\d$/.test(pumpStationName);
                     return isLastCharNumber ? (
                       <span>
@@ -266,7 +287,7 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
                     ) : (
                       <span>{pumpStationName}</span>
                     );
-                  })()}
+                  })()} */}
                 </div>
               </div>
 
@@ -284,8 +305,12 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
                   className="relative flex-1 border border-gray-300 p-3"
                   style={{ height: "17vh" }}
                 >
-                  <div className="absolute right-2 top-0 text-xs text-gray-600">
-                    نماینده شرکت آب منطقه ای/ تعاونی روستایی :
+                  <div
+                    className={`absolute top-0 text-xs text-gray-600 ${
+                      locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+                    }`}
+                  >
+                    {t("ModalPDF.representativeRegionalWaterCooperative")}
                   </div>
                 </div>
 
@@ -293,8 +318,12 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
                   className="relative flex-1 border border-gray-300 p-3"
                   style={{ height: "17vh" }}
                 >
-                  <div className="absolute right-2 top-0 text-xs text-gray-600">
-                    نماینده دستگاه اجرایی (آب نیرو/ عمراب) :
+                  <div
+                    className={`absolute top-0 text-xs text-gray-600 ${
+                      locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+                    }`}
+                  >
+                    {t("ModalPDF.representativeExecutiveBranch")}
                   </div>
                 </div>
               </div>
@@ -305,14 +334,14 @@ const ModalPDF: React.FC<ModalPDFProps> = ({
           onClick={onClose}
           className="absolute bottom-2 right-2 rounded bg-red-500 px-3 py-1 font-bold text-white print:hidden"
         >
-          بستن
+          {t("ModalPDF.close")}
         </button>
         <div className="absolute bottom-2 left-2">
           <button
             onClick={() => setIsFormatMenuOpen(!isFormatMenuOpen)}
             className="rounded bg-blue-500 px-3 py-1 font-bold text-white print:hidden"
           >
-            دریافت فایل
+            {t("ModalPDF.downloadFile")}
           </button>
           {isFormatMenuOpen && (
             <div className="absolute bottom-10 left-0 rounded-lg border border-gray-300 bg-white shadow-lg">

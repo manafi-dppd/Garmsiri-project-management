@@ -171,7 +171,10 @@ const HeaderRequestPumping = ({
         setNetworkTrusteeMap(trusteeMap);
       })
       .catch((error) => {
-        console.error("[HeaderForm] Error fetching irrigation networks:", error);
+        console.error(
+          "[HeaderForm] Error fetching irrigation networks:",
+          error
+        );
         setError(t("fetchError"));
       });
   }, [t]);
@@ -189,7 +192,8 @@ const HeaderRequestPumping = ({
             `/api/position-networks?positionId=${position.id}`,
             { credentials: "include" }
           );
-          if (!response.ok) throw new Error("Failed to fetch position networks");
+          if (!response.ok)
+            throw new Error("Failed to fetch position networks");
           const data = await response.json();
           console.log(
             "[HeaderForm] Position networks for position",
@@ -246,7 +250,9 @@ const HeaderRequestPumping = ({
       filteredNetworks.length === 1 &&
       selectedNetworkId !== filteredNetworks[0].idnet
     ) {
-      console.log("[HeaderForm] Setting default network for single filtered network");
+      console.log(
+        "[HeaderForm] Setting default network for single filtered network"
+      );
       const network = filteredNetworks[0];
       setSelectedNetwork(network.network);
       setNetworkName(getLocalizedNetworkName(network));
@@ -265,12 +271,17 @@ const HeaderRequestPumping = ({
 
   useEffect(() => {
     if (selectedNetworkId === null) {
-      console.log("[HeaderForm] No selected network, skipping network data fetch");
+      console.log(
+        "[HeaderForm] No selected network, skipping network data fetch"
+      );
       return;
     }
 
     const fetchNetworkData = async () => {
-      console.log("[HeaderForm] Fetching network data for networkId:", selectedNetworkId);
+      console.log(
+        "[HeaderForm] Fetching network data for networkId:",
+        selectedNetworkId
+      );
       try {
         const response = await fetch(
           `/api/network-data?networkId=${selectedNetworkId}&locale=${locale}`,
@@ -322,9 +333,7 @@ const HeaderRequestPumping = ({
           setSelectedIddore(
             data.currentDoreKesht?.iddore || data.Dore[0]?.iddore || null
           );
-          setDoreKesht(
-            data.currentDoreKesht?.name || data.Dore[0]?.name || ""
-          );
+          setDoreKesht(data.currentDoreKesht?.name || data.Dore[0]?.name || "");
 
           setIdShDo(data.IdShDo || 0);
           if (onNetworkDataChange) {
@@ -417,7 +426,7 @@ const HeaderRequestPumping = ({
         Dore: [],
         currentDoreKesht: null,
         currentSaleZeraee: null,
-        currentFiddec: null
+        currentFiddec: null,
       });
     }
   };
@@ -428,26 +437,32 @@ const HeaderRequestPumping = ({
     console.log("[HeaderForm] Pump station changed:", event.target.value);
     const stationName = event.target.value;
     setSelectedPumpStation(stationName);
-    setPumpStationName(stationName);
 
     const selectedStation = pumpStations.find(
       (station) => station.namestation === stationName
     );
 
     if (selectedStation) {
+      setPumpStationName(getLocalizedPumpStationName(selectedStation));
       setIdPumpStation(selectedStation.idpumpsta);
     } else {
+      setPumpStationName("");
       setIdPumpStation(0);
     }
   };
 
   useEffect(() => {
     if (selectedNetworkId === null) {
-      console.log("[HeaderForm] No selected network, skipping pump stations fetch");
+      console.log(
+        "[HeaderForm] No selected network, skipping pump stations fetch"
+      );
       return;
     }
 
-    console.log("[HeaderForm] Fetching pump stations for networkId:", selectedNetworkId);
+    console.log(
+      "[HeaderForm] Fetching pump stations for networkId:",
+      selectedNetworkId
+    );
     fetch(
       `/api/pump-stations?networkId=${selectedNetworkId}&FIdDP=2&locale=${locale}`,
       {
@@ -503,7 +518,9 @@ const HeaderRequestPumping = ({
     }
 
     if (selectedNetworkId && selectedIddore) {
-      console.log("[HeaderForm] Fetching ShabakeDoreKesht for SaleZeraee change...");
+      console.log(
+        "[HeaderForm] Fetching ShabakeDoreKesht for SaleZeraee change..."
+      );
       const data = await fetchShabakeDoreKesht(
         selectedNetworkId,
         selectedSale?.idsal || null,
@@ -582,7 +599,10 @@ const HeaderRequestPumping = ({
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error("[HeaderForm] ShabakeDoreKesht error response:", errorData);
+          console.error(
+            "[HeaderForm] ShabakeDoreKesht error response:",
+            errorData
+          );
           throw new Error(errorData.error || t("fetchError"));
         }
 
@@ -590,7 +610,10 @@ const HeaderRequestPumping = ({
         console.log("[HeaderForm] ShabakeDoreKesht data:", data);
 
         if (data.error) {
-          console.error("[HeaderForm] ShabakeDoreKesht data error:", data.error);
+          console.error(
+            "[HeaderForm] ShabakeDoreKesht data error:",
+            data.error
+          );
           setError(data.error);
           return null;
         }
@@ -616,12 +639,15 @@ const HeaderRequestPumping = ({
       !selectedIdsal ||
       !selectedIddore
     ) {
-      console.log("[HeaderForm] Skipping ShabakeDoreKesht fetch due to conditions", {
-        selectedNetworkId,
-        calendarFetched,
-        selectedIdsal,
-        selectedIddore,
-      });
+      console.log(
+        "[HeaderForm] Skipping ShabakeDoreKesht fetch due to conditions",
+        {
+          selectedNetworkId,
+          calendarFetched,
+          selectedIdsal,
+          selectedIddore,
+        }
+      );
       return;
     }
 
@@ -663,7 +689,11 @@ const HeaderRequestPumping = ({
             onClick={() => {
               setError(null);
               if (selectedNetworkId && selectedIdsal && selectedIddore) {
-                fetchShabakeDoreKesht(selectedNetworkId, selectedIdsal, selectedIddore);
+                fetchShabakeDoreKesht(
+                  selectedNetworkId,
+                  selectedIdsal,
+                  selectedIddore
+                );
               }
             }}
           >

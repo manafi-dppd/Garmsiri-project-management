@@ -41,7 +41,8 @@
     "mobile": "Cep telefonu",
     "email": "e-posta",
     "placeholderEmail": "E-postanızı girin.",
-    "continue": "Devam etmek"
+    "continue": "Devam etmek",
+    "problem_registering":"Bilgilerin kaydedilmesinde sorun oluştu."
   },
   "updateCredentials": {
     "changeWordPassword": "Kullanıcı Adı ve Şifreyi Değiştir",
@@ -270,9 +271,78 @@
     "predicted_volume": "Tahmini Hacim",
     "extra_request": "Ek Talep"
   },
-  "Pagination":{
+  "Pagination": {
     "first": "İlk on yıl",
     "second": "İkinci on yıl",
     "third": "Üçüncü on yıl"
-  }
+  },
+  "ModalPDF": {
+    "irrigation_program": "{pumpStationText} {mahText} ayının {daheText} sulama takvimi",
+    "Company": "Kermanşah Bölgesel Su Anonim Şirketi",
+    "date": "tarih:",
+    "close": "Kapalı",
+    "downloadFile": "Dosyayı indir",
+    "representativeExecutiveBranch": "Yürütme organının temsilcisi:",
+    "representativeRegionalWaterCooperative": "Bölgesel su şirketi/kırsal kooperatif temsilcisi:",
+    "No_table_found_Excel":"Excel'e dönüştürülecek tablo bulunamadı.."
+  },
+  "PumpingActions": {
+    "requester": "Talep eden",
+    "regionalWater": "Bölgesel su",
+    "pumpingContractor": "Pompalama yüklenicisi",
+    "powerWater": "Güç suyu",
+    "finalFiles": "Son dosyalar",
+    "save": "Kaydetmek",
+    "wait": "Beklemek...",
+    "description": "Tanım",
+    "send": "Göndermek",
+    "confirmation": "Onay",
+    "reject": "Reddetmek",
+    "preview": "Önizleme",
+    "uploadFinalFile": "Son dosyayı yükleyin",
+    "viewFinalFile": "Son dosyayı görüntüle",
+    "finalApproval": "Son onay",
+    "amendment": "Değişiklik",
+    "close": "Kapalı",
+    "error_program_data_missing": "Program verileri eksik",
+    "error_explanation_required": "Programın reddedilmesi durumunda açıklama yapılması zorunludur",
+    "error_previous_dahe_not_approved": "Önceki on yıllık program onaylanmadı. Bu programı onaylamadan önce, {pumpStationName} istasyonu için önceki on yıllık program onaylanmalıdır.",
+    "error_checking_previous_dahe": "Önceki on yıllık durum kontrol edilirken hata oluştu",
+    "error_invalid_start_time_format": "{raneshName} boru hattı için başlangıç zamanı formatı geçersiz",
+    "error_invalid_end_time_format": "{raneshName} boru hattı için bitiş zamanı formatı geçersiz",
+    "error_saving_data": "Veriler kaydedilirken hata oluştu: {errorMessage}",
+    "error_saving": "Kaydetme hatası: Önceki on yıllık program henüz kaydedilmedi. Bu programı kaydetmeden önce, {pumpStationName} pompa istasyonu için önceki on yıllık programı tamamlamanız ve kaydetmeniz gerekir.",
+    "error_no_first_last_name": "Lütfen ad ve soyad girin",
+    "error_final_approval_failed": "Nihai onayın kaydedilmesinde hata: {errorMessage}",
+    "error_invalid_file_format": "Geçersiz dosya formatı. Lütfen PDF, JPG, JPEG, PNG veya BMP formatında bir dosya seçin.",
+    "error_file_upload": "Dosya yüklenirken hata oluştu.",
+    "error_file_download": "Dosya indirilirken hata oluştu.",
+    "error_file_view": "Dosya görüntülenirken hata oluştu.",
+    "success_data_saved": "Bilgiler başarıyla kaydedildi",
+    "success_final_approval": "Nihai onay başarıyla kaydedildi",
+    "success_file_uploaded": "Dosya başarıyla yüklendi",
+    "title_error": "Hata",
+    "title_error_confirmation": "Onaylamada hata",
+    "title_success": "Başarı",
+    "title_error_saving":"Hata kaydediliyor",
+    "first": "İlk on yıl",
+    "second": "İkinci on yıl",
+    "third": "Üçüncü on yıl",
+    "successfully_saved_decade": "{pumpStationName}nde {mahText} ayının {daheText} ilişkin bilgiler başarıyla kaydedildi.",
+    "fetchError": "Bilgi alınırken hata oluştu"
+  },
+  "CorrectionModal": {
+      "title": "Düzeltme",
+      "close_button": "Kapat",
+      "submit_button": "Gönder",
+      "submitting": "Gönderiliyor...",
+      "confirmation_title": "Düzeltme Gönderimini Onayla",
+      "confirmation_message": "Düzeltme talebi gönderildiğinde, {daheText} {mahText} ayı {pumpStationName} istasyonu programının gönderim ve onay aşamaları iptal edilecek ve yeniden yapılmalıdır. <br /> Talebi göndermek istediğinizden emin misiniz?",
+      "success_message": "Düzeltme talebi başarıyla kaydedildi",
+      "error_empty_text": "Düzeltme talebi için bir açıklama sağlanmalıdır",
+      "error_submission_failed": "Düzeltme talebi kaydedilirken hata oluştu",
+      "yes":"Evet",
+      "no":"HAYIR",
+      "success":"Başarı"
+    }
 }

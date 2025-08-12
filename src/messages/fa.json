@@ -41,7 +41,8 @@
     "mobile": "تلفن همراه",
     "email": "ایمیل",
     "placeholderEmail": "ایمیل خود را وارد کنید.",
-    "continue": "ادامه"
+    "continue": "ادامه",
+    "problem_registering":"مشکلی در ثبت اطلاعات پیش آمده است."
   },
   "updateCredentials": {
     "changeWordPassword": "تغییر نام کاربری و رمز عبور",
@@ -270,9 +271,78 @@
     "predicted_volume": "حجم پیش‌بینی",
     "extra_request": "اضافه درخواست"
   },
-  "Pagination":{
+  "Pagination": {
     "first": "دهه اول",
     "second": "دهه دوم",
     "third": "دهه سوم"
-  }
+  },
+  "ModalPDF": {
+    "irrigation_program": "برنامه آبیاری {daheText} {mahText} {pumpStationText}",
+    "Company": "شرکت سهامی آب منطقه ای کرمانشاه",
+    "date": "تاريخ:",
+    "close": "بستن",
+    "downloadFile": "دریافت فایل",
+    "representativeExecutiveBranch": "نماینده دستگاه اجرایی:",
+    "representativeRegionalWaterCooperative": "نماینده شرکت آب منطقه ای/ تعاونی روستایی:",
+    "No_table_found_Excel":"جدولی برای تبدیل به اکسل یافت نشد."
+  },
+  "PumpingActions": {
+    "requester": "درخواست کننده",
+    "regionalWater": "آب منطقه‌ای",
+    "pumpingContractor": "پیمانکار پمپاژ",
+    "powerWater": "آب نیرو",
+    "finalFiles": "فایل‌های نهایی",
+    "save": "ذخیره",
+    "wait": "منتظر بمانید...",
+    "send": "ارسال",
+    "description": "توضیحات",
+    "confirmation": "تایید",
+    "reject": "رد",
+    "preview": "پیش نمایش",
+    "uploadFinalFile": "بارگذاری فایل نهایی",
+    "viewFinalFile": "مشاهده فایل نهایی",
+    "finalApproval": "تایید نهایی",
+    "amendment": "اصلاحیه",
+    "close": "بستن",
+    "error_program_data_missing": "داده‌های برنامه موجود نیست",
+    "error_explanation_required": "در صورت رد برنامه ارائه توضیحات الزامی است",
+    "error_previous_dahe_not_approved": "برنامه دهه قبل تایید نشده است. قبل از تایید این برنامه بایستی برنامه دهه قبل ایستگاه {pumpStationName} تایید شده باشد.",
+    "error_checking_previous_dahe": "خطا در بررسی وضعیت دهه قبلی",
+    "error_invalid_start_time_format": "فرمت زمان شروع برای خط رانش {raneshName} نامعتبر است",
+    "error_invalid_end_time_format": "فرمت زمان پایان برای خط رانش {raneshName} نامعتبر است",
+    "error_saving_data": "خطا در ذخیره‌سازی اطلاعات: {errorMessage}",
+    "error_saving": "خطا در ذخیره: برنامه دهه قبلی هنوز ذخیره نشده است. قبل از ذخیره این برنامه بایستی برنامه دهه قبل ایستگاه پمپاژ {pumpStationName} را تکمیل و ذخیره نمایید.",
+    "error_no_first_last_name": "لطفا نام و نام خانوادگی را وارد کنید",
+    "error_final_approval_failed": "خطا در ثبت تایید نهایی: {errorMessage}",
+    "error_invalid_file_format": "فرمت فایل مجاز نیست. لطفا یک فایل با فرمت PDF، JPG، JPEG، PNG یا BMP انتخاب کنید.",
+    "error_file_upload": "خطا در آپلود فایل.",
+    "error_file_download": "خطا در دریافت فایل.",
+    "error_file_view": "خطا در مشاهده فایل.",
+    "success_data_saved": "اطلاعات با موفقیت ذخیره شد",
+    "success_final_approval": "تایید نهایی با موفقیت ثبت شد",
+    "success_file_uploaded": "فایل با موفقیت آپلود شد",
+    "title_error": "خطا",
+    "title_error_confirmation": "خطا در تایید",
+    "title_success": "موفقیت",
+    "title_error_saving":"خطا در ذخیره",
+    "first": "دهه اول",
+    "second": "دهه دوم",
+    "third": "دهه سوم",
+    "successfully_saved_decade": "اطلاعات {daheText} {mahText} ماه اطلاعات {pumpStationName} با موفقیت ذخیره شد",
+    "fetchError": "خطا در دریافت اطلاعات"
+  },
+  "CorrectionModal": {
+      "title": "اصلاحات",
+      "close_button": "بستن",
+      "submit_button": "ارسال",
+      "submitting": "در حال ارسال...",
+      "confirmation_title": "تأیید ارسال اصلاحیه",
+      "confirmation_message": "با ارسال درخواست اصلاحیه مراحل ارسال و تایید برنامه <span class='font-bold'>{daheText} {mahText} ماه ایستگاه {pumpStationName}</span> حذف خواهد شد و بایستی دومرتبه انجام شود. <br /> آیا از ارسال درخواست مطمئن هستید؟",
+      "success_message": "درخواست اصلاحیه با موفقیت ثبت شد",
+      "error_empty_text": "برای درخواست اصلاحیه بایستی توضیحات ارائه شود",
+      "error_submission_failed": "خطا در ثبت درخواست اصلاحیه",
+      "yes":"بله",
+      "no":"نه",
+      "success":"موفقیت"
+    }
 }

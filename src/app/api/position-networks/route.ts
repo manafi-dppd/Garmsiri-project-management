@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const positionNetworks = await prisma.position_newtwork.findMany({
+    const positionNetworks = await prisma.position_network.findMany({
       where: {
         fidposition: parseInt(positionId),
       },

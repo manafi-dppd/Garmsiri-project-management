@@ -41,7 +41,8 @@
     "mobile": "Mobile phone",
     "email": "Email",
     "placeholderEmail": "Enter your email.",
-    "continue": "Continue"
+    "continue": "Continue",
+    "problem_registering":"There is a problem registering the information."
   },
   "updateCredentials": {
     "changeWordPassword": "Change Username and Password",
@@ -270,9 +271,78 @@
     "predicted_volume": "Predicted Volume",
     "extra_request": "Extra Request"
   },
-  "Pagination":{
+  "Pagination": {
     "first": "First decade",
     "second": "Second decade",
     "third": "Third decade"
-  }
+  },
+  "ModalPDF": {
+    "irrigation_program": "Irrigation schedule for the {daheText} of {mahText} {pumpStationText}",
+    "Company": "Kermanshah Regional Water Joint Stock Company",
+    "date": "Date:",
+    "close": "Close",
+    "downloadFile": "Download file",
+    "representativeExecutiveBranch": "Representative of the executive branch:",
+    "representativeRegionalWaterCooperative": "Representative of the regional water company/rural cooperative:",
+    "No_table_found_Excel":"No table found to convert to Excel."
+  },
+  "PumpingActions": {
+    "requester": "Requester",
+    "regionalWater": "Regional water",
+    "pumpingContractor": "Pumping contractor",
+    "powerWater": "Power water",
+    "finalFiles": "Final files",
+    "save": "Save",
+    "wait": "Wait...",
+    "send": "Send",
+    "description": "Description",
+    "confirmation": "Confirmation",
+    "reject": "Reject",
+    "preview": "Preview",
+    "uploadFinalFile": "Upload the final file",
+    "viewFinalFile": "View the final file",
+    "finalApproval": "Final approval",
+    "amendment": "Amendment",
+    "close": "Close",
+    "error_program_data_missing": "Program data is missing",
+    "error_explanation_required": "Providing an explanation is mandatory in case of program rejection",
+    "error_previous_dahe_not_approved": "The previous decade's program has not been approved. Before approving this program, the previous decade's program for the {pumpStationName} station must be approved.",
+    "error_checking_previous_dahe": "Error checking the status of the previous decade",
+    "error_invalid_start_time_format": "Invalid start time format for the {raneshName} pipeline",
+    "error_invalid_end_time_format": "Invalid end time format for the {raneshName} pipeline",
+    "error_saving_data": "Error saving data: {errorMessage}",
+    "error_saving": "Error in saving: The previous decade's program has not been saved yet. Before saving this program, the previous decade's program for the {pumpStationName} pumping station must be completed and saved.",
+    "error_no_first_last_name": "Please enter first and last name",
+    "error_final_approval_failed": "Error registering final approval: {errorMessage}",
+    "error_invalid_file_format": "Invalid file format. Please select a file in PDF, JPG, JPEG, PNG, or BMP format.",
+    "error_file_upload": "Error uploading file.",
+    "error_file_download": "Error downloading file.",
+    "error_file_view": "Error viewing file.",
+    "success_data_saved": "Information saved successfully",
+    "success_final_approval": "Final approval registered successfully",
+    "success_file_uploaded": "File uploaded successfully",
+    "title_error": "Error",
+    "title_error_confirmation": "Error in confirmation",
+    "title_success": "Success",
+    "title_error_saving":"Error saving",
+    "first": "First decade",
+    "second": "Second decade",
+    "third": "Third decade",
+    "successfully_saved_decade": "Information related to the {daheText} of {mahText} in the {pumpStationName} was successfully saved.",
+    "fetchError": "Error retrieving information"
+  },
+  "CorrectionModal": {
+      "title": "Correction",
+      "close_button": "Close",
+      "submit_button": "Submit",
+      "submitting": "Submitting...",
+      "confirmation_title": "Confirm Correction Submission",
+      "confirmation_message": "By submitting the correction request, the submission and approval stages for the program of {daheText} {mahText} month of {pumpStationName} station will be canceled and must be redone. <br /> Are you sure you want to submit the request?",
+      "success_message": "Correction request successfully submitted",
+      "error_empty_text": "An explanation must be provided for the correction request",
+      "error_submission_failed": "Error submitting correction request",
+      "yes":"Yes",
+      "no":"No",
+      "success":"Success"
+    }
 }

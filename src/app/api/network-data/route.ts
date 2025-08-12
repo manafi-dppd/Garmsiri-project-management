@@ -48,10 +48,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log(
-      "[NetworkDataAPI] Current shabake record:",
-      currentShabakeRecord
-    );
+    // console.log(
+    //   "[NetworkDataAPI] Current shabake record:",
+    //   currentShabakeRecord
+    // );
 
     if (!currentShabakeRecord) {
       console.error("[NetworkDataAPI] Current irrigation period not found");

@@ -248,17 +248,18 @@ model nashtshabake {
 }
 
 model network {
-  idnet          Int              @id @default(autoincrement())
-  network        String           @db.VarChar(40)
-  fidsp          Int
-  trustee        String           @db.VarChar(20)
-  network_fa     String?          @db.VarChar(40)
-  network_ar     String?          @db.VarChar(40)
-  network_tr     String?          @db.VarChar(40)
-  bareshmotaleat bareshmotaleat[]
-  khatranesharea khatranesharea[]
-  systempart     systempart       @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
-  pumpstation    pumpstation[]
+  idnet             Int                @id @default(autoincrement())
+  network           String             @db.VarChar(40)
+  fidsp             Int
+  trustee           String             @db.VarChar(20)
+  network_fa        String?            @db.VarChar(40)
+  network_ar        String?            @db.VarChar(40)
+  network_tr        String?            @db.VarChar(40)
+  bareshmotaleat    bareshmotaleat[]
+  khatranesharea    khatranesharea[]
+  systempart        systempart         @relation(fields: [fidsp], references: [idsp], onDelete: NoAction, onUpdate: NoAction, map: "fk_network_systempart")
+  position_networks position_network[] @relation("network")
+  pumpstation       pumpstation[]
 
   @@index([network], map: "idx_network_network")
 }
@@ -345,7 +346,7 @@ model salmahdahe {
 model seghlipump {
   idsepu        Int          @id @default(autoincrement()) @db.SmallInt
   seghlipump    String       @db.VarChar(20)
-  seghlipump_tr String?      @map("seghlipump-tr") @db.VarChar(20)
+  seghlipump_tr String?      @db.VarChar(20)
   seghlipump_ar String?      @db.VarChar(20)
   seghlipump_fa String?      @db.VarChar(20)
   khatranesh    khatranesh[]
@@ -491,7 +492,7 @@ model position {
   title_tr               String
   title_ar               String
   access_level           access_level[]
-  position_newtwork      position_newtwork[]
+  position_network       position_network[]
   position_on_invitation position_on_invitation[]
   position_on_user       position_on_user[]
 
@@ -633,9 +634,12 @@ model decade_link {
   @@map("decade_link")
 }
 
-model position_newtwork {
-  id          Int       @id @default(autoincrement())
+model position_network {
+  id          Int       @id(map: "position_newtwork_pkey") @default(autoincrement())
   fidposition Int?
   fidnetwork  Int?
   position    position? @relation(fields: [fidposition], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  network     network?  @relation("network", fields: [fidnetwork], references: [idnet], onDelete: NoAction, onUpdate: NoAction, map: "position_network_network_fk")
+
+  @@map("position_network")
 }

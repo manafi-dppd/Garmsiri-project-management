@@ -15,7 +15,7 @@ interface InvitationAccess {
   has_access: boolean;
 }
 
-export const dynamic = "force-dynamic"; // فعال کردن رندرینگ پویا برای این مسیر
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   const cookieStore = cookies();
@@ -29,8 +29,10 @@ export async function POST(request: NextRequest) {
   const t = await getServerTranslations("updateCredentials", locale);
   try {
     const requestData = await request.json();
+    console.log("Request data:", requestData);
     const { id, username, passcode } = requestData;
     const parsedId = parseInt(id, 10);
+    console.log("Parsed ID:", parsedId);
 
     if (!parsedId || isNaN(parsedId)) {
       return NextResponse.json(
@@ -42,15 +44,12 @@ export async function POST(request: NextRequest) {
     const currentInvitation = await prisma.invitation.findUnique({
       where: { id: parsedId },
       include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
+        user: { select: { email: true } },
         position_on_invitation: true,
         invitation_access: true,
       },
     });
+    console.log("Current invitation:", currentInvitation);
 
     if (!currentInvitation) {
       return NextResponse.json(
@@ -66,8 +65,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // اعتبارسنجی mobile
+    if (!currentInvitation.mobile.match(/^\+?\d{10,15}$/)) {
+      return NextResponse.json(
+        { error: t("errors.invalidMobile") },
+        { status: 400 }
+      );
+    }
+
     const newUser = await prisma.user.upsert({
-      where: { id: parsedId },
+      where: { mobile: currentInvitation.mobile },
       update: {
         first_name: currentInvitation.first_name || "",
         last_name: currentInvitation.last_name || "",
@@ -99,6 +106,7 @@ export async function POST(request: NextRequest) {
         active: true,
       },
     });
+    console.log("Upserted user:", newUser);
 
     if (currentInvitation.invitation_access?.length) {
       await prisma.user_access.createMany({
@@ -146,9 +154,7 @@ export async function POST(request: NextRequest) {
       username: newUser.user_name,
       iss: "garmsiri",
     };
-    const token = jwt.sign(payload, secretKey, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(payload, secretKey, { expiresIn: "7d" });
 
     const response = NextResponse.json(
       {
@@ -170,7 +176,7 @@ export async function POST(request: NextRequest) {
     });
     return response;
   } catch (error: any) {
-    console.error("[UpdateInvitation] Error:", error);
+    console.error("[UpdateInvitation] Full error details:", error);
     return NextResponse.json(
       { error: error.message || t("errors.serverError") },
       { status: 500 }

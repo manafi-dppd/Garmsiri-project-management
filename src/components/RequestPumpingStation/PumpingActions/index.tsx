@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { validatePumpingData } from "../utils/validationUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../types";
 import { convertMahToPersian } from "../PaginationForMah";
-import { formatLocalDateTime } from "../../../utils/dateUtils";
+import {
+  formatDateTimeForNonPersian,
+  formatLocalDateTime,
+} from "../../../utils/dateUtils";
 import Modal from "./Modal";
 import ModalPDF from "./ModalPDF";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
@@ -11,6 +14,7 @@ import ViewFinalFileModal from "./ViewFinalFileModal";
 import CorrectionModal from "./CorrectionModal";
 import AlertModal from "../../AlertModal";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface TaeedProgramData {
   fiddahe?: number | null;
@@ -123,6 +127,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
   isFiddaheValid,
   userRole,
 }) => {
+  const t = useTranslations("PumpingActions");
   const locale = useLocale();
   const [modalContent, setModalContent] = useState<{ [key: string]: string }>(
     {}
@@ -263,8 +268,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        title: "title_error",
+        message: t("error_explanation_required"),
         type: "error",
       });
       return;
@@ -273,8 +278,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (!taedProgramData) {
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "داده‌های برنامه موجود نیست",
+        title: "title_error",
+        message: t("error_program_data_missing"),
         type: "error",
       });
       return;
@@ -290,6 +295,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           body: JSON.stringify({
             idPumpStation,
             fiddahe: fidValue,
+            locale: locale,
           }),
         });
 
@@ -298,15 +304,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         if (!isApproved) {
           setAlertState({
             isOpen: true,
-            title: "خطا در تایید",
-            message: (
-              <div style={{ direction: "rtl", textAlign: "right" }}>
-                برنامه دهه قبل تایید نشده است. <br /> قبل از تایید این برنامه
-                بایستی برنامه دهه قبل ایستگاه{" "}
-                <span className="font-bold">{pumpStationName}</span> تایید شده
-                باشد.
-              </div>
-            ),
+            title: t("title_error_confirmation"),
+            message: t("error_previous_dahe_not_approved", {
+              pumpStationName: pumpStationName,
+            }),
             type: "error",
           });
           return;
@@ -315,8 +316,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         console.error("Error checking previous dahe approval:", error);
         setAlertState({
           isOpen: true,
-          title: "خطا",
-          message: "خطا در بررسی وضعیت دهه قبلی",
+          title: "title_error",
+          message: t("error_checking_previous_dahe"),
           type: "error",
         });
         return;
@@ -339,6 +340,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           tozihAbMantaghe:
             modalContent[`${sal}-${mah}-${dahe}-regionalWater`] || null,
           taedAbMantaghe: taedAbMantaghe,
+          locale: locale,
         }),
       });
 
@@ -355,16 +357,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "موفقیت",
-        message: "اطلاعات با موفقیت ذخیره شد",
+        title: "title_success",
+        message: t("success_data_saved"),
         type: "success",
       });
     } catch (error) {
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در ذخیره‌سازی اطلاعات",
+        title: "title_error",
+        message: t("error_saving_data"),
         type: "error",
       });
       setIsSavedRegionalWater(false);
@@ -378,8 +380,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        title: "title_error",
+        message: t("error_explanation_required"),
         type: "error",
       });
       return;
@@ -401,6 +403,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           tozihPeymankar:
             modalContent[`${sal}-${mah}-${dahe}-pumpingContractor`] || null,
           taedPeymankar: taedPeymankar,
+          locale: locale,
         }),
       });
 
@@ -417,16 +420,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "موفقیت",
-        message: "اطلاعات با موفقیت ذخیره شد",
+        title: "title_success",
+        message: t("success_data_saved"),
         type: "success",
       });
     } catch (error) {
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در ذخیره‌سازی اطلاعات",
+        title: "title_error",
+        message: t("error_saving_data"),
         type: "error",
       });
     }
@@ -439,8 +442,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "در صورت رد برنامه ارائه توضیحات الزامی است",
+        title: "title_error",
+        message: t("error_explanation_required"),
         type: "error",
       });
       return;
@@ -462,6 +465,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           tozihAbNiroo:
             modalContent[`${sal}-${mah}-${dahe}-waterPower`] || null,
           taedAbNiroo: taedAbNiroo,
+          locale: locale,
         }),
       });
 
@@ -479,16 +483,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "موفقیت",
-        message: "اطلاعات با موفقیت ذخیره شد",
+        title: "title_success",
+        message: t("success_data_saved"),
         type: "success",
       });
     } catch (error) {
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در ذخیره‌سازی اطلاعات",
+        title: "title_error",
+        message: t("error_saving_data"),
         type: "error",
       });
     }
@@ -499,8 +503,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       if (!firstName || !lastName) {
         setAlertState({
           isOpen: true,
-          title: "خطا",
-          message: "لطفا نام و نام خانوادگی را وارد کنید",
+          title: "title_error",
+          message: t("error_no_first_last_name"),
           type: "error",
         });
         return;
@@ -516,6 +520,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           dahe: dahe,
           firstname: firstName,
           lastname: lastName,
+          locale: locale,
         }),
       });
 
@@ -528,25 +533,27 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "موفقیت",
-        message: "تایید نهایی با موفقیت ثبت شد",
+        title: "title_success",
+        message: t("success_final_approval"),
         type: "success",
       });
     } catch (error) {
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: `خطا در ثبت تایید نهایی: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        title: "title_error",
+        message: t("error_saving", {
+          errorMessage: error instanceof Error ? error.message : String(error),
+        }),
         type: "error",
       });
     }
   };
 
-  const daheText = `دهه ${dahe === 1 ? "اول" : dahe === 2 ? "دوم" : "سوم"}`;
-  const mahText = convertMahToPersian(mah);
+  const daheText =
+    dahe === 1 ? t("first") : dahe === 2 ? t("second") : t("third");
+  const mahText =
+    locale === "fa" ? convertMahToPersian(mah) : t(`Months.month${mah}`);
 
   function SuccessAlert({ message, onClose }: SuccessAlertProps) {
     return (
@@ -585,6 +592,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         body: JSON.stringify({
           FIdPumpSta: idPumpStation,
           FidDahe: fidValue,
+          locale: locale,
         }),
       });
 
@@ -605,15 +613,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (!isPreviousSaved) {
       setAlertState({
         isOpen: true,
-        title: "خطا در ذخیره",
-        message: (
-          <div style={{ direction: "rtl", textAlign: "right" }}>
-            برنامه دهه قبلی هنوز ذخیره نشده است. <br />
-            قبل از ذخیره این برنامه بایستی برنامه دهه قبل ایستگاه پمپاژ{" "}
-            <span className="font-bold">{pumpStationName}</span> را تکمیل و
-            ذخیره نمایید.
-          </div>
-        ),
+        title: t("title_error_saving"),
+        message: t("error_saving", {
+          pumpStationName: pumpStationName,
+        }),
         type: "error",
       });
       return;
@@ -674,8 +677,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           ) {
             setAlertState({
               isOpen: true,
-              title: "خطا",
-              message: `فرمت زمان شروع برای خط رانش ${ranesh.raneshname} نامعتبر است`,
+              title: "title_error",
+              message: t("error_invalid_start_time_format", {
+                raneshName: ranesh.raneshname,
+              }),
               type: "error",
             });
             return;
@@ -687,8 +692,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           ) {
             setAlertState({
               isOpen: true,
-              title: "خطا",
-              message: `فرمت زمان پایان برای خط رانش ${ranesh.raneshname} نامعتبر است`,
+              title: "title_error",
+              message: t("error_invalid_end_time_format", {
+                raneshName: ranesh.raneshname,
+              }),
               type: "error",
             });
             return;
@@ -737,16 +744,17 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           firstnersal: firstName,
           lastnersal: lastName,
           tozihersal: modalContent[`${sal}-${mah}-${dahe}-requester`] || "",
+          locale: locale,
         }),
       });
 
       setAlertMessage(
         <span>
-          اطلاعات <span className="font-bold text-green-800">{daheText}</span>{" "}
-          <span className="font-bold text-green-800">{mahText}</span> ماه
-          ایستگاه پمپاژ{" "}
-          <span className="font-bold text-green-800">{pumpStationName}</span> با
-          موفقیت ذخیره شد
+          {t("successfully_saved_decade", {
+            daheText: daheText,
+            mahText: mahText,
+            pumpStationName,
+          })}
         </span>
       );
       setIsSaved(true);
@@ -760,10 +768,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setIsSaved(false);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: `خطا در ذخیره‌سازی اطلاعات: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        title: "title_error",
+        message: t("error_saving_data", {
+          errorMessage: error instanceof Error ? error.message : String(error),
+        }),
         type: "error",
       });
     } finally {
@@ -861,6 +869,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           Mah: mah,
           Dahe: dahe,
           field,
+          locale,
         }),
       });
 
@@ -874,14 +883,14 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       } else {
         setModalContent((prev) => ({
           ...prev,
-          [modalKey]: "خطا در دریافت اطلاعات",
+          [modalKey]: t("fetchError"),
         }));
       }
     } catch (error) {
       console.error("Error fetching modal data:", error);
       setModalContent((prev) => ({
         ...prev,
-        [modalKey]: "خطا در دریافت اطلاعات",
+        [modalKey]: t("fetchError"),
       }));
     }
 
@@ -949,9 +958,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (!allowedTypes.includes(file.type)) {
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message:
-          "فرمت فایل مجاز نیست. لطفا یک فایل با فرمت PDF، JPG، JPEG، PNG یا BMP انتخاب کنید.",
+        title: "title_error",
+        message: t("error_invalid_file_format"),
         type: "error",
       });
       return;
@@ -969,6 +977,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     formData.append("sal", sal.toString());
     formData.append("mah", mah.toString());
     formData.append("dahe", dahe.toString());
+    formData.append("locale", locale.toString());
 
     try {
       const response = await fetch("/api/uploadFinalFile", {
@@ -979,16 +988,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       if (response.ok) {
         setAlertState({
           isOpen: true,
-          title: "موفقیت",
-          message: "فایل با موفقیت آپلود شد.",
+          title: "title_success",
+          message: t("success_file_uploaded"),
           type: "success",
         });
         setIsFinalFileUploaded(true);
       } else {
         setAlertState({
           isOpen: true,
-          title: "خطا",
-          message: "خطا در آپلود فایل.",
+          title: "title_error",
+          message: t("error_file_upload"),
           type: "error",
         });
       }
@@ -996,8 +1005,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error uploading file:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در آپلود فایل.",
+        title: "title_error",
+        message: t("error_file_upload"),
         type: "error",
       });
     }
@@ -1035,8 +1044,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error downloading file:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در دریافت فایل.",
+        title: "title_error",
+        message: t("error_file_download"),
         type: "error",
       });
     }
@@ -1056,7 +1065,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
   const handleViewFile = async () => {
     try {
-      const url = `/api/downloadFinalFile?idPumpStation=${idPumpStation}&sal=${sal}&mah=${mah}&dahe=${dahe}&preview=true`;
+      const url = `/api/downloadFinalFile?idPumpStation=${idPumpStation}&sal=${sal}&mah=${mah}&dahe=${dahe}&preview=true&locale=${locale}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -1071,8 +1080,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error viewing file:", error);
       setAlertState({
         isOpen: true,
-        title: "خطا",
-        message: "خطا در مشاهده فایل.",
+        title: "title_error",
+        message: t("error_file_view"),
         type: "error",
       });
     }
@@ -1082,13 +1091,13 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     const modalType = modalKey.split("-")[3];
     switch (modalType) {
       case "requester":
-        return "درخواست کننده";
+        return t("requester");
       case "regionalWater":
-        return "آب منطقه‌ای";
+        return t("regionalWater");
       case "pumpingContractor":
-        return "پیمانکار پمپاژ";
+        return t("pumpingContractor");
       case "waterPower":
-        return "آب نیرو";
+        return t("powerWater");
       default:
         return "";
     }
@@ -1105,13 +1114,13 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       >
         {/* Div 1: درخواست کننده */}
         <div className="relative rounded-lg border border-gray-300 p-4">
-          <div className="mb-2 font-bold">درخواست کننده</div>
+          <div className="mb-2 font-bold">{t("requester")}</div>
           <div className="mb-2 flex flex-col gap-2 xl:flex-row">
             <button
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={() => handleOpenModal("requester")}
             >
-              توضیحات
+              {t("description")}
             </button>
             {!getIsReadOnly("requester") && (
               <button
@@ -1123,10 +1132,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               >
                 {isSaveButtonDisabled || isSaving ? (
                   <span className="flex items-center justify-center gap-2">
-                    منتظر بمانید...
+                    {t("wait")}
                   </span>
                 ) : (
-                  "ذخیره"
+                  t("save")
                 )}
                 {showAlert && (
                   <SuccessAlert
@@ -1139,7 +1148,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           </div>
           {(taedProgramData?.firstnersal && taedProgramData?.lastnersal) ||
           isSaved ? (
-            <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+              }`}
+            >
               <span>✔</span>
               {isSaved
                 ? `${firstName} ${lastName}`
@@ -1147,10 +1160,15 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             </div>
           ) : null}
           {taedProgramData?.tarikhersal || isSaved ? (
-            <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "left-2" : "right-2"
+              }`}
+            >
               {isSaved
                 ? currentDateTime
-                : taedProgramData?.tarikhersal &&
+                : locale === "fa"
+                ? taedProgramData?.tarikhersal &&
                   new Intl.DateTimeFormat("fa-IR", {
                     timeZone: "Asia/Tehran",
                     year: "numeric",
@@ -1160,14 +1178,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     minute: "2-digit",
                   })
                     .format(new Date(taedProgramData.tarikhersal))
-                    .replace(/،/g, " - ")}
+                    .replace(/،/g, " - ")
+                : taedProgramData?.tarikhersal &&
+                  formatDateTimeForNonPersian(taedProgramData.tarikhersal)}
             </div>
           ) : null}
         </div>
 
         {/* Div 2: آب منطقه‌ای */}
         <div className="relative rounded-lg border border-gray-300 p-4">
-          <div className="mb-2 font-bold">آب منطقه‌ای</div>
+          <div className="mb-2 font-bold">{t("regionalWater")}</div>
           <div className="mb-2 flex flex-col gap-2 xl:flex-row">
             <label className="flex items-center gap-2">
               <input
@@ -1183,7 +1203,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 checked={taedAbMantaghe === true}
                 onChange={() => handleTaedAbMantagheChange(true)}
               />
-              تایید
+              {t("confirmation")}
             </label>
             <label className="flex items-center gap-2">
               <input
@@ -1199,7 +1219,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 checked={taedAbMantaghe === false}
                 onChange={() => handleTaedAbMantagheChange(false)}
               />
-              رد
+              {t("reject")}
             </label>
           </div>
           <div className="mb-2 flex flex-col gap-2 xl:flex-row">
@@ -1207,7 +1227,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={() => handleOpenModal("regionalWater")}
             >
-              توضیحات
+              {t("description")}
             </button>
             {!getIsReadOnly("regionalWater") && (
               <button
@@ -1227,24 +1247,33 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 }
                 onClick={handleRegionalWaterSubmit}
               >
-                ارسال
+                {t("send")}
               </button>
             )}
           </div>
           {(taedProgramData?.firstnabmantaghe &&
             taedProgramData?.lastnabmantaghe) ||
           isSavedRegionalWater ? (
-            <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+              }`}
+            >
               {isSavedRegionalWater
                 ? `${firstName} ${lastName}`
                 : `${taedProgramData?.firstnabmantaghe} ${taedProgramData?.lastnabmantaghe}`}
             </div>
           ) : null}
           {taedProgramData?.tarikhabmantaghe || isSavedRegionalWater ? (
-            <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "left-2" : "right-2"
+              }`}
+            >
               {isSavedRegionalWater
                 ? currentDateTime
-                : taedProgramData?.tarikhabmantaghe &&
+                : locale === "fa"
+                ? taedProgramData?.tarikhabmantaghe &&
                   new Intl.DateTimeFormat("fa-IR", {
                     timeZone: "Asia/Tehran",
                     year: "numeric",
@@ -1254,14 +1283,16 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     minute: "2-digit",
                   })
                     .format(new Date(taedProgramData.tarikhabmantaghe))
-                    .replace(/،/g, " - ")}
+                    .replace(/،/g, " - ")
+                : taedProgramData?.tarikhabmantaghe &&
+                  formatDateTimeForNonPersian(taedProgramData.tarikhabmantaghe)}
             </div>
           ) : null}
         </div>
 
         {showPumpingContractor && (
           <div className="relative rounded-lg border border-gray-300 p-4">
-            <div className="mb-2 font-bold">پیمانکار پمپاژ</div>
+            <div className="mb-2 font-bold">{t("pumpingContractor")}</div>
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
               <label className="flex items-center gap-2">
                 <input
@@ -1277,7 +1308,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   checked={taedPeymankar === true}
                   onChange={() => handleTaedPeymankarChange(true)}
                 />
-                تایید
+                {t("confirmation")}
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -1293,7 +1324,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   checked={taedPeymankar === false}
                   onChange={() => handleTaedPeymankarChange(false)}
                 />
-                رد
+                {t("reject")}
               </label>
             </div>
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
@@ -1301,7 +1332,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                 onClick={() => handleOpenModal("pumpingContractor")}
               >
-                توضیحات
+                {t("description")}
               </button>
               {!getIsReadOnly("pumpingContractor") && (
                 <button
@@ -1321,24 +1352,33 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   }
                   onClick={handlePumpingContractorSubmit}
                 >
-                  ارسال
+                  {t("send")}
                 </button>
               )}
             </div>
             {(taedProgramData?.firstnpeymankar &&
               taedProgramData?.lastnpeymankar) ||
             isSavedPumpingContractor ? (
-              <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+              <div
+                className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                  locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+                }`}
+              >
                 {isSavedPumpingContractor
                   ? `${firstName} ${lastName}`
                   : `${taedProgramData?.firstnpeymankar} ${taedProgramData?.lastnpeymankar}`}
               </div>
             ) : null}
             {taedProgramData?.tarikhpeymankar || isSavedPumpingContractor ? (
-              <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+              <div
+                className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                  locale === "fa" || locale === "ar" ? "left-2" : "right-2"
+                }`}
+              >
                 {isSavedPumpingContractor
                   ? currentDateTime
-                  : taedProgramData?.tarikhpeymankar &&
+                  : locale === "fa"
+                  ? taedProgramData?.tarikhpeymankar &&
                     new Intl.DateTimeFormat("fa-IR", {
                       timeZone: "Asia/Tehran",
                       year: "numeric",
@@ -1348,7 +1388,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                       minute: "2-digit",
                     })
                       .format(new Date(taedProgramData.tarikhpeymankar))
-                      .replace(/،/g, " - ")}
+                      .replace(/،/g, " - ")
+                  : taedProgramData?.tarikhpeymankar &&
+                    formatDateTimeForNonPersian(
+                      taedProgramData.tarikhpeymankar
+                    )}
               </div>
             ) : null}
           </div>
@@ -1356,7 +1400,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
         {showWaterPower && (
           <div className="relative rounded-lg border border-gray-300 p-4">
-            <div className="mb-2 font-bold">آب نیرو</div>
+            <div className="mb-2 font-bold">{t("powerWater")}</div>
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
               <label className="flex items-center gap-2">
                 <input
@@ -1373,7 +1417,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   checked={taedAbNiroo === true}
                   onChange={() => handleTaedAbNirooChange(true)}
                 />
-                تایید
+                {t("confirmation")}
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -1390,7 +1434,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   checked={taedAbNiroo === false}
                   onChange={() => handleTaedAbNirooChange(false)}
                 />
-                رد
+                {t("reject")}
               </label>
             </div>
             <div className="mb-2 flex flex-col gap-2 xl:flex-row">
@@ -1398,7 +1442,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                 onClick={() => handleOpenModal("waterPower")}
               >
-                توضیحات
+                {t("description")}
               </button>
               {!getIsReadOnly("waterPower") && (
                 <button
@@ -1416,24 +1460,33 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   }
                   onClick={handleWaterPowerSubmit}
                 >
-                  ارسال
+                  {t("send")}
                 </button>
               )}
             </div>
             {(taedProgramData?.firstnabniroo &&
               taedProgramData?.lastnabniroo) ||
             isSavedWaterPower ? (
-              <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+              <div
+                className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                  locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+                }`}
+              >
                 {isSavedWaterPower
                   ? `${firstName} ${lastName}`
                   : `${taedProgramData?.firstnabniroo} ${taedProgramData?.lastnabniroo}`}
               </div>
             ) : null}
             {taedProgramData?.tarikhabniroo || isSavedWaterPower ? (
-              <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+              <div
+                className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                  locale === "fa" || locale === "ar" ? "left-2" : "right-2"
+                }`}
+              >
                 {isSavedWaterPower
                   ? currentDateTime
-                  : taedProgramData?.tarikhabniroo &&
+                  : locale === "fa"
+                  ? taedProgramData?.tarikhabniroo &&
                     new Intl.DateTimeFormat("fa-IR", {
                       timeZone: "Asia/Tehran",
                       year: "numeric",
@@ -1443,7 +1496,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                       minute: "2-digit",
                     })
                       .format(new Date(taedProgramData.tarikhabniroo))
-                      .replace(/،/g, " - ")}
+                      .replace(/،/g, " - ")
+                  : taedProgramData?.tarikhabniroo &&
+                    formatDateTimeForNonPersian(taedProgramData.tarikhabniroo)}
               </div>
             ) : null}
           </div>
@@ -1451,7 +1506,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
 
         <div className="flex h-full items-center justify-center rounded-lg border border-gray-300 px-4">
           <div className="w-full text-center">
-            <div className="mb-2 font-bold">فایل‌های نهایی</div>
+            <div className="mb-2 font-bold">{t("finalFiles")}</div>
             <div className="flex flex-col gap-2">
               <button
                 className={`w-full rounded-md bg-blue-500 px-4 py-1.5 text-white hover:bg-blue-600 ${
@@ -1464,7 +1519,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 }
                 onClick={handleGeneratePDF}
               >
-                پیش نمایش
+                {t("preview")}
               </button>
               <button
                 className={`w-full rounded-md bg-green-500 px-4 py-1.5 text-white hover:bg-green-600 ${
@@ -1495,7 +1550,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                   document.getElementById("file-input")?.click();
                 }}
               >
-                بارگذاری فایل نهایی
+                {t("uploadFinalFile")}
               </button>
               <input
                 id="file-input"
@@ -1513,7 +1568,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 disabled={isFileNameNahaeeNullOrEmpty && !isFinalFileUploaded}
                 onClick={handleViewFile}
               >
-                مشاهده فایل نهایی
+                {t("viewFinalFile")}
               </button>
               <ViewFinalFileModal
                 isOpen={isViewFileModalOpen}
@@ -1551,7 +1606,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               }
               onChange={handleCheckboxChange}
             />
-            <label htmlFor="final-approval">تایید نهایی</label>
+            <label htmlFor="final-approval">{t("finalApproval")}</label>
           </div>
           {networkTrustee === "AbMantaghei"
             ? !getIsReadOnly("regionalWater") && (
@@ -1573,7 +1628,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     }
                     onClick={handleFinalApprovalSubmit}
                   >
-                    ارسال
+                    {t("send")}
                   </button>
                 </div>
               )
@@ -1596,7 +1651,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     }
                     onClick={handleFinalApprovalSubmit}
                   >
-                    ارسال
+                    {t("send")}
                   </button>
                 </div>
               )}
@@ -1620,24 +1675,33 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 className="w-full rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
                 onClick={() => setIsCorrectionModalOpen(true)}
               >
-                اصلاحیه
+                {t("amendment")}
               </button>
             </div>
           )}
           {(taedProgramData?.firstntaeednahaee &&
             taedProgramData?.lastntaeednahaee) ||
           isFinalApprovalSubmitted ? (
-            <div className="absolute bottom-1 right-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "right-2" : "left-2"
+              }`}
+            >
               {isFinalApprovalSubmitted
                 ? `${firstName} ${lastName}`
                 : `${taedProgramData?.firstntaeednahaee} ${taedProgramData?.lastntaeednahaee}`}
             </div>
           ) : null}
           {taedProgramData?.tarikhtaeednahaee || isFinalApprovalSubmitted ? (
-            <div className="absolute bottom-1 left-2 text-xs italic text-gray-500">
+            <div
+              className={`absolute bottom-1 text-xs italic text-gray-500 ${
+                locale === "fa" || locale === "ar" ? "left-2" : "right-2"
+              }`}
+            >
               {isFinalApprovalSubmitted
                 ? currentDateTime
-                : taedProgramData?.tarikhtaeednahaee &&
+                : locale === "fa"
+                ? taedProgramData?.tarikhtaeednahaee &&
                   new Intl.DateTimeFormat("fa-IR", {
                     timeZone: "Asia/Tehran",
                     year: "numeric",
@@ -1647,7 +1711,11 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                     minute: "2-digit",
                   })
                     .format(new Date(taedProgramData.tarikhtaeednahaee))
-                    .replace(/،/g, " - ")}
+                    .replace(/،/g, " - ")
+                : taedProgramData?.tarikhtaeednahaee &&
+                  formatDateTimeForNonPersian(
+                    taedProgramData.tarikhtaeednahaee
+                  )}
             </div>
           ) : null}
         </div>
@@ -1676,7 +1744,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
           <Modal
             isOpen={!!openModal}
             onClose={() => setOpenModal(null)}
-            title={`توضیحات ${getModalTitle(openModal)}`}
+            title={`${t("description")} ${getModalTitle(openModal)}`}
             size="md"
           >
             <textarea
@@ -1695,7 +1763,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 className="rounded-md bg-gray-300 px-4 py-2 hover:bg-gray-400"
                 onClick={() => setOpenModal(null)}
               >
-                بستن
+                {t("close")}
               </button>
               {!getIsReadOnly(openModal.split("-")[3]) &&
                 isFiddaheValidComputed && (
@@ -1708,7 +1776,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                       setOpenModal(null);
                     }}
                   >
-                    ذخیره
+                    {t("save")}
                   </button>
                 )}
             </div>

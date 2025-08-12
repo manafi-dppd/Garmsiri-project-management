@@ -128,7 +128,7 @@ function RegisterPageContent() {
         `/${locale}/update-credentials?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}&email=${email}&id=${id}`
       );
     } else {
-      alert("مشکلی در ثبت اطلاعات پیش آمده است.");
+      alert(t("problem_registering"));
     }
   };
 

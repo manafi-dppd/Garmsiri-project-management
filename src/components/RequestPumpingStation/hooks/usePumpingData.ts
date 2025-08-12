@@ -201,7 +201,7 @@ export const usePumpingData = (
             "[usePumpingData] Fetching TaedAbMantaghe with:",
             queryParams
           );
-          const response = await fetch(`/api/getTaedAbMantaghe?${queryParams}`);
+          const response = await fetch(`/api/getTaedAbMantaghe?${queryParams}&locale=${locale}`);
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(

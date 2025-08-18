@@ -268,7 +268,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_explanation_required"),
         type: "error",
       });
@@ -278,7 +278,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (!taedProgramData) {
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_program_data_missing"),
         type: "error",
       });
@@ -316,7 +316,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         console.error("Error checking previous dahe approval:", error);
         setAlertState({
           isOpen: true,
-          title: "title_error",
+          title: t("title_error"),
           message: t("error_checking_previous_dahe"),
           type: "error",
         });
@@ -357,7 +357,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "title_success",
+        title: t("title_success"),
         message: t("success_data_saved"),
         type: "success",
       });
@@ -365,7 +365,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_saving_data"),
         type: "error",
       });
@@ -380,7 +380,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_explanation_required"),
         type: "error",
       });
@@ -420,7 +420,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "title_success",
+        title: t("title_success"),
         message: t("success_data_saved"),
         type: "success",
       });
@@ -428,7 +428,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_saving_data"),
         type: "error",
       });
@@ -442,7 +442,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     ) {
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_explanation_required"),
         type: "error",
       });
@@ -483,7 +483,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "title_success",
+        title: t("title_success"),
         message: t("success_data_saved"),
         type: "success",
       });
@@ -491,7 +491,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_saving_data"),
         type: "error",
       });
@@ -503,7 +503,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       if (!firstName || !lastName) {
         setAlertState({
           isOpen: true,
-          title: "title_error",
+          title: t("title_error"),
           message: t("error_no_first_last_name"),
           type: "error",
         });
@@ -533,7 +533,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setCurrentDateTime(formatLocalDateTime(new Date().toISOString()));
       setAlertState({
         isOpen: true,
-        title: "title_success",
+        title: t("title_success"),
         message: t("success_final_approval"),
         type: "success",
       });
@@ -541,7 +541,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error updating TaeedProgram:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_saving", {
           errorMessage: error instanceof Error ? error.message : String(error),
         }),
@@ -607,7 +607,25 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       return true;
     }
   };
+  const formatTime = (time: string | undefined): string | undefined => {
+    if (!time) return time;
 
+    if (time.includes("T")) {
+      try {
+        const date = new Date(time);
+        if (isNaN(date.getTime())) return undefined;
+        const hours = date.getUTCHours().toString().padStart(2, "0");
+        const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+        return `${hours}:${minutes}`;
+      } catch {
+        return undefined;
+      }
+    }
+    if (time.match(/^\d{2}:\d{2}:\d{2}$/)) {
+      return time.slice(0, 5);
+    }
+    return time;
+  };
   const handleSave = async () => {
     const isPreviousSaved = await checkPreviousDahe();
     if (!isPreviousSaved) {
@@ -640,44 +658,53 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setIsSaveButtonDisabled(false);
       return;
     }
-
     try {
       for (const record of records) {
         for (const ranesh of khatRaneshList) {
           const raneshInfo = pumpData[record.idtardor]?.[ranesh.idranesh];
-          const timeValue = timeValues[record.idtardor]?.[ranesh.idranesh];
-          const selectedPumpCount =
-            selectedPumpCounts[record.idtardor]?.[ranesh.idranesh] ?? 0;
-          const zarfiatValue =
-            selectedZarfiat[record.idtardor]?.[ranesh.idranesh] ?? 0;
 
-          const updatedRaneshInfo = {
-            ...raneshInfo,
-            Tedad:
-              selectedPumpCount !== undefined
-                ? selectedPumpCount
-                : raneshInfo?.tedad,
-            Zarfiat:
-              zarfiatValue !== undefined ? zarfiatValue : raneshInfo?.zarfiat,
-            Shorooe:
-              timeValue?.from !== undefined
-                ? timeValue.from
-                : raneshInfo?.shorooe,
-            Paian:
-              timeValue?.to !== undefined ? timeValue.to : raneshInfo?.paian,
-          };
+          // تعیین مقدار Tedad
+          const tedad =
+            selectedPumpCounts[record.idtardor]?.[ranesh.idranesh] !== undefined
+              ? selectedPumpCounts[record.idtardor][ranesh.idranesh]
+              : raneshInfo?.tedad ?? 0;
+
+          // تعیین مقدار Zarfiat
+          const zarfiat =
+            selectedZarfiat[record.idtardor]?.[ranesh.idranesh] !== undefined
+              ? selectedZarfiat[record.idtardor][ranesh.idranesh]
+              : raneshInfo?.zarfiat ?? 0;
+
+          // تعیین مقادیر زمان شروع و پایان
+          const timeValue = timeValues[record.idtardor]?.[ranesh.idranesh];
+          const shorooe =
+            timeValue?.from !== undefined
+              ? timeValue.from
+              : raneshInfo?.shorooe
+              ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
+              : "";
+
+          const paian =
+            timeValue?.to !== undefined
+              ? timeValue.to
+              : raneshInfo?.paian
+              ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
+              : "";
+
+          // فرمت کردن زمان‌ها
+          const formattedShorooe = formatTime(shorooe || undefined);
+          const formattedPaian = formatTime(paian || undefined);
+
+          // اعتبارسنجی زمان‌ها
           const isValidTime = (time: string | undefined) => {
             if (!time) return true;
             return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time);
           };
 
-          if (
-            updatedRaneshInfo.Shorooe &&
-            !isValidTime(updatedRaneshInfo.Shorooe)
-          ) {
+          if (formattedShorooe && !isValidTime(formattedShorooe)) {
             setAlertState({
               isOpen: true,
-              title: "title_error",
+              title: t("title_error"),
               message: t("error_invalid_start_time_format", {
                 raneshName: ranesh.raneshname,
               }),
@@ -686,13 +713,10 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             return;
           }
 
-          if (
-            updatedRaneshInfo.Paian &&
-            !isValidTime(updatedRaneshInfo.Paian)
-          ) {
+          if (formattedPaian && !isValidTime(formattedPaian)) {
             setAlertState({
               isOpen: true,
-              title: "title_error",
+              title: t("title_error"),
               message: t("error_invalid_end_time_format", {
                 raneshName: ranesh.raneshname,
               }),
@@ -700,6 +724,8 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
             });
             return;
           }
+
+          // ارسال به API مناسب بر اساس نوع رانش
           if (ranesh.fidsepu === 1) {
             const response = await fetch("/api/updateBahrebardairProgram", {
               method: "PUT",
@@ -707,9 +733,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               body: JSON.stringify({
                 IdRanesh: ranesh.idranesh,
                 IdTarDor: record.idtardor,
-                Tedad: updatedRaneshInfo.Tedad,
-                Shorooe: updatedRaneshInfo.Shorooe,
-                Paian: updatedRaneshInfo.Paian,
+                Tedad: tedad,
+                Shorooe: formattedShorooe,
+                Paian: formattedPaian,
               }),
             });
 
@@ -724,9 +750,9 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               body: JSON.stringify({
                 IdRanesh: ranesh.idranesh,
                 IdTarDor: record.idtardor,
-                Zarfiat: updatedRaneshInfo.Zarfiat,
-                Shorooe: updatedRaneshInfo.Shorooe,
-                Paian: updatedRaneshInfo.Paian,
+                Zarfiat: zarfiat,
+                Shorooe: formattedShorooe,
+                Paian: formattedPaian,
               }),
             });
           }
@@ -768,7 +794,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       setIsSaved(false);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_saving_data", {
           errorMessage: error instanceof Error ? error.message : String(error),
         }),
@@ -958,7 +984,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
     if (!allowedTypes.includes(file.type)) {
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_invalid_file_format"),
         type: "error",
       });
@@ -988,7 +1014,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       if (response.ok) {
         setAlertState({
           isOpen: true,
-          title: "title_success",
+          title: t("title_success"),
           message: t("success_file_uploaded"),
           type: "success",
         });
@@ -996,7 +1022,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       } else {
         setAlertState({
           isOpen: true,
-          title: "title_error",
+          title: t("title_error"),
           message: t("error_file_upload"),
           type: "error",
         });
@@ -1005,7 +1031,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error uploading file:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_file_upload"),
         type: "error",
       });
@@ -1044,7 +1070,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error downloading file:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_file_download"),
         type: "error",
       });
@@ -1080,7 +1106,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
       console.error("Error viewing file:", error);
       setAlertState({
         isOpen: true,
-        title: "title_error",
+        title: t("title_error"),
         message: t("error_file_view"),
         type: "error",
       });
@@ -1115,7 +1141,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
         {/* Div 1: درخواست کننده */}
         <div className="relative rounded-lg border border-gray-300 p-4">
           <div className="mb-2 font-bold">{t("requester")}</div>
-          <div className="mb-2 flex flex-col gap-2 xl:flex-row">
+          <div className="mb-2 flex flex-col gap-2">
             <button
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={() => handleOpenModal("requester")}
@@ -1222,7 +1248,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
               {t("reject")}
             </label>
           </div>
-          <div className="mb-2 flex flex-col gap-2 xl:flex-row">
+          <div className="mb-2 flex flex-col gap-2">
             <button
               className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={() => handleOpenModal("regionalWater")}
@@ -1327,7 +1353,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {t("reject")}
               </label>
             </div>
-            <div className="mb-2 flex flex-col gap-2 xl:flex-row">
+            <div className="mb-2 flex flex-col gap-2">
               <button
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                 onClick={() => handleOpenModal("pumpingContractor")}
@@ -1437,7 +1463,7 @@ const PumpingActions: React.FC<PumpingActionsProps> = ({
                 {t("reject")}
               </label>
             </div>
-            <div className="mb-2 flex flex-col gap-2 xl:flex-row">
+            <div className="mb-2 flex flex-col gap-2">
               <button
                 className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                 onClick={() => handleOpenModal("waterPower")}

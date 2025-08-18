@@ -132,11 +132,7 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
 
   // تنظیم مقادیر اولیه فقط در بارگذاری اولیه
   useEffect(() => {
-    if (
-      shabakeData?.mahList &&
-      shabakeData.mahList.length > 0 &&
-      isInitialLoad
-    ) {
+    if (shabakeData?.mahList && shabakeData.mahList.length > 0) {
       const currentDate =
         locale === "fa"
           ? getCurrentSalMahDahe()
@@ -168,11 +164,6 @@ const BodyRequestPumping: React.FC<BodyRequestPumpingProps> = ({
     setCurrentDahe,
     isInitialLoad,
   ]);
-
-  // همگام‌سازی daheState با currentDahe
-  useEffect(() => {
-    setCurrentDahe(daheState);
-  }, [daheState, setCurrentDahe]);
 
   // غیرفعال کردن فرم بر اساس شرایط
   useEffect(() => {

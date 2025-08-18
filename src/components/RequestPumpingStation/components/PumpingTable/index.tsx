@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  toLocalizedWeekday,
-  formatLocalizedDate,
-} from "@/utils/dateUtils";
+import { toLocalizedWeekday, formatLocalizedDate } from "@/utils/dateUtils";
 import { KhatRanesh, RecordType, PumpingData } from "../../types";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
@@ -61,6 +58,86 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
 }) => {
   const locale = useLocale();
   const t = useTranslations("PumpingTable");
+
+  // State برای ذخیره مقادیر requested_volume
+  const [requestedVolumes, setRequestedVolumes] = React.useState<{
+    [key: number]: number;
+  }>({});
+
+  // تابع محاسبه requested_volume
+  const calculateRequestedVolume = React.useCallback(() => {
+    const volumes: { [key: number]: number } = {};
+
+    khatRaneshList
+      .filter((ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1)
+      .forEach((ranesh) => {
+        const totalWaterVolume = records.reduce((sum, record) => {
+          const pumpInfo = pumpData[record.idtardor];
+          const raneshInfo = pumpInfo?.[ranesh.idranesh];
+
+          if (!raneshInfo) return sum;
+
+          const debi =
+            ranesh.fidsepu === 2
+              ? Number(
+                  selectedZarfiat[record.idtardor]?.[ranesh.idranesh] ??
+                    raneshInfo?.zarfiat ??
+                    0
+                )
+              : (selectedPumpCounts[record.idtardor]?.[ranesh.idranesh] ??
+                  raneshInfo.tedad ??
+                  0) *
+                (khatRaneshList.find(
+                  (khat) => khat.idranesh === ranesh.idranesh
+                )?.debipomp ?? 0);
+
+          const fromValue =
+            timeValues[record.idtardor]?.[ranesh.idranesh]?.from ??
+            (raneshInfo?.shorooe
+              ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
+              : "");
+
+          const toValue =
+            timeValues[record.idtardor]?.[ranesh.idranesh]?.to ??
+            (raneshInfo?.paian
+              ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
+              : "");
+
+          if (fromValue && toValue) {
+            const [fromHours, fromMinutes] = fromValue.split(":").map(Number);
+            const [toHours, toMinutes] = toValue.split(":").map(Number);
+
+            let durationMinutes =
+              toHours * 60 + toMinutes - (fromHours * 60 + fromMinutes);
+
+            if (durationMinutes <= 0) durationMinutes += 1440;
+
+            const durationHours = durationMinutes / 60;
+
+            return sum + debi * durationHours * 3.6;
+          }
+          return sum;
+        }, 0);
+
+        volumes[ranesh.idranesh] = totalWaterVolume;
+      });
+
+    return volumes;
+  }, [
+    khatRaneshList,
+    records,
+    pumpData,
+    selectedPumpCounts,
+    timeValues,
+    selectedZarfiat,
+  ]);
+
+  // به‌روزرسانی requested_volume هنگام تغییر ورودی‌ها
+  React.useEffect(() => {
+    const newVolumes = calculateRequestedVolume();
+    setRequestedVolumes(newVolumes);
+  }, [calculateRequestedVolume]);
+
   const handleZarfiatChange = (
     IdTarDor: number,
     IdRanesh: number,
@@ -69,18 +146,16 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
     const numericValue = Number(newValue);
 
     if (!isNaN(numericValue)) {
-      setSelectedZarfiat((prev) => {
-        const updatedData = {
-          ...prev,
-          [IdTarDor]: {
-            ...prev[IdTarDor],
-            [IdRanesh]: numericValue,
-          },
-        };
-        return updatedData;
-      });
+      setSelectedZarfiat((prev) => ({
+        ...prev,
+        [IdTarDor]: {
+          ...prev[IdTarDor],
+          [IdRanesh]: numericValue,
+        },
+      }));
     }
   };
+
   // تنظیم عرض ستون‌ها
   const columnWidths = {
     pumpCount: "40px",
@@ -90,7 +165,6 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
     duration: "50px",
   };
 
-  // محاسبه عرض ستون‌ها بر اساس تعداد ستون‌ها
   const calculateColumnWidth = (
     columnType: keyof typeof columnWidths,
     ranesh?: KhatRanesh
@@ -113,14 +187,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
   };
 
   return (
-    <table
-      id="pumping-table"
-      className="w-full"
-      // style={{
-      //   transformOrigin: "top right",
-      //   width: "max-content",
-      // }}
-    >
+    <table id="pumping-table" className="w-full">
       <thead className="bg-blue-100">
         <tr>
           <th
@@ -223,7 +290,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 <th
                   className="py-0.3 border px-0.5 font-bold"
                   style={{
-                    width: calculateColumnWidth("debi", ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                    width: calculateColumnWidth("debi", ranesh),
                     minWidth: calculateColumnWidth("debi", ranesh),
                     whiteSpace: "nowrap",
                   }}
@@ -233,8 +300,8 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 <th
                   className="py-0.3 border px-6 font-bold"
                   style={{
-                    width: calculateColumnWidth("pumpCount"),
-                    minWidth: calculateColumnWidth("pumpCount"),
+                    width: calculateColumnWidth("start"),
+                    minWidth: calculateColumnWidth("start"),
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -243,8 +310,8 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 <th
                   className="py-0.3 border px-6 font-bold"
                   style={{
-                    width: calculateColumnWidth("pumpCount"),
-                    minWidth: calculateColumnWidth("pumpCount"),
+                    width: calculateColumnWidth("end"),
+                    minWidth: calculateColumnWidth("end"),
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -381,7 +448,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                               )}`}
                               className="h-7 w-full cursor-pointer border border-green-400 bg-white/90 px-1 py-0.5 text-center text-xs text-gray-700 shadow-sm transition-all duration-300 hover:bg-green-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
                               style={{
-                                width: calculateColumnWidth("debi", ranesh), // اضافه کردن ranesh به عنوان پارامتر
+                                width: calculateColumnWidth("debi", ranesh),
                               }}
                             />
                           ) : (
@@ -750,7 +817,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 locale === "fa" || locale === "ar"
                   ? "border-l-4 border-l-green-400"
                   : "border-r-4 border-r-green-400"
-              } px-4 font-bold  text-xs`}
+              } px-4 font-bold text-xs`}
               colSpan={2}
             >
               {t("requested_volume")}
@@ -759,75 +826,23 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
               .filter(
                 (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
               )
-              .map((ranesh) => {
-                const totalWaterVolume = records.reduce((sum, record) => {
-                  const pumpInfo = pumpData[record.idtardor];
-                  const raneshInfo = pumpInfo?.[ranesh.idranesh];
-
-                  if (!raneshInfo) return sum;
-
-                  const debi =
-                    ranesh.fidsepu === 2
-                      ? Number(
-                          selectedZarfiat[record.idtardor]?.[ranesh.idranesh] ?? // استفاده از selectedZarfiat
-                            raneshInfo?.zarfiat ??
-                            0
-                        )
-                      : (selectedPumpCounts[record.idtardor]?.[
-                          ranesh.idranesh
-                        ] ??
-                          raneshInfo.tedad ??
-                          0) *
-                        (khatRaneshList.find(
-                          (khat) => khat.idranesh === ranesh.idranesh
-                        )?.debipomp ?? 0);
-
-                  const fromValue =
-                    timeValues[record.idtardor]?.[ranesh.idranesh]?.from ??
-                    (raneshInfo.shorooe
-                      ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
-                      : "");
-
-                  const toValue =
-                    timeValues[record.idtardor]?.[ranesh.idranesh]?.to ??
-                    (raneshInfo.paian
-                      ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
-                      : "");
-
-                  if (fromValue && toValue) {
-                    const [fromHours, fromMinutes] = fromValue
-                      .split(":")
-                      .map(Number);
-                    const [toHours, toMinutes] = toValue.split(":").map(Number);
-
-                    let durationMinutes =
-                      toHours * 60 + toMinutes - (fromHours * 60 + fromMinutes);
-
-                    if (durationMinutes <= 0) durationMinutes += 1440;
-
-                    const durationHours = durationMinutes / 60;
-
-                    return sum + debi * durationHours * 3.6;
-                  }
-                  return sum;
-                }, 0);
-
-                return (
-                  <td
-                    key={ranesh.idranesh}
-                    className={`${
-                      locale === "fa" || locale === "ar"
-                        ? "border-l-4 border-l-green-400"
-                        : "border-r-4 border-r-green-400"
-                    } px-4 text-center text-xs font-bold`}
-                    colSpan={ranesh.fidsepu === 1 ? 5 : 4}
-                  >
-                    {totalWaterVolume
-                      .toFixed(1)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </td>
-                );
-              })}
+              .map((ranesh) => (
+                <td
+                  key={ranesh.idranesh}
+                  className={`${
+                    locale === "fa" || locale === "ar"
+                      ? "border-l-4 border-l-green-400"
+                      : "border-r-4 border-r-green-400"
+                  } px-4 text-center text-xs font-bold`}
+                  colSpan={ranesh.fidsepu === 1 ? 5 : 4}
+                >
+                  {requestedVolumes[ranesh.idranesh] !== undefined
+                    ? requestedVolumes[ranesh.idranesh]
+                        .toFixed(1)
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    : "0"}
+                </td>
+              ))}
           </tr>
 
           <tr className="bg-yellow-100 font-semibold">
@@ -836,7 +851,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 locale === "fa" || locale === "ar"
                   ? "border-l-4 border-l-green-400"
                   : "border-r-4 border-r-green-400"
-              } px-4 font-bold  text-xs`}
+              } px-4 font-bold text-xs`}
               colSpan={2}
             >
               {t("predicted_volume")}
@@ -869,7 +884,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 locale === "fa" || locale === "ar"
                   ? "border-l-4 border-l-green-400"
                   : "border-r-4 border-r-green-400"
-              } px-4 font-bold  text-xs`}
+              } px-4 font-bold text-xs`}
               colSpan={2}
             >
               {t("extra_request")}
@@ -879,54 +894,7 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
                 (ranesh) => ranesh.active !== false && ranesh.fiddpipe === 1
               )
               .map((ranesh) => {
-                const totalWaterVolume = records.reduce((sum, record) => {
-                  const pumpInfo = pumpData[record.idtardor];
-                  const raneshInfo = pumpInfo?.[ranesh.idranesh];
-
-                  if (!raneshInfo) return sum;
-
-                  const debi =
-                    ranesh.fidsepu === 2
-                      ? Number(raneshInfo?.zarfiat ?? 0)
-                      : (selectedPumpCounts[record.idtardor]?.[
-                          ranesh.idranesh
-                        ] ??
-                          raneshInfo.tedad ??
-                          0) *
-                        (khatRaneshList.find(
-                          (khat) => khat.idranesh === ranesh.idranesh
-                        )?.debipomp ?? 0);
-
-                  const fromValue =
-                    timeValues[record.idtardor]?.[ranesh.idranesh]?.from ??
-                    (raneshInfo.shorooe
-                      ? new Date(raneshInfo.shorooe).toISOString().slice(11, 16)
-                      : "");
-
-                  const toValue =
-                    timeValues[record.idtardor]?.[ranesh.idranesh]?.to ??
-                    (raneshInfo.paian
-                      ? new Date(raneshInfo.paian).toISOString().slice(11, 16)
-                      : "");
-
-                  if (fromValue && toValue) {
-                    const [fromHours, fromMinutes] = fromValue
-                      .split(":")
-                      .map(Number);
-                    const [toHours, toMinutes] = toValue.split(":").map(Number);
-
-                    let durationMinutes =
-                      toHours * 60 + toMinutes - (fromHours * 60 + fromMinutes);
-
-                    if (durationMinutes <= 0) durationMinutes += 1440;
-
-                    const durationHours = durationMinutes / 60;
-
-                    return sum + debi * durationHours * 3.6;
-                  }
-                  return sum;
-                }, 0);
-
+                const totalWaterVolume = requestedVolumes[ranesh.idranesh] ?? 0;
                 const predictedVolume = finalVolumes[ranesh.idranesh] ?? 0;
                 const extraRequest = totalWaterVolume - predictedVolume;
                 const textColor =
@@ -955,13 +923,12 @@ const PumpingTable: React.FC<PumpingTableProps> = ({
         <tbody>
           <tr>
             <td colSpan={100} className="text-center">
-              لطفا منتظر بمانید
+              {t("outside_cultivation_period")}
             </td>
           </tr>
         </tbody>
       )}
     </table>
-    // </div>
   );
 };
 

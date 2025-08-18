@@ -35,15 +35,6 @@ export async function PUT(request: Request) {
     } = body;
     const now = new Date();
 
-    // لاگ برای دیباگ ورودی‌ها
-    console.log("[route.ts] Input parameters:", {
-      fidpumpsta,
-      sal,
-      mah,
-      dahe,
-      locale,
-    });
-
     // تنظیم شرط where بر اساس locale
     const whereClause = {
       fidpumpsta: fidpumpsta,
@@ -55,9 +46,6 @@ export async function PUT(request: Request) {
         : { fiddec: { not: null } }),
     };
 
-    // لاگ برای دیباگ شرط where
-    console.log("[route.ts] whereClause:", whereClause);
-
     const updatedRecords = await prisma.taeedprogram.updateMany({
       where: whereClause,
       data: {
@@ -67,9 +55,6 @@ export async function PUT(request: Request) {
         tarikhersal: now,
       },
     });
-
-    // لاگ برای دیباگ تعداد رکوردهای به‌روزرسانی‌شده
-    console.log("[route.ts] Updated records count:", updatedRecords.count);
 
     if (updatedRecords.count === 0) {
       return NextResponse.json(

@@ -21,15 +21,15 @@ export default function LocaleSwitcher() {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="grid grid-cols-2 gap-2">
       {Object.entries(localeNames).map(([lang, name]) => (
         <button
           key={lang}
           onClick={() => switchLocale(lang)}
-          className={`px-3 py-1 rounded text-xs ${
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
             locale === lang
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 hover:bg-gray-300"
+              ? "bg-blue-800 text-white shadow-md border border-blue-900 hover:bg-blue-900"
+              : "bg-transparent text-white border border-white hover:bg-gray-700/30"
           }`}
         >
           {name}

@@ -92,45 +92,26 @@ export const usePumpingData = (
   const [taedProgramData, setTaedProgramData] =
     useState<TaeedProgramData | null>(null);
   const [currentFiddahe, setCurrentFiddahe] = useState<number | null>(null);
-  // useEffect(() => {
-  //   if (idPumpStation > 0 && sal && mah && dahe) {
-  //     const fetchTaedProgramData = async () => {
-  //       try {
-  //         const response = await fetch("/api/getTaeedProgramDetails", {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({
-  //             fidpumpsta: idPumpStation,
-  //             sal,
-  //             mah,
-  //             dahe,
-  //           }),
-  //         });
+  const [currentFiddec, setCurrentFiddec] = useState<number | null>(null);
 
-  //         if (!response.ok) {
-  //           throw new Error("Failed to fetch TaeedProgram data");
-  //         }
-  //         setTaedProgramData(await response.json());
-  //       } catch {
-  //         setTaedProgramData(null);
-  //       }
-  //     };
-  //     fetchTaedProgramData();
-  //   }
-  // }, [idPumpStation, sal, mah, dahe]);
-  // console.log("dahe: ", dahe);
+  useEffect(() => {
+    // ریست stateها وقتی شبکه یا ایستگاه پمپ تغییر می‌کند
+    setRecords([]);
+    setKhatRaneshList([]);
+    setPredictedVolumes({});
+    setFinalVolumes({});
+    setPumpData({});
+    setMessage(null); // اختیاری: ریست پیام خطا
+  }, [selectedNetworkId, idPumpStation, setPumpData]);
+
   useEffect(() => {
     if (idPumpStation > 0 && sal && mah && dahe) {
+      const abortController = new AbortController();
+      const signal = abortController.signal;
+
       const fetchTaedProgramData = async () => {
         setLoading(true);
         try {
-          console.log("[usePumpingData] Fetching TaeedProgramData with:", {
-            fidpumpsta: idPumpStation,
-            sal,
-            mah,
-            dahe,
-            locale,
-          });
           const response = await fetch("/api/getTaeedProgramDetails", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -141,6 +122,7 @@ export const usePumpingData = (
               dahe,
               locale,
             }),
+            signal,
           });
 
           if (!response.ok) {
@@ -152,10 +134,14 @@ export const usePumpingData = (
             );
           }
           const data = await response.json();
-          console.log("[usePumpingData] TaeedProgramData:", data);
           setTaedProgramData(data);
-          setCurrentFiddahe(locale === "fa" ? data.fiddahe : data.fiddec);
-        } catch (error) {
+          setCurrentFiddahe(data.fiddahe);
+          setCurrentFiddec(data.fiddec);
+        } catch (error: unknown) {
+          if (error instanceof Error && error.name === "AbortError") {
+            console.log("Request aborted");
+            return;
+          }
           console.error(
             "[usePumpingData] Error fetching TaeedProgramData:",
             error
@@ -167,21 +153,16 @@ export const usePumpingData = (
           );
           setTaedProgramData(null);
           setCurrentFiddahe(null);
+          setCurrentFiddec(null);
         } finally {
           setLoading(false);
         }
       };
       fetchTaedProgramData();
-    } else {
-      console.warn(
-        "[usePumpingData] Invalid parameters for TaeedProgramData:",
-        {
-          idPumpStation,
-          sal,
-          mah,
-          dahe,
-        }
-      );
+
+      return () => {
+        abortController.abort();
+      };
     }
   }, [idPumpStation, sal, mah, dahe, locale]);
 
@@ -201,7 +182,9 @@ export const usePumpingData = (
             "[usePumpingData] Fetching TaedAbMantaghe with:",
             queryParams
           );
-          const response = await fetch(`/api/getTaedAbMantaghe?${queryParams}&locale=${locale}`);
+          const response = await fetch(
+            `/api/getTaedAbMantaghe?${queryParams}&locale=${locale}`
+          );
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(
@@ -251,6 +234,7 @@ export const usePumpingData = (
             : shabakeData.currentFiddec ?? null;
         console.log("[usePumpingData] Setting currentFiddahe:", fidValue);
         setCurrentFiddahe(fidValue);
+        setCurrentFiddec(fidValue);
       }
     }
   }, [shabakeData, locale]);
@@ -410,11 +394,26 @@ export const usePumpingData = (
   }, [predictedVolumes, khatRaneshList]);
 
   useEffect(() => {
+    if (records.length === 0 || khatRaneshList.length === 0)
+      return;
+
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
     const fetchData = async () => {
       setLoading(true);
       try {
-        console.log("[usePumpingData] Fetching pump data");
-        const response = await fetch("/api/request-pumping");
+        const idtardors = records.map((record) => record.idtardor);
+        const response = await fetch("/api/request-pumping", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fidranesh: khatRaneshList.map((item) => item.idranesh),
+            idtardors,
+          }),
+          signal,
+        });
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
@@ -424,7 +423,19 @@ export const usePumpingData = (
           );
         }
 
-        const { bahrebardair, bahrebardairSeghli } = await response.json();
+        const data = await response.json().catch(() => {
+          throw new Error("Invalid JSON response");
+        });
+
+        const { bahrebardair, bahrebardairSeghli } = data;
+        if (
+          !Array.isArray(bahrebardair) ||
+          !Array.isArray(bahrebardairSeghli)
+        ) {
+          throw new Error(
+            "Invalid or missing bahrebardair/bahrebardairSeghli data"
+          );
+        }
         const newPumpData: typeof pumpData = {};
 
         records.forEach((record) => {
@@ -432,43 +443,40 @@ export const usePumpingData = (
             newPumpData[record.idtardor] = {};
           }
           khatRaneshList.forEach((ranesh) => {
-            if (!newPumpData[record.idtardor][ranesh.idranesh]) {
-              newPumpData[record.idtardor][ranesh.idranesh] = {
-                tedad: 0,
-                zarfiat: null,
-                shorooe: null,
-                paian: null,
-              };
-            }
+            const bahrebardairItem = bahrebardair.find(
+              (item: BahrebardairItem) =>
+                item.fidtardor === record.idtardor &&
+                item.fidranesh === ranesh.idranesh
+            );
+            const bahrebardairSeghliItem = bahrebardairSeghli.find(
+              (item: BahrebardairSeghliItem) =>
+                item.fidtardor === record.idtardor &&
+                item.fidranesh === ranesh.idranesh
+            );
+
+            newPumpData[record.idtardor][ranesh.idranesh] = {
+              tedad: bahrebardairItem?.tedad || 0,
+              zarfiat: bahrebardairSeghliItem?.zarfiat || null,
+              shorooe:
+                bahrebardairItem?.shorooe ||
+                bahrebardairSeghliItem?.shorooe ||
+                null,
+              paian:
+                bahrebardairItem?.paian ||
+                bahrebardairSeghliItem?.paian ||
+                null,
+            };
           });
         });
 
-        bahrebardair.forEach((item: BahrebardairItem) => {
-          if (!newPumpData[item.fidtardor]) {
-            newPumpData[item.fidtardor] = {};
-          }
-          newPumpData[item.fidtardor][item.fidranesh] = {
-            tedad: item.tedad,
-            zarfiat: null,
-            shorooe: item.shorooe,
-            paian: item.paian,
-          };
-        });
-
-        bahrebardairSeghli.forEach((item: BahrebardairSeghliItem) => {
-          if (!newPumpData[item.fidtardor]) {
-            newPumpData[item.fidtardor] = {};
-          }
-          newPumpData[item.fidtardor][item.fidranesh] = {
-            tedad: 0,
-            zarfiat: item.zarfiat,
-            shorooe: item.shorooe,
-            paian: item.paian,
-          };
-        });
-
         setPumpData(newPumpData);
-      } catch (error) {
+        setMessage(null);
+      } catch (error: unknown) {
+        // مشخص کردن نوع error به unknown
+        if (error instanceof Error && error.name === "AbortError") {
+          console.log("Request aborted");
+          return;
+        }
         console.error("[usePumpingData] Error fetching pump data:", error);
         setMessage(
           locale === "fa"
@@ -480,10 +488,19 @@ export const usePumpingData = (
       }
     };
 
-    if (records.length > 0 && khatRaneshList.length > 0) {
-      fetchData();
-    }
-  }, [records, khatRaneshList, setPumpData, locale]);
+    fetchData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [
+    records,
+    khatRaneshList,
+    currentFiddahe,
+    locale,
+    setPumpData,
+    currentFiddec,
+  ]);
 
   return {
     khatRaneshList,

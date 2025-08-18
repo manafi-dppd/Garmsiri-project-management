@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { getLocale } from "next-intl/server";
 import { locales, Locale, defaultLocale } from "@/i18n/config";
 
 interface TaeedProgramRequest {
@@ -12,44 +11,42 @@ interface TaeedProgramRequest {
 }
 
 export async function POST(request: NextRequest) {
-  const url = new URL(request.url);
-  const urlLocale = url.searchParams.get("locale");
-  const acceptLanguage = request.headers.get("Accept-Language")?.split(",")[0];
-  const localeBase = acceptLanguage
-    ? acceptLanguage.split("-")[0]
-    : defaultLocale;
-  const locale = (
-    locales.includes(urlLocale as Locale)
-      ? urlLocale
-      : locales.includes(localeBase as Locale)
-      ? localeBase
-      : defaultLocale
-  ) as Locale;
-  try {
-    const body = (await request.json()) as TaeedProgramRequest;
+  let body: TaeedProgramRequest | null = null; // تعریف body در محدوده بالاتر
 
+  try {
+    body = (await request.json()) as TaeedProgramRequest;
+
+    // بررسی وجود پارامترهای الزامی
     if (
       !body ||
       typeof body.fidpumpsta !== "number" ||
       !body.sal ||
       !body.mah ||
-      !body.dahe
+      !body.dahe ||
+      !body.locale
     ) {
       return NextResponse.json(
         {
-          error: locale === "fa" ? "پارامترهای نامعتبر" : "Invalid parameters",
+          error:
+            body?.locale === "fa" ? "پارامترهای نامعتبر" : "Invalid parameters",
           received: body,
         },
         { status: 400 }
       );
     }
-    const { fidpumpsta, sal, mah, dahe } = body;
+
+    const { fidpumpsta, sal, mah, dahe, locale } = body; // استخراج locale از بدنه
+
+    // اعتبارسنجی locale
+    const validatedLocale = locales.includes(locale as Locale)
+      ? (locale as Locale)
+      : defaultLocale;
 
     if (!fidpumpsta || !sal || !mah || !dahe) {
       return NextResponse.json(
         {
           error:
-            locale === "fa"
+            validatedLocale === "fa"
               ? "پارامترهای الزامی وجود ندارد"
               : "Missing required parameters",
         },
@@ -63,7 +60,6 @@ export async function POST(request: NextRequest) {
       mah,
       dahe,
     };
-
     const result = await prisma.taeedprogram.findFirst({
       where: whereClause,
       select: {
@@ -88,8 +84,8 @@ export async function POST(request: NextRequest) {
         lastntaeednahaee: true,
         tarikhtaeednahaee: true,
         taeednahaee: true,
-        fiddahe: locale === "fa" ? true : false,
-        fiddec: locale !== "fa" ? true : false,
+        fiddahe: validatedLocale === "fa" ? true : false,
+        fiddec: validatedLocale !== "fa" ? true : false,
         toziheslah: true,
       },
     });
@@ -98,7 +94,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            locale === "fa" ? "رکوردی یافت نشد" : "No matching record found",
+            validatedLocale === "fa"
+              ? "رکوردی یافت نشد"
+              : "No matching record found",
         },
         { status: 404 }
       );
@@ -127,15 +125,16 @@ export async function POST(request: NextRequest) {
         !result.tarikhabniroo
           ? null
           : result.taedabniroo,
-      fiddahe: locale === "fa" ? result.fiddahe : null,
-      fiddec: locale !== "fa" ? result.fiddec : null,
+      fiddahe: validatedLocale === "fa" ? result.fiddahe : null,
+      fiddec: validatedLocale !== "fa" ? result.fiddec : null,
     };
 
     return NextResponse.json(sanitized, { status: 200 });
   } catch (error) {
     console.error("Error fetching TaeedProgram details:", error);
+    // استفاده از body?.locale برای مدیریت خطا
     return NextResponse.json(
-      { error: locale === "fa" ? "خطای سرور" : "Server error" },
+      { error: body?.locale === "fa" ? "خطای سرور" : "Server error" },
       { status: 500 }
     );
   } finally {

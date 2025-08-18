@@ -2,6 +2,7 @@ import * as React from "react";
 import { useLocale } from "next-intl";
 import { Locale } from "@/i18n/config";
 import { useTranslations } from "next-intl";
+import { debounce } from "lodash";
 
 export function convertMahToPersian(mah: number): string {
   const months = [
@@ -38,25 +39,27 @@ const PaginationForMah: React.FC<PaginationForMahProps> = ({
   setDahe,
   onDaheChange,
 }) => {
+
+  // استفاده: onClick={debouncedHandlePrevDahe}
   const locale = useLocale();
   const t = useTranslations("Pagination");
-  const handlePrevDahe = () => {
+  const handlePrevDahe = debounce(() => {
     if (dahe > 1) {
       const newDahe = dahe - 1;
       setSelectedDahe(newDahe);
       setDahe(newDahe);
       onDaheChange?.();
     }
-  };
+  }, 300);
 
-  const handleNextDahe = () => {
+  const handleNextDahe = debounce(() => {
     if (dahe < 3) {
       const newDahe = dahe + 1;
       setSelectedDahe(newDahe);
       setDahe(newDahe);
       onDaheChange?.();
     }
-  };
+  }, 300);
 
   return (
     <div

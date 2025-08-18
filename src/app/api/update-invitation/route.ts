@@ -29,10 +29,8 @@ export async function POST(request: NextRequest) {
   const t = await getServerTranslations("updateCredentials", locale);
   try {
     const requestData = await request.json();
-    console.log("Request data:", requestData);
     const { id, username, passcode } = requestData;
     const parsedId = parseInt(id, 10);
-    console.log("Parsed ID:", parsedId);
 
     if (!parsedId || isNaN(parsedId)) {
       return NextResponse.json(
@@ -49,7 +47,6 @@ export async function POST(request: NextRequest) {
         invitation_access: true,
       },
     });
-    console.log("Current invitation:", currentInvitation);
 
     if (!currentInvitation) {
       return NextResponse.json(
@@ -106,7 +103,6 @@ export async function POST(request: NextRequest) {
         active: true,
       },
     });
-    console.log("Upserted user:", newUser);
 
     if (currentInvitation.invitation_access?.length) {
       await prisma.user_access.createMany({

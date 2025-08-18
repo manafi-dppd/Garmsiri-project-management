@@ -42,7 +42,7 @@
     "email": "Email",
     "placeholderEmail": "Enter your email.",
     "continue": "Continue",
-    "problem_registering":"There is a problem registering the information."
+    "problem_registering": "There is a problem registering the information."
   },
   "updateCredentials": {
     "changeWordPassword": "Change Username and Password",
@@ -269,7 +269,8 @@
     "duration": "Duration",
     "requested_volume": "Requested volume",
     "predicted_volume": "Predicted Volume",
-    "extra_request": "Extra Request"
+    "extra_request": "Extra Request",
+    "outside_cultivation_period": "Outside the cultivation period"
   },
   "Pagination": {
     "first": "First decade",
@@ -284,7 +285,7 @@
     "downloadFile": "Download file",
     "representativeExecutiveBranch": "Representative of the executive branch:",
     "representativeRegionalWaterCooperative": "Representative of the regional water company/rural cooperative:",
-    "No_table_found_Excel":"No table found to convert to Excel."
+    "No_table_found_Excel": "No table found to convert to Excel."
   },
   "PumpingActions": {
     "requester": "Requester",
@@ -294,13 +295,13 @@
     "finalFiles": "Final files",
     "save": "Save",
     "wait": "Wait...",
-    "send": "Send",
-    "description": "Description",
-    "confirmation": "Confirmation",
+    "send": "Apply",
+    "description": "comment",
+    "confirmation": "Accept",
     "reject": "Reject",
     "preview": "Preview",
-    "uploadFinalFile": "Upload the final file",
-    "viewFinalFile": "View the final file",
+    "uploadFinalFile": "Upload final file",
+    "viewFinalFile": "View final file",
     "finalApproval": "Final approval",
     "amendment": "Amendment",
     "close": "Close",
@@ -324,25 +325,43 @@
     "title_error": "Error",
     "title_error_confirmation": "Error in confirmation",
     "title_success": "Success",
-    "title_error_saving":"Error saving",
+    "title_error_saving": "Error saving",
     "first": "First decade",
     "second": "Second decade",
     "third": "Third decade",
     "successfully_saved_decade": "Information related to the {daheText} of {mahText} in the {pumpStationName} was successfully saved.",
-    "fetchError": "Error retrieving information"
+    "fetchError": "Error retrieving information",
+    "Months": {
+      "month1": "January",
+      "month2": "February",
+      "month3": "March",
+      "month4": "April",
+      "month5": "May",
+      "month6": "June",
+      "month7": "July",
+      "month8": "August",
+      "month9": "September",
+      "month10": "October",
+      "month11": "November",
+      "month12": "December"
+    }
   },
   "CorrectionModal": {
-      "title": "Correction",
-      "close_button": "Close",
-      "submit_button": "Submit",
-      "submitting": "Submitting...",
-      "confirmation_title": "Confirm Correction Submission",
-      "confirmation_message": "By submitting the correction request, the submission and approval stages for the program of {daheText} {mahText} month of {pumpStationName} station will be canceled and must be redone. <br /> Are you sure you want to submit the request?",
-      "success_message": "Correction request successfully submitted",
-      "error_empty_text": "An explanation must be provided for the correction request",
-      "error_submission_failed": "Error submitting correction request",
-      "yes":"Yes",
-      "no":"No",
-      "success":"Success"
-    }
+    "title": "Correction",
+    "close_button": "Close",
+    "submit_button": "Submit",
+    "submitting": "Submitting...",
+    "confirmation_title": "Confirm Correction Submission",
+    "confirmation_message": "By submitting the correction request, the submission and approval stages for the program of {daheText} {mahText} month of {pumpStationName} station will be canceled and must be redone. Are you sure you want to submit the request?",
+    "success_message": "Correction request successfully submitted",
+    "error_empty_text": "An explanation must be provided for the correction request",
+    "error_submission_failed": "Error submitting correction request",
+    "yes": "Yes",
+    "no": "No",
+    "success": "Success"
+  },
+  "ViewFinalFileModal": {
+    "download_file": "Download file",
+    "close": "Close"
+  }
 }

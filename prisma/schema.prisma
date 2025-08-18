@@ -47,6 +47,9 @@ model bahrebardairprogram {
   paian          DateTime?      @db.Time(6)
   khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogram_khatranesh")
   trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogram_trikhdorekesht")
+
+  @@index([fidranesh, fidtardor])
+  @@index([tedad])
 }
 
 model bahrebardairprogramseghli {
@@ -58,6 +61,35 @@ model bahrebardairprogramseghli {
   paian          DateTime?      @db.Time(6)
   khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogramseghli_khatranesh")
   trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardairprogramseghli_trikhdorekesht")
+
+  @@index([fidranesh, fidtardor])
+}
+
+model trikhdorekesht {
+  idtardor                  Int                         @id @default(autoincrement()) @db.SmallInt
+  fidsal                    Int                         @db.SmallInt
+  fiddore                   Int                         @db.SmallInt
+  trikh                     DateTime                    @db.Date
+  trikhkhorshidi            String                      @db.VarChar(20)
+  dahe                      Int                         @db.SmallInt
+  sal                       Int
+  mah                       Int                         @db.SmallInt
+  fiddahe                   Int
+  fiddec                    Int?
+  bahrebardairprogram       bahrebardairprogram[]
+  bahrebardairprogramseghli bahrebardairprogramseghli[]
+  bahrebardaritaghvim       bahrebardaritaghvim[]
+  eshtebahavamel            eshtebahavamel[]
+  flowbehbood               flowbehbood[]
+  flowmeters                flowmeter[]
+  kontor                    kontor[]
+  nashtshabake              nashtshabake[]
+  nonfit                    nonfit[]
+  salmahdahe                salmahdahe                  @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
+  decade_link               decade_link?                @relation("DecadeLinkToTrikhdorekesht", fields: [fiddec], references: [iddec], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddec")
+
+  @@index([fiddahe])
+  @@index([fiddec])
 }
 
 model bahrebardarikeshtdore {
@@ -78,6 +110,8 @@ model bahrebardaritaghvim {
   taghvim        Decimal        @db.Decimal(9, 2)
   khatranesh     khatranesh     @relation(fields: [fidranesh], references: [idranesh], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardaritaghvim_khatranesh")
   trikhdorekesht trikhdorekesht @relation(fields: [fidtardor], references: [idtardor], onDelete: NoAction, onUpdate: NoAction, map: "fk_bahrebardaritaghvim_trikhdorekesht")
+
+  @@index([fidtardor, fidranesh])
 }
 
 model bareshmotaleat {
@@ -346,9 +380,9 @@ model salmahdahe {
 model seghlipump {
   idsepu        Int          @id @default(autoincrement()) @db.SmallInt
   seghlipump    String       @db.VarChar(20)
-  seghlipump_tr String?      @db.VarChar(20)
   seghlipump_ar String?      @db.VarChar(20)
   seghlipump_fa String?      @db.VarChar(20)
+  seghlipump_tr String?      @db.VarChar(20)
   khatranesh    khatranesh[]
 }
 
@@ -431,32 +465,6 @@ model test {
   fidranesh Int @db.SmallInt
   fidtardor Int @db.SmallInt
   test      Int
-}
-
-model trikhdorekesht {
-  idtardor                  Int                         @id @default(autoincrement()) @db.SmallInt
-  fidsal                    Int                         @db.SmallInt
-  fiddore                   Int                         @db.SmallInt
-  trikh                     DateTime                    @db.Date
-  trikhkhorshidi            String                      @db.VarChar(20)
-  dahe                      Int                         @db.SmallInt
-  sal                       Int
-  mah                       Int                         @db.SmallInt
-  fiddahe                   Int
-  fiddec                    Int?
-  bahrebardairprogram       bahrebardairprogram[]
-  bahrebardairprogramseghli bahrebardairprogramseghli[]
-  bahrebardaritaghvim       bahrebardaritaghvim[]
-  eshtebahavamel            eshtebahavamel[]
-  flowbehbood               flowbehbood[]
-  flowmeters                flowmeter[]
-  kontor                    kontor[]
-  nashtshabake              nashtshabake[]
-  nonfit                    nonfit[]
-  salmahdahe                salmahdahe                  @relation(fields: [fiddahe], references: [iddahe], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddahe")
-  decade_link               decade_link?                @relation("DecadeLinkToTrikhdorekesht", fields: [fiddec], references: [iddec], onDelete: NoAction, onUpdate: NoAction, map: "fk_fiddec")
-
-  @@map("trikhdorekesht")
 }
 
 model weatherstation {

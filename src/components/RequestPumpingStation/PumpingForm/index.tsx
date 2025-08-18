@@ -236,7 +236,7 @@ const PumpingForm: React.FC<PumpingFormProps> = ({
 
     const hasAllowedRole = userRole.some((role) => allowedRoles.includes(role));
     const isTaedAbMantagheTrue = taedProgramData?.taedabmantaghe === true;
-    return true;
+    return hasAllowedRole && !isTaedAbMantagheTrue && isFiddaheValid;
   };
 
   const [isDataLoaded, setIsDataLoaded] = React.useState(false);

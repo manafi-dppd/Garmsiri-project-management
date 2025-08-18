@@ -1,7 +1,7 @@
 {
   "common": {
     "title": "سامانه جامع مدیریت یکپارچه",
-    "projectName": "طرح گرمسیری",
+    "projectName": "طــرح گرمسیــری",
     "welcome": "به سامانه جامع مدیریت یکپارچه طرح گرمسیری خوش آمدید",
     "login": "ورود",
     "register": "ثبت نام",
@@ -42,7 +42,7 @@
     "email": "ایمیل",
     "placeholderEmail": "ایمیل خود را وارد کنید.",
     "continue": "ادامه",
-    "problem_registering":"مشکلی در ثبت اطلاعات پیش آمده است."
+    "problem_registering": "مشکلی در ثبت اطلاعات پیش آمده است."
   },
   "updateCredentials": {
     "changeWordPassword": "تغییر نام کاربری و رمز عبور",
@@ -269,7 +269,8 @@
     "duration": "مدت",
     "requested_volume": "حجم درخواستی",
     "predicted_volume": "حجم پیش‌بینی",
-    "extra_request": "اضافه درخواست"
+    "extra_request": "اضافه درخواست",
+    "outside_cultivation_period": "خارج از دوره کشت"
   },
   "Pagination": {
     "first": "دهه اول",
@@ -284,7 +285,7 @@
     "downloadFile": "دریافت فایل",
     "representativeExecutiveBranch": "نماینده دستگاه اجرایی:",
     "representativeRegionalWaterCooperative": "نماینده شرکت آب منطقه ای/ تعاونی روستایی:",
-    "No_table_found_Excel":"جدولی برای تبدیل به اکسل یافت نشد."
+    "No_table_found_Excel": "جدولی برای تبدیل به اکسل یافت نشد."
   },
   "PumpingActions": {
     "requester": "درخواست کننده",
@@ -294,8 +295,8 @@
     "finalFiles": "فایل‌های نهایی",
     "save": "ذخیره",
     "wait": "منتظر بمانید...",
-    "send": "ارسال",
-    "description": "توضیحات",
+    "send": "اعمال",
+    "description": "توضیح",
     "confirmation": "تایید",
     "reject": "رد",
     "preview": "پیش نمایش",
@@ -324,7 +325,7 @@
     "title_error": "خطا",
     "title_error_confirmation": "خطا در تایید",
     "title_success": "موفقیت",
-    "title_error_saving":"خطا در ذخیره",
+    "title_error_saving": "خطا در ذخیره",
     "first": "دهه اول",
     "second": "دهه دوم",
     "third": "دهه سوم",
@@ -332,17 +333,21 @@
     "fetchError": "خطا در دریافت اطلاعات"
   },
   "CorrectionModal": {
-      "title": "اصلاحات",
-      "close_button": "بستن",
-      "submit_button": "ارسال",
-      "submitting": "در حال ارسال...",
-      "confirmation_title": "تأیید ارسال اصلاحیه",
-      "confirmation_message": "با ارسال درخواست اصلاحیه مراحل ارسال و تایید برنامه <span class='font-bold'>{daheText} {mahText} ماه ایستگاه {pumpStationName}</span> حذف خواهد شد و بایستی دومرتبه انجام شود. <br /> آیا از ارسال درخواست مطمئن هستید؟",
-      "success_message": "درخواست اصلاحیه با موفقیت ثبت شد",
-      "error_empty_text": "برای درخواست اصلاحیه بایستی توضیحات ارائه شود",
-      "error_submission_failed": "خطا در ثبت درخواست اصلاحیه",
-      "yes":"بله",
-      "no":"نه",
-      "success":"موفقیت"
-    }
+    "title": "اصلاحات",
+    "close_button": "بستن",
+    "submit_button": "اعمال",
+    "submitting": "در حال ارسال...",
+    "confirmation_title": "تأیید ارسال اصلاحیه",
+    "confirmation_message": "با ارسال درخواست اصلاحیه مراحل ارسال و تایید برنامه {daheText} {mahText} ماه ایستگاه {pumpStationName} حذف خواهد شد و بایستی دومرتبه انجام شود. آیا از ارسال درخواست مطمئن هستید؟",
+    "success_message": "درخواست اصلاحیه با موفقیت ثبت شد",
+    "error_empty_text": "برای درخواست اصلاحیه بایستی توضیحات ارائه شود",
+    "error_submission_failed": "خطا در ثبت درخواست اصلاحیه",
+    "yes": "بله",
+    "no": "نه",
+    "success": "موفقیت"
+  },
+  "ViewFinalFileModal": {
+    "download_file": "دریافت فایل",
+    "close": "بستن"
+  }
 }

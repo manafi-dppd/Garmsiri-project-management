@@ -91,7 +91,7 @@ export async function GET(req: Request) {
     if (preview) {
       const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
       if (imageExtensions.includes(fileExtension)) {
-        return new NextResponse(fileBuffer, {
+        return new NextResponse(fileBuffer as unknown as BodyInit, {
           headers: {
             "Content-Type": `image/${fileExtension.slice(1)}`,
             "Cache-Control": "public, max-age=3600",
@@ -105,7 +105,7 @@ export async function GET(req: Request) {
     }
 
     // Handle download mode
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(fileBuffer as unknown as BodyInit, {
       headers: {
         "Content-Disposition": `attachment; filename="${encodeURIComponent(
           record.filenamenahaee

@@ -1,7 +1,7 @@
 {
   "common": {
     "title": "نظام إدارة متكامل شامل",
-    "projectName": "خطة جرمسيري",
+    "projectName": "خـطة جرمسيـري",
     "welcome": "مرحباً بكم في نظام إدارة المشاريع الشامل المتكامل جرمسيري",
     "login": "تسجيل الدخول",
     "register": "يسجل",
@@ -42,7 +42,7 @@
     "email": "بريد إلكتروني",
     "placeholderEmail": "أدخل بريدك الإلكتروني.",
     "continue": "يكمل",
-    "problem_registering":"هناك مشكلة في تسجيل المعلومات."
+    "problem_registering": "هناك مشكلة في تسجيل المعلومات."
   },
   "updateCredentials": {
     "changeWordPassword": "تغيير اسم المستخدم وكلمة المرور",
@@ -269,7 +269,8 @@
     "duration": "المدة",
     "requested_volume": "الحجم المطلوب",
     "predicted_volume": "الحجم المتوقع",
-    "extra_request": "الطلب الإضافي"
+    "extra_request": "الطلب الإضافي",
+    "outside_cultivation_period": "خارج فترة الزراعة"
   },
   "Pagination": {
     "first": "العقد الأول",
@@ -284,7 +285,7 @@
     "downloadFile": "تنزيل الملف",
     "representativeExecutiveBranch": "ممثل السلطة التنفيذية:",
     "representativeRegionalWaterCooperative": "ممثل شركة المياه الإقليمية/التعاونية الريفية:",
-    "No_table_found_Excel":"لم يتم العثور على جدول لتحويله إلى Excel."
+    "No_table_found_Excel": "لم يتم العثور على جدول لتحويله إلى Excel."
   },
   "PumpingActions": {
     "requester": "مقدم الطلب",
@@ -294,7 +295,7 @@
     "finalFiles": "الملفات النهائية",
     "save": "يحفظ",
     "wait": "انتظر...",
-    "send": "يرسل",
+    "send": "يتقدم",
     "description": "وصف",
     "confirmation": "تأكيد",
     "reject": "يرفض",
@@ -324,25 +325,43 @@
     "title_error": "خطأ",
     "title_error_confirmation": "خطأ في التأكيد",
     "title_success": "نجاح",
-    "title_error_saving":"خطأ في الحفظ",
+    "title_error_saving": "خطأ في الحفظ",
     "first": "العقد الأول",
     "second": "العقد الثاني",
     "third": "العقد الثالث",
     "successfully_saved_decade": "تم حفظ المعلومات المتعلقة ب{daheText} من شهر {mahText} في {pumpStationName} بنجاح.",
-    "fetchError": "خطأ في استرداد المعلومات"
+    "fetchError": "خطأ في استرداد المعلومات",
+    "Months": {
+      "month1": "يناير",
+      "month2": "فبراير",
+      "month3": "مارس",
+      "month4": "أبريل",
+      "month5": "مايو",
+      "month6": "يونيو",
+      "month7": "يوليو",
+      "month8": "أغسطس",
+      "month9": "سبتمبر",
+      "month10": "أكتوبر",
+      "month11": "نوفمبر",
+      "month12": "ديسمبر"
+    }
   },
   "CorrectionModal": {
-      "title": "التعديل",
-      "close_button": "إغلاق",
-      "submit_button": "إرسال",
-      "submitting": "جاري الإرسال...",
-      "confirmation_title": "تأكيد إرسال التعديل",
-      "confirmation_message": "بإرسال طلب التعديل، سيتم إلغاء مراحل الإرسال والموافقة على برنامج {daheText} {mahText} لشهر محطة {pumpStationName} ويجب إعادة تنفيذها. <br /> هل أنت متأكد من إرسال الطلب؟",
-      "success_message": "تم تسجيل طلب التعديل بنجاح",
-      "error_empty_text": "يجب تقديم تفسير لطلب التعديل",
-      "error_submission_failed": "خطأ في تسجيل طلب التعديل",
-      "yes":"نعم",
-      "no":"لا",
-      "success":"نجاح"
-    }
+    "title": "التعديل",
+    "close_button": "إغلاق",
+    "submit_button": "إرسال",
+    "submitting": "جاري الإرسال...",
+    "confirmation_title": "تأكيد إرسال التعديل",
+    "confirmation_message": "بإرسال طلب التعديل، سيتم إلغاء مراحل الإرسال والموافقة على برنامج {daheText} {mahText} لشهر محطة {pumpStationName} ويجب إعادة تنفيذها. هل أنت متأكد من إرسال الطلب؟",
+    "success_message": "تم تسجيل طلب التعديل بنجاح",
+    "error_empty_text": "يجب تقديم تفسير لطلب التعديل",
+    "error_submission_failed": "خطأ في تسجيل طلب التعديل",
+    "yes": "نعم",
+    "no": "لا",
+    "success": "نجاح"
+  },
+  "ViewFinalFileModal": {
+    "download_file": "تنزيل الملف",
+    "close": "يغلق"
+  }
 }

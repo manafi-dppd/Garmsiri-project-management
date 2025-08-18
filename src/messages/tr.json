@@ -42,7 +42,7 @@
     "email": "e-posta",
     "placeholderEmail": "E-postanızı girin.",
     "continue": "Devam etmek",
-    "problem_registering":"Bilgilerin kaydedilmesinde sorun oluştu."
+    "problem_registering": "Bilgilerin kaydedilmesinde sorun oluştu."
   },
   "updateCredentials": {
     "changeWordPassword": "Kullanıcı Adı ve Şifreyi Değiştir",
@@ -269,7 +269,8 @@
     "duration": "Süre",
     "requested_volume": "İstenen hacim",
     "predicted_volume": "Tahmini Hacim",
-    "extra_request": "Ek Talep"
+    "extra_request": "Ek Talep",
+    "outside_cultivation_period": "Yetiştirme dönemi dışında"
   },
   "Pagination": {
     "first": "İlk on yıl",
@@ -284,7 +285,7 @@
     "downloadFile": "Dosyayı indir",
     "representativeExecutiveBranch": "Yürütme organının temsilcisi:",
     "representativeRegionalWaterCooperative": "Bölgesel su şirketi/kırsal kooperatif temsilcisi:",
-    "No_table_found_Excel":"Excel'e dönüştürülecek tablo bulunamadı.."
+    "No_table_found_Excel": "Excel'e dönüştürülecek tablo bulunamadı.."
   },
   "PumpingActions": {
     "requester": "Talep eden",
@@ -295,7 +296,7 @@
     "save": "Kaydetmek",
     "wait": "Beklemek...",
     "description": "Tanım",
-    "send": "Göndermek",
+    "send": "uygula",
     "confirmation": "Onay",
     "reject": "Reddetmek",
     "preview": "Önizleme",
@@ -324,25 +325,43 @@
     "title_error": "Hata",
     "title_error_confirmation": "Onaylamada hata",
     "title_success": "Başarı",
-    "title_error_saving":"Hata kaydediliyor",
+    "title_error_saving": "Hata kaydediliyor",
     "first": "İlk on yıl",
     "second": "İkinci on yıl",
     "third": "Üçüncü on yıl",
     "successfully_saved_decade": "{pumpStationName}nde {mahText} ayının {daheText} ilişkin bilgiler başarıyla kaydedildi.",
-    "fetchError": "Bilgi alınırken hata oluştu"
+    "fetchError": "Bilgi alınırken hata oluştu",
+    "Months": {
+      "month1": "Ocak",
+      "month2": "Şubat",
+      "month3": "Mart",
+      "month4": "Nisan",
+      "month5": "Mayıs",
+      "month6": "Haziran",
+      "month7": "Temmuz",
+      "month8": "Ağustos",
+      "month9": "Eylül",
+      "month10": "Ekim",
+      "month11": "Kasım",
+      "month12": "Aralık"
+    }
   },
   "CorrectionModal": {
-      "title": "Düzeltme",
-      "close_button": "Kapat",
-      "submit_button": "Gönder",
-      "submitting": "Gönderiliyor...",
-      "confirmation_title": "Düzeltme Gönderimini Onayla",
-      "confirmation_message": "Düzeltme talebi gönderildiğinde, {daheText} {mahText} ayı {pumpStationName} istasyonu programının gönderim ve onay aşamaları iptal edilecek ve yeniden yapılmalıdır. <br /> Talebi göndermek istediğinizden emin misiniz?",
-      "success_message": "Düzeltme talebi başarıyla kaydedildi",
-      "error_empty_text": "Düzeltme talebi için bir açıklama sağlanmalıdır",
-      "error_submission_failed": "Düzeltme talebi kaydedilirken hata oluştu",
-      "yes":"Evet",
-      "no":"HAYIR",
-      "success":"Başarı"
-    }
+    "title": "Düzeltme",
+    "close_button": "Kapat",
+    "submit_button": "Gönder",
+    "submitting": "Gönderiliyor...",
+    "confirmation_title": "Düzeltme Gönderimini Onayla",
+    "confirmation_message": "Düzeltme talebi gönderildiğinde, {daheText} {mahText} ayı {pumpStationName} istasyonu programının gönderim ve onay aşamaları iptal edilecek ve yeniden yapılmalıdır. Talebi göndermek istediğinizden emin misiniz?",
+    "success_message": "Düzeltme talebi başarıyla kaydedildi",
+    "error_empty_text": "Düzeltme talebi için bir açıklama sağlanmalıdır",
+    "error_submission_failed": "Düzeltme talebi kaydedilirken hata oluştu",
+    "yes": "Evet",
+    "no": "HAYIR",
+    "success": "Başarı"
+  },
+  "ViewFinalFileModal": {
+    "download_file": "Dosyayı indir",
+    "close": "Kapalı"
+  }
 }

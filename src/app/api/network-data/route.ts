@@ -23,13 +23,13 @@ export async function GET(req: NextRequest) {
         : defaultLocale
     ) as Locale;
 
-    // console.log("[NetworkDataAPI] Request received:", {
-    //   selectedNetworkId,
-    //   urlLocale,
-    //   acceptLanguage,
-    //   localeBase,
-    //   locale,
-    // });
+    console.log("[NetworkDataAPI] Request received:", {
+      selectedNetworkId,
+      urlLocale,
+      acceptLanguage,
+      localeBase,
+      locale,
+    });
 
     if (!selectedNetworkId) {
       console.error("[NetworkDataAPI] No network selected");
@@ -48,10 +48,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // console.log(
-    //   "[NetworkDataAPI] Current shabake record:",
-    //   currentShabakeRecord
-    // );
+    console.log(
+      "[NetworkDataAPI] Current shabake record:",
+      currentShabakeRecord
+    );
 
     if (!currentShabakeRecord) {
       console.error("[NetworkDataAPI] Current irrigation period not found");
@@ -70,11 +70,11 @@ export async function GET(req: NextRequest) {
     const isInDoreWindow =
       currentDate >= doreWindowStart && currentDate <= doreWindowEnd;
 
-    // console.log("[NetworkDataAPI] Dore window:", {
-    //   isInDoreWindow,
-    //   doreWindowStart,
-    //   doreWindowEnd,
-    // });
+    console.log("[NetworkDataAPI] Dore window:", {
+      isInDoreWindow,
+      doreWindowStart,
+      doreWindowEnd,
+    });
 
     const currentSaleZeraee = await prisma.salezeraee.findUnique({
       where: { idsal: currentShabakeRecord.fidsal },
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // console.log("[NetworkDataAPI] Current salezeraee:", currentSaleZeraee);
+    console.log("[NetworkDataAPI] Current salezeraee:", currentSaleZeraee);
 
     const currentDoreKesht = await prisma.dorekesht.findUnique({
       where: { iddore: currentShabakeRecord.fiddore },
@@ -98,7 +98,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // console.log("[NetworkDataAPI] Current dorekesht:", currentDoreKesht);
+    console.log("[NetworkDataAPI] Current dorekesht:", currentDoreKesht);
 
     let otherDoreKesht: {
       iddore: number;
@@ -128,7 +128,7 @@ export async function GET(req: NextRequest) {
           dore_tr: true,
         },
       });
-      // console.log("[NetworkDataAPI] Other dorekesht:", otherDoreKesht);
+      console.log("[NetworkDataAPI] Other dorekesht:", otherDoreKesht);
     }
 
     const getLocalizedDore = (dore: {
@@ -146,11 +146,11 @@ export async function GET(req: NextRequest) {
           : locale === "tr"
           ? dore.dore_tr || dore.dore
           : dore.dore;
-      // console.log("[NetworkDataAPI] Localized dore:", {
-      //   locale,
-      //   dore,
-      //   selectedDore,
-      // });
+      console.log("[NetworkDataAPI] Localized dore:", {
+        locale,
+        dore,
+        selectedDore,
+      });
       return { iddore: dore.iddore, name: selectedDore };
     };
 
@@ -161,11 +161,11 @@ export async function GET(req: NextRequest) {
     }): { idsal: number; name: string } => {
       const selectedSaleZeraee =
         locale === "fa" ? sale.salezeraee : sale.cropyear || sale.salezeraee;
-      // console.log("[NetworkDataAPI] Localized salezeraee:", {
-      //   locale,
-      //   sale,
-      //   selectedSaleZeraee,
-      // });
+      console.log("[NetworkDataAPI] Localized salezeraee:", {
+        locale,
+        sale,
+        selectedSaleZeraee,
+      });
       return { idsal: sale.idsal, name: selectedSaleZeraee };
     };
 
@@ -187,7 +187,7 @@ export async function GET(req: NextRequest) {
       IdShDo: currentShabakeRecord.idshdo,
     };
 
-    // console.log("[NetworkDataAPI] Response data:", responseData);
+    console.log("[NetworkDataAPI] Response data:", responseData);
 
     return NextResponse.json(responseData, {
       headers: {

@@ -46,7 +46,6 @@ export default function LoginPage() {
     setError("");
 
     try {
-      
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -89,11 +88,11 @@ export default function LoginPage() {
           !callbackUrl.startsWith("/api")
             ? callbackUrl.startsWith(`/${locale}`)
               ? callbackUrl
-              : (`/${locale}${
+              : `/${locale}${
                   callbackUrl.startsWith("/") ? callbackUrl : "/" + callbackUrl
-                }` as const)
-            : (`/${locale}` as const);
-        router.push(redirectUrl as any);
+                }`
+            : `/${locale}`;
+        window.location.href = redirectUrl;
       } else {
         console.error("[LoginPage] Invalid response format:", data);
         throw new Error(t("errors.invalidResponse"));

@@ -5,6 +5,7 @@ import Modal from "./../../Modal";
 import AlertModal from "../../AlertModal";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
+import { ReactNode } from "react";
 
 interface CorrectionModalProps {
   isOpen: boolean;
@@ -91,11 +92,18 @@ const CorrectionModal: React.FC<CorrectionModalProps> = ({
       setIsSubmitting(false);
     }
   };
-
   const confirmationMessage = (
     <div className="text-right" style={{ direction: "rtl" }}>
       <span className="text-yellow-500">⚠️</span>
-      {t("confirmation_message", { daheText, mahText, pumpStationName })}
+      {t.rich("confirmation_message", {
+        daheText,
+        mahText,
+        pumpStationName,
+        strong: (children: ReactNode) => (
+          <span className="font-bold">{children}</span>
+        ),
+      })}
+      <br />
     </div>
   );
 

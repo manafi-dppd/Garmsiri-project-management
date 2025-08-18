@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     const mah = formData.get("mah") as string | null;
     const dahe = formData.get("dahe") as string | null;
     const locale = formData.get("locale") as string | null;
-    console.log("locale", locale);
     // Validate required fields
     if (!file || !idPumpStation || !sal || !mah || !dahe || !locale) {
       return NextResponse.json(

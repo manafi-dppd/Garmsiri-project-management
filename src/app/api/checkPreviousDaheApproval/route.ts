@@ -62,10 +62,6 @@ export async function POST(request: Request) {
       },
       select: { taedabmantaghe: true },
     });
-    console.log(
-      "previousDaheRecord?.taedabmantaghe: ",
-      previousDaheRecord?.taedabmantaghe
-    );
     return NextResponse.json(
       {
         isApproved: previousDaheRecord?.taedabmantaghe === true,

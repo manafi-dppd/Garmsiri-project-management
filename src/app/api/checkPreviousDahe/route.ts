@@ -35,7 +35,6 @@ export async function POST(request: Request) {
         ...(locale === "fa" ? { fiddahe: true } : { fiddec: true }),
       },
     });
-
     // دسترسی ایمن به fiddahe یا fiddec
     const minFidValue =
       locale === "fa"
@@ -45,7 +44,6 @@ export async function POST(request: Request) {
         : "fiddec" in minFid._min
         ? minFid._min.fiddec
         : null;
-
     // بررسی دهه قبلی
     const previousDahe = FidDahe - 1;
     if (
@@ -54,7 +52,6 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ hasPrevious: false }, { status: 200 });
     }
-
     // بررسی وجود رکورد برای دهه قبلی با شرط fiddahe یا fiddec
     const result = await prisma.taeedprogram.findFirst({
       where: {
@@ -65,7 +62,6 @@ export async function POST(request: Request) {
       },
       select: { lastnersal: true },
     });
-
     return NextResponse.json(
       {
         hasPrevious: !!result,

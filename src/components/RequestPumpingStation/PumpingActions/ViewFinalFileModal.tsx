@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Modal from './Modal';
 import Image from 'next/image';
+import { useTranslations } from "next-intl";
 
 interface ViewFinalFileModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const ViewFinalFileModal: React.FC<ViewFinalFileModalProps> = ({
   onDownload,
   fileUrl
 }) => {
+  const t = useTranslations("ViewFinalFileModal");
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -30,13 +32,13 @@ const ViewFinalFileModal: React.FC<ViewFinalFileModalProps> = ({
             onClick={onDownload}
             className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           >
-            دریافت فایل
+            {t("download_file")}
           </button>
           <button
             onClick={onClose}
             className="rounded-md bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
-            بستن
+            {t("close")}
           </button>
         </div>
       }

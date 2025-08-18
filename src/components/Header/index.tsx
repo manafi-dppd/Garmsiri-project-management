@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 import NavMenu from "../NavMenu";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import LocaleSwitcher from "../../app/[locale]/LocaleSwitcher";
 import { Menu } from "@/types/menu";
-import { locales, Locale, defaultLocale } from "@/i18n/config";
+import { Locale } from "@/i18n/config";
 
 interface HeaderProps {
   locale: Locale;
@@ -25,6 +25,7 @@ export default function Header({ locale, menus }: HeaderProps) {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const pathname = usePathname();
   const t = useTranslations("common");
+  const currentLocale = useLocale();
   const router = useRouter();
 
   const excludedPaths = ["/login", "/register", "/update-credentials"];
@@ -59,18 +60,48 @@ export default function Header({ locale, menus }: HeaderProps) {
     }
   }, [shouldShowNavMenu, locale, router]);
 
+  // تابع برای شکستن خطوط عنوان بر اساس زبان
+  const renderTitle = () => {
+    const title = t("title");
+    const projectName = t("projectName");
+
+    if (["en", "tr"].includes(currentLocale)) {
+      const [firstPart, secondPart] = title.split(/(?<=integrated|entegre)\s/);
+
+      return (
+        <>
+          <h1 className="border-b text-lg leading-tight">
+            {" "}
+            {/* اضافه کردن leading-tight */}
+            <span className="block">{firstPart}</span>{" "}
+            {/* استفاده از block برای کنترل بهتر */}
+            <span className="block mt-0">{secondPart}</span>{" "}
+            {/* mt-0 برای حذف فاصله بالا */}
+          </h1>
+          <h4 className="text-2xl">{projectName}</h4>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h1 className="border-b text-lg">{title}</h1>
+        <h4 className="text-2xl">{projectName}</h4>
+      </>
+    );
+  };
+
   return (
     <>
       <header className="bg-green-800 p-4 text-center text-white">
         <div className="container mx-auto flex items-center justify-between">
           <Link href={`/${locale}`}>
             <div style={{ fontFamily: "b titr", cursor: "pointer" }}>
-              <h1 className="border-b text-lg">{t("title")}</h1>
-              <h4 className="text-2xl">{t("projectName")}</h4>
+              {renderTitle()}
             </div>
           </Link>
 
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-8">
             {userInfo && (
               <div className="text-right text-sm text-white">
                 <p className="font-bold underline">
@@ -83,9 +114,7 @@ export default function Header({ locale, menus }: HeaderProps) {
                 ))}
               </div>
             )}
-            <div className="scale-90">
-              <LocaleSwitcher />
-            </div>
+            <LocaleSwitcher />
           </div>
         </div>
       </header>

@@ -30,7 +30,6 @@ export async function GET(req: NextRequest) {
       ? localeBase
       : defaultLocale
   ) as Locale;
-  // console.log("[route.ts] locale:", locale);
 
   const { searchParams } = url;
   const networkId = searchParams.get("networkId");
@@ -89,9 +88,6 @@ export async function GET(req: NextRequest) {
       )
     );
 
-    // console.log("[route.ts] startDate:", startDate, "endDate:", endDate);
-    // console.log("[route.ts] Input parameters:", { sal, mah, dahe });
-
     let whereClause: any = {
       trikh: {
         gte: startDate,
@@ -143,8 +139,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // console.log("[route.ts] whereClause:", whereClause);
-
     const records = await prisma.trikhdorekesht.findMany({
       where: whereClause,
       select: {
@@ -157,8 +151,6 @@ export async function GET(req: NextRequest) {
       orderBy: { trikh: "asc" },
     });
 
-    // console.log("[route.ts] records:", records);
-
     const mappedRecords = records.map((record) => {
       const day = record.trikh.getUTCDate();
       const calculatedDahe =
@@ -170,8 +162,6 @@ export async function GET(req: NextRequest) {
         dahe: calculatedDahe,
       };
     });
-
-    // console.log("[route.ts] mappedRecords:", mappedRecords);
 
     const predictedVolumes = await Promise.all(
       mappedRecords.map(async (record: Record) => {

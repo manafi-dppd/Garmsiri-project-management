@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { NetworkDataResponse, ShabakeDoreKeshtData } from "./types";
 
+
 interface HeaderRequestPumpingProps {
   setUserName: (name: string) => void;
   setUserRole: (roles: string[]) => void;
@@ -50,6 +51,7 @@ const HeaderRequestPumping = ({
 }: HeaderRequestPumpingProps) => {
   const t = useTranslations("HeaderRequestPumping");
   const locale = useLocale();
+  const [isLoading, setIsLoading] = useState(false);
   const [userPositions, setUserPositions] = useState<
     { id: number; title: string }[]
   >([]);

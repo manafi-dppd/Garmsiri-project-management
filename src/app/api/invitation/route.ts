@@ -109,6 +109,8 @@ export async function POST(req: Request) {
         });
       }
     }
+    console.log("selectedPositions: ", selectedPositions);
+    console.log("newInvitation.id: ", newInvitation.id);
 
     await prisma.position_on_invitation.createMany({
       data: selectedPositions.map((position_id) => ({
@@ -117,7 +119,7 @@ export async function POST(req: Request) {
       })),
       skipDuplicates: true,
     });
-
+    console.log("Sending selectedPositions:", selectedPositions);
     return NextResponse.json(
       {
         message: t("invitationCreated"),

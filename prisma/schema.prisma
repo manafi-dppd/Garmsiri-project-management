@@ -552,7 +552,7 @@ model position_on_invitation {
   invitation    invitation @relation(fields: [invitation_id], references: [id], map: "position_on_invitation_invitationId_fkey")
   position      position   @relation(fields: [position_id], references: [id], map: "position_on_invitation_positionId_fkey")
 
-  @@unique([invitation_id, position_id], map: "position_on_invitation_invitationId_positionId_key")
+  //@@unique([invitation_id, position_id], map: "position_on_invitation_invitationId_positionId_key")
   @@map("position_on_invitation")
 }
 

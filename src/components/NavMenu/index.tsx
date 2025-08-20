@@ -41,6 +41,7 @@ const NavMenu: React.FC<NavMenuProps> = ({ menus = [] }) => {
           return;
         }
         const data: Menu[] = await response.json();
+        console.log("data: ", data);
         setLocalMenus(data);
       } catch (error) {
         console.error("Error fetching menus:", error);

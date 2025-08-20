@@ -16,6 +16,7 @@
     "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صالحة"
   },
   "login": {
+    "userNotFound": "لم يتم العثور على المستخدم",
     "title": "تسجيل الدخول",
     "logoAlt": "أيقونة تسجيل الدخول",
     "usernameLabel": "اسم المستخدم",
@@ -108,24 +109,25 @@
     "button": "دعوة"
   },
   "userInvitationTable": {
-    "loading": "تحميل...",
+    "loading": "جار التحميل...",
+    "noUsers": "لا يوجد مستخدمون",
     "users": "المستخدمون",
-    "invitees": "المدعوين",
     "firstName": "الاسم الأول",
-    "lastName": "اسم العائلة",
+    "lastName": "الاسم الأخير",
     "mobilePhone": "الهاتف المحمول",
     "registrationTime": "وقت التسجيل",
-    "invitationDate": "تاريخ الدعوة",
-    "expirationTime": "وقت انتهاء الصلاحية",
-    "register": "يسجل",
-    "active": "نشيط",
-    "role": "دور",
-    "details": "تفاصيل",
-    "uncertain": "غير مؤكد",
+    "expirationTime": "وقت الانتهاء",
+    "active": "نشط",
+    "role": "الدور",
+    "details": "التفاصيل",
+    "view": "عرض",
     "yes": "نعم",
     "no": "لا",
-    "noRole": "لا يوجد دور",
-    "view": "منظر"
+    "noRole": "بدون دور",
+    "uncertain": "غير معروف",
+    "invitees": "المدعوين",
+    "invitationDate":"تاريخ الدعوة",
+    "register":"يسجل"
   },
   "AccessLevelModal": {
     "menuManagement": "إدارة القائمة",

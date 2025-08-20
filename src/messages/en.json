@@ -16,6 +16,7 @@
     "invalidCredentials": "Invalid username or password"
   },
   "login": {
+    "userNotFound": "User not found",
     "title": "Sign in",
     "logoAlt": "Login icon",
     "usernameLabel": "Username",
@@ -109,23 +110,24 @@
   },
   "userInvitationTable": {
     "loading": "Loading...",
+    "noUsers": "No users found",
     "users": "Users",
-    "invitees": "Invitees",
     "firstName": "First Name",
     "lastName": "Last Name",
     "mobilePhone": "Mobile Phone",
     "registrationTime": "Registration Time",
-    "invitationDate": "Invitation date",
     "expirationTime": "Expiration Time",
-    "register": "Register",
     "active": "Active",
     "role": "Role",
     "details": "Details",
-    "uncertain": "Uncertain",
+    "view": "View",
     "yes": "Yes",
     "no": "No",
-    "noRole": "No role",
-    "view": "View"
+    "noRole": "No Role",
+    "uncertain": "Uncertain",
+    "invitees": "Invitees",
+    "invitationDate":"Invitation date",
+    "register":"Register"
   },
   "AccessLevelModal": {
     "menuManagement": "Menu management",

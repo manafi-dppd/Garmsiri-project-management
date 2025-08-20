@@ -77,7 +77,7 @@ export default function UserTable() {
   };
 
   if (loading) {
-    return <div className="mt-4 text-center">{t("loading")}...</div>;
+    return <div className="mt-4 text-center">{t("loading")}</div>;
   }
 
   if (users.length === 0) {

@@ -162,9 +162,9 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
         items.map((item) => {
           if (item.children?.length) {
             item.children = updateParents(item.children);
-            if (item.title !== "Current Affairs") {
+            // if (item.title !== "Current Affairs") {
               item.checked = item.children.some((child) => child.checked);
-            }
+            // }
           }
           return item;
         });
@@ -323,9 +323,9 @@ const AccessLevelModal: React.FC<AccessLevelModalProps> = ({
           menuData = menuData.filter((menu) => !menu.general);
         } else if (mode === "menuManagement") {
           menuData = menuData.map((menu) =>
-            menu.title === "Current Affairs"
-              ? { ...menu, disabled: true }
-              : menu
+            // menu.title === "Current Affairs"
+            //   ? { ...menu, disabled: true }
+              menu
           );
         }
 

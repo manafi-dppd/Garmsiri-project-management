@@ -1,4 +1,9 @@
-// src/types/menu.ts
+// types/menu.ts
+export interface UserAccess {
+  user_id: number;
+  has_access: boolean;
+}
+
 export interface Menu {
   id: number;
   title: string;
@@ -9,5 +14,5 @@ export interface Menu {
   general: boolean;
   slug: string;
   parent_id: number | null;
-  parentSlug?: string | null; // اختیاری برای سازگاری با کامپوننت NavMenu
+  user_access: UserAccess[];   // 👈 اضافه شد
 }

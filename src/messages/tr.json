@@ -16,6 +16,7 @@
     "invalidCredentials": "geçersiz kullanıcı adı veya şifre"
   },
   "login": {
+    "userNotFound": "Kullanıcı bulunamadı",
     "title": "Giriş yap",
     "logoAlt": "Giriş simgesi",
     "usernameLabel": "Kullanıcı adı",
@@ -107,25 +108,26 @@
   "invitation": {
     "button": "Davet"
   },
-  "userInvitationTable": {
+ "userInvitationTable": {
     "loading": "Yükleniyor...",
+    "noUsers": "Kullanıcı bulunamadı",
     "users": "Kullanıcılar",
-    "invitees": "Davetliler",
-    "firstName": "İlk adı",
-    "lastName": "Soy isim",
+    "firstName": "Ad",
+    "lastName": "Soyad",
     "mobilePhone": "Cep Telefonu",
     "registrationTime": "Kayıt Zamanı",
-    "invitationDate": "Davet tarihi",
-    "expirationTime": "Son Kullanma Tarihi",
-    "register": "Kayıt olmak",
+    "expirationTime": "Son Kullanma Zamanı",
     "active": "Aktif",
     "role": "Rol",
     "details": "Detaylar",
-    "uncertain": "Belirsiz",
+    "view": "Görüntüle",
     "yes": "Evet",
-    "no": "HAYIR",
-    "noRole": "Hiçbir rol",
-    "view": "Görüş"
+    "no": "Hayır",
+    "noRole": "Rol Yok",
+    "uncertain": "Belirsiz",
+    "invitees": "Davetliler",
+    "invitationDate":"Davet tarihi",
+    "register":"Kayıt olmak"
   },
   "AccessLevelModal": {
     "menuManagement": "Menü yönetimi",

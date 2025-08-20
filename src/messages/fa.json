@@ -16,6 +16,7 @@
     "invalidCredentials": "نام کاربری یا رمز عبور نادرست است"
   },
   "login": {
+    "userNotFound": "کاربر یافت نشد",
     "title": "ورود",
     "logoAlt": "آیکون ورود",
     "usernameLabel": "نام کاربری",
@@ -108,24 +109,25 @@
     "button": "دعوت‌نامه"
   },
   "userInvitationTable": {
-    "loading": "در حال بارگذاری",
+    "loading": "در حال بارگذاری...",
+    "noUsers": "کاربری یافت نشد",
     "users": "کاربران",
-    "invitees": "دعوت شدگان",
     "firstName": "نام",
     "lastName": "نام خانوادگی",
     "mobilePhone": "تلفن همراه",
-    "registrationTime": "زمان ثبت نام",
-    "invitationDate": "تاریخ دعوت",
+    "registrationTime": "زمان ثبت‌نام",
     "expirationTime": "زمان انقضا",
-    "register": "ثبت‌نام",
     "active": "فعال",
-    "role": "سمت",
+    "role": "نقش",
     "details": "جزئیات",
-    "uncertain": "نامشخص",
+    "view": "مشاهده",
     "yes": "بله",
     "no": "خیر",
-    "noRole": "بدون سمت",
-    "view": "مشاهده"
+    "noRole": "بدون نقش",
+    "uncertain": "نامشخص",
+    "invitees": "دعوت شدگان",
+    "invitationDate":"تارخ دعوت",
+    "register":"ثبت نام"
   },
   "AccessLevelModal": {
     "menuManagement": "مدیریت منو",
